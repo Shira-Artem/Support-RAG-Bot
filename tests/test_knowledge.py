@@ -22,6 +22,7 @@ category: kkt
 model: АТОЛ 30Ф
 status: approved
 verified_at: 2026-10-12
+collected_at: 2026-10-12
 ---
 # Проверка кассы
 
@@ -34,6 +35,7 @@ verified_at: 2026-10-12
     docs = DocumentLoader(tmp_path).load_all()
     guide = next(doc for doc in docs if doc.source == "guide.md")
     assert guide.status == "approved" and guide.model == "АТОЛ 30Ф"
+    assert guide.collected_at == "2026-10-12"
     assert next(doc for doc in docs if doc.source == "plain.txt").status == "draft"
     html = next(doc for doc in docs if doc.source == "page.html")
     assert "junk" not in html.pages[0][1] and "Чеки" in html.pages[0][1]
@@ -41,6 +43,7 @@ verified_at: 2026-10-12
     assert "Шаг 1" in chunks[0].text and "Шаг 2" in chunks[0].text
     assert chunks[0].section == "Проверка кассы"
     assert chunks[0].metadata["source"] == "guide.md"
+    assert chunks[0].metadata["collected_at"] == "2026-10-12"
     assert chunks[0].id == Chunker().split(guide)[0].id
 
 

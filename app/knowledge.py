@@ -36,6 +36,7 @@ class Document:
     source_type: str
     published_at: str | None
     verified_at: str | None
+    collected_at: str | None
     status: str
     content_hash: str
     source: str
@@ -108,7 +109,7 @@ class DocumentLoader:
             raise ValueError(f"Invalid status in {rel}: {status}")
         if status == "approved" and not metadata.get("verified_at"):
             raise ValueError(f"Approved document requires verified_at: {rel}")
-        for key in ("published_at", "verified_at"):
+        for key in ("published_at", "verified_at", "collected_at"):
             if metadata.get(key):
                 date.fromisoformat(str(metadata[key]))
         source_url = metadata.get("source_url")
@@ -126,6 +127,7 @@ class DocumentLoader:
             source_type=str(metadata.get("source_type", "local")),
             published_at=str(metadata["published_at"]) if metadata.get("published_at") else None,
             verified_at=str(metadata["verified_at"]) if metadata.get("verified_at") else None,
+            collected_at=str(metadata["collected_at"]) if metadata.get("collected_at") else None,
             status=status, content_hash=sha256(body.encode("utf-8")).hexdigest(),
             source=rel, pages=pages,
         )
