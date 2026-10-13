@@ -19,7 +19,8 @@ FILTER_FIELDS = {"category", "manufacturer", "model", "version", "source_type", 
 
 
 def tokens(text: str) -> list[str]:
-    return [item for item in re.findall(r"[a-zа-яё0-9]+", text.lower().replace("ё", "е")) if item not in STOP and len(item) > 1]
+    return [item for item in re.findall(r"[a-zа-яё0-9]+(?:[.,][0-9]+)?", text.lower().replace("ё", "е"))
+            if item not in STOP and (len(item) > 1 or item.isdigit())]
 
 
 @dataclass(frozen=True)
@@ -60,9 +61,19 @@ class Retriever:
         df = Counter(token for counts in corpus for token in counts)
         avgdl = sum(sum(counts.values()) for counts in corpus) / len(corpus) or 1
         codes = {token for token in query_tokens if any(char.isdigit() for char in token)}
+        brands = set(query_tokens) & {"атол", "штрих", "эвотор"}
+        model_match = re.search(r"\bэвотор\s+\d+(?:[.,]\d+)?(?:\s+lite)?\b", query.lower())
+        requested_model = model_match.group().replace(",", ".") if model_match else None
         scored = []
         for point, counts in zip(points, corpus, strict=True):
             text = point.payload["text"]
+            point_model = str(point.payload.get("model") or "").lower().replace(",", ".")
+            if requested_model and point_model and point_model != requested_model:
+                continue
+            brand_text = " ".join((text, str(point.payload.get("title") or ""),
+                                   str(point.payload.get("manufacturer") or ""), point_model))
+            if brands and not brands.issubset(set(tokens(brand_text))):
+                continue
             # Technical numeric codes and model numbers must match exactly.
             section = point.payload.get("section") or ""
             code_text = text

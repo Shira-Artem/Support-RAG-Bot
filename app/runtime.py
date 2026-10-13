@@ -15,12 +15,12 @@ from app.vector_store import QdrantStore
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
-def build_store(*, demo: bool = False) -> QdrantStore:
+def build_store(*, demo: bool = False, collection: str | None = None) -> QdrantStore:
     model = os.getenv("EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
     embedding = SentenceTransformerEmbedding(model)
     client = QdrantClient(url=os.getenv("QDRANT_URL", "http://127.0.0.1:6333"), timeout=15)
-    collection = os.getenv("QDRANT_COLLECTION", "knowledge_demo" if demo else "knowledge_v1")
-    return QdrantStore(client, embedding, collection)
+    name = collection or os.getenv("QDRANT_COLLECTION", "knowledge_demo" if demo else "knowledge_v1")
+    return QdrantStore(client, embedding, name)
 
 
 def build_retriever(*, demo: bool | None = None) -> Retriever:

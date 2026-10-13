@@ -34,6 +34,7 @@ Thumbs.db
 # Logs and local runtime files
 *.log
 *.pid
+.local/
 
 # Raw scraped pages should be reviewed before publication
 data/docs/scraped/

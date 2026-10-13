@@ -8,6 +8,7 @@ version: "1.0"
 source_url: https://example.com/original-instruction
 source_type: manufacturer_manual
 published_at: 2026-01-01
+collected_at: 2026-10-12
 verified_at:
 status: draft
 ---

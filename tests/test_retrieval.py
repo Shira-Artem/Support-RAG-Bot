@@ -83,6 +83,32 @@ def test_demo_error_codes_are_separate():
     assert hits and all("Ошибка ФН 234" not in hit.text for hit in hits)
 
 
+def test_evotor_models_do_not_mix(tmp_path: Path):
+    store = QdrantStore(QdrantClient(":memory:"), FakeEmbedding())
+    for name, model in [("six", "Эвотор 6"), ("lite", "Эвотор 6 lite"), ("seven2", "Эвотор 7.2"), ("seven3", "Эвотор 7.3")]:
+        (tmp_path / f"{name}.txt").write_text(f"Модель {model}: проверьте питание кассы.", encoding="utf-8")
+        (tmp_path / f"{name}.txt.meta.yaml").write_text(f"status: approved\nverified_at: 2026-10-12\nmodel: {model}\n", encoding="utf-8")
+    store.index(DocumentLoader(tmp_path).load_all())
+    retriever = Retriever(store)
+    for model in ("Эвотор 6", "Эвотор 6 lite", "Эвотор 7.2", "Эвотор 7.3"):
+        hits = retriever.search(model)
+        assert hits and all(hit.metadata["model"] == model for hit in hits)
+
+
+def test_named_manufacturer_does_not_return_other_vendor(tmp_path: Path):
+    store = QdrantStore(QdrantClient(":memory:"), FakeEmbedding())
+    for name, manufacturer in [("atol", "АТОЛ"), ("shtrih", "Штрих-М")]:
+        (tmp_path / f"{name}.txt").write_text(f"ККТ {manufacturer} не передаёт чеки в ОФД.", encoding="utf-8")
+        (tmp_path / f"{name}.txt.meta.yaml").write_text(
+            f"status: approved\nverified_at: 2026-10-12\nmanufacturer: {manufacturer}\n", encoding="utf-8")
+    store.index(DocumentLoader(tmp_path).load_all())
+    retriever = Retriever(store)
+    atol = retriever.search("АТОЛ не передаёт чеки")
+    shtrih = retriever.search("Штрих-М не передаёт чеки")
+    assert atol and all(hit.metadata["manufacturer"] == "АТОЛ" for hit in atol)
+    assert shtrih and all(hit.metadata["manufacturer"] == "Штрих-М" for hit in shtrih)
+
+
 def test_api_contract_and_validation(tmp_path: Path):
     store, _ = make_store(tmp_path)
     store.index(DocumentLoader(tmp_path).load_all())
