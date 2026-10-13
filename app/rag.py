@@ -148,7 +148,7 @@ class SimpleRAG:
     def search(self, query: str, top_k: int = 5, min_score: float = 0.03) -> list[SearchResult]:
         query = query.strip()
 
-        if not query or not self.chunks:
+        if not query or not self.chunks or top_k <= 0:
             return []
 
         query_vector = _char_ngrams(query)
@@ -165,7 +165,7 @@ class SimpleRAG:
         results: list[SearchResult] = []
 
         for score, chunk in scored[: top_k * 3]:
-            if score < min_score and results:
+            if score < min_score:
                 continue
 
             results.append(

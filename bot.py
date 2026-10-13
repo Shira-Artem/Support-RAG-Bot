@@ -8,8 +8,8 @@ from telegram.constants import ChatAction
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 from app.answer_service import AnswerService
+from app.compat import build_answer_rag
 from app.config import get_settings
-from app.rag import SimpleRAG
 
 
 logging.basicConfig(
@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
-rag = SimpleRAG(settings.docs_dir)
+rag = build_answer_rag(settings.docs_dir)
 answer_service = AnswerService(rag, settings)
 
 # Простая память диалога в RAM. Для курсовой достаточно.
@@ -53,7 +53,7 @@ async def sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def reload_docs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     rag.reload()
-    await update.message.reply_text(f"База знаний обновлена. Фрагментов: {len(rag.chunks)}")
+    await update.message.reply_text(f"Поисковый индекс доступен. Фрагментов: {len(rag.chunks)}. Для Qdrant индексацию запускает оператор.")
 
 
 async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

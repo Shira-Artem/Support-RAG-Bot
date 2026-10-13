@@ -3,13 +3,13 @@ from __future__ import annotations
 import asyncio
 
 from app.answer_service import AnswerService
+from app.compat import build_answer_rag
 from app.config import get_settings
-from app.rag import SimpleRAG
 
 
 async def main() -> None:
     settings = get_settings()
-    rag = SimpleRAG(settings.docs_dir)
+    rag = build_answer_rag(settings.docs_dir)
     service = AnswerService(rag, settings)
 
     print("Support RAG Bot — CLI проверка")
