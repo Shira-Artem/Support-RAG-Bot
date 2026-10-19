@@ -110,10 +110,23 @@ class ExpertTelegram:
                     rows.append([("Источники RAG", f"ex:sources:{session_id}:{question_id}")])
         else:
             answer = attempt["answer_text"] or "Не удалось получить ответ. Попробуйте ещё раз позже."
+            if status == "rejected":
+                answer = ("Ответ модели изменён автоматической проверкой и не предлагается к оценке.\n\n"
+                          + answer)
             if status == "no_context":
                 answer = attempt["answer_text"] or "В базе знаний нет подтверждённого ответа. Какая модель кассы и что именно происходит?"
+                answer += "\n\nДиагностика: поиск не вернул фрагменты; LLM не вызывалась."
+            elif status == "unavailable":
+                reason = attempt["generation_reason"]
+                if reason == "api_key_missing":
+                    answer += "\n\nДиагностика: ключ провайдера не настроен; LLM не вызывалась."
+                else:
+                    answer += "\n\nДиагностика: генерация недоступна; LLM не вызывалась."
+            elif status == "error":
+                answer += "\n\nДиагностика: запрос к API завершился технической ошибкой."
             elif status == "truncated":
                 answer = "Ответ не удалось завершить. Попробуйте ещё раз или сократите вопрос."
+                answer += "\n\nДиагностика: модель завершила генерацию по лимиту токенов; ответ не предлагался к оценке."
             rows = [[("Повторить", f"ex:answer:{session_id}:{question_id}")],
                     [("Источники RAG", f"ex:sources:{session_id}:{question_id}")]]
         await send(update, answer, rows)

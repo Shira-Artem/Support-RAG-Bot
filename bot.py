@@ -3,11 +3,12 @@ from __future__ import annotations
 import asyncio
 import logging
 
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.constants import ChatAction
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
-from app.answer_service import AnswerService
+from app.answer_service import Answer, AnswerService, _active_request
+from app.conversation_store import ConversationStore
 from app.compat import build_answer_rag
 from app.config import get_settings
 from app.expert_store import ExpertStore
@@ -27,26 +28,34 @@ settings = get_settings()
 rag = build_answer_rag(settings.docs_dir)
 answer_service = AnswerService(rag, settings)
 expert_store = ExpertStore()
-expert_store.recover_pending()
 expert = ExpertTelegram(settings, answer_service, expert_store)
+conversations = ConversationStore()
+MENU = ReplyKeyboardMarkup([["Свободный диалог", "Экспертное тестирование"]], resize_keyboard=True)
+FREE_MENU = ReplyKeyboardMarkup([["Новый диалог", "В меню"]], resize_keyboard=True)
+EXPERT_MENU = ReplyKeyboardMarkup([["В меню"]], resize_keyboard=True)
 
-# Простая память диалога в RAM. Для курсовой достаточно.
-# Для продакшена лучше Redis/БД.
-USER_HISTORY: dict[int, list[dict]] = {}
+
+def identity(update: Update) -> tuple[int, int]:
+    return update.effective_user.id, update.effective_chat.id
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    text = (
-        "Привет! Я бот поддержки по кассам, ОФД, ФН, маркировке и бухгалтерии.\n\n"
-        "Можешь спросить, например:\n"
-        "• не уходят чеки в ОФД\n"
-        "• ошибка ФН 234\n"
-        "• как заменить фискальный накопитель\n"
-        "• что такое маркировка\n"
-        "• нужна бухгалтерия для ИП\n\n"
-        "Команды: /sources, /reload, /clear"
-    )
-    await update.message.reply_text(text)
+    conversations.set_mode(*identity(update), "menu")
+    await update.effective_message.reply_text("Выберите режим работы:", reply_markup=MENU)
+
+
+async def expert_mode(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if expert.allowed(update):
+        conversations.set_mode(*identity(update), "expert")
+        await update.effective_message.reply_text("Экспертное тестирование", reply_markup=EXPERT_MENU)
+    await expert.command(update, context)
+
+
+async def expert_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if conversations.state(*identity(update))["mode"] != "expert":
+        await update.callback_query.answer("Сначала выберите «Экспертное тестирование».", show_alert=True)
+        return
+    await expert.callback(update, context)
 
 
 async def sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -65,31 +74,60 @@ async def reload_docs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.effective_user:
-        USER_HISTORY.pop(update.effective_user.id, None)
-    await update.message.reply_text("История диалога очищена.")
+    conversations.new(*identity(update))
+    await update.effective_message.reply_text("Начат новый диалог. Предыдущая переписка сохранена.", reply_markup=FREE_MENU)
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not update.message or not update.message.text:
         return
-    if await expert.comment_message(update):
-        return
-
-    user_id = update.effective_user.id if update.effective_user else 0
+    user_id, chat_id = identity(update)
     user_text = update.message.text.strip()
 
     if not user_text:
         return
 
+    if user_text == "В меню":
+        await start(update, context)
+        return
+    if user_text == "Экспертное тестирование":
+        await expert_mode(update, context)
+        return
+    if user_text == "Новый диалог":
+        await clear(update, context)
+        return
+    state = conversations.state(user_id, chat_id)
+    if user_text == "Свободный диалог":
+        if not state["conversation_id"]:
+            conversations.new(user_id, chat_id)
+        else:
+            conversations.set_mode(user_id, chat_id, "free")
+        await update.message.reply_text("Напишите вопрос. Для чистого контекста нажмите «Новый диалог».", reply_markup=FREE_MENU)
+        return
+    if state["mode"] == "menu":
+        await start(update, context)
+        return
+    if state["mode"] == "expert":
+        if not await expert.comment_message(update):
+            await expert.command(update, context)
+        return
+
     await update.message.chat.send_action(ChatAction.TYPING)
 
-    history = USER_HISTORY.get(user_id, [])
-    answer = await answer_service.answer(user_text, history=history)
-
-    history.append({"role": "user", "content": user_text})
-    history.append({"role": "assistant", "content": answer.text[:1200]})
-    USER_HISTORY[user_id] = history[-8:]
+    conversation_id = state["conversation_id"] or conversations.new(user_id, chat_id)
+    history = conversations.history(conversation_id)
+    continuing = _active_request(user_text, history)[2]
+    message_id = conversations.begin(conversation_id, user_text, continuing)
+    try:
+        answer = await answer_service.answer(user_text, history=history)
+    except Exception as exc:
+        logger.error("Free generation failed: %s", type(exc).__name__)
+        answer = Answer("Не удалось обработать вопрос. Повторите попытку позже.",
+                        generation_status="error", generation_reason=f"unexpected_exception:{type(exc).__name__}",
+                        scenario="escalate", scenario_reason="unexpected_exception",
+                        provider=settings.llm_provider,
+                        model=settings.groq_model if settings.llm_provider == "groq" else settings.openrouter_model)
+    conversations.complete(message_id, answer)
 
     # Telegram limit is 4096 symbols.
     for part in split_for_telegram(answer.text):
@@ -119,14 +157,18 @@ def main() -> None:
     if not settings.telegram_bot_token:
         raise RuntimeError("TELEGRAM_BOT_TOKEN is empty. Fill .env first.")
 
-    app = Application.builder().token(settings.telegram_bot_token).concurrent_updates(4).build()
+    # Sequential updates prevent resets/mode changes racing an in-flight answer.
+    app = Application.builder().token(settings.telegram_bot_token).concurrent_updates(False).build()
+    expert_store.recover_pending()
+    conversations.recover_pending()
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("menu", start))
     app.add_handler(CommandHandler("sources", sources))
     app.add_handler(CommandHandler("reload", reload_docs))
     app.add_handler(CommandHandler("clear", clear))
-    app.add_handler(CommandHandler("expert", expert.command))
-    app.add_handler(CallbackQueryHandler(expert.callback, pattern=r"^ex:"))
+    app.add_handler(CommandHandler("expert", expert_mode))
+    app.add_handler(CallbackQueryHandler(expert_callback, pattern=r"^ex:"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     logger.info("Bot started. Docs: %s, chunks: %s", settings.docs_dir, len(rag.chunks))
@@ -140,4 +182,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    from app.instance_lock import single_instance
+    with single_instance():
+        main()

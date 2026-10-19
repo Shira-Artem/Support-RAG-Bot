@@ -7,7 +7,7 @@ import sqlite3
 from types import SimpleNamespace
 import pytest
 
-from app.answer_service import Answer, AnswerService
+from app.answer_service import Answer, AnswerService, SYSTEM_PROMPT, _safe_alternative, _validation_issue
 from app.config import Settings
 from app.expert_report import export, statistics
 from app.expert_report import groq_paid_cost_estimate, token_metrics
@@ -176,6 +176,8 @@ def test_additive_migration_preserves_existing_answers_and_reviews(tmp_path):
     assert (row["score"], row["reason"], row["comment"]) == (8, "Всё корректно", "Комментарий оставить")
     assert row["prompt_tokens"] == 12 and row["completion_tokens"] == 4
     assert row["total_tokens"] is None and row["specialist_id"]
+    assert row["raw_model_text"] is None
+    assert row["validation_status"] is None and row["generation_reason"] is None
 
 
 def test_answer_service_isolated_and_generation_failure(monkeypatch, tmp_path):
@@ -210,9 +212,9 @@ def test_answer_service_isolated_and_generation_failure(monkeypatch, tmp_path):
         def search(self, query, top_k):
             return []
     no_context = asyncio.run(AnswerService(EmptyRag(), settings(tmp_path)).answer("вопрос"))
-    assert no_context.generation_status == "no_context" and not no_context.used_model
-    assert "подтверждённого решения" in no_context.text
-    assert no_context.text.count("?") == 1
+    assert no_context.generation_status == "generated" and no_context.used_model
+    assert no_context.rag_chunks == 0 and no_context.context_chars == 0
+    assert no_context.scenario == "answer"
 
 
 def test_client_answer_is_short_and_keeps_rag_details_separate(monkeypatch, tmp_path):
@@ -223,13 +225,13 @@ def test_client_answer_is_short_and_keeps_rag_details_separate(monkeypatch, tmp_
 
     class Rag:
         def search(self, query, top_k):
-            assert top_k == 5
+            assert top_k == 12
             return [result]
         def build_context(self, results):
             return results[0].text
 
     async def fake_generate(messages, config):
-        assert "300–500" in messages[0]["content"]
+        assert "1–3 полезных шагов" in messages[0]["content"]
         assert "СЕКРЕТНЫЙ RAG-ФРАГМЕНТ" in messages[-1]["content"]
         return Generation("Проверьте подключение кассы к интернету. Если ошибка останется, пришлите её текст.",
                           "openai/gpt-oss-20b", 40, 19, 59, finish_reason="stop")
@@ -360,16 +362,16 @@ def test_ambiguous_account_action_asks_before_rag_or_llm(tmp_path, monkeypatch):
     service = AnswerService(Rag(), settings(tmp_path))
     answer = asyncio.run(service.answer("Как добавить ещё одного сотрудника в личный кабинет?"))
     assert answer.generation_status == "clarification"
-    assert answer.text == "В каком сервисе нужно выполнить это действие?"
+    assert answer.text == "В каком сервисе вы используете личный кабинет?"
     assert answer.results == [] and answer.prompt_tokens is None and answer.total_tokens is None
-    assert answer.used_model is False and answer.model is None and answer.provider is None
+    assert answer.used_model is False and answer.model == "model" and answer.provider == "openrouter"
 
 
 @pytest.mark.parametrize("service_name", ["aQsi Online", "АТОЛ Онлайн", "Эвотор", "1С"])
 def test_explicit_service_is_in_search_and_generation_context(tmp_path, monkeypatch, service_name):
     source_prefix = {"aQsi Online": "aqsi_online", "АТОЛ Онлайн": "atol_online",
                      "Эвотор": "evotor", "1С": "1c"}[service_name]
-    result = SearchResult(f"{source_prefix}/users.md", "Подтверждённая инструкция.", 0.8)
+    result = SearchResult(f"{source_prefix}/users.md", "Подтверждённая инструкция добавления сотрудника.", 0.8)
 
     class Rag:
         query = None
@@ -390,10 +392,7 @@ def test_explicit_service_is_in_search_and_generation_context(tmp_path, monkeypa
         f"Как добавить сотрудника в {service_name}?"))
     assert answer.generation_status == "generated"
     assert service_name.casefold() in rag.query.casefold()
-    assert service_name.casefold() in captured[0]["content"].casefold()
-    prompt = captured[0]["content"].casefold()
-    assert "клиент явно назвал" in prompt
-    assert "документы rag — справочные материалы" in prompt
+    assert service_name.casefold() in captured[1]["content"].casefold()
 
 
 def test_only_client_history_confirms_service_and_is_used_in_search(tmp_path, monkeypatch):
@@ -414,24 +413,142 @@ def test_only_client_history_confirms_service_and_is_used_in_search(tmp_path, mo
     monkeypatch.setattr("app.answer_service.generate", fake_generate)
     service = AnswerService(rag, settings(tmp_path))
 
-    resolved = asyncio.run(service.answer("Как добавить сотрудника?", history=[
-        {"role": "user", "content": "Мы работаем в aQsi Online."},
-        {"role": "assistant", "content": "Для aQsi Online откройте выдуманный раздел."},
+    resolved = asyncio.run(service.answer("aQsi Online", history=[
+        {"role": "user", "content": "Как добавить сотрудника?", "clarification_reply": False},
+        {"role": "assistant", "content": "В каком сервисе вы используете личный кабинет?",
+         "scenario": "clarify", "scenario_reason": "service_not_confirmed"},
     ]))
     assert resolved.generation_status == "generated"
-    assert "aQsi Online" in rag.query and "Мы работаем в aQsi Online" in captured[1]["content"]
+    assert "aQsi Online" in rag.query and "Как добавить сотрудника?" in rag.query
+    assert "Как добавить сотрудника?" in captured[1]["content"]
+
+    ambiguous = asyncio.run(service.answer("Мой ОФД", history=[
+        {"role": "user", "content": "Как добавить ещё одного сотрудника в личный кабинет?",
+         "clarification_reply": False},
+        {"role": "assistant", "content": "В каком сервисе вы используете личный кабинет?",
+         "scenario": "clarify", "scenario_reason": "service_not_confirmed"},
+    ]))
+    assert ambiguous.generation_status == "clarification"
+    assert ambiguous.scenario_reason == "service_ambiguous"
+    assert "полное название" in ambiguous.text
+
+    ambiguous_with_question_mark = asyncio.run(service.answer("Мой ОФД?", history=[
+        {"role": "user", "content": "Как добавить сотрудника?", "clarification_reply": False},
+        {"role": "assistant", "content": "В каком сервисе вы используете личный кабинет?",
+         "scenario": "clarify", "scenario_reason": "service_not_confirmed"},
+    ]))
+    assert ambiguous_with_question_mark.scenario_reason == "service_ambiguous"
 
     clarified_after_question = asyncio.run(service.answer("aQsi Online", history=[
-        {"role": "user", "content": "Как добавить ещё одного сотрудника в личный кабинет?"},
+        {"role": "user", "content": "Как добавить ещё одного сотрудника в личный кабинет?",
+         "clarification_reply": False},
+        {"role": "assistant", "content": "В каком сервисе вы используете личный кабинет?",
+         "scenario": "clarify", "scenario_reason": "service_not_confirmed"},
+        {"role": "user", "content": "Мой ОФД", "clarification_reply": True},
+        {"role": "assistant", "content": "Уточните полное название ОФД или кассового сервиса.",
+         "scenario": "clarify", "scenario_reason": "service_ambiguous"},
     ]))
     assert clarified_after_question.generation_status == "generated"
     assert "добавить ещё одного сотрудника" in rag.query.casefold()
-    assert "Сервис, названный клиентом: aQsi Online" in rag.query
+    assert "мой офд" in rag.query.casefold()
+    assert "сервис, названный клиентом: aqsi online" in rag.query.casefold()
 
     clarification = asyncio.run(service.answer("Как добавить сотрудника?", history=[
-        {"role": "assistant", "content": "Похоже, это aQsi Online."},
+        {"role": "user", "content": "Почему чек не печатается?", "clarification_reply": False},
+        {"role": "assistant", "content": "О каком сервисе речь?", "scenario": "answer"},
     ]))
     assert clarification.generation_status == "clarification"
+
+
+def test_new_topic_does_not_inherit_previous_issue_or_service(tmp_path, monkeypatch):
+    result = SearchResult("business/marking-basics.md", "Маркировка товаров.", 0.8)
+    class Rag:
+        query = None
+        def search(self, query, top_k):
+            self.query = query
+            return [result]
+        def build_context(self, results): return results[0].text
+
+    rag = Rag()
+    captured = []
+    async def fake_generate(messages, config):
+        captured.extend(messages)
+        return Generation('{"scenario":"answer","reason":"general","response":"Маркировка — это учёт товара по коду."}',
+                          "model", 10, 8, 18)
+    monkeypatch.setattr("app.answer_service.generate", fake_generate)
+    history = [
+        {"role": "user", "content": "Как добавить сотрудника в aQsi Online?", "clarification_reply": False},
+        {"role": "assistant", "content": "Ответ про кассира.", "scenario": "answer"},
+    ]
+    answer = asyncio.run(AnswerService(rag, settings(tmp_path)).answer("Что такое маркировка?", history))
+    assert answer.scenario == "answer"
+    assert rag.query == "Что такое маркировка?"
+    assert "aQsi Online" not in captured[1]["content"]
+    assert "Как добавить сотрудника" not in captured[1]["content"]
+
+    switched = asyncio.run(AnswerService(rag, settings(tmp_path)).answer("Кстати, где проверить статус чека?", [
+        {"role": "user", "content": "Как добавить сотрудника в aQsi Online?", "clarification_reply": False},
+        {"role": "assistant", "content": "Какой сервис используете?", "scenario": "clarify",
+         "scenario_reason": "service_not_confirmed"},
+    ]))
+    assert switched.scenario == "clarify"
+    assert switched.scenario_reason == "service_not_confirmed"
+    assert rag.query == "Что такое маркировка?"  # New topic was stopped before inheriting the old service.
+
+
+def test_unknown_service_cannot_leak_vendor_rag_instructions(tmp_path, monkeypatch):
+    vendor = SearchResult("aqsi_online/receipts/status.md", "Откройте меню «Чеки».", 0.95)
+    generic = SearchResult("ofd_support.txt", "ОФД получает чеки от кассы.", 0.5)
+    class Rag:
+        def search(self, query, top_k): return [vendor, generic]
+        def build_context(self, results): return "\n".join(r.text for r in results)
+
+    captured = []
+    async def fake_generate(messages, config):
+        captured.extend(messages)
+        return Generation('{"scenario":"answer","reason":"general","response":"ОФД получает чеки от кассы."}',
+                          "model", 10, 6, 16)
+    monkeypatch.setattr("app.answer_service.generate", fake_generate)
+    answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Что такое ОФД?"))
+    assert answer.scenario == "answer"
+    assert "Откройте меню" not in captured[1]["content"]
+    assert "ОФД получает чеки" in captured[1]["content"]
+
+
+def test_receipt_status_requires_customer_confirmed_service(tmp_path, monkeypatch):
+    class Rag:
+        def search(self, query, top_k): raise AssertionError("ask for service before vendor RAG search")
+    async def fake_generate(*args, **kwargs): raise AssertionError("no classifier call needed")
+    monkeypatch.setattr("app.answer_service.generate", fake_generate)
+    answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Где проверить статус чека?"))
+    assert answer.scenario == "clarify"
+    assert answer.scenario_reason == "service_not_confirmed"
+    assert "ОФД или кассовый сервис" in answer.text
+
+
+def test_archive_fn_instruction_is_rejected_as_a_whole_and_saved(tmp_path, monkeypatch):
+    source = SearchResult("evotor/fn/archive.md", "Инструкция требует участия специалиста.", 0.9)
+    class Rag:
+        def search(self, query, top_k): return [source]
+        def build_context(self, results): return results[0].text
+    raw = ('{"scenario":"answer","reason":"steps","response":"Закройте архив ФН в настройках, '
+           'затем замените ФН. Будьте осторожны с этими действиями."}')
+    async def fake_generate(messages, config): return Generation(raw, "model", 30, 20, 50)
+    monkeypatch.setattr("app.answer_service.generate", fake_generate)
+    answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Как закрыть архив ФН на Эвоторе?"))
+    assert answer.generation_status == "rejected"
+    assert answer.scenario == "escalate"
+    assert answer.raw_model_text == raw
+    assert answer.text == "Это ответственная фискальная операция. Не выполняйте её самостоятельно; передайте вопрос специалисту по ККТ."
+    assert "Закройте архив" not in answer.text and "замените ФН" not in answer.text
+
+    store = ExpertStore(tmp_path / "danger.sqlite3")
+    sid = store.start(42, [question()])
+    attempt = store.claim(sid, 42, "Q1")
+    store.save_answer(attempt, answer)
+    row = store.latest(sid, "Q1")
+    assert row["raw_model_text"] == raw and row["answer_text"] == answer.text
+    assert row["validation_reason"] == "unsupported_dangerous_operation:закрыть архив ФН"
 
 
 def test_generic_question_answers_immediately_and_unverified_ui_steps_are_removed(tmp_path, monkeypatch):
@@ -442,15 +559,124 @@ def test_generic_question_answers_immediately_and_unverified_ui_steps_are_remove
         def build_context(self, results): return results[0].text
 
     async def fake_generate(messages, config):
-        assert "Не определяй продукт клиента" in messages[0]["content"]
+        assert "не доказывают, каким сервисом пользуется клиент" in messages[0]["content"]
         return Generation("ОФД принимает фискальные документы. Откройте раздел «Управление пользователями» и нажмите кнопку «Добавить».",
                           "model", 20, 15, 35)
 
     monkeypatch.setattr("app.answer_service.generate", fake_generate)
     answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Что такое ОФД?"))
-    assert answer.generation_status == "generated"
-    assert answer.text == "В найденной инструкции нет подтверждённых точных шагов. Какой раздел или сообщение вы видите в сервисе?"
+    assert answer.generation_status == "rejected"
+    assert answer.validation_status == "modified"
+    assert answer.validation_reason == "unsupported_ui_label:Управление пользователями"
+    assert answer.text.startswith("Не удалось подтвердить точный ответ")
+    assert answer.scenario == "escalate"
+    assert "Управление пользователями" not in answer.text
+    assert answer.raw_model_text.startswith("ОФД принимает фискальные документы.")
     assert answer.prompt_tokens == 20 and answer.total_tokens == 35
+
+
+@pytest.mark.parametrize("question,context,raw,expected_status", [
+    ("Что такое ОФД?", "ОФД принимает и передаёт фискальные документы.",
+     "ОФД принимает фискальные документы.", None),
+    ("Где посмотреть, дошёл ли чек до оператора?",
+     "В сервисе можно проверить передачу чеков оператору.",
+     "Проверьте статус чека в сервисе и убедитесь, что он передан оператору.", None),
+    ("Как добавить сотрудника в личный кабинет?", "Управление учётными записями.",
+     "Откройте раздел «Управление пользователями» и добавьте сотрудника.",
+     "unsupported_ui_label:Управление пользователями"),
+    ("Как проверить статус чека в Платформе ОФД?", "Статус чека отображается в истории отправки.",
+     "Закройте смену, затем проверьте статус чека.",
+     "unsupported_dangerous_operation:закрыть смену"),
+    ("Как заменить ФН?", "", "Снимите фискальный накопитель и установите новый.",
+     "unsupported_dangerous_operation:заменить ФН"),
+])
+def test_answer_validation_examples_are_precise_and_contextual(question, context, raw, expected_status):
+    assert _validation_issue(raw, context) == expected_status
+    final = _safe_alternative(raw, expected_status, question) if expected_status else raw
+    if expected_status is None:
+        assert final == raw
+    else:
+        assert "закройте смену" not in final.casefold()
+        assert "Управление пользователями" not in final
+        if expected_status.startswith("unsupported_dangerous_operation:"):
+            assert "специалисту" in final
+        else:
+            assert "специалисту" in final and "?" not in final
+
+
+def test_original_and_final_answer_and_validation_diagnostic_are_saved_separately(tmp_path):
+    store = ExpertStore(tmp_path / "separate-text.sqlite3")
+    sid = store.start(42, [question()])
+    attempt = store.claim(sid, 42, "Q1")
+    answer = Answer(
+        text="ОФД принимает фискальные документы.\n\nКакой сервис вы используете?",
+        raw_model_text="ОФД принимает фискальные документы. Откройте раздел «Профиль компании».",
+        generation_status="rejected", validation_status="modified",
+        validation_reason="unsupported_ui_label:Профиль компании",
+        generation_reason=None, used_model=True, prompt_tokens=10, completion_tokens=6,
+    )
+    store.save_answer(attempt, answer)
+    row = store.latest(sid, "Q1")
+    assert row["answer_text"] == answer.text
+    assert row["raw_model_text"] == answer.raw_model_text
+    assert row["validation_status"] == "modified"
+    assert row["validation_reason"] == "unsupported_ui_label:Профиль компании"
+    assert not store.rate(sid, 42, attempt, 10)
+    exported = token_metrics(store.rows())
+    assert exported["llm_calls"] == 1 and exported["total_tokens_total"] is None
+
+
+def test_non_llm_answers_have_null_raw_text_and_generation_diagnostic(tmp_path):
+    class EmptyRag:
+        def search(self, query, top_k): return []
+        def build_context(self, results): return ""
+    no_context = asyncio.run(AnswerService(
+        EmptyRag(), settings(tmp_path, openrouter_api_key="")
+    ).answer("Что такое ОФД?"))
+    store = ExpertStore(tmp_path / "non-llm.sqlite3")
+    sid = store.start(42, [question()])
+    attempt = store.claim(sid, 42, "Q1")
+    store.save_answer(attempt, no_context)
+    row = store.latest(sid, "Q1")
+    assert row["raw_model_text"] is None
+    assert row["generation_status"] == "unavailable"
+    assert row["generation_reason"] == "api_key_missing"
+
+
+def test_single_prompt_scenarios_allow_safe_general_answers_without_rag(monkeypatch, tmp_path):
+    class EmptyRag:
+        def search(self, query, top_k): return []
+        def build_context(self, results): raise AssertionError("no context should be built")
+
+    responses = [
+        '{"scenario":"answer","reason":"safe_general_question","response":"ОФД получает фискальные документы от кассы и передаёт их оператору."}',
+        '{"scenario":"clarify","reason":"service_unknown","response":"Какой сервис вы используете?"}',
+        '{"scenario":"escalate","reason":"fiscal_operation","response":"Эту операцию лучше согласовать со специалистом."}',
+    ]
+    calls = []
+
+    async def fake_generate(messages, config):
+        calls.append(messages)
+        assert len(messages) == 2
+        assert messages[0]["content"] == SYSTEM_PROMPT
+        assert "Подходящие фрагменты базы знаний не найдены." in messages[1]["content"]
+        return Generation(responses[len(calls) - 1], "openai/gpt-oss-20b", 20, 12, 32)
+
+    monkeypatch.setattr("app.answer_service.generate", fake_generate)
+    service = AnswerService(EmptyRag(), settings(tmp_path))
+    answers = [asyncio.run(service.answer(query)) for query in
+               ("Что такое ОФД?", "Куда нажать в кабинете?", "Как заменить ФН?")]
+    assert [answer.scenario for answer in answers] == ["answer", "clarify", "escalate"]
+    assert all(answer.generation_status == "generated" and answer.used_model for answer in answers)
+    assert len(calls) == 3
+
+    store = ExpertStore(tmp_path / "scenario.sqlite3")
+    sid = store.start(42, [question()])
+    attempt = store.claim(sid, 42, "Q1")
+    store.save_answer(attempt, answers[1])
+    assert store.latest(sid, "Q1")["scenario"] == "clarify"
+    assert store.latest(sid, "Q1")["scenario_reason"] == "service_unknown"
+    assert store.rate(sid, 42, attempt, 8)
 
 
 def test_clarification_answer_can_be_rated_without_counting_llm_usage(tmp_path):

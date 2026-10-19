@@ -109,6 +109,19 @@ def test_named_manufacturer_does_not_return_other_vendor(tmp_path: Path):
     assert shtrih and all(hit.metadata["manufacturer"] == "Штрих-М" for hit in shtrih)
 
 
+def test_error_article_subsections_inherit_code_and_service_filter_runs_before_ranking(tmp_path):
+    store = QdrantStore(QdrantClient(':memory:'), FakeEmbedding())
+    folder = tmp_path / 'evotor'
+    folder.mkdir()
+    (folder / '235.md').write_text('---\ntitle: "Эвотор: ошибка ФН 235"\nstatus: approved\nverified_at: 2026-10-12\nmanufacturer: Эвотор\n---\n## Смысл\nПередача документов отсутствует более 30 дней.', encoding='utf-8')
+    store.index(DocumentLoader(tmp_path).load_all())
+    r = Retriever(store)
+    hits = r.search('Эвотор ФН 235', source_prefixes=('evotor/',))
+    assert hits and '30 дней' in hits[0].text
+    assert r.search('Эвотор ФН 234', source_prefixes=('evotor/',)) == []
+    assert r.search('Эвотор ФН 235', source_prefixes=('aqsi_online/',)) == []
+
+
 def test_api_contract_and_validation(tmp_path: Path):
     store, _ = make_store(tmp_path)
     store.index(DocumentLoader(tmp_path).load_all())

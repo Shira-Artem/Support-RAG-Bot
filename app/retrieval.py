@@ -14,13 +14,21 @@ from app.vector_store import QdrantStore
 STOP = {"и", "в", "на", "по", "с", "не", "как", "что", "у", "для", "а", "или", "это", "мне", "из", "при", "ли", "the"}
 EXPANSIONS = {"пробивает": ["печать", "фискального", "документа"], "пробить": ["печать", "чек"],
               "чеки": ["чек", "документы"], "уходят": ["передача", "отправка"],
-              "касса": ["ккт"], "ккт": ["касса"]}
+              "касса": ["ккт"], "ккт": ["касса"], "найти": ["поиск"],
+              "сотрудника": ["пользователя"], "добавить": ["добавление", "создать"]}
 FILTER_FIELDS = {"category", "manufacturer", "model", "version", "source_type", "document_id"}
 
 
 def tokens(text: str) -> list[str]:
     return [item for item in re.findall(r"[a-zа-яё0-9]+(?:[.,][0-9]+)?", text.lower().replace("ё", "е"))
             if item not in STOP and (len(item) > 1 or item.isdigit())]
+
+
+def lexical_token(word: str) -> str:
+    # Small lexical normalization only; exact codes/models still use tokens().
+    if re.fullmatch(r'чек[а-я]*', word):
+        return 'чек'
+    return word[:5] if len(word) > 5 and re.fullmatch(r'[а-я]+', word) else word
 
 
 @dataclass(frozen=True)
@@ -38,7 +46,8 @@ class Retriever:
         self.demo = demo
         self.min_semantic_score = min_semantic_score
 
-    def search(self, query: str, top_k: int = 5, filters: dict | None = None) -> list[Hit]:
+    def search(self, query: str, top_k: int = 5, filters: dict | None = None,
+               source_prefixes: tuple[str, ...] | None = None) -> list[Hit]:
         query = query.strip()
         if not query or top_k < 1 or top_k > 20 or len(query) > 500:
             raise ValueError("query must contain 1-500 characters and top_k must be 1-20")
@@ -48,19 +57,23 @@ class Retriever:
         conditions = [models.FieldCondition(key=key, match=models.MatchValue(value=value)) for key, value in filters.items()]
         if not self.demo:
             conditions.append(models.FieldCondition(key="status", match=models.MatchValue(value="approved")))
-        qfilter = models.Filter(must=conditions) if conditions else None
         points = [point for point in self.store.all_points() if self._allowed(point.payload, filters)]
+        if source_prefixes:
+            points = [point for point in points if str(point.payload.get('source', '')).replace('\\', '/').removeprefix('data/knowledge/').startswith(source_prefixes)]
+            conditions.append(models.HasIdCondition(has_id=[point.id for point in points]))
+        qfilter = models.Filter(must=conditions) if conditions else None
         if not points:
             return []
         dense = self.store.semantic(query, min(max(top_k * 8, 30), 100), qfilter)
         dense_scores = {str(point.id): float(point.score) for point in dense}
         query_tokens = tokens(query)
         expanded = query_tokens + [syn for token in query_tokens for syn in EXPANSIONS.get(token, [])]
-        query_counts = Counter(expanded)
-        corpus = [Counter(tokens(point.payload["text"])) for point in points]
+        query_counts = Counter(lexical_token(word) for word in expanded)
+        corpus = [Counter(lexical_token(word) for word in tokens(point.payload["text"] + ' ' + str(point.payload.get('title') or ''))) for point in points]
         df = Counter(token for counts in corpus for token in counts)
         avgdl = sum(sum(counts.values()) for counts in corpus) / len(corpus) or 1
         codes = {token for token in query_tokens if any(char.isdigit() for char in token)}
+        explicit_code = re.search(r'(?:\bфн|ошибк\w*|код)\s*[:№#-]?\s*(-?\d{2,5})\b', query, re.I)
         brands = set(query_tokens) & {"атол", "штрих", "эвотор"}
         model_match = re.search(r"\bэвотор\s+\d+(?:[.,]\d+)?(?:\s+lite)?\b", query.lower())
         requested_model = model_match.group().replace(",", ".") if model_match else None
@@ -79,6 +92,12 @@ class Retriever:
             code_text = text
             if text.startswith(section + "\n") and len({token for token in tokens(section) if any(c.isdigit() for c in token)}) > 1:
                 code_text = text[len(section) + 1:]
+            title = str(point.payload.get('title') or '')
+            # A section of a dedicated error article inherits its title's code.
+            # A multi-code reference does not: it must match in this chunk.
+            title_codes = re.findall(r'(?:ФН|ошибка|код)\s*(-?\d{2,5})\b', title, re.I)
+            if explicit_code and len(set(title_codes)) == 1 and title_codes[0] == explicit_code.group(1):
+                code_text += ' ' + title
             if codes and not codes.issubset(set(tokens(code_text + " " + str(point.payload.get("model") or "")))):
                 continue
             dl = sum(counts.values())
@@ -100,7 +119,7 @@ class Retriever:
         hits = []
         for point, bm25, semantic in scored:
             point_id = str(point.id)
-            score = (1 / (60 + lexical_rank[point_id]) if point_id in lexical_rank else 0) + (1 / (60 + dense_rank[point_id]) if point_id in dense_rank else 0)
+            score = (2 / (60 + lexical_rank[point_id]) if point_id in lexical_rank else 0) + (1 / (60 + dense_rank[point_id]) if point_id in dense_rank else 0)
             hits.append(Hit(point.payload["text"], round(score, 6), semantic, round(bm25, 5) if bm25 else None,
                             {k: v for k, v in point.payload.items() if k != "text"}))
         return sorted(hits, key=lambda hit: hit.score, reverse=True)[:top_k]

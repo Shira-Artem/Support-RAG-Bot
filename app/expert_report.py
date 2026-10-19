@@ -43,7 +43,8 @@ def groq_paid_cost_estimate(row: dict) -> float | None:
 
 
 def token_metrics(rows: list[dict]) -> dict:
-    calls = [r for r in rows if r.get("generation_status") == "generated"]
+    # Rejected and truncated attempts still called the provider and consumed tokens.
+    calls = [r for r in rows if r.get("generation_status") in {"generated", "rejected", "truncated"}]
     usage_calls = [r for r in calls if any(r.get(k) is not None for k in
                    ("prompt_tokens", "completion_tokens", "total_tokens"))]
     metrics = {
@@ -139,6 +140,10 @@ def statistics(rows: list[dict]) -> dict:
         "session_comparisons": comparisons,
         "technical_errors": sum(r.get("generation_status") == "error" for r in rows),
         "generation_unavailable": sum(r.get("generation_status") in {"unavailable", "no_context"} for r in rows),
+        "validation_rejected": sum(r.get("generation_status") == "rejected" for r in rows),
+        "truncated_generations": sum(r.get("generation_status") == "truncated" for r in rows),
+        "scenarios": dict(Counter(r.get("scenario") for r in rows if r.get("scenario"))),
+        "scenario_reasons": dict(Counter(r.get("scenario_reason") for r in rows if r.get("scenario_reason"))),
         "token_usage": token_metrics(rows),
     }
 
@@ -149,7 +154,8 @@ def session_summaries(rows: list[dict]) -> list[dict]:
         grouped[row["session_id"]].append(row)
     result = []
     for session_id, session_rows in grouped.items():
-        calls = [row for row in session_rows if row.get("generation_status") == "generated"]
+        calls = [row for row in session_rows
+                 if row.get("generation_status") in {"generated", "rejected", "truncated"}]
         first = session_rows[0]
         result.append({
             "session_id": session_id,

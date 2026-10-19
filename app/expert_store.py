@@ -60,6 +60,8 @@ class ExpertStore:
                     duration_ms INTEGER, rag_chunks INTEGER, context_chars INTEGER,
                     prompt_tokens INTEGER, completion_tokens INTEGER, total_tokens INTEGER,
                     reasoning_tokens INTEGER, cached_tokens INTEGER,
+                    raw_model_text TEXT, validation_status TEXT, validation_reason TEXT,
+                    generation_reason TEXT, scenario TEXT, scenario_reason TEXT,
                     UNIQUE(session_id, question_id, attempt_no),
                     FOREIGN KEY(session_id, question_id) REFERENCES items(session_id, question_id)
                 );
@@ -79,6 +81,9 @@ class ExpertStore:
                     "rag_chunks": "INTEGER", "context_chars": "INTEGER", "prompt_tokens": "INTEGER",
                     "completion_tokens": "INTEGER", "total_tokens": "INTEGER",
                     "reasoning_tokens": "INTEGER", "cached_tokens": "INTEGER",
+                    "raw_model_text": "TEXT", "validation_status": "TEXT",
+                    "validation_reason": "TEXT", "generation_reason": "TEXT",
+                    "scenario": "TEXT", "scenario_reason": "TEXT",
                 },
             }
             for table, columns in migrations.items():
@@ -195,24 +200,30 @@ class ExpertStore:
         with self.connect() as db:
             db.execute("""UPDATE attempts SET completed_at=?, generation_status=?, answer_text=?,
                 results_json=?, model=?, provider=?, api_call_id=?, duration_ms=?, rag_chunks=?, context_chars=?,
-                prompt_tokens=?, completion_tokens=?, total_tokens=?, reasoning_tokens=?, cached_tokens=?
+                prompt_tokens=?, completion_tokens=?, total_tokens=?, reasoning_tokens=?, cached_tokens=?,
+                raw_model_text=?, validation_status=?, validation_reason=?, generation_reason=?,
+                scenario=?, scenario_reason=?
                 WHERE id=? AND generation_status='pending'""", (
-                    now(), answer.generation_status, answer.raw_text or answer.text,
+                    now(), answer.generation_status, answer.text,
                     json.dumps([asdict(result) for result in answer.results], ensure_ascii=False),
                     answer.model, answer.provider, answer.api_call_id, answer.duration_ms,
                     answer.rag_chunks, answer.context_chars, answer.prompt_tokens,
                     answer.completion_tokens, answer.total_tokens, answer.reasoning_tokens,
-                    answer.cached_tokens, attempt_id))
+                    answer.cached_tokens, answer.raw_model_text, answer.validation_status,
+                    answer.validation_reason, answer.generation_reason, answer.scenario,
+                    answer.scenario_reason, attempt_id))
 
     def save_error(self, attempt_id: int, duration_ms: int | None = None) -> None:
         with self.connect() as db:
-            db.execute("""UPDATE attempts SET completed_at=?, generation_status='error', duration_ms=?
+            db.execute("""UPDATE attempts SET completed_at=?, generation_status='error', duration_ms=?,
+                generation_reason='unexpected_exception'
                 WHERE id=? AND generation_status='pending'""", (now(), duration_ms, attempt_id))
 
     def recover_pending(self) -> int:
         """Call once when the single local bot process starts after an interruption."""
         with self.connect() as db:
-            cursor = db.execute("""UPDATE attempts SET completed_at=?, generation_status='error'
+            cursor = db.execute("""UPDATE attempts SET completed_at=?, generation_status='error',
+                generation_reason='process_interrupted'
                 WHERE generation_status='pending'""", (now(),))
             return cursor.rowcount
 
@@ -269,6 +280,8 @@ class ExpertStore:
                 a.created_at AS answered_at, a.generation_status, a.answer_text, a.results_json,
                 a.model, a.provider, a.api_call_id, a.duration_ms, a.rag_chunks, a.context_chars,
                 a.prompt_tokens, a.completion_tokens, a.total_tokens, a.reasoning_tokens, a.cached_tokens,
+                a.raw_model_text, a.validation_status, a.validation_reason, a.generation_reason,
+                a.scenario, a.scenario_reason,
                 r.score, r.reason, r.comment, r.updated_at AS reviewed_at
                 FROM sessions s JOIN items i ON i.session_id=s.id
                 LEFT JOIN attempts a ON a.session_id=i.session_id AND a.question_id=i.question_id
