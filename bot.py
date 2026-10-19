@@ -5,22 +5,30 @@ import logging
 
 from telegram import Update
 from telegram.constants import ChatAction
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
 from app.answer_service import AnswerService
 from app.compat import build_answer_rag
 from app.config import get_settings
+from app.expert_store import ExpertStore
+from app.expert_telegram import ExpertTelegram
 
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     level=logging.INFO,
 )
+# HTTP request URLs can contain the Telegram bot token; keep them out of logs.
+for logger_name in ("httpx", "httpcore", "httpx2", "httpcore2"):
+    logging.getLogger(logger_name).setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
 rag = build_answer_rag(settings.docs_dir)
 answer_service = AnswerService(rag, settings)
+expert_store = ExpertStore()
+expert_store.recover_pending()
+expert = ExpertTelegram(settings, answer_service, expert_store)
 
 # Простая память диалога в RAM. Для курсовой достаточно.
 # Для продакшена лучше Redis/БД.
@@ -64,6 +72,8 @@ async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not update.message or not update.message.text:
+        return
+    if await expert.comment_message(update):
         return
 
     user_id = update.effective_user.id if update.effective_user else 0
@@ -109,12 +119,14 @@ def main() -> None:
     if not settings.telegram_bot_token:
         raise RuntimeError("TELEGRAM_BOT_TOKEN is empty. Fill .env first.")
 
-    app = Application.builder().token(settings.telegram_bot_token).build()
+    app = Application.builder().token(settings.telegram_bot_token).concurrent_updates(4).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("sources", sources))
     app.add_handler(CommandHandler("reload", reload_docs))
     app.add_handler(CommandHandler("clear", clear))
+    app.add_handler(CommandHandler("expert", expert.command))
+    app.add_handler(CallbackQueryHandler(expert.callback, pattern=r"^ex:"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     logger.info("Bot started. Docs: %s, chunks: %s", settings.docs_dir, len(rag.chunks))

@@ -24,6 +24,9 @@ class SearchResult:
     source: str
     text: str
     score: float
+    semantic_score: float | None = None
+    lexical_score: float | None = None
+    metadata: dict | None = None
 
 
 def _clean_text(text: str) -> str:

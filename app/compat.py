@@ -14,7 +14,8 @@ class RetrieverRAGAdapter:
         self.retriever = retriever
 
     def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
-        return [SearchResult(hit.metadata["source"], hit.text, hit.score)
+        return [SearchResult(hit.metadata["source"], hit.text, hit.score,
+                             hit.semantic_score, hit.lexical_score, hit.metadata)
                 for hit in self.retriever.search(query, top_k)]
 
     def build_context(self, results: list[SearchResult]) -> str:
