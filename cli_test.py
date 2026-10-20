@@ -5,6 +5,7 @@ import asyncio
 from app.answer_service import AnswerService
 from app.compat import build_answer_rag
 from app.config import get_settings
+from app.dialogue_state import DialogueManager, DialogueState
 
 
 async def main() -> None:
@@ -16,16 +17,18 @@ async def main() -> None:
     print(f"Документов/фрагментов загружено: {len(rag.chunks)}")
     print("Напиши вопрос или exit для выхода.\n")
 
-    history = []
+    manager, state = DialogueManager(), DialogueState()
+    turn = 0
     while True:
         question = input("Ты: ").strip()
         if question.lower() in {"exit", "quit", "выход"}:
             break
-        answer = await service.answer(question, history=history)
+        turn += 1
+        state = manager.advance(state, question, turn)
+        answer = await service.answer(question, state=state)
         print("\nБот:\n" + answer.text + "\n")
-        history.append({"role": "user", "content": question})
-        history.append({"role": "assistant", "content": answer.text[:1200]})
-        history = history[-8:]
+        state = manager.observe_answer(state, scenario=answer.scenario, reason=answer.scenario_reason,
+                                       question=answer.text, slot=answer.clarification_slot)
 
 
 if __name__ == "__main__":

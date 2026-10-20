@@ -7,7 +7,7 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.constants import ChatAction
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
-from app.answer_service import Answer, AnswerService, _active_request
+from app.answer_service import Answer, AnswerService
 from app.conversation_store import ConversationStore
 from app.compat import build_answer_rag
 from app.config import get_settings
@@ -115,11 +115,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await update.message.chat.send_action(ChatAction.TYPING)
 
     conversation_id = state["conversation_id"] or conversations.new(user_id, chat_id)
-    history = conversations.history(conversation_id)
-    continuing = _active_request(user_text, history)[2]
-    message_id = conversations.begin(conversation_id, user_text, continuing)
+    message_id = conversations.begin(conversation_id, user_text)
+    dialogue_state = conversations.dialogue_state(conversation_id)
     try:
-        answer = await answer_service.answer(user_text, history=history)
+        answer = await answer_service.answer(user_text, state=dialogue_state)
     except Exception as exc:
         logger.error("Free generation failed: %s", type(exc).__name__)
         answer = Answer("Не удалось обработать вопрос. Повторите попытку позже.",

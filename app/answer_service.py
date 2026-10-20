@@ -8,6 +8,8 @@ from time import perf_counter
 from app.config import Settings
 from app.llm_client import GenerationError, generate
 from app.rag import SearchResult, SimpleRAG
+from app.dialogue_state import CLARIFICATION_SLOTS, DialogueManager, DialogueState, state_from_history
+from app.rag_query import QueryNeedsClarification, build_rag_query
 
 
 SYSTEM_PROMPT = """Ты — специалист клиентской поддержки по кассовому оборудованию и связанным сервисам. Пиши простым русским языком, кратко и сразу по делу. Обычно достаточно 1–3 полезных шагов. Не повторяй вопрос, не перегружай техническими деталями.
@@ -27,7 +29,7 @@ SYSTEM_PROMPT = """Ты — специалист клиентской подде
 - Должность сотрудника не доказывает существование одноимённой роли. Названия ролей и конкретные полномочия (просмотр, изменение настроек, запреты) сообщай только при явном подтверждении в документации. Прошлый ответ бота не является подтверждением. Если матрицы прав или пути редактирования нет, прямо назови это ограничение для текущего сервиса; не подменяй права доступа налоговыми правами.
 - Если не хватает данных — выбери clarify и задай только самый полезный вопрос. Если действие рискованно — выбери escalate и кратко объясни ограничение.
 
-Верни только JSON без Markdown в формате: {\"scenario\":\"answer|clarify|escalate\",\"reason\":\"короткая причина выбора сценария\",\"response\":\"текст клиенту\"}. Причина нужна для внутренней диагностики и клиенту не показывается. Не добавляй другие поля."""
+Верни только JSON без Markdown в формате: {\"scenario\":\"answer|clarify|escalate\",\"reason\":\"короткая причина выбора сценария\",\"response\":\"текст клиенту\"}. Причина нужна для внутренней диагностики и клиенту не показывается. Только для clarify добавь clarification_slot: service|manufacturer|equipment|ofd|software|goal|details|task — какое сведение нужно уточнить. Это описание вопроса, а не подтверждение факта о клиенте. Не добавляй другие поля."""
 
 
 def _parse_scenario(raw_text: str) -> tuple[str, str | None, str]:
@@ -113,12 +115,6 @@ _SERVICE_NAVIGATION = re.compile(
     r"отправ\w*|документ\w*|личн\w* кабинет\w*|сотрудник\w*)",
     re.IGNORECASE,
 )
-_NEW_QUESTION = re.compile(
-    r"^\s*(?:(?:а\s+)?(?:как|где|куда|почему|что|когда|зачем|не работает|не печатает|подскажите)\b|"
-    r"(?:кстати|другой вопрос|теперь|ещ[её] вопрос|не работает|перестал\w*|не отправ\w*|"
-    r"не печат\w*|не пробива\w*)\b)",
-    re.I,
-)
 _SERVICE_CLARIFICATION = re.compile(r"(?:какой|какое|в каком|название).{0,50}(?:сервис|офд|продукт)|уточните\s+(?:сервис|офд|продукт)", re.I)
 
 
@@ -127,60 +123,15 @@ def _confirmed_service(text: str) -> str | None:
     return mentioned[0] if len(mentioned) == 1 else None
 
 
-def _is_pending_clarification(history: list[dict] | None) -> bool:
-    return bool(history and history[-1].get("role") == "assistant"
-                and history[-1].get("scenario") == "clarify")
-
-
-def _is_new_question_during_clarification(text: str) -> bool:
-    # A short service name such as "Мой ОФД?" can still be a clarification
-    # reply. Treat a trailing question mark as a new topic only for a longer
-    # message; explicit topic openers are recognized regardless of length.
-    if _NEW_QUESTION.search(text):
-        return True
-    if re.search(r'(?:касс\w*|чек\w*|принтер\w*)\s+(?:не\s+|переста\w*)|у меня\s+(?:не|ошибк)', text, re.I):
-        return True
-    return "?" in text and len(text.split()) > 4
-
-
 def _active_request(user_message: str, history: list[dict] | None) -> tuple[str, list[str], bool]:
-    """Use one topic, including explicit follow-ups after an answer; never all chat history."""
-    if re.search(r'^\s*(?:кстати|другой вопрос|новая тема|теперь|ещ[её] вопрос)\b', user_message, re.I):
-        return user_message, [], False
-    client_context = '\n'.join(str(x.get('content', '')) for x in history or [] if x.get('role') == 'user')
-    if re.search(r'\b(?:усн|ндс|налог\w*|таможн\w*|маркиров\w*)', user_message, re.I) and not re.search(r'\b(?:усн|ндс|налог\w*|таможн\w*|маркиров\w*)', client_context, re.I):
-        return user_message, [], False
-    account_followup = bool(_ACCOUNT_ACTION.search(client_context) and (
-        _ACCOUNT_ACTION.search(user_message)
-        or re.search(r'^\s*(?:он|она|ему|ей|сотруднику)\b', user_message, re.I)))
-    reference_followup = bool(re.search(
-        r'^\s*(?:а\s+)?(?:как|где|куда|почему|какую|какие)\b.{0,45}\b(?:это|эти|эту|этот|его|ему|там|такие)\b',
-        user_message, re.I))
-    followup = bool(re.search(r"^\s*(?:не получилось|не помогло|вс[её] равно|а дальше|что дальше|где именно|"
-                              r"а (?:как|где) (?:это|там)|этот|эта|это не|такого|такой|там|да\b|нет\b)", user_message, re.I)) or account_followup or reference_followup
-    if not history or (not followup and (not _is_pending_clarification(history)
-                                       or _is_new_question_during_clarification(user_message))):
-        return user_message, [], False
-    previous_service = _confirmed_service("\n".join(str(x.get('content', '')) for x in history if x.get('role') == 'user'))
-    current_service = _confirmed_service(user_message)
-    if previous_service and current_service and previous_service != current_service:
-        return user_message, [], False
-    # A new explicit error code is a new issue, even while awaiting clarification.
-    if error_code(user_message) and error_code(user_message) != error_code("\n".join(str(x.get('content', '')) for x in history if x.get('role') == 'user')):
-        return user_message, [], False
-    messages = history or []
-    root = None
-    for index in range(len(messages) - 2, -1, -1):
-        item = messages[index]
-        if (isinstance(item, dict) and item.get("role") == "user" and item.get("content")
-                and not item.get("clarification_reply")):
-            root = index
-            break
-    if root is None:
-        return user_message, [], False
-    related = [str(item["content"]) for item in messages[root:]
-               if isinstance(item, dict) and item.get("role") == "user" and item.get("content")]
-    return "\n".join([*related, user_message]), related, True
+    """Deprecated stateless adapter. Telegram/CLI pass an incremental state."""
+    state = DialogueManager().advance(state_from_history(history), user_message, 'current')
+    continuing = state.transition != 'new_task'
+    try:
+        request = build_rag_query(state) if continuing else user_message
+    except QueryNeedsClarification:
+        request = user_message
+    return request, [x['content'] for x in history or [] if x.get('role') == 'user'] if continuing else [], continuing
 
 
 def error_code(text: str) -> str | None:
@@ -360,6 +311,8 @@ class Answer:
     rag_query: str | None = None
     active_request: str | None = None
     confirmed_service: str | None = None
+    dialogue_state: dict | None = None
+    clarification_slot: str | None = None
 
     def __post_init__(self):
         # Keep the former attribute as an alias for callers while storing the
@@ -375,28 +328,43 @@ class AnswerService:
         self.rag = rag
         self.settings = settings
 
-    async def answer(self, user_message: str, history: list[dict] | None = None) -> Answer:
+    async def answer(self, user_message: str, history: list[dict] | None = None,
+                     *, state: DialogueState | None = None) -> Answer:
+        # A supplied state ALREADY includes the current user event. Stateless
+        # expert/legacy callers get a temporary state, never shared across users.
+        state = state or DialogueManager().advance(state_from_history(history), user_message, 'current')
         diagnostics = {}
-        answer = await self._answer(user_message, history, diagnostics)
+        answer = await self._answer(user_message, diagnostics, state)
         answer.rag_query = diagnostics.get('rag_query')
         answer.active_request = diagnostics.get('active_request')
         answer.confirmed_service = diagnostics.get('confirmed_service')
+        answer.dialogue_state = state.to_dict()
+        if answer.scenario == 'clarify':
+            answer.clarification_slot = answer.clarification_slot or ('task' if answer.scenario_reason in {'message_ambiguous', 'query_budget_exceeded'}
+                                         else 'service' if answer.scenario_reason in {'service_not_confirmed', 'service_ambiguous'}
+                                         else 'equipment' if answer.scenario_reason == 'error_product_missing' else 'details')
         return answer
 
-    async def _answer(self, user_message: str, history: list[dict] | None, diagnostics: dict) -> Answer:
+    async def _answer(self, user_message: str, diagnostics: dict,
+                      state: DialogueState) -> Answer:
         started = perf_counter()
         model = self.settings.groq_model if self.settings.llm_provider == "groq" else self.settings.openrouter_model
-        active_request, related_turns, continuing = _active_request(user_message, history)
-        service = _confirmed_service(active_request)
+        service = state.routing_service
+        try:
+            active_request = build_rag_query(state)
+        except QueryNeedsClarification:
+            reason = 'message_ambiguous' if state.analysis_required else 'query_budget_exceeded'
+            diagnostics.update(active_request=None, confirmed_service=service)
+            return Answer('Кратко сформулируйте текущую задачу и все обязательные ограничения.' if reason == 'query_budget_exceeded'
+                          else 'Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.',
+                          generation_status='clarification', scenario='clarify', scenario_reason=reason,
+                          generation_reason=reason, model=model, provider=self.settings.llm_provider,
+                          rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
         diagnostics.update(active_request=active_request, confirmed_service=service)
-        needs_service = _needs_service_context(active_request)
-        pending_service_question = bool(
-            continuing and history and (
-                str(history[-1].get("scenario_reason", "")).casefold() in
-                {"service_not_confirmed", "service_unknown", "service_ambiguous", "missing_service"}
-                or _SERVICE_CLARIFICATION.search(str(history[-1].get("content", "")))
-            )
-        )
+        needs_service = ((state.intent in {'access', 'credentials'} and state.operation != 'explain')
+                         or (state.intent == 'receipt' and state.operation in {'search', 'check', 'status'})
+                         or _needs_service_context(active_request))
+        pending_service_question = bool(state.expected and state.expected.slot == 'service')
         if needs_service and not service:
             if pending_service_question:
                 clarification = "Уточните, пожалуйста, полное название ОФД или кассового сервиса."
@@ -418,10 +386,6 @@ class AnswerService:
             )
 
         search_query = active_request
-        if service:
-            search_query += f"\nСервис, названный клиентом: {service}"
-        if len(search_query) > 500:
-            search_query = search_query[:250] + '\n' + search_query[-249:]
         diagnostics['rag_query'] = search_query
         if hasattr(self.rag, 'search_for_service'):
             results = self.rag.search_for_service(search_query, service, top_k=12)
@@ -463,30 +427,18 @@ class AnswerService:
 
         context = self.rag.build_context(results) if results else ""
 
-        relevant_history = []
-        if continuing:
-            root = next((i for i in range(len(history) - 1, -1, -1)
-                         if history[i].get('role') == 'user' and not history[i].get('clarification_reply')), 0)
-            relevant_history = history[root:]
-        # Bound prompt size, not stored messages. Preserve the root and newest
-        # turns and explicitly distinguish the bot's questions from user facts.
-        selected_history = []
-        remaining = 5000
-        for item in reversed(relevant_history[1:]):
-            if (item.get('role') == 'assistant' and item.get('scenario') != 'clarify'
-                    and _validation_issue(str(item.get('content', '')), context, active_request, service)):
-                # Preserve the transcript in SQLite, but do not feed old
-                # hallucinated roles/instructions back as conversational facts.
-                continue
-            content = str(item.get('content', ''))[:1000]
-            if len(content) > remaining:
-                break
-            selected_history.insert(0, f"{item.get('role')}: {content}")
-            remaining -= len(content)
-        if relevant_history:
-            selected_history.insert(0, 'user: ' + str(relevant_history[0].get('content', ''))[:1200])
-        history_context = ('Текущее обращение (user — клиент, assistant — бот):\n'
-                           + '\n'.join(selected_history) + '\n\n') if selected_history else ''
+        # Typed client facts replace transcript concatenation. No previous model
+        # answer is promoted to evidence, even if the old validator accepted it.
+        history_context = 'Текущее обращение, установленные факты клиента:\n' + json.dumps({
+            'intent': state.intent, 'operation': state.operation, 'object': state.object,
+            'entities': {k: [f.value for f in v] for k, v in state.entities.items()},
+            'goals': [f.value for f in state.goals], 'constraints': [f.value for f in state.constraints],
+            'client_task': active_request,
+            'client_details': [f.value for f in state.details],
+        }, ensure_ascii=False) + '\n\n'
+        if state.expected:
+            history_context += ('Ожидаемое уточнение (вопрос бота, не факт клиента):\n'
+                                + state.expected.question + '\n\n')
         if service:
             history_context += f'Сервис, подтверждённый клиентом: {service}. Повторно его не спрашивай.\n\n'
         rag_context = (f"Фрагменты базы знаний:\n{context}" if context
@@ -541,6 +493,14 @@ class AnswerService:
                 )
             raw_model_text = completion.text
             scenario, scenario_reason, model_answer = _parse_scenario(raw_model_text)
+            clarification_slot = None
+            if scenario == 'clarify':
+                try:
+                    envelope = json.loads(re.sub(r'^```(?:json)?\s*|\s*```$', '', raw_model_text.strip(), flags=re.I))
+                    if isinstance(envelope, dict) and envelope.get('clarification_slot') in CLARIFICATION_SLOTS:
+                        clarification_slot = envelope['clarification_slot']
+                except (ValueError, TypeError):
+                    pass
             validation_reason = _validation_issue(model_answer, context, active_request, service)
             validation_status = "modified" if validation_reason else "passed"
             text = (_safe_alternative(model_answer, validation_reason, active_request)
@@ -549,6 +509,7 @@ class AnswerService:
                 scenario = "escalate"
                 scenario_reason = validation_reason
             return Answer(text=text, results=results, used_model=True,
+                          clarification_slot=clarification_slot if scenario == 'clarify' else None,
                           generation_status="rejected" if validation_reason else "generated", model=completion.model,
                           validation_status=validation_status, validation_reason=validation_reason,
                           scenario=scenario, scenario_reason=scenario_reason,

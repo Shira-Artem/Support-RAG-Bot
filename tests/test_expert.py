@@ -419,8 +419,8 @@ def test_only_client_history_confirms_service_and_is_used_in_search(tmp_path, mo
          "scenario": "clarify", "scenario_reason": "service_not_confirmed"},
     ]))
     assert resolved.generation_status == "generated"
-    assert "aQsi Online" in rag.query and "Как добавить сотрудника?" in rag.query
-    assert "Как добавить сотрудника?" in captured[1]["content"]
+    assert "aQsi Online" in rag.query and "добавление сотрудника" in rag.query
+    assert "добавление сотрудника" in captured[1]["content"]
 
     ambiguous = asyncio.run(service.answer("Мой ОФД", history=[
         {"role": "user", "content": "Как добавить ещё одного сотрудника в личный кабинет?",
@@ -449,9 +449,9 @@ def test_only_client_history_confirms_service_and_is_used_in_search(tmp_path, mo
          "scenario": "clarify", "scenario_reason": "service_ambiguous"},
     ]))
     assert clarified_after_question.generation_status == "generated"
-    assert "добавить ещё одного сотрудника" in rag.query.casefold()
-    assert "мой офд" in rag.query.casefold()
-    assert "сервис, названный клиентом: aqsi online" in rag.query.casefold()
+    assert "добавление сотрудника" in rag.query.casefold()
+    assert "мой офд" not in rag.query.casefold()  # unresolved reply isn't a confirmed provider
+    assert "сервис: aqsi online" in rag.query.casefold()
 
     clarification = asyncio.run(service.answer("Как добавить сотрудника?", history=[
         {"role": "user", "content": "Почему чек не печатается?", "clarification_reply": False},
@@ -601,7 +601,7 @@ def test_answer_validation_examples_are_precise_and_contextual(question, context
         if expected_status.startswith("unsupported_dangerous_operation:"):
             assert "специалисту" in final
         else:
-            assert "специалисту" in final and "?" not in final
+            assert "администратора" in final and "?" not in final
 
 
 def test_original_and_final_answer_and_validation_diagnostic_are_saved_separately(tmp_path):

@@ -61,16 +61,15 @@ def test_aqsi_employee_permissions_chain_persists_task_and_rejects_invented_role
             # An answer from before the fix must not become evidence for roles.
             with store.connect() as db:
                 db.execute('UPDATE messages SET content=? WHERE id=?', (fake_answers[2][1], pending))
-        history = store.history(cid)
-        pending = store.begin(cid, query, False if index in {2, 4} else _active_request(query, history)[2])
-        answer = asyncio.run(service.answer(query, history))
+        pending = store.begin(cid, query, index not in {2, 4})
+        answer = asyncio.run(service.answer(query, state=store.dialogue_state(cid)))
         store.complete(pending, answer)
         answers.append(answer)
     assert answers[0].scenario == 'clarify'
-    assert all(name == 'aQsi Online' and questions[0] in query for query, name in rag.searches)
-    assert questions[3] in rag.searches[-1][0] and questions[4] in rag.searches[-1][0]
+    assert all(name == 'aQsi Online' and 'сотрудник' in query for query, name in rag.searches)
+    assert 'просмотр' in rag.searches[-1][0] and 'изменение прав' in rag.searches[-1][0]
     assert all('УСН' not in prompt and 'АТОЛ Онлайн' not in prompt and 'вычеты' not in prompt for prompt in prompts)
-    assert 'assistant: Какие задачи' in prompts[2] and questions[0] in prompts[-1]
+    assert 'просмотр' in prompts[2] and 'изменение прав' in prompts[-1]
     assert fake_answers[2][1] not in prompts[-1]
     assert answers[3].validation_reason == 'unsupported_role_or_permissions'
     assert 'роль «Бухгалтер»' not in answers[3].text and 'aQsi Online' in answers[3].text
@@ -84,7 +83,7 @@ def test_aqsi_employee_permissions_chain_persists_task_and_rejects_invented_role
     assert history[0]['content'] == questions[0]  # repairs old flags without deleting data
     for followup in ['где эти права', 'а как это сделать', 'не помогло']:
         request, _, continuing = _active_request(followup, history)
-        assert continuing and 'aQsi Online' in request and questions[0] in request
+        assert continuing and 'aQsi Online' in request and 'сотрудник' in request
     assert _active_request('Что такое маркировка?', history)[2] is False
     rag.results = unrelated
     missing = asyncio.run(service.answer(questions[-1], history))
@@ -134,8 +133,8 @@ def test_clarification_and_followup_keep_bot_questions_but_topic_switch_does_not
     monkeypatch.setattr('app.answer_service.generate', generate)
     result = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer('В aQsi Online', history))
     assert result.scenario == 'answer'
-    assert 'Как добавить сотрудника?' in captured[0]
-    assert 'assistant: В каком сервисе' in captured[1]
+    assert 'добавление сотрудника' in captured[0]
+    assert 'добавление сотрудника' in captured[1]
     history += [dict(role='user', content='В aQsi Online', clarification_reply=True),
                 dict(role='assistant', content=result.text, scenario='answer')]
     assert _active_request('Не получилось', history)[2]
