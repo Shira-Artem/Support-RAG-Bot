@@ -62,6 +62,7 @@ class RetrievalResult:
 # Broad task families map existing, inconsistent labels and source folders to
 # one runtime vocabulary. This is a derived view: it does not mutate files/index.
 _TASK_TERMS = {
+    "cash_list": ("список касс", "мониторинг касс", "раздел кассы"),
     "access": ("сотрудник", "пользователь", "учетная запись", "доступ", "права", "роль", "account", "user"),
     "receipt_search": ("поиск чека", "найти чек", "чек по", "receipt search", "receipts/search"),
     "receipt_transmission": ("передача чеков", "передача документов", "отправка чеков", "не отправляются", "не передаются", "ofd transmission"),
@@ -70,6 +71,7 @@ _TASK_TERMS = {
     "equipment_setup": ("подключение", "настройка", "конфигурация", "установка", "configure", "setup"),
 }
 _TASK_EVIDENCE = {
+    "cash_list": ("мониторинг", "отобрать кассы", "список касс"),
     "access": ("сотрудник", "пользователь", "учетн", "доступ", "прав", "рол"),
     "receipt_search": ("чек", "найт", "поиск", "журнал", "квитанц"),
     "receipt_transmission": ("передач", "отправ", "неотправ", "очеред", "офд"),
@@ -119,6 +121,8 @@ def _derive_task_category(searchable: str, category: str, parts: list[str]) -> s
     path = set(parts)
     if "edo" in path or category == "edo":
         return "edo"
+    if any(term in searchable for term in _TASK_TERMS['cash_list']):
+        return 'cash_list'
     if "account" in path or "users" in path or "access" in path or category in {"account", "users", "access"}:
         return "access"
     if "receipts" in path or category == "receipts":
@@ -150,6 +154,8 @@ def _derive_task_category(searchable: str, category: str, parts: list[str]) -> s
 
 def _derive_operations(searchable: str, task_category: str | None) -> list[str]:
     operations = []
+    if task_category == 'cash_list':
+        operations.append('list_cash_registers')
     if task_category == "access":
         if any(x in searchable for x in ("добавить сотрудник", "добавление сотрудник", "создать пользовател", "нового пользовател", "add-user")):
             operations.append("add_employee")
@@ -179,6 +185,10 @@ def _terms(text: str) -> set[str]:
 
 
 def _state_task_category(state: DialogueState, query: str) -> str | None:
+    if state.intent == 'device' and state.operation == 'list' and not state.error:
+        return 'cash_list'
+    if state.intent == 'fiscal_drive' and state.operation == 'search':
+        return 'fiscal_drive_search'
     if state.intent in {"access", "credentials"}:
         return "access"
     if state.intent == "receipt":
@@ -207,7 +217,7 @@ def _matches_entity(expected: str | None, actual: str | None) -> bool:
 
 
 def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> bool:
-    if operation in {"unknown", "explain"}:
+    if operation == "explain":
         return True
     aliases = {
         "add_employee": {"add_employee"},
@@ -218,6 +228,7 @@ def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> boo
         "diagnose": {"diagnose_error", "check_transmission"},
         "status": {"check_transmission"},
         "check": {"check_transmission"},
+        "list": {"list_cash_registers"},
         "transmit": {"check_transmission"},
     }
     supported = set(metadata.get("operations") or ())
@@ -260,11 +271,21 @@ class RetrievalPipeline:
             if doc_key:
                 seen_docs.add(doc_key)
             reasons: list[str] = []
-            service_match = _matches_entity(state.entity("service"), meta.get("service"))
+            # Session facts persist across tasks. Only the cabinet bound to the
+            # current task is a hard service constraint; hardware is required
+            # separately for technical tasks, not for an OFD receipt filter.
+            routing = state.routing_service
+            routing_metadata = meta.get('service')
+            if state.routing_slot == 'manufacturer':
+                routing_metadata = meta.get('manufacturer')
+            elif state.routing_slot == 'software':
+                routing_metadata = meta.get('software') or meta.get('service')
+            service_match = _matches_entity(routing, routing_metadata)
             # Keep manufacturer, equipment model and operator as independent facts.
             manufacturer_match = _matches_entity(state.entity("manufacturer"), meta.get("manufacturer"))
             model_match = _matches_entity(state.entity("equipment"), meta.get("model"))
-            ofd = state.entity("ofd")
+            technical = state.intent in {'device', 'fiscal_drive', 'network'} and expected_task != 'cash_list'
+            ofd = state.entity("ofd") if technical else None
             ofd_match = _matches_entity(ofd, " ".join(str(meta.get(k) or "") for k in ("ofd", "operator", "title", "source", "text")))
             actual_task = meta.get("task_category")
             task_match = expected_task is None or actual_task == expected_task
@@ -276,11 +297,11 @@ class RetrievalPipeline:
                     article_text = " ".join(chunk.text for chunk in article_chunks)
                     operation_metadata = normalize_metadata({**meta, "text": article_text, "operations": [], "operation": None})
             operation_match = _operation_matches(state.operation, operation_metadata, hit)
-            if state.entity("service") and not service_match:
+            if routing and not service_match:
                 reasons.append("service_mismatch_or_unlabeled")
-            if state.entity("manufacturer") and not manufacturer_match:
+            if technical and state.entity("manufacturer") and not manufacturer_match:
                 reasons.append("manufacturer_mismatch_or_unlabeled")
-            if state.entity("equipment") and not model_match:
+            if technical and state.entity("equipment") and not model_match:
                 reasons.append("equipment_mismatch_or_unlabeled")
             if ofd and not ofd_match:
                 reasons.append("ofd_mismatch_or_unlabeled")
@@ -288,6 +309,8 @@ class RetrievalPipeline:
                 reasons.append(f"task_mismatch:{actual_task}!={expected_task}")
             if expected_task and actual_task == expected_task and not operation_match:
                 reasons.append(f"operation_mismatch:{state.operation}")
+            if state.operation == 'unknown':
+                reasons.append('operation_unconfirmed')
             # Unlabeled category is not an automatic rejection, but cannot pass
             # a task-specific evidence gate without lexical task evidence.
             query_terms = _terms(query)
@@ -317,6 +340,9 @@ class RetrievalPipeline:
         # Related chunks are fetched only after article-level gates have passed;
         # their own task relevance is checked and they keep their own identity.
         docs = self._expand(selected[:self.max_documents], expected_task, state, query)
+        used_sources = {doc.source for doc in docs}
+        for item in candidates:
+            item.selected = item.source in used_sources
         context = _format_context(docs, self.max_context_chars)
         sufficient = bool(docs) and any(item.relevance.task == "match" and item.relevance.score >= 0.62 for _, item in selected)
         reason = None if sufficient else ("no_task_matched_candidates" if raw else "no_candidates")

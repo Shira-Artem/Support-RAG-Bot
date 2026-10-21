@@ -52,6 +52,11 @@ class DialogueState:
     operation: str = "unknown"
     object: str | None = None
     entities: dict[str, list[Fact]] = field(default_factory=dict)
+    # entities are session facts; requirements/parameters reset on a new task.
+    # routing_slot binds this task to a session entity without erasing others.
+    routing_slot: str | None = None
+    parameters: list[Fact] = field(default_factory=list)
+    object_reference: Fact | None = None
     task: Fact | None = None
     operation_evidence: Fact | None = None
     goals: list[Fact] = field(default_factory=list)
@@ -72,10 +77,10 @@ class DialogueState:
             raise ValueError("Unsupported dialogue state schema; preserve the snapshot and migrate explicitly")
         data = deepcopy(data)
         data["entities"] = {k: [Fact(**v) for v in values] for k, values in data.get("entities", {}).items()}
-        for key in ("task", "operation_evidence", "error", "unresolved"):
+        for key in ("task", "operation_evidence", "error", "unresolved", "object_reference"):
             if data.get(key):
                 data[key] = Fact(**data[key])
-        for key in ("goals", "constraints", "details"):
+        for key in ("goals", "constraints", "details", "parameters"):
             data[key] = [Fact(**v) for v in data.get(key, [])]
         if data.get("expected"):
             data["expected"] = ExpectedClarification(**data["expected"])
@@ -86,14 +91,34 @@ class DialogueState:
         return values[0].value if len(values) == 1 else None
 
     @property
+    def task_entities(self) -> dict[str, list[Fact]]:
+        # A general definition need not be narrowed to a previously used vendor.
+        if self.operation == 'explain' and self.routing_slot is None:
+            return {}
+        cabinet_task = self.intent in {'access', 'credentials', 'receipt'} or (
+            self.intent == 'device' and self.operation == 'list' and not self.error)
+        if cabinet_task and self.routing_slot in self.entities:
+            active = {self.routing_slot: self.entities[self.routing_slot]}
+            if self.routing_slot == 'manufacturer' and 'equipment' in self.entities:
+                active['equipment'] = self.entities['equipment']
+            return active
+        return self.entities
+
+    @property
     def routing_service(self) -> str | None:
         # Routing is a view of distinct entities, never their concatenation.
         # An access task belongs to the cabinet; receipt delivery belongs to OFD
         # when no cloud cabinet was named. Hardware is retained independently.
-        slots = (("service", "manufacturer") if self.intent in {'device', 'fiscal_drive'} else
+        if not self.task_entities:
+            return None
+        hardware_task = self.intent == 'fiscal_drive' or (
+            self.intent == 'device' and (self.operation != 'list' or self.error))
+        slots = (("service", "manufacturer") if hardware_task else
                  ("service", "software", "manufacturer", "ofd")
                  if self.intent in {"access", "credentials"} else
-                 ("service", "manufacturer", "ofd", "software"))
+                 ("service", "ofd", "manufacturer", "software"))
+        if self.routing_slot in slots and self.routing_slot in self.entities:
+            return self.entity(self.routing_slot)
         for slot in slots:
             if slot in self.entities:
                 return self.entity(slot)  # multiple values in one slot require clarification
@@ -118,6 +143,8 @@ class Observation:
     entity_only: bool = False
     feedback: bool = False
     uncertain: bool = False
+    parameters: list[Fact] = field(default_factory=list)
+    binds_object: bool = False
 
 
 class MessageAnalyzer(Protocol):
@@ -165,7 +192,7 @@ ENTITY_NAMES = (
 )
 OBJECTS = (
     ("credentials", "учётная запись", ("парол", "авторизац")),
-    ("access", "сотрудник", ("сотрудник", "коллег", "пользовател", "учетн", "аккаунт", "доступ", "роль", "роли", "ролей", "прав", "полномоч")),
+    ("access", "сотрудник", ("сотрудник", "коллег", "пользовател", "учетн", "учетк", "аккаунт", "доступ", "роль", "роли", "ролей", "прав", "полномоч")),
     ("fiscal_drive", "ФН", ("фн", "накопител")),
     ("receipt", "чек", ("чек", "квитанц")),
     ("network", "соединение", ("интернет", "связь", "сети", "подключен")),
@@ -177,10 +204,11 @@ OPERATIONS = (
     ("reset_password", ("восстанов", "сброс", "забыл")),
     ("replace", ("замен",)),
     ("close", ("закры", "закрой", "заверш")),
-    ("add", ("добав", "созда", "приглас")),
+    ("add", ("добав", "созда", "приглас", "завести")),
     ("change", ("измен", "менять", "помен", "смен", "редактир", "отредактир")),
     ("assign", ("назнач", "присво", "выда", "огранич", "надел", "предостав", "дать")),
     ("search", ("найти", "найт", "искать", "отыск", "поиск")),
+    ("list", ("перечисл",)),
     ("transmit", ("переда", "отправ")),
     ("check", ("провер", "посмотр", "смотр", "увид", "узна")),
     ("connect", ("подключ", "соедин")),
@@ -238,16 +266,39 @@ class LexicalAnalyzer:
         obs.entity_only = bool(obs.entities) and not any(
             w not in {"в", "у", "на", "я", "мой", "моя", "это", "использую", "работаю", "с", "а", "если", "тогда", "там", "так", "же", "делается", "тоже", "касса", "офд", "оборудование"}
             and not w[0].isdigit() for w in words(covered))
+        # Search arguments are not search objects. Resolve the direct object
+        # before a parameter preposition; bind an anaphoric object to the task.
+        # This applies to any search object/argument, not a special FN sentence.
+        search_request = has(tokens, next(stems for name, stems in OPERATIONS if name == 'search'))
+        # Elliptical follow-ups can omit both the verb and pronoun ("А по ...?").
+        substantive = [token for token in tokens if token not in {'а', 'и', 'можно', 'ли'}]
+        elliptical_search = (state.operation == 'search' and substantive[:1] in [['по'], ['за']]
+                             and not obs.new_topic)
+        search_request |= elliptical_search
+        parameter_at = next((i for i, token in enumerate(tokens) if token in {'по', 'за'}), len(tokens))
+        subject_tokens = tokens[:parameter_at] if search_request else tokens
         for intent, obj, stems in OBJECTS:
-            if has(tokens, stems):
+            if has(subject_tokens, stems):
                 obs.intent, obs.object = intent, obj
                 break
+        if (search_request and parameter_at < len(tokens) and obs.intent == 'unknown'
+                and (obs.reference or elliptical_search) and state.operation == 'search' and not obs.new_topic):
+            obs.intent, obs.object = state.intent, state.object
+            obs.binds_object = True
+        if search_request and parameter_at < len(tokens):
+            spans = list(re.finditer(r"[\w]+(?:[-.,][\w]+)*", text))
+            obs.parameters.append(Fact.span(text, message_id, spans[parameter_at].start(),
+                                            len(text.rstrip(' .?!'))))
         # Restrictions describe the desired result, not a new operation. A
         # participle ("созданному") likewise must not outrank a command.
         boundary = next((i for i, token in enumerate(tokens) if token in {'но', 'без', 'нельзя'}), len(tokens))
         actions = [(name, token) for name, stems in OPERATIONS for token in tokens[:boundary] if token.startswith(stems)]
         commands = [name for name, token in actions if token.endswith(('ть', 'ти', 'йте'))]
         obs.operation = (commands[0] if commands else actions[0][0] if actions else 'unknown')
+        if elliptical_search:
+            obs.operation = 'search'
+        if obs.intent == 'device' and obs.operation == 'check' and has(tokens, ('список', 'перечень')):
+            obs.operation = 'list'
         if obs.question and len(set(commands)) > 1:
             obs.uncertain = True  # several requested operations need disambiguation
         if obs.intent == "access":
@@ -262,7 +313,7 @@ class LexicalAnalyzer:
         if obs.intent == "receipt" and has(tokens, ("статус", "дошел", "дошли", "передан")):
             obs.operation = "status"
         code = re.search(r"(?:\bфн|ошибк\w*|код)\s*[:№#-]?\s*(-?\d{2,5})\b", text, re.I)
-        if code:
+        if code and not (search_request and obs.parameters):
             obs.error = Fact.span(text, message_id, *code.span(1))
             obs.operation = 'diagnose'
         if question_tokens[:2] == ["что", "такое"]:
@@ -304,7 +355,7 @@ class DialogueManager:
         obs = self.analyzer.analyze(text, message_id, deepcopy(previous))
         # Enforce the boundary even for a future model-backed analyser.
         facts = [f for values in obs.entities.values() for f in values]
-        facts += [*obs.goals, *obs.constraints, *([obs.evidence] if obs.evidence else []), *([obs.error] if obs.error else [])]
+        facts += [*obs.goals, *obs.constraints, *obs.parameters, *([obs.evidence] if obs.evidence else []), *([obs.error] if obs.error else [])]
         valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'change_permissions', 'diagnose', 'status'}
         if obs.operation not in valid_operations or obs.intent not in {name for name, _, _ in OBJECTS} | {'unknown', 'general'}:
             raise ValueError('Unsupported analyser task; extend the typed vocabulary explicitly')
@@ -314,7 +365,9 @@ class DialogueManager:
         ):
             raise ValueError("Analyser facts must cite spans of the current client message")
         known_task = obs.intent != "unknown" and obs.operation != "unknown"
-        different_task = known_task and (obs.intent != previous.intent or obs.operation == "explain")
+        different_task = known_task and (obs.intent != previous.intent or obs.operation == "explain"
+                         or (obs.intent not in {'access', 'credentials'} and previous.operation != 'unknown'
+                             and obs.operation != previous.operation))
         refinement = bool(previous.task_id and not obs.question and (obs.requirement or obs.goals or obs.constraints)
                           and (obs.reference or not known_task))
         new = not previous.task_id or obs.new_topic or (different_task and not refinement and not obs.entity_only)
@@ -322,8 +375,9 @@ class DialogueManager:
                            and not obs.feedback and not obs.entity_only)
         new |= summarizing
         state = DialogueState(revision=previous.revision) if new else deepcopy(previous)
-        if summarizing:
+        if new:
             state.entities = deepcopy(previous.entities)
+            state.routing_slot = None if obs.operation == 'explain' else previous.routing_slot
         state.revision += 1
         state.transition = "new_task" if new else "continue_task"
         state.analysis_required = False
@@ -336,13 +390,28 @@ class DialogueManager:
                              for slot, values in obs.entities.items())
         for slot, values in obs.entities.items():
             state.entities[slot] = values
+        explicit_routing = [slot for slot in ('service', 'ofd', 'software', 'manufacturer') if slot in obs.entities]
+        equipment_only_update = (explicit_routing == ['manufacturer'] and not new
+                                 and state.routing_slot in {'service', 'ofd', 'software'}
+                                 and state.intent in {'access', 'credentials', 'receipt'})
+        if explicit_routing and not equipment_only_update:
+            state.routing_slot = explicit_routing[0]
         manufacturer_changed = ([f.value for f in obs.entities.get('manufacturer', [])]
                                 != [f.value for f in previous.entities.get('manufacturer', [])])
         if "manufacturer" in obs.entities and "equipment" not in obs.entities and manufacturer_changed:
             state.entities.pop("equipment", None)
-        if not refinement and (new or (known_task and obs.intent == state.intent)):
+        # A requirement may contain an explicit replacement operation on the
+        # same object ("мне нужно изменить ему права"). Keep only capability
+        # refinements from changing the task to the objects they mention.
+        if (not refinement and (new or (known_task and obs.intent == state.intent))) or (
+                known_task and obs.intent == previous.intent and not obs.goals and not obs.constraints):
             state.intent, state.operation, state.object = obs.intent, obs.operation, obs.object
             state.operation_evidence = obs.evidence
+        if obs.binds_object:
+            state.object_reference = obs.evidence
+        if any(words(f.value)[:1] == ['за'] for f in obs.parameters):
+            state.parameters = [f for f in state.parameters if words(f.value)[:1] != ['за']]
+        _append_unique(state.parameters, obs.parameters)
         if obs.error:
             state.error = obs.error
         if not new:

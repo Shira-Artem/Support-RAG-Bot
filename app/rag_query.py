@@ -8,6 +8,7 @@ OPERATIONS = {
     "add_employee": "добавление сотрудника", "assign_role": "назначение роли сотруднику",
     "change_permissions": "изменение прав существующего сотрудника",
     "reset_password": "восстановление пароля учётной записи", "search": "поиск",
+    "list": "просмотр списка касс",
     "check": "проверка", "status": "проверка статуса", "diagnose": "диагностика ошибки",
     "connect": "подключение", "configure": "настройка", "close": "закрытие",
     "replace": "замена", "return": "возврат", "add": "добавление", "change": "изменение", "assign": "назначение",
@@ -26,11 +27,11 @@ def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
         task = state.task.value if state.task else ""
     else:
         task = OPERATIONS[state.operation]
-        if state.intent not in {"access", "credentials"} and state.object:
+        if state.intent not in {"access", "credentials"} and state.object and state.operation != 'list':
             task += " " + state.object
     entities = [f"{label}: {state.entity(slot)}" for slot, label in (
         ("service", "сервис"), ("equipment", "оборудование"), ("manufacturer", "производитель"),
-        ("ofd", "ОФД"), ("software", "ПО")) if state.entity(slot)]
+        ("ofd", "ОФД"), ("software", "ПО")) if slot in state.task_entities and state.entity(slot)]
     required = [*entities, task]
     if state.error:
         required.append("код ошибки " + state.error.value)
@@ -43,6 +44,8 @@ def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
         parts.append("ограничения: " + "; ".join(f.value for f in state.constraints))
     if state.details:
         parts.append("уточнение клиента: " + "; ".join(f.value for f in state.details))
+    if state.parameters:
+        parts.append("параметры текущего поиска: " + "; ".join(f.value for f in state.parameters))
     query = " — ".join(parts).strip()
     if not query or len(query) > max_chars:
         raise QueryNeedsClarification("Task and grounded requirements exceed retrieval budget")

@@ -463,7 +463,7 @@ def test_only_client_history_confirms_service_and_is_used_in_search(tmp_path, mo
     assert clarification.generation_status == "clarification"
 
 
-def test_new_topic_does_not_inherit_previous_issue_or_service(tmp_path, monkeypatch):
+def test_general_definition_ignores_vendor_but_new_cabinet_task_keeps_session_context(tmp_path, monkeypatch):
     result = SearchResult("business/marking-basics.md", "Маркировка товаров.", 0.8)
     class Rag:
         query = None
@@ -494,9 +494,10 @@ def test_new_topic_does_not_inherit_previous_issue_or_service(tmp_path, monkeypa
         {"role": "assistant", "content": "Какой сервис используете?", "scenario": "clarify",
          "scenario_reason": "service_not_confirmed"},
     ]))
-    assert switched.scenario == "clarify"
-    assert switched.scenario_reason == "service_not_confirmed"
-    assert rag.query == "Что такое маркировка?"  # New topic was stopped before inheriting the old service.
+    assert switched.confirmed_service == 'aQsi Online'
+    assert switched.scenario_reason != 'service_not_confirmed'
+    assert switched.scenario == 'escalate'  # This fake RAG has no receipt documentation.
+    assert 'aQsi Online' in rag.query and 'статус' in rag.query
 
 
 def test_unknown_service_cannot_leak_vendor_rag_instructions(tmp_path, monkeypatch):

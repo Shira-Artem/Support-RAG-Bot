@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 import re
 from typing import Callable
 
+from app.dialogue_state import words
+
 ROLE_WORD = r'\bрол(?:ь(?:ю)?|и|ей|ям|ями|ях)\b'
 
 def normalize(text: str) -> str:
@@ -148,6 +150,39 @@ def needs_procedure_grounding(answer: str, context: str, state, results) -> bool
     return procedural and any(normalize(s) not in normalize(context) for s in statements(answer))
 
 
+def unconfirmed_search_parameters(state, context: str) -> list[str]:
+    """Detect absent field evidence, never infer that a feature is impossible.
+
+    Only parameter spans bound by the dialogue analyser are inspected. Periods
+    ('за ...') are values, not requested filter fields. A mention is not positive
+    proof of support; it merely prevents a local absence claim. The model must
+    still ground any positive instruction in the document.
+    """
+    if state.operation != 'search':
+        return []
+    context_words = set(words(context))
+    missing = []
+    for parameter in state.parameters:
+        tokens = words(parameter.value)
+        if tokens[:1] != ['по']:
+            continue
+        field_words = [token for token in tokens[1:] if token not in {'номер', 'номеру', 'номера'}]
+        if field_words and not any(token in context_words for token in field_words):
+            missing.append(parameter.value)
+    return missing
+
+
+def search_scope_response(state, context: str, results) -> ResponseRepair | None:
+    missing = unconfirmed_search_parameters(state, context)
+    if not missing:
+        return None
+    evidence = _evidence(results, context, 'search')
+    limitations = ('В найденной инструкции не подтверждён поиск ' + '; '.join(missing)
+                   + '. Это не означает, что такой поиск в сервисе недоступен.')
+    text = limitations + ('\n' + '\n'.join(item['text'] for item in evidence) if evidence else '')
+    return ResponseRepair(text, 'documented_search_scope', evidence=evidence)
+
+
 def _navigation_reference(results, context: str, evidence: list[dict]) -> dict | None:
     """Recover a unique section from the same article, never from another hit."""
     sources = {item['source'] for item in evidence}
@@ -202,7 +237,7 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
         return ResponseRepair(text, "documented_scope", removed, [], evidence)
 
     family = OPERATION_FAMILY.get(state.operation)
-    if family:
+    if family or state.intent in {'access', 'credentials'}:
         # A mixed procedural answer must not retain unchecked field names or
         # promises from neighbouring steps. Reconstruct its actions from the
         # source; retain only literal evidence and independent, named navigation.

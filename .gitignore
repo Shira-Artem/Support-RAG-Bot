@@ -45,3 +45,8 @@ data/evaluations/
 *.sqlite3-shm
 *.sqlite3-wal
 *.sqlite3-journal
+
+# Private diagnostic exports; reproducible regression inputs live in tests/fixtures.
+docs/incidents/*/historical.json
+docs/incidents/*/historical.md
+docs/incidents/*/replay.json

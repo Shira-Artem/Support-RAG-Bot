@@ -114,7 +114,9 @@ def test_equipment_manufacturer_ofd_and_cloud_are_independent():
     assert cloud.entity('service') == 'aQsi Online'
     assert cloud.entity('ofd') == 'Первый ОФД' and cloud.entity('manufacturer') == 'Эвотор'
     query = build_rag_query(cloud)
-    assert all(s in query for s in ('aQsi Online', 'Эвотор 6', 'Первый ОФД', 'поиск', 'чек'))
+    assert all(s in query for s in ('aQsi Online', 'поиск', 'чек'))
+    assert 'Эвотор' not in query and 'Первый ОФД' not in query
+    assert cloud.entity('equipment') == 'Эвотор 6' and cloud.entity('ofd') == 'Первый ОФД'
     changed = manager.advance(cloud, 'Касса АТОЛ', 5)
     assert changed.entity('equipment') is None and changed.entity('manufacturer') == 'АТОЛ'
     assert changed.entity('ofd') == 'Первый ОФД'
@@ -122,14 +124,17 @@ def test_equipment_manufacturer_ofd_and_cloud_are_independent():
 
 @pytest.mark.parametrize('new_question', ['Что такое маркировка?', 'Как восстановить пароль в Эвотор?',
                                            'Другой вопрос: где найти чек?', 'Как вернуть чек в АТОЛ Онлайн?'])
-def test_independent_task_clears_old_goals_and_service(new_question):
+def test_independent_task_resets_requirements_but_keeps_session_entities(new_question):
     manager, state = DialogueManager(), DialogueState()
     for i, question in enumerate(QUESTIONS[:3]):
         state = manager.advance(state, question, i + 1)
     new = manager.advance(state, new_question, 4)
     assert new.task_id != state.task_id and new.transition == 'new_task'
     assert not new.goals and not new.constraints
-    assert new.entity('service') != 'aQsi Online'
+    assert new.entity('service') == ('АТОЛ Онлайн' if 'АТОЛ Онлайн' in new_question else 'aQsi Online')
+    if 'Эвотор' in new_question:
+        assert new.routing_service == 'Эвотор'
+        assert new.entity('service') == 'aQsi Online'  # session fact, not the active cabinet
 
 
 def test_expected_slot_short_replies_and_no_assistant_facts(tmp_path):
@@ -366,4 +371,5 @@ def test_general_concept_in_the_same_domain_starts_an_independent_topic():
     state = manager.advance(DialogueState(), QUESTIONS[0], 1)
     explained = manager.advance(state, 'А что такое роль пользователя?', 2)
     assert explained.transition == 'new_task' and explained.operation == 'explain'
-    assert explained.entity('service') is None
+    assert explained.entity('service') == 'aQsi Online'
+    assert not explained.goals and not explained.constraints
