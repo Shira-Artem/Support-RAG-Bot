@@ -71,6 +71,10 @@ class ExpertStore:
                     updated_at TEXT NOT NULL
                 );
                 CREATE INDEX IF NOT EXISTS idx_sessions_expert ON sessions(expert_id, started_at);
+                CREATE TABLE IF NOT EXISTS review_tags (
+                    attempt_id INTEGER NOT NULL REFERENCES reviews(attempt_id),
+                    tag TEXT NOT NULL, PRIMARY KEY(attempt_id, tag)
+                );
             """)
             # Additive migrations preserve existing session, answer, and review rows.
             migrations = {
@@ -84,6 +88,8 @@ class ExpertStore:
                     "raw_model_text": "TEXT", "validation_status": "TEXT",
                     "validation_reason": "TEXT", "generation_reason": "TEXT",
                     "scenario": "TEXT", "scenario_reason": "TEXT",
+                    "reasoning_effort": "TEXT", "llm_call_attempted": "INTEGER",
+                    "diagnostics_json": "TEXT",
                 },
             }
             for table, columns in migrations.items():
@@ -167,6 +173,23 @@ class ExpertStore:
             db.execute("UPDATE sessions SET finished_at=COALESCE(finished_at,?), comment_target=NULL WHERE id=? AND expert_id=?",
                        (now(), session_id, expert_id))
 
+    def select(self, session_id: str, expert_id: int, ordinal: int) -> bool:
+        with self.connect() as db:
+            cursor = db.execute("""UPDATE sessions SET position=?, comment_target=NULL
+                WHERE id=? AND expert_id=? AND finished_at IS NULL
+                AND EXISTS (SELECT 1 FROM items WHERE session_id=sessions.id AND ordinal=?)""",
+                (ordinal, session_id, expert_id, ordinal))
+            return cursor.rowcount == 1
+
+    def questions(self, session_id: str, expert_id: int) -> list[dict]:
+        with self.connect() as db:
+            return [dict(row) for row in db.execute("""SELECT i.*,
+                (SELECT r.score FROM attempts a LEFT JOIN reviews r ON r.attempt_id=a.id
+                 WHERE a.session_id=i.session_id AND a.question_id=i.question_id
+                 ORDER BY a.attempt_no DESC LIMIT 1) AS score
+                FROM items i JOIN sessions s ON s.id=i.session_id
+                WHERE s.id=? AND s.expert_id=? ORDER BY i.ordinal""", (session_id, expert_id))]
+
     def latest(self, session_id: str, question_id: str):
         with self.connect() as db:
             return db.execute("""SELECT a.*, r.score, r.reason, r.comment FROM attempts a
@@ -187,7 +210,7 @@ class ExpertStore:
                 WHERE session_id=? AND question_id=? ORDER BY attempt_no DESC LIMIT 1""",
                 (session_id, question_id)).fetchone()
             if latest and (latest["generation_status"] == "pending" or
-                           (latest["generation_status"] == "generated" and not force)):
+                           (latest["generation_status"] in {"generated", "clarification", "rejected", "no_context"} and not force)):
                 return None
             attempt_no = latest["attempt_no"] + 1 if latest else 1
             cursor = db.execute("""INSERT INTO attempts(session_id, question_id, attempt_no,
@@ -202,7 +225,7 @@ class ExpertStore:
                 results_json=?, model=?, provider=?, api_call_id=?, duration_ms=?, rag_chunks=?, context_chars=?,
                 prompt_tokens=?, completion_tokens=?, total_tokens=?, reasoning_tokens=?, cached_tokens=?,
                 raw_model_text=?, validation_status=?, validation_reason=?, generation_reason=?,
-                scenario=?, scenario_reason=?
+                scenario=?, scenario_reason=?, reasoning_effort=?, llm_call_attempted=?, diagnostics_json=?
                 WHERE id=? AND generation_status='pending'""", (
                     now(), answer.generation_status, answer.text,
                     json.dumps([asdict(result) for result in answer.results], ensure_ascii=False),
@@ -211,19 +234,23 @@ class ExpertStore:
                     answer.completion_tokens, answer.total_tokens, answer.reasoning_tokens,
                     answer.cached_tokens, answer.raw_model_text, answer.validation_status,
                     answer.validation_reason, answer.generation_reason, answer.scenario,
-                    answer.scenario_reason, attempt_id))
+                    answer.scenario_reason, answer.reasoning_effort, int(answer.llm_call_attempted),
+                    json.dumps({"rag_query": answer.rag_query, "active_request": answer.active_request,
+                        "confirmed_service": answer.confirmed_service, "dialogue_state": answer.dialogue_state,
+                        "retrieval": answer.retrieval_diagnostics, "response_repair": answer.response_repair,
+                        "generation_error": answer.generation_error}, ensure_ascii=False), attempt_id))
 
     def save_error(self, attempt_id: int, duration_ms: int | None = None) -> None:
         with self.connect() as db:
             db.execute("""UPDATE attempts SET completed_at=?, generation_status='error', duration_ms=?,
-                generation_reason='unexpected_exception'
+                generation_reason='unexpected_exception', answer_text='Не удалось получить ответ. Попробуйте ещё раз позже.'
                 WHERE id=? AND generation_status='pending'""", (now(), duration_ms, attempt_id))
 
     def recover_pending(self) -> int:
         """Call once when the single local bot process starts after an interruption."""
         with self.connect() as db:
             cursor = db.execute("""UPDATE attempts SET completed_at=?, generation_status='error',
-                generation_reason='process_interrupted'
+                generation_reason='process_interrupted', answer_text='Получение ответа прервано перезапуском. Повторите запрос.'
                 WHERE generation_status='pending'""", (now(),))
             return cursor.rowcount
 
@@ -233,7 +260,7 @@ class ExpertStore:
         with self.connect() as db:
             row = db.execute("""SELECT a.id FROM attempts a JOIN sessions s ON s.id=a.session_id
                 WHERE a.id=? AND a.session_id=? AND s.expert_id=? AND s.finished_at IS NULL
-                AND a.generation_status IN ('generated','clarification')""",
+                AND a.generation_status != 'pending' AND a.answer_text IS NOT NULL""",
                 (attempt_id, session_id, expert_id)).fetchone()
             if not row:
                 return False
@@ -241,6 +268,35 @@ class ExpertStore:
                 ON CONFLICT(attempt_id) DO UPDATE SET score=excluded.score, updated_at=excluded.updated_at""",
                 (attempt_id, score, now()))
             return True
+
+    def toggle_tag(self, session_id: str, expert_id: int, attempt_id: int, tag: str) -> bool:
+        with self.connect() as db:
+            row = db.execute("""SELECT r.attempt_id FROM reviews r JOIN attempts a ON a.id=r.attempt_id
+                JOIN sessions s ON s.id=a.session_id WHERE r.attempt_id=? AND s.id=?
+                AND s.expert_id=? AND s.finished_at IS NULL""", (attempt_id, session_id, expert_id)).fetchone()
+            if not row:
+                return False
+            deleted = db.execute("DELETE FROM review_tags WHERE attempt_id=? AND tag=?", (attempt_id, tag))
+            if not deleted.rowcount:
+                db.execute("INSERT INTO review_tags(attempt_id, tag) VALUES(?,?)", (attempt_id, tag))
+            # Preserve legacy free-form reasons; new labels live in a separate additive table.
+            db.execute("UPDATE reviews SET updated_at=? WHERE attempt_id=?", (now(), attempt_id))
+            return True
+
+    def tags(self, attempt_id: int) -> list[str]:
+        with self.connect() as db:
+            return [row["tag"] for row in db.execute(
+                "SELECT tag FROM review_tags WHERE attempt_id=? ORDER BY tag", (attempt_id,))]
+
+    def review(self, session_id: str, expert_id: int, attempt_id: int):
+        with self.connect() as db:
+            return db.execute("""SELECT r.* FROM reviews r JOIN attempts a ON a.id=r.attempt_id
+                JOIN sessions s ON s.id=a.session_id WHERE s.id=? AND s.expert_id=? AND a.id=?""",
+                (session_id, expert_id, attempt_id)).fetchone()
+
+    def cancel_comment(self, session_id: str, expert_id: int) -> None:
+        with self.connect() as db:
+            db.execute("UPDATE sessions SET comment_target=NULL WHERE id=? AND expert_id=?", (session_id, expert_id))
 
     def reason(self, session_id: str, expert_id: int, attempt_id: int, reason: str) -> bool:
         with self.connect() as db:
@@ -282,6 +338,8 @@ class ExpertStore:
                 a.prompt_tokens, a.completion_tokens, a.total_tokens, a.reasoning_tokens, a.cached_tokens,
                 a.raw_model_text, a.validation_status, a.validation_reason, a.generation_reason,
                 a.scenario, a.scenario_reason,
+                a.reasoning_effort, a.llm_call_attempted, a.diagnostics_json,
+                (SELECT GROUP_CONCAT(tag, '; ') FROM review_tags WHERE attempt_id=a.id) AS error_tags,
                 r.score, r.reason, r.comment, r.updated_at AS reviewed_at
                 FROM sessions s JOIN items i ON i.session_id=s.id
                 LEFT JOIN attempts a ON a.session_id=i.session_id AND a.question_id=i.question_id
@@ -295,7 +353,7 @@ class ExpertStore:
 
     def progress(self, session_id: str, expert_id: int) -> tuple[int, int]:
         with self.connect() as db:
-            row = db.execute("""SELECT COUNT(DISTINCT r.attempt_id) AS reviewed,
+            row = db.execute("""SELECT COUNT(DISTINCT CASE WHEN r.attempt_id IS NOT NULL THEN i.question_id END) AS reviewed,
                 COUNT(DISTINCT i.question_id) AS total FROM sessions s
                 JOIN items i ON i.session_id=s.id LEFT JOIN attempts a
                 ON a.session_id=i.session_id AND a.question_id=i.question_id

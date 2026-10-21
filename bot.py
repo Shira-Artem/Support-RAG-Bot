@@ -51,6 +51,12 @@ async def expert_mode(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await expert.command(update, context)
 
 
+async def whoami(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.effective_message.reply_text(
+        f"Ваш Telegram ID: {update.effective_user.id}\n"
+        "Передайте это число администратору для доступа к экспертному тестированию.")
+
+
 async def expert_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if conversations.state(*identity(update))["mode"] != "expert":
         await update.callback_query.answer("Сначала выберите «Экспертное тестирование».", show_alert=True)
@@ -167,6 +173,7 @@ def main() -> None:
     app.add_handler(CommandHandler("reload", reload_docs))
     app.add_handler(CommandHandler("clear", clear))
     app.add_handler(CommandHandler("expert", expert_mode))
+    app.add_handler(CommandHandler("whoami", whoami))
     app.add_handler(CallbackQueryHandler(expert_callback, pattern=r"^ex:"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 

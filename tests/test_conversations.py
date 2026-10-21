@@ -99,6 +99,8 @@ def test_durable_history_new_dialog_and_diagnostics(tmp_path):
     pending = store.begin(first, 'Как добавить сотрудника?', False)
     answer = Answer('Текст' * 1000, scenario='clarify', model='openai/gpt-oss-20b', provider='groq',
                     prompt_tokens=12, raw_model_text='raw', validation_reason='reason',
+                    reasoning_effort='medium', llm_call_attempted=True,
+                    response_repair={'mode': 'partial_answer', 'removed': [{'text': 'bad', 'reason': 'unsupported_instruction'}]},
                     results=[SearchResult('source', 'evidence', .5)])
     store.complete(pending, answer)
     restarted = ConversationStore(path)
@@ -108,6 +110,8 @@ def test_durable_history_new_dialog_and_diagnostics(tmp_path):
         diagnostic = json.loads(db.execute('SELECT diagnostics_json FROM messages WHERE id=?', (pending,)).fetchone()[0])
     assert diagnostic['prompt_tokens'] == 12 and diagnostic['results'][0]['text'] == 'evidence'
     assert diagnostic['model'] == answer.model and diagnostic['validation_reason'] == 'reason'
+    assert diagnostic['reasoning_effort'] == 'medium' and diagnostic['llm_call_attempted']
+    assert diagnostic['response_repair'] == answer.response_repair
     second = restarted.new(1, 1)
     assert first != second and restarted.history(second) == [] and len(restarted.history(first)) == 2
     assert restarted.state(2, 1)['conversation_id'] is None

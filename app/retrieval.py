@@ -49,8 +49,8 @@ class Retriever:
     def search(self, query: str, top_k: int = 5, filters: dict | None = None,
                source_prefixes: tuple[str, ...] | None = None) -> list[Hit]:
         query = query.strip()
-        if not query or top_k < 1 or top_k > 20 or len(query) > 500:
-            raise ValueError("query must contain 1-500 characters and top_k must be 1-20")
+        if not query or top_k < 1 or top_k > 100 or len(query) > 500:
+            raise ValueError("query must contain 1-500 characters and top_k must be 1-100")
         filters = filters or {}
         if set(filters) - FILTER_FIELDS or any(not isinstance(value, str) or not value.strip() for value in filters.values()):
             raise ValueError("Unsupported or empty metadata filter")

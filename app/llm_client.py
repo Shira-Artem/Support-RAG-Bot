@@ -9,7 +9,12 @@ from app.config import Settings
 
 
 class GenerationError(RuntimeError):
-    pass
+    def __init__(self, message: str, *, http_status: int | None = None,
+                 error_type: str | None = None, retry_after_seconds: float | None = None):
+        super().__init__(message)
+        self.http_status = http_status
+        self.error_type = error_type
+        self.retry_after_seconds = retry_after_seconds
 
 
 @dataclass(frozen=True)
@@ -82,4 +87,14 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
         )
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
         # Provider response bodies may contain sensitive data; never expose them.
-        raise GenerationError("LLM request failed") from exc
+        status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
+        retry_after = None
+        if isinstance(exc, httpx.HTTPStatusError):
+            try:
+                value = float(exc.response.headers.get('retry-after', ''))
+                if 0 <= value <= 86400:
+                    retry_after = value
+            except ValueError:
+                pass
+        raise GenerationError("LLM request failed", http_status=status,
+                              error_type=type(exc).__name__, retry_after_seconds=retry_after) from exc

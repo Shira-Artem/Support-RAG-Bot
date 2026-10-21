@@ -42,9 +42,9 @@ def generated(text="Исходный ответ"):
 
 def test_questions_preserve_old_scenarios_and_have_unique_ids():
     questions = load_questions()
-    assert len(questions) == 30
-    assert len({q["id"] for q in questions}) == 30
-    assert {kind: sum(q["question_type"] == kind for q in questions)
+    assert len(questions) >= 50
+    assert len({q["id"] for q in questions}) == len(questions)
+    assert {kind: sum(q["question_type"] == kind for q in questions[:30])
             for kind in ("normal", "technical", "clarification")} == {
                 "normal": 15, "technical": 10, "clarification": 5}
     assert all(Path(q["expected_document"]).is_file() for q in questions if q["expected_document"])
@@ -114,12 +114,12 @@ def test_errors_unavailable_and_export_are_separate_from_ratings(tmp_path):
     sid = store.start(42, [question()])
     aid = store.claim(sid, 42, "Q1")
     store.save_error(aid)
-    assert not store.rate(sid, 42, aid, 1)
+    assert store.rate(sid, 42, aid, 1)
     assert store.latest(sid, "Q1")["total_tokens"] is None
     retry = store.claim(sid, 42, "Q1")
     assert retry != aid
     store.save_answer(retry, Answer("fallback", generation_status="unavailable"))
-    assert not store.rate(sid, 42, retry, 1)
+    assert store.rate(sid, 42, retry, 1)
     third = store.claim(sid, 42, "Q1")
     store.save_answer(third, generated())
     assert store.rate(sid, 42, third, 5)
@@ -204,9 +204,11 @@ def test_answer_service_isolated_and_generation_failure(monkeypatch, tmp_path):
     assert "первый" not in str(prompts[1])
     failed = asyncio.run(service.answer("ошибка", history=None))
     assert failed.generation_status == "error" and not failed.used_model
+    assert failed.llm_call_attempted
     assert "secret provider response" not in failed.text
     unavailable = asyncio.run(AnswerService(Rag(), settings(tmp_path, openrouter_api_key="")).answer("вопрос"))
     assert unavailable.generation_status == "unavailable"
+    assert not unavailable.llm_call_attempted
     assert unavailable.total_tokens is None and unavailable.prompt_tokens is None
     class EmptyRag(Rag):
         def search(self, query, top_k):
@@ -281,7 +283,8 @@ def test_expert_sources_button_opens_saved_rag_details_separately(tmp_path):
     telegram = ExpertTelegram(settings(tmp_path), None, store)
     asyncio.run(telegram.show_answer(update, sid, "Q1"))
     answer_text, markup = sent[0]
-    assert answer_text == "Проверьте соединение кассы с интернетом."
+    assert "Ответ бота:\nПроверьте соединение кассы с интернетом." in answer_text
+    assert "Где чек?" in answer_text
     assert "Сохранённый RAG-фрагмент" not in answer_text
     assert "score" not in answer_text and "semantic" not in answer_text
     labels = {button.text for row in markup.inline_keyboard for button in row}
@@ -314,22 +317,22 @@ def test_simple_question_rating_and_next_flow(tmp_path):
     telegram = ExpertTelegram(settings(tmp_path), None, store)
     asyncio.run(telegram.question(update, sid))
     text, markup = sent[-1]
-    assert "Вопрос 1/30" in text and "Где чек?" in text
+    assert "Вопрос 1/2" in text and "Где чек?" in text
     assert "Ожидаемое поведение" not in text and "Заметка" not in text
-    assert [b.text for row in markup.inline_keyboard for b in row] == ["Получить ответ"]
+    assert {"Получить ответ", "Пропустить →", "Выбрать вопрос"} <= {b.text for row in markup.inline_keyboard for b in row}
 
     attempt_id = store.claim(sid, 42, "Q1")
     store.save_answer(attempt_id, generated("Короткий ответ клиенту"))
     update.callback_query.data = f"ex:rate:{sid}:{attempt_id}:9"
     asyncio.run(telegram.callback(update, None))
     assert store.latest(sid, "Q1")["score"] == 9
-    assert sent[-1][0] == "Оценка 9/10 сохранена."
-    assert [b.text for row in sent[-1][1].inline_keyboard for b in row] == ["Следующий вопрос"]
+    assert "Оценка 9/10 сохранена." in sent[-1][0]
+    assert {"Следующий вопрос", "Написать комментарий", "Лишний отказ"} <= {b.text for row in sent[-1][1].inline_keyboard for b in row}
 
     update.callback_query.data = f"ex:next:{sid}"
     asyncio.run(telegram.callback(update, None))
     assert store.current(sid, 42)["query"] == "Следующий вопрос?"
-    assert "Вопрос 2/30" in sent[-1][0]
+    assert "Вопрос 2/2" in sent[-1][0]
 
 
 def test_start_offers_resume_for_an_existing_session(tmp_path):
@@ -565,11 +568,12 @@ def test_generic_question_answers_immediately_and_unverified_ui_steps_are_remove
 
     monkeypatch.setattr("app.answer_service.generate", fake_generate)
     answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Что такое ОФД?"))
-    assert answer.generation_status == "rejected"
+    assert answer.generation_status == "generated"
     assert answer.validation_status == "modified"
     assert answer.validation_reason == "unsupported_ui_label:Управление пользователями"
-    assert answer.text.startswith("Не удалось подтвердить точный ответ")
-    assert answer.scenario == "escalate"
+    assert answer.text == "ОФД принимает фискальные документы."
+    assert answer.scenario == "answer"
+    assert answer.response_repair['mode'] == 'partial_answer'
     assert "Управление пользователями" not in answer.text
     assert answer.raw_model_text.startswith("ОФД принимает фискальные документы.")
     assert answer.prompt_tokens == 20 and answer.total_tokens == 35
@@ -621,7 +625,7 @@ def test_original_and_final_answer_and_validation_diagnostic_are_saved_separatel
     assert row["raw_model_text"] == answer.raw_model_text
     assert row["validation_status"] == "modified"
     assert row["validation_reason"] == "unsupported_ui_label:Профиль компании"
-    assert not store.rate(sid, 42, attempt, 10)
+    assert store.rate(sid, 42, attempt, 10)
     exported = token_metrics(store.rows())
     assert exported["llm_calls"] == 1 and exported["total_tokens_total"] is None
 

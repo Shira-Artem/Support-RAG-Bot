@@ -44,7 +44,8 @@ def groq_paid_cost_estimate(row: dict) -> float | None:
 
 def token_metrics(rows: list[dict]) -> dict:
     # Rejected and truncated attempts still called the provider and consumed tokens.
-    calls = [r for r in rows if r.get("generation_status") in {"generated", "rejected", "truncated"}]
+    calls = [r for r in rows if r.get("llm_call_attempted") or
+             r.get("generation_status") in {"generated", "rejected", "truncated"}]
     usage_calls = [r for r in calls if any(r.get(k) is not None for k in
                    ("prompt_tokens", "completion_tokens", "total_tokens"))]
     metrics = {
@@ -96,7 +97,9 @@ def token_metrics(rows: list[dict]) -> dict:
 
 def statistics(rows: list[dict]) -> dict:
     rated = [r for r in rows if r.get("score") is not None
-             and r.get("generation_status") in {"generated", "clarification"}]
+             and r.get("generation_status") in {"generated", "clarification", "rejected", "no_context"}]
+    technical_feedback = [r for r in rows if r.get("score") is not None
+                          and r.get("generation_status") in {"error", "unavailable", "truncated"}]
     low = [r for r in rated if r["score"] < 7]
     categories = defaultdict(list)
     sessions = defaultdict(list)
@@ -120,7 +123,8 @@ def statistics(rows: list[dict]) -> dict:
             ],
         })
     return {
-        "reviewed_questions": len(rated),
+        "reviewed_questions": len({(r['session_id'], r['question_id']) for r in rated}),
+        "reviewed_attempts": len(rated),
         "average_score": round(mean(r["score"] for r in rated), 2) if rated else None,
         "below_7": len(low),
         "problem_categories": [
@@ -128,9 +132,16 @@ def statistics(rows: list[dict]) -> dict:
             for name, scores in sorted(categories.items(), key=lambda item: mean(item[1]))
         ],
         "common_reasons": dict(Counter(r["reason"] for r in rated if r.get("reason")).most_common()),
+        "common_error_tags": dict(Counter(tag.strip() for r in rated
+            for tag in (r.get("error_tags") or "").split(";") if tag.strip()).most_common()),
+        "technical_feedback_count": len(technical_feedback),
+        "technical_feedback_average_score": round(mean(r["score"] for r in technical_feedback), 2)
+            if technical_feedback else None,
         "questions_to_fix": [
             {"session_id": r["session_id"], "question_id": r["question_id"],
-             "category": r["category"], "score": r["score"], "reason": r.get("reason")}
+             "category": r["category"], "score": r["score"], "reason": r.get("reason"),
+             "error_tags": r.get("error_tags"), "comment": r.get("comment"),
+             "generation_status": r.get("generation_status")}
             for r in low
         ],
         "sessions": [
@@ -139,7 +150,8 @@ def statistics(rows: list[dict]) -> dict:
         ],
         "session_comparisons": comparisons,
         "technical_errors": sum(r.get("generation_status") == "error" for r in rows),
-        "generation_unavailable": sum(r.get("generation_status") in {"unavailable", "no_context"} for r in rows),
+        "generation_unavailable": sum(r.get("generation_status") == "unavailable" for r in rows),
+        "retrieval_no_context": sum(r.get("generation_status") == "no_context" for r in rows),
         "validation_rejected": sum(r.get("generation_status") == "rejected" for r in rows),
         "truncated_generations": sum(r.get("generation_status") == "truncated" for r in rows),
         "scenarios": dict(Counter(r.get("scenario") for r in rows if r.get("scenario"))),
@@ -154,8 +166,6 @@ def session_summaries(rows: list[dict]) -> list[dict]:
         grouped[row["session_id"]].append(row)
     result = []
     for session_id, session_rows in grouped.items():
-        calls = [row for row in session_rows
-                 if row.get("generation_status") in {"generated", "rejected", "truncated"}]
         first = session_rows[0]
         result.append({
             "session_id": session_id,
@@ -164,7 +174,7 @@ def session_summaries(rows: list[dict]) -> list[dict]:
             "started_at": first.get("started_at"),
             "finished_at": first.get("finished_at"),
             "questions": len({row["question_id"] for row in session_rows}),
-            **token_metrics(calls),
+            **token_metrics(session_rows),
         })
     return result
 
