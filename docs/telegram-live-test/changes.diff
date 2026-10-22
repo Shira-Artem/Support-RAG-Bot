@@ -1,0 +1,505 @@
+--- a/app/dialogue_state.py
++++ b/app/dialogue_state.py
+@@ -95,7 +95,7 @@
+         # A general definition need not be narrowed to a previously used vendor.
+         if self.operation == 'explain' and self.routing_slot is None:
+             return {}
+-        cabinet_task = self.intent in {'access', 'credentials', 'receipt'} or (
++        cabinet_task = self.intent in {'access', 'credentials', 'receipt', 'report'} or (
+             self.intent == 'device' and self.operation == 'list' and not self.error)
+         if cabinet_task and self.routing_slot in self.entities:
+             active = {self.routing_slot: self.entities[self.routing_slot]}
+@@ -193,6 +193,7 @@
+ OBJECTS = (
+     ("credentials", "учётная запись", ("парол", "авторизац")),
+     ("access", "сотрудник", ("сотрудник", "коллег", "пользовател", "учетн", "учетк", "аккаунт", "доступ", "роль", "роли", "ролей", "прав", "полномоч")),
++    ("report", "отчёт", ("отчет",)),
+     ("fiscal_drive", "ФН", ("фн", "накопител")),
+     ("receipt", "чек", ("чек", "квитанц")),
+     ("network", "соединение", ("интернет", "связь", "сети", "подключен")),
+@@ -276,7 +277,24 @@
+                              and not obs.new_topic)
+         search_request |= elliptical_search
+         parameter_at = next((i for i, token in enumerate(tokens) if token in {'по', 'за'}), len(tokens))
++        # Bind the object to the requested action, before contextual modifiers.
++        # An action noun in «после замены ...» is background, not a new command.
++        boundary = next((i for i, token in enumerate(tokens) if token in {'но', 'без', 'нельзя'}), len(tokens))
++        actions = [(name, token) for name, stems in OPERATIONS for token in tokens[:boundary] if token.startswith(stems)]
++        commands = [name for name, token in actions if token.endswith(('ть', 'ти', 'йте'))]
++        obs.operation = commands[0] if commands else actions[0][0] if actions else 'unknown'
+         subject_tokens = tokens[:parameter_at] if search_request else tokens
++        if not search_request:
++            stems = next((stems for name, stems in OPERATIONS if name == obs.operation), ())
++            action_at = next((i for i, token in enumerate(tokens) if token.startswith(stems)), None) if stems else None
++            after_action = tokens[action_at + 1:] if action_at is not None else tokens
++            # Also support a fronted object: «Отчёты ... где посмотреть?».
++            if any(has(after_action, object_stems) for _, _, object_stems in OBJECTS):
++                subject_tokens = after_action
++            modifier_at = next((i for i, token in enumerate(subject_tokens)
++                                if token in {'после', 'до', 'при'}), len(subject_tokens))
++            if modifier_at:
++                subject_tokens = subject_tokens[:modifier_at]
+         for intent, obj, stems in OBJECTS:
+             if has(subject_tokens, stems):
+                 obs.intent, obs.object = intent, obj
+@@ -291,10 +309,6 @@
+                                             len(text.rstrip(' .?!'))))
+         # Restrictions describe the desired result, not a new operation. A
+         # participle ("созданному") likewise must not outrank a command.
+-        boundary = next((i for i, token in enumerate(tokens) if token in {'но', 'без', 'нельзя'}), len(tokens))
+-        actions = [(name, token) for name, stems in OPERATIONS for token in tokens[:boundary] if token.startswith(stems)]
+-        commands = [name for name, token in actions if token.endswith(('ть', 'ти', 'йте'))]
+-        obs.operation = (commands[0] if commands else actions[0][0] if actions else 'unknown')
+         if elliptical_search:
+             obs.operation = 'search'
+         if obs.intent == 'device' and obs.operation == 'check' and has(tokens, ('список', 'перечень')):
+@@ -302,12 +316,22 @@
+         if obs.question and len(set(commands)) > 1:
+             obs.uncertain = True  # several requested operations need disambiguation
+         if obs.intent == "access":
+-            if has(tokens, ("роль", "роли", "ролей")):
++            role_stems = ("роль", "роли", "ролей", "ролю")
++            user_stems = ("сотрудник", "пользовател", "коллег", "учетн", "учетк", "аккаунт")
++            target = next(("role" if token.startswith(role_stems) else "user"
++                           for token in subject_tokens if token.startswith(role_stems + user_stems)), None)
++            if obs.operation == 'add' and target == 'role':
++                obs.operation, obs.object = 'create_role', 'роль'
++            elif obs.operation in {"change", "configure"}:
++                obs.operation = "change_permissions"
++            elif obs.operation == 'add':
++                obs.operation = "add_employee"
++            elif has(tokens, role_stems):
+                 obs.operation = "assign_role"
+-            elif obs.operation in {"change", "assign", "configure"}:
++            elif obs.operation == 'assign':
+                 obs.operation = "change_permissions"
+-            elif obs.operation == "add":
+-                obs.operation = "add_employee"
++        if obs.intent == 'report' and obs.operation in {'check', 'search', 'list'}:
++            obs.operation = 'view_reports'
+         if obs.intent in {"device", "fiscal_drive", "network", "receipt"} and has(tokens, ("ошиб", "неисправ", "перестал", "печата", "отправля")):
+             obs.operation = "diagnose"
+         if obs.intent == "receipt" and has(tokens, ("статус", "дошел", "дошли", "передан")):
+@@ -356,7 +380,7 @@
+         # Enforce the boundary even for a future model-backed analyser.
+         facts = [f for values in obs.entities.values() for f in values]
+         facts += [*obs.goals, *obs.constraints, *obs.parameters, *([obs.evidence] if obs.evidence else []), *([obs.error] if obs.error else [])]
+-        valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'change_permissions', 'diagnose', 'status'}
++        valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'create_role', 'view_reports', 'change_permissions', 'diagnose', 'status'}
+         if obs.operation not in valid_operations or obs.intent not in {name for name, _, _ in OBJECTS} | {'unknown', 'general'}:
+             raise ValueError('Unsupported analyser task; extend the typed vocabulary explicitly')
+         if obs.evidence is None or set(obs.entities) - ENTITY_SLOTS or any(
+--- a/app/rag_query.py
++++ b/app/rag_query.py
+@@ -6,6 +6,7 @@
+ 
+ OPERATIONS = {
+     "add_employee": "добавление сотрудника", "assign_role": "назначение роли сотруднику",
++    "create_role": "создание роли", "view_reports": "просмотр отчётов",
+     "change_permissions": "изменение прав существующего сотрудника",
+     "reset_password": "восстановление пароля учётной записи", "search": "поиск",
+     "list": "просмотр списка касс",
+@@ -27,7 +28,7 @@
+         task = state.task.value if state.task else ""
+     else:
+         task = OPERATIONS[state.operation]
+-        if state.intent not in {"access", "credentials"} and state.object and state.operation != 'list':
++        if state.intent not in {"access", "credentials", "report"} and state.object and state.operation != 'list':
+             task += " " + state.object
+     entities = [f"{label}: {state.entity(slot)}" for slot, label in (
+         ("service", "сервис"), ("equipment", "оборудование"), ("manufacturer", "производитель"),
+@@ -38,6 +39,11 @@
+     # Never cut the middle of a fact or drop an exclusion to satisfy the search
+     # API limit. Oversized states need a targeted clarification/compression step.
+     parts = [*required]
++    report_request = state.operation_evidence or state.task
++    if state.intent == 'report' and report_request:
++        # Preserve the requested report kind and conditions from the client;
++        # compressing to «проверка ФН» loses the object and changes the task.
++        parts.append("запрос клиента: " + report_request.value)
+     if state.goals:
+         parts.append("цель: " + "; ".join(f.value for f in state.goals))
+     if state.constraints:
+--- a/app/retrieval_pipeline.py
++++ b/app/retrieval_pipeline.py
+@@ -81,6 +81,7 @@
+ _TASK_EVIDENCE = {
+     "cash_list": ("мониторинг", "отобрать кассы", "список касс"),
+     "access": ("сотрудник", "пользователь", "учетн", "доступ", "прав", "рол"),
++    "cash_reports": ("отчет", "отчёт"),
+     "receipt_search": ("чек", "найт", "поиск", "журнал", "квитанц"),
+     "receipt_transmission": ("передач", "отправ", "неотправ", "очеред", "офд"),
+     "error_diagnosis": ("ошиб", "код", "диагност", "фн", "ккт"),
+@@ -202,6 +203,8 @@
+ 
+ 
+ def _state_task_category(state: DialogueState, query: str) -> str | None:
++    if state.intent == 'report' and state.operation == 'view_reports':
++        return 'cash_reports'
+     if state.intent == 'device' and state.operation == 'list' and not state.error:
+         return 'cash_list'
+     if state.intent == 'fiscal_drive' and state.operation == 'search':
+@@ -250,6 +253,8 @@
+     aliases = {
+         "add_employee": {"add_employee"},
+         "assign_role": {"assign_role"},
++        "create_role": {"create_role"},
++        "view_reports": {"view_cash_reports"},
+         "change_permissions": {"change_permissions"},
+         "reset_password": {"reset_password"},
+         "search": {"search_receipt"},
+@@ -286,6 +291,7 @@
+     """
+     steps, seen = [], set()
+     families = {"change_permissions": ("edit", "search"), "assign_role": ("assign",),
++                "create_role": ("create", "input", "configure", "edit"),
+                 "add_employee": ("create", "input", "assign", "save"),
+                 "reset_password": ("reset",)}.get(state.operation, ())
+     full = False
+@@ -322,8 +328,8 @@
+             full = True
+     missing = []
+     if not full:
+-        missing.append("permission_change_workflow_unverified" if state.operation == "change_permissions"
+-                       else "access_workflow_unverified")
++        missing.append({"change_permissions": "permission_change_workflow_unverified",
++                        "create_role": "role_creation_workflow_unverified"}.get(state.operation, "access_workflow_unverified"))
+     request = " ".join(f.value for f in [*state.goals, *state.constraints, *state.details,
+                                         *([state.task] if state.task else [])])
+     if state.goals or state.constraints or has_named_role(request):
+--- a/app/answer_service.py
++++ b/app/answer_service.py
+@@ -324,6 +324,7 @@
+     dialogue_state: dict | None = None
+     clarification_slot: str | None = None
+     retrieval_diagnostics: dict | None = None
++    retrieval_collection: str | None = None
+     reasoning_effort: str | None = None
+     llm_call_attempted: bool = False
+     response_repair: dict | None = None
+@@ -355,6 +356,7 @@
+         answer.confirmed_service = diagnostics.get('confirmed_service')
+         answer.dialogue_state = state.to_dict()
+         answer.retrieval_diagnostics = diagnostics.get('retrieval_diagnostics')
++        answer.retrieval_collection = getattr(getattr(getattr(self.rag, 'retriever', None), 'store', None), 'collection', None)
+         answer.reasoning_effort = (self.settings.groq_reasoning_effort if self.settings.llm_provider == 'groq' else None)
+         answer.llm_call_attempted = diagnostics.get('llm_call_attempted', False)
+         if answer.scenario == 'clarify':
+@@ -379,7 +381,7 @@
+                           generation_reason=reason, model=model, provider=self.settings.llm_provider,
+                           rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
+         diagnostics.update(active_request=active_request, confirmed_service=service)
+-        needs_service = ((state.intent in {'access', 'credentials'} and state.operation != 'explain')
++        needs_service = ((state.intent in {'access', 'credentials', 'report'} and state.operation != 'explain')
+                          or (state.intent == 'receipt' and state.operation in {'search', 'check', 'status', 'transmit'})
+                          or _needs_service_context(active_request))
+         pending_service_question = bool(state.expected and state.expected.slot == 'service')
+@@ -445,6 +447,7 @@
+             gaps = {
+                 'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
+                 'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
++                'role_creation_workflow_unverified': 'Полная процедура создания роли в источнике не подтверждена; завершение и сохранение нужно проверить в актуальном кабинете.',
+                 'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
+             }
+             confirmed = []
+@@ -463,7 +466,7 @@
+                           response_repair={'mode': 'partial_answer', 'evidence': retrieval.supported_steps})
+ 
+         if retrieval is not None and not retrieval.sufficient and state.intent in {
+-                'access', 'credentials', 'receipt', 'device', 'fiscal_drive', 'network'}:
++                'access', 'credentials', 'receipt', 'report', 'device', 'fiscal_drive', 'network'}:
+             reason = retrieval.insufficiency_reason or 'insufficient_evidence'
+             return Answer(
+                 text=(f"Для {service} не нашёл инструкции по этому действию. " if service else
+--- a/app/response_grounding.py
++++ b/app/response_grounding.py
+@@ -35,7 +35,7 @@
+     "create": r"созда\w*|добав\w*|приглас\w*|приглаш\w*",
+     "assign": r"назнач\w*|присва\w*|присво\w*",
+     "edit": r"измен\w*|редакт\w*|менять|помен\w*",
+-    "input": r"введ\w*|ввод\w*|введите|укаж\w*|указыв\w*|заполн\w*",
++    "input": r"введ\w*|ввод\w*|введите|укаж\w*|указыв\w*|заполн\w*|задайте|задать",
+     "save": r"сохран\w*",
+     "notification": r"получ\w*.{0,30}(?:письм\w*|уведомлен\w*)|(?:письм\w*|уведомлен\w*).{0,30}(?:прид[её]т|отправ\w*)",
+     "search": r"поиск\w*|найти|найд\w*|фильтр\w*",
+@@ -45,6 +45,7 @@
+ }
+ OPERATION_FAMILY = {
+     "add_employee": "create", "add": "create", "assign_role": "assign",
++    "create_role": "create",
+     "assign": "assign", "change_permissions": "edit", "change": "edit",
+     "search": "search", "configure": "configure", "connect": "connect",
+     "reset_password": "reset",
+--- /dev/null
++++ b/app/bot_runtime.py
+@@ -0,0 +1,34 @@
++"""Safe startup receipt from the objects actually used by the Telegram worker."""
++from __future__ import annotations
++
++from datetime import datetime, timezone
++from hashlib import sha256
++import json
++import os
++from pathlib import Path
++import subprocess
++
++ROOT = Path(__file__).resolve().parents[1]
++
++
++def write_runtime_receipt(settings, rag, path: Path | None = None) -> dict:
++    store = getattr(getattr(rag, 'retriever', None), 'store', None)
++    collection = store.collection if store else None
++    points = store.client.get_collection(collection).points_count if store else len(rag.chunks)
++    head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True,
++                          text=True, check=True).stdout.strip()
++    sources = [ROOT/'bot.py', *sorted((ROOT/'app').glob('*.py'))]
++    hashes = {p.relative_to(ROOT).as_posix(): sha256(p.read_bytes()).hexdigest() for p in sources}
++    receipt = dict(pid=os.getpid(), started_at=datetime.now(timezone.utc).isoformat(),
++        backend=type(rag).__name__, collection=collection, points=points,
++        demo=rag.retriever.demo if store else True,
++        provider=settings.llm_provider,
++        model=settings.groq_model if settings.llm_provider == 'groq' else settings.openrouter_model,
++        reasoning_effort=settings.groq_reasoning_effort if settings.llm_provider == 'groq' else None,
++        commit=head, source_sha256=hashes, phase='runtime_initialized_before_polling')
++    target = path or ROOT/'.local/bot-runtime.json'
++    target.parent.mkdir(parents=True, exist_ok=True)
++    temporary = target.with_suffix('.tmp')
++    temporary.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding='utf-8')
++    temporary.replace(target)
++    return receipt
+--- a/bot.py
++++ b/bot.py
+@@ -8,6 +8,7 @@
+ from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
+ 
+ from app.answer_service import Answer, AnswerService
++from app.bot_runtime import write_runtime_receipt
+ from app.conversation_store import ConversationStore
+ from app.compat import build_answer_rag
+ from app.config import get_settings
+@@ -178,6 +179,9 @@
+     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+ 
+     logger.info("Bot started. Docs: %s, chunks: %s", settings.docs_dir, len(rag.chunks))
++    runtime = write_runtime_receipt(settings, rag)
++    logger.info("Bot runtime: pid=%s collection=%s provider=%s model=%s reasoning=%s",
++                runtime['pid'], runtime['collection'], runtime['provider'], runtime['model'], runtime['reasoning_effort'])
+ 
+     try:
+         asyncio.get_event_loop()
+--- /dev/null
++++ b/scripts/capture_telegram_manual_test.py
+@@ -0,0 +1,90 @@
++"""Read-only capture of five manual Telegram dialogs (20 client turns).
++
++Private exports default to .local; no provider, Telegram or app-store imports.
++"""
++from __future__ import annotations
++
++import argparse
++from datetime import datetime, timezone
++import json
++from pathlib import Path
++import sqlite3
++
++ROOT = Path(__file__).resolve().parents[1]
++COLLECTION = 'knowledge_sprint_v1_20261022_quality_gate'
++
++
++def read_db(path):
++    db = sqlite3.connect(Path(path).resolve().as_uri()+'?mode=ro', uri=True)
++    db.row_factory = sqlite3.Row
++    return db
++
++
++def mark(db_path, receipt, cases):
++    if receipt.get('collection') != COLLECTION:
++        raise ValueError('Start marker requires a receipt from the approved STAGING worker')
++    with read_db(db_path) as db:
++        last = db.execute('SELECT COALESCE(MAX(id),0) FROM messages').fetchone()[0]
++    return dict(created_at=datetime.now(timezone.utc).isoformat(), after_message_id=last,
++                collection=COLLECTION, runtime=receipt, planned_turns=cases)
++
++
++def capture(db_path, marker):
++    with read_db(db_path) as db:
++        rows=[dict(r) for r in db.execute('SELECT * FROM messages WHERE id>? ORDER BY id',
++                                         (marker['after_message_id'],))]
++    dialogs={}
++    for row in rows:
++        dialogs.setdefault(row['conversation_id'],[]).append(row)
++    turns=[]
++    groups=list(dict.fromkeys(case['conversation'] for case in marker['planned_turns']))
++    counts={}
++    for index,(cid,messages) in enumerate(dialogs.items()):
++        group=groups[index] if index<len(groups) else f'extra-{index+1}'
++        users=[r for r in messages if r['role']=='user']
++        counts[cid]=len(users)
++        planned=[case for case in marker['planned_turns'] if case['conversation']==group]
++        for i,user in enumerate(users):
++            end=users[i+1]['id'] if i+1<len(users) else float('inf')
++            answer=next((r for r in messages if r['role']=='assistant' and user['id']<r['id']<end),None)
++            diagnostics=json.loads(answer.get('diagnostics_json') or '{}') if answer else {}
++            expected=planned[i] if i<len(planned) else None
++            turns.append(dict(dialog=group,conversation_id=cid,user=user,assistant=answer,
++                              diagnostics=diagnostics,planned=expected,
++                              planned_text_matches=bool(expected and expected['message']==user['content'])))
++    collection_matches=sum(t['diagnostics'].get('retrieval_collection')==marker['collection'] for t in turns)
++    configuration_matches=sum(t['diagnostics'].get('provider')=='groq'
++        and t['diagnostics'].get('model')=='openai/gpt-oss-20b'
++        and t['diagnostics'].get('reasoning_effort')=='medium' for t in turns)
++    completed=sum(bool(t['assistant'] and t['assistant']['status']=='complete') for t in turns)
++    return dict(marker=marker, captured_at=datetime.now(timezone.utc).isoformat(),
++                dialog_counts=counts,client_turns=len(turns),completed_answers=completed,
++                verified_collection_answers=collection_matches,
++                verified_model_answers=configuration_matches,
++                complete=(len(counts)==5 and list(counts.values())==[4]*5
++                          and len(turns)==completed==collection_matches==configuration_matches==20),turns=turns)
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('action', choices=['mark','capture'])
++    parser.add_argument('--db',type=Path,default=ROOT/'data/conversations.sqlite3')
++    parser.add_argument('--marker',type=Path,default=ROOT/'.local/telegram-live-test/marker.json')
++    parser.add_argument('--output',type=Path,default=ROOT/'.local/telegram-live-test/diagnostics-20.json')
++    args=parser.parse_args()
++    if args.action=='mark':
++        if args.marker.exists():
++            parser.error('Marker already exists; preserve the earlier session and choose another path')
++        receipt=json.loads((ROOT/'.local/bot-runtime.json').read_text(encoding='utf-8'))
++        cases=json.loads((ROOT/'docs/telegram-live-test/dialogs.json').read_text(encoding='utf-8'))
++        data=mark(args.db,receipt,cases);target=args.marker
++    else:
++        data=capture(args.db,json.loads(args.marker.read_text(encoding='utf-8')));target=args.output
++    target.parent.mkdir(parents=True,exist_ok=True)
++    target.write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
++    print(json.dumps(dict(path=str(target),complete=data.get('complete'),client_turns=data.get('client_turns'),
++                          completed_answers=data.get('completed_answers'),verified_collection_answers=data.get('verified_collection_answers'))))
++
++
++if __name__=='__main__':
++    main()
+--- /dev/null
++++ b/tests/test_manual_test_readiness.py
+@@ -0,0 +1,84 @@
++import asyncio
++from types import SimpleNamespace
++
++import pytest
++
++from app.answer_service import AnswerService
++from app.bot_runtime import write_runtime_receipt
++from app.dialogue_state import DialogueManager, DialogueState
++from app.rag_query import build_rag_query
++from app.retrieval_pipeline import RetrievalPipeline
++from test_expert import settings
++from test_retrieval_pipeline import Source
++from app.knowledge import DocumentLoader, Chunker
++from app.rag import SearchResult
++from pathlib import Path
++
++
++@pytest.mark.parametrize('message', [
++    'Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?',
++    'После замены ФН где посмотреть отчёты в АТОЛ Онлайн?',
++    'Как найти отчёт после перерегистрации кассы в АТОЛ Онлайн?',
++    'Отчёты после замены ФН где посмотреть в АТОЛ Онлайн?',
++])
++def test_requested_report_is_not_its_contextual_hardware(message):
++    state = DialogueManager().advance(DialogueState(), message, 1)
++    assert (state.intent, state.operation, state.object) == ('report', 'view_reports', 'отчёт')
++    assert state.routing_service == 'АТОЛ Онлайн'
++    query = build_rag_query(state)
++    assert 'просмотр отчётов' in query and 'проверка ФН' not in query
++    assert message in query  # Keep the requested report kind/conditions grounded.
++
++
++@pytest.mark.parametrize('message,operation', [
++    ('Как создать новую роль в aQsi Online?', 'create_role'),
++    ('Как добавить роль в aQsi Online?', 'create_role'),
++    ('Как назначить роль сотруднику в aQsi Online?', 'assign_role'),
++    ('Как изменить права существующего пользователя в aQsi Online?', 'change_permissions'),
++    ('Как поменять роль сотруднику в aQsi Online?', 'change_permissions'),
++    ('Как создать пользователя с ролью «Менеджер» в aQsi Online?', 'add_employee'),
++])
++def test_role_operation_depends_on_action_and_target(message, operation):
++    state = DialogueManager().advance(DialogueState(), message, 1)
++    assert state.operation == operation and state.routing_service == 'aQsi Online'
++
++
++def test_report_query_uses_latest_explicit_request_after_switching_cabinet():
++    manager=DialogueManager()
++    state=manager.advance(DialogueState(),'Где посмотреть отчёты после замены ФН в АТОЛ Онлайн?',1)
++    state=manager.advance(state,'А в aQsi Online где посмотреть отчёты?',2)
++    query=build_rag_query(state)
++    assert state.operation=='view_reports' and 'aQsi Online' in query
++    assert 'АТОЛ' not in query
++
++
++def test_role_creation_uses_only_matching_card_and_keeps_partial_without_generation(monkeypatch, tmp_path):
++    root = Path(__file__).resolve().parents[1]/'data/knowledge'
++    loader = DocumentLoader(root)
++    docs = [loader.load(root/'aqsi_online/account'/name) for name in ['add-user.md', 'create-role.md']]
++    hits = [SearchResult(doc.source, chunk.text, .04, metadata=chunk.metadata)
++            for doc in docs for chunk in Chunker().split(doc)]
++    articles = {doc.document_id: [h for h in hits if h.metadata['document_id']==doc.document_id] for doc in docs}
++    pipeline = RetrievalPipeline(Source(hits, articles))
++    state = DialogueManager().advance(DialogueState(), 'Как создать роль в aQsi Online?', 1)
++    result = pipeline.search(state, build_rag_query(state))
++    assert {h.metadata['document_id'] for h in result.documents} == {'aqsi-online-account-create-role'}
++    assert not result.sufficient and result.evidence_status == 'partial'
++    assert 'role_creation_workflow_unverified' in result.missing_evidence
++    async def forbidden(*args):
++        raise AssertionError('No LLM call for partial source procedure')
++    monkeypatch.setattr('app.answer_service.generate', forbidden)
++    answer = asyncio.run(AnswerService(SimpleNamespace(search_for_state=lambda *a: result), settings(tmp_path)).answer('Создать роль', state=state))
++    assert 'Полная процедура создания роли' in answer.text
++    assert 'задайте название роли' in answer.text and not answer.llm_call_attempted
++
++
++def test_receipt_uses_actual_collection_instead_of_environment(monkeypatch, tmp_path):
++    monkeypatch.setenv('QDRANT_COLLECTION', 'wrong-environment-value')
++    store = SimpleNamespace(collection='actual_staging',client=SimpleNamespace(
++        get_collection=lambda name: SimpleNamespace(points_count=927)))
++    rag = SimpleNamespace(retriever=SimpleNamespace(store=store,demo=True))
++    receipt=write_runtime_receipt(settings(tmp_path, llm_provider='groq',groq_reasoning_effort='medium'),rag,tmp_path/'receipt.json')
++    assert receipt['collection']=='actual_staging' and receipt['points']==927
++    assert receipt['reasoning_effort']=='medium' and 'source_sha256' in receipt
++    assert not any('key' in key.lower() or 'token' in key.lower() for key in receipt)
+--- /dev/null
++++ b/tests/test_capture_manual_session.py
+@@ -0,0 +1,33 @@
++import hashlib
++import json
++import sqlite3
++
++import pytest
++
++from scripts.capture_telegram_manual_test import COLLECTION, mark, capture
++
++
++def test_capture_twenty_turns_is_read_only_and_preserves_diagnostics(tmp_path):
++    path=tmp_path/'messages.sqlite3'
++    with sqlite3.connect(path) as db:
++        db.execute('CREATE TABLE messages(id INTEGER PRIMARY KEY, conversation_id TEXT, role TEXT, content TEXT, status TEXT, diagnostics_json TEXT)')
++    cases=[dict(conversation=str(i),message=f'question {i}-{j}') for i in range(5) for j in range(4)]
++    marker=mark(path,dict(collection=COLLECTION,pid=123),cases)
++    with sqlite3.connect(path) as db:
++        for i,case in enumerate(cases):
++            db.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)',(2*i+1,case['conversation'],'user',case['message'],'complete',None))
++            db.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)',(2*i+2,case['conversation'],'assistant','answer','complete',json.dumps(dict(retrieval_collection=COLLECTION,provider='groq',model='openai/gpt-oss-20b',reasoning_effort='medium',raw_model_text='raw',dialogue_state={'operation':'create_role'}))))
++    before=hashlib.sha256(path.read_bytes()).hexdigest()
++    result=capture(path,marker)
++    assert result['complete'] and result['client_turns']==20 and result['completed_answers']==20
++    assert result['turns'][0]['diagnostics']['raw_model_text']=='raw'
++    assert all(t['planned_text_matches'] for t in result['turns'])
++    assert hashlib.sha256(path.read_bytes()).hexdigest()==before
++    with sqlite3.connect(path) as db:
++        db.execute('DELETE FROM messages WHERE id=40')
++    assert not capture(path,marker)['complete']
++
++
++def test_marker_refuses_old_collection(tmp_path):
++    with pytest.raises(ValueError,match='STAGING'):
++        mark(tmp_path/'unused.sqlite3',dict(collection='knowledge_demo'),[])

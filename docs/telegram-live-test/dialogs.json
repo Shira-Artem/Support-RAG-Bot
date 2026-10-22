@@ -1,0 +1,202 @@
+[
+  {
+    "id": "A-1",
+    "conversation": "A",
+    "message": "Как завести учётку для сотрудника в aQsi Online?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "add_employee",
+    "expected_service": "aQsi Online",
+    "expected_document": "aqsi-online-account-add-user",
+    "expected_evidence": "full"
+  },
+  {
+    "id": "A-2",
+    "conversation": "A",
+    "message": "Он уже есть, мне нужно изменить ему права.",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "change_permissions",
+    "expected_service": "aQsi Online",
+    "expected_document": "aqsi-online-account-edit-user",
+    "expected_evidence": "partial"
+  },
+  {
+    "id": "A-3",
+    "conversation": "A",
+    "message": "Хочу, чтобы он мог смотреть кассы и отчёты, но не менять настройки.",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "change_permissions",
+    "expected_service": "aQsi Online",
+    "expected_document": "aqsi-online-account-edit-user",
+    "expected_evidence": "partial"
+  },
+  {
+    "id": "A-4",
+    "conversation": "A",
+    "message": "А если у нас АТОЛ Онлайн — там это делается так же?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "change_permissions",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": null,
+    "expected_evidence": "none"
+  },
+  {
+    "id": "B-1",
+    "conversation": "B",
+    "message": "Как посмотреть список касс в АТОЛ Онлайн?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "list",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": "atol-online-18126-monitoring",
+    "expected_evidence": null
+  },
+  {
+    "id": "B-2",
+    "conversation": "B",
+    "message": "Как посмотреть список касс в Первом ОФД?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "list",
+    "expected_service": "Первый ОФД",
+    "expected_document": null,
+    "expected_evidence": "none"
+  },
+  {
+    "id": "B-3",
+    "conversation": "B",
+    "message": "Как посмотреть список касс в АТОЛ Онлайн?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "list",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": "atol-online-18126-monitoring",
+    "expected_evidence": null
+  },
+  {
+    "id": "B-4",
+    "conversation": "B",
+    "message": "Как найти чек по ФД в Платформе ОФД?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "search",
+    "expected_service": "Платформа ОФД",
+    "expected_document": "platformaofd-lkk-receipt-search",
+    "expected_evidence": null
+  },
+  {
+    "id": "C-1",
+    "conversation": "C",
+    "message": "Эвотор ошибка ФН 235",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "diagnose",
+    "expected_service": "Эвотор",
+    "expected_document": "evotor-fn-235-360004715213",
+    "expected_evidence": null
+  },
+  {
+    "id": "C-2",
+    "conversation": "C",
+    "message": "Эвотор ошибка ФН 234",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "diagnose",
+    "expected_service": "Эвотор",
+    "expected_document": "evotor-fn-234-360005580254",
+    "expected_evidence": null
+  },
+  {
+    "id": "C-3",
+    "conversation": "C",
+    "message": "Эвотор ошибка ФН 235",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "diagnose",
+    "expected_service": "Эвотор",
+    "expected_document": "evotor-fn-235-360004715213",
+    "expected_evidence": null
+  },
+  {
+    "id": "C-4",
+    "conversation": "C",
+    "message": "Эвотор ошибка ФН 999",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "diagnose",
+    "expected_service": "Эвотор",
+    "expected_document": null,
+    "expected_evidence": "none"
+  },
+  {
+    "id": "D-1",
+    "conversation": "D",
+    "message": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "view_reports",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": "atol-online-account-cash-reports",
+    "expected_evidence": null
+  },
+  {
+    "id": "D-2",
+    "conversation": "D",
+    "message": "Где посмотреть отчёты по кассам в АТОЛ Онлайн?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "view_reports",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": "atol-online-account-cash-reports",
+    "expected_evidence": null
+  },
+  {
+    "id": "D-3",
+    "conversation": "D",
+    "message": "Где посмотреть отчёты после замены ФН?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "view_reports",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": "atol-online-account-cash-reports",
+    "expected_evidence": null
+  },
+  {
+    "id": "D-4",
+    "conversation": "D",
+    "message": "А в aQsi Online где посмотреть отчёты?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "view_reports",
+    "expected_service": "aQsi Online",
+    "expected_document": null,
+    "expected_evidence": "none"
+  },
+  {
+    "id": "E-1",
+    "conversation": "E",
+    "message": "Как создать новую роль в aQsi Online?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "create_role",
+    "expected_service": "aQsi Online",
+    "expected_document": "aqsi-online-account-create-role",
+    "expected_evidence": "partial"
+  },
+  {
+    "id": "E-2",
+    "conversation": "E",
+    "message": "Как назначить роль сотруднику?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "assign_role",
+    "expected_service": "aQsi Online",
+    "expected_document": "aqsi-online-account-create-role",
+    "expected_evidence": "partial"
+  },
+  {
+    "id": "E-3",
+    "conversation": "E",
+    "message": "Как изменить права существующего пользователя?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "change_permissions",
+    "expected_service": "aQsi Online",
+    "expected_document": "aqsi-online-account-edit-user",
+    "expected_evidence": "partial"
+  },
+  {
+    "id": "E-4",
+    "conversation": "E",
+    "message": "Как создать новую роль в АТОЛ Онлайн?",
+    "origin": "prepared_manual_telegram",
+    "expected_operation": "create_role",
+    "expected_service": "АТОЛ Онлайн",
+    "expected_document": null,
+    "expected_evidence": "none"
+  }
+]

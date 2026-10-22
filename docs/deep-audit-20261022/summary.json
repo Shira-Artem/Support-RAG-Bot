@@ -1,0 +1,40 @@
+{
+  "answer_statuses": {
+    "clarification": 9,
+    "generated": 34,
+    "grounded": 3,
+    "no_context": 11,
+    "partial": 3,
+    "rejected": 7
+  },
+  "answer_statuses_since_runtime_start": {
+    "clarification": 4,
+    "generated": 9,
+    "grounded": 3,
+    "no_context": 3,
+    "partial": 1
+  },
+  "answers_since_runtime_start": 20,
+  "answers_without_feedback": 48,
+  "assistant_review_attempts": 46,
+  "escalation_events": 6,
+  "expert_attempts": 38,
+  "expert_human_reviews": 31,
+  "expert_sessions": 8,
+  "feedback_events": 20,
+  "free_assistant_answers": 67,
+  "free_conversations": 19,
+  "free_conversations_with_messages": 16,
+  "free_messages": 134,
+  "knowledge_chunks": 927,
+  "knowledge_documents": 269,
+  "knowledge_vectors": 927,
+  "latest_rating_per_answer": {
+    "helpful": 7,
+    "unhelpful": 12
+  },
+  "support_request_statuses": {
+    "saved": 3
+  },
+  "support_requests": 3
+}

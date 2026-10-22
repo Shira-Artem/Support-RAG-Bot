@@ -220,7 +220,7 @@ class ExpertTelegram:
         expert_id = update.effective_user.id
         try:
             if action == "new":
-                session_id = self.store.start(expert_id, load_questions())
+                session_id = self.store.start(expert_id, load_questions(), shuffle=True)
                 await self.question(update, session_id)
             elif action == "continue":
                 session = self.store.active(expert_id)

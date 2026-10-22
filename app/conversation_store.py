@@ -50,7 +50,71 @@ class ConversationStore:
                     conversation_id TEXT NOT NULL REFERENCES conversations(id),
                     topic_start_message_id INTEGER NOT NULL, state_json TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS feedback_events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    conversation_id TEXT NOT NULL REFERENCES conversations(id),
+                    answer_message_id INTEGER NOT NULL REFERENCES messages(id),
+                    rating TEXT NOT NULL CHECK(rating IN ('helpful','unhelpful')),
+                    created_at TEXT NOT NULL,
+                    scenario TEXT, generation_status TEXT, generation_reason TEXT,
+                    retrieval_json TEXT, collection TEXT, callback_id TEXT UNIQUE,
+                    comment TEXT, comment_created_at TEXT
+                );
+                CREATE TABLE IF NOT EXISTS pending_feedback_comments (
+                    user_id INTEGER NOT NULL, chat_id INTEGER NOT NULL,
+                    answer_message_id INTEGER NOT NULL REFERENCES messages(id),
+                    PRIMARY KEY(user_id, chat_id)
+                );
+                CREATE TABLE IF NOT EXISTS support_requests (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    conversation_id TEXT NOT NULL REFERENCES conversations(id),
+                    answer_message_id INTEGER NOT NULL UNIQUE REFERENCES messages(id),
+                    question_message_id INTEGER NOT NULL REFERENCES messages(id),
+                    status TEXT NOT NULL CHECK(status IN ('pending_confirmation','cancelled','saved','delivered')),
+                    basis TEXT NOT NULL, created_at TEXT NOT NULL, confirmed_at TEXT,
+                    delivered_at TEXT
+                );
+                CREATE TABLE IF NOT EXISTS escalation_events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    conversation_id TEXT NOT NULL REFERENCES conversations(id),
+                    answer_message_id INTEGER NOT NULL REFERENCES messages(id),
+                    event_type TEXT NOT NULL CHECK(event_type IN ('requested','confirmed','cancelled','delivered')),
+                    created_at TEXT NOT NULL, scenario TEXT, generation_status TEXT,
+                    generation_reason TEXT, retrieval_json TEXT, collection TEXT,
+                    request_status TEXT NOT NULL, basis TEXT NOT NULL,
+                    UNIQUE(answer_message_id, event_type)
+                );
+                CREATE INDEX IF NOT EXISTS feedback_answer ON feedback_events(answer_message_id);
+                CREATE INDEX IF NOT EXISTS escalation_conversation ON escalation_events(conversation_id);
             """)
+            # The first local revision keyed ratings by (answer, rating).
+            # Preserve any events while allowing a user to revise a rating.
+            columns = {row['name'] for row in db.execute('PRAGMA table_info(feedback_events)')}
+            if 'callback_id' not in columns:
+                db.executescript('''
+                    ALTER TABLE feedback_events RENAME TO feedback_events_old;
+                    CREATE TABLE feedback_events (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        conversation_id TEXT NOT NULL REFERENCES conversations(id),
+                        answer_message_id INTEGER NOT NULL REFERENCES messages(id),
+                        rating TEXT NOT NULL CHECK(rating IN ('helpful','unhelpful')),
+                        created_at TEXT NOT NULL,
+                        scenario TEXT, generation_status TEXT, generation_reason TEXT,
+                        retrieval_json TEXT, collection TEXT, callback_id TEXT UNIQUE
+                    );
+                    INSERT INTO feedback_events
+                        (id,conversation_id,answer_message_id,rating,created_at,scenario,
+                         generation_status,generation_reason,retrieval_json,collection)
+                    SELECT id,conversation_id,answer_message_id,rating,created_at,scenario,
+                           generation_status,generation_reason,retrieval_json,collection
+                    FROM feedback_events_old;
+                    DROP TABLE feedback_events_old;
+                    CREATE INDEX IF NOT EXISTS feedback_answer ON feedback_events(answer_message_id);
+                ''')
+            columns = {row['name'] for row in db.execute('PRAGMA table_info(feedback_events)')}
+            for column in ('comment', 'comment_created_at'):
+                if column not in columns:
+                    db.execute(f'ALTER TABLE feedback_events ADD COLUMN {column} TEXT')
 
     @contextmanager
     def connect(self):
@@ -206,10 +270,15 @@ class ConversationStore:
             state = self._sync_state(db, conversation_id)
             root = state.topic_start_message_id
             if root is None:
-                return []
-            rows = db.execute("""SELECT * FROM messages WHERE conversation_id=? AND status='complete'
-                AND id>=? ORDER BY id DESC LIMIT 12""", (conversation_id, root)).fetchall()[::-1]
-            if rows and rows[0]['id'] != root:
+                # A conversation containing only greetings, thanks or a vague
+                # request still belongs in the durable transcript even though
+                # it deliberately has no active technical task.
+                rows = db.execute("""SELECT * FROM messages WHERE conversation_id=? AND status='complete'
+                    ORDER BY id DESC LIMIT 12""", (conversation_id,)).fetchall()[::-1]
+            else:
+                rows = db.execute("""SELECT * FROM messages WHERE conversation_id=? AND status='complete'
+                    AND id>=? ORDER BY id DESC LIMIT 12""", (conversation_id, root)).fetchall()[::-1]
+            if root is not None and rows and rows[0]['id'] != root:
                 rows.insert(0, db.execute('SELECT * FROM messages WHERE id=?', (root,)).fetchone())
             return [dict(message_id=row['id'], role=row['role'], content=row['content'],
                          clarification_reply=row['role'] == 'user' and row['id'] != root,
@@ -250,3 +319,152 @@ class ConversationStore:
             self.complete(message_id, Answer("Обработка была прервана перезапуском. Повторите последнее сообщение.",
                           generation_status="error", generation_reason="process_interrupted",
                           scenario="escalate", scenario_reason="process_interrupted"))
+
+    @staticmethod
+    def _event_context(db, answer_id: int, user_id: int, chat_id: int):
+        row = db.execute('''SELECT m.*, c.user_id, c.chat_id FROM messages m
+            JOIN conversations c ON c.id=m.conversation_id
+            WHERE m.id=? AND m.role='assistant' AND m.status='complete' ''', (answer_id,)).fetchone()
+        if row is None or row['user_id'] != user_id or row['chat_id'] != chat_id:
+            raise ValueError('Answer does not belong to this user and chat')
+        diagnostic = json.loads(row['diagnostics_json'] or '{}')
+        retrieval = diagnostic.get('retrieval_diagnostics') or {}
+        compact = {key: retrieval.get(key) for key in ('sufficient','evidence_status','missing_evidence',
+                   'insufficiency_reason') if key in retrieval}
+        compact['selected_document_ids'] = [item.get('document_id') for item in retrieval.get('selected', [])]
+        question = db.execute('''SELECT id FROM messages WHERE conversation_id=? AND role='user'
+            AND id<? ORDER BY id DESC LIMIT 1''', (row['conversation_id'], answer_id)).fetchone()
+        if question is None:
+            raise ValueError('Answer has no client question')
+        return row['conversation_id'], question['id'], diagnostic, json.dumps(compact, ensure_ascii=False)
+
+    def record_feedback(self, answer_id: int, user_id: int, chat_id: int, rating: str,
+                        callback_id: str | None = None) -> bool:
+        if rating not in {'helpful', 'unhelpful'}:
+            raise ValueError('Unsupported rating')
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            cid, _, d, retrieval = self._event_context(db, answer_id, user_id, chat_id)
+            latest = db.execute('SELECT rating FROM feedback_events WHERE answer_message_id=? '
+                                'ORDER BY id DESC LIMIT 1', (answer_id,)).fetchone()
+            if latest and latest['rating'] == rating:
+                return False
+            db.execute('DELETE FROM pending_feedback_comments WHERE user_id=? AND chat_id=?',
+                       (user_id, chat_id))
+            result = db.execute('''INSERT OR IGNORE INTO feedback_events
+                (conversation_id,answer_message_id,rating,created_at,scenario,generation_status,
+                 generation_reason,retrieval_json,collection,callback_id) VALUES(?,?,?,?,?,?,?,?,?,?)''',
+                (cid, answer_id, rating, datetime.now(timezone.utc).isoformat(), d.get('scenario'),
+                 d.get('generation_status'), d.get('generation_reason'), retrieval,
+                 d.get('retrieval_collection'), callback_id))
+            return result.rowcount > 0
+
+    def request_feedback_comment(self, answer_id: int, user_id: int, chat_id: int) -> bool:
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            self._event_context(db, answer_id, user_id, chat_id)
+            latest = db.execute('SELECT rating FROM feedback_events WHERE answer_message_id=? '
+                                'ORDER BY id DESC LIMIT 1', (answer_id,)).fetchone()
+            if not latest or latest['rating'] != 'unhelpful':
+                return False
+            db.execute('''INSERT INTO pending_feedback_comments(user_id,chat_id,answer_message_id)
+                VALUES(?,?,?) ON CONFLICT(user_id,chat_id) DO UPDATE SET
+                answer_message_id=excluded.answer_message_id''', (user_id, chat_id, answer_id))
+            return True
+
+    def save_feedback_comment(self, user_id: int, chat_id: int, comment: str) -> bool:
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            target = db.execute('SELECT answer_message_id FROM pending_feedback_comments '
+                                'WHERE user_id=? AND chat_id=?', (user_id, chat_id)).fetchone()
+            if not target:
+                return False
+            answer_id = target['answer_message_id']
+            self._event_context(db, answer_id, user_id, chat_id)
+            latest = db.execute('SELECT id,rating FROM feedback_events WHERE answer_message_id=? '
+                                'ORDER BY id DESC LIMIT 1', (answer_id,)).fetchone()
+            if not latest or latest['rating'] != 'unhelpful':
+                db.execute('DELETE FROM pending_feedback_comments WHERE user_id=? AND chat_id=?',
+                           (user_id, chat_id))
+                return False
+            db.execute('UPDATE feedback_events SET comment=?,comment_created_at=? WHERE id=?',
+                       (comment.strip()[:2000], datetime.now(timezone.utc).isoformat(), latest['id']))
+            db.execute('DELETE FROM pending_feedback_comments WHERE user_id=? AND chat_id=?',
+                       (user_id, chat_id))
+            return True
+
+    def clear_pending_feedback_comment(self, user_id: int, chat_id: int) -> None:
+        with self.connect() as db:
+            db.execute('DELETE FROM pending_feedback_comments WHERE user_id=? AND chat_id=?',
+                       (user_id, chat_id))
+
+    def support_request(self, answer_id: int, user_id: int, chat_id: int, action: str) -> str:
+        if action not in {'ask', 'confirm', 'cancel'}:
+            raise ValueError('Unsupported action')
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            cid, question_id, d, retrieval = self._event_context(db, answer_id, user_id, chat_id)
+            request = db.execute('SELECT * FROM support_requests WHERE answer_message_id=?', (answer_id,)).fetchone()
+            now = datetime.now(timezone.utc).isoformat()
+            basis = ('insufficient_knowledge' if d.get('generation_status') == 'no_context' else
+                     'system_error' if d.get('generation_status') in {'error','unavailable','truncated'} else
+                     'risky_operation' if str(d.get('scenario_reason') or '').startswith(
+                         ('unsupported_dangerous_operation','unsafe_operation','risk_operation')) else
+                     'user_requested')
+            if action == 'ask':
+                if request is None:
+                    db.execute('''INSERT INTO support_requests
+                        (conversation_id,answer_message_id,question_message_id,status,basis,created_at)
+                        VALUES(?,?,?,'pending_confirmation',?,?)''', (cid,answer_id,question_id,basis,now))
+                elif request['status'] == 'cancelled':
+                    db.execute("UPDATE support_requests SET status='pending_confirmation' WHERE id=?", (request['id'],))
+            elif action == 'confirm':
+                if request is None:
+                    raise ValueError('Confirmation was not requested')
+                if request['status'] == 'cancelled':
+                    raise ValueError('Confirmation was cancelled')
+                if request['status'] == 'pending_confirmation':
+                    db.execute("UPDATE support_requests SET status='saved',confirmed_at=? WHERE id=?", (now,request['id']))
+            elif action == 'cancel':
+                if request is None:
+                    raise ValueError('Confirmation was not requested')
+                if request['status'] == 'pending_confirmation':
+                    db.execute("UPDATE support_requests SET status='cancelled' WHERE id=?", (request['id'],))
+            request = db.execute('SELECT * FROM support_requests WHERE answer_message_id=?', (answer_id,)).fetchone()
+            status = request['status']
+            event_type = {'ask':'requested','confirm':'confirmed','cancel':'cancelled'}[action]
+            if (action == 'ask' or action == 'cancel' and status == 'cancelled'
+                    or action == 'confirm' and status in {'saved','delivered'}):
+                db.execute('''INSERT OR IGNORE INTO escalation_events
+                    (conversation_id,answer_message_id,event_type,created_at,scenario,
+                     generation_status,generation_reason,retrieval_json,collection,request_status,basis)
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?)''',
+                    (cid,answer_id,event_type,now,d.get('scenario'),d.get('generation_status'),
+                     d.get('generation_reason'),retrieval,d.get('retrieval_collection'),status,basis))
+            return status
+
+    def previous_unresolved(self, conversation_id: str, answer_id: int, state: DialogueState) -> bool:
+        if state.transition == 'new_task':
+            return False
+        with self.connect() as db:
+            row = db.execute('''SELECT diagnostics_json FROM messages WHERE conversation_id=?
+                AND role='assistant' AND status='complete' AND id<? ORDER BY id DESC LIMIT 1''',
+                (conversation_id, answer_id)).fetchone()
+        if not row:
+            return False
+        previous = json.loads(row['diagnostics_json'] or '{}')
+        old_state = previous.get('dialogue_state') or {}
+        current = state.to_dict()
+        def values(facts):
+            return [item.get('value') for item in facts or []]
+        def entities(snapshot):
+            return {slot: values(facts) for slot, facts in (snapshot.get('entities') or {}).items()}
+        return (previous.get('generation_status') == 'no_context'
+                and old_state.get('task_id') == state.task_id
+                and old_state.get('intent') == state.intent
+                and old_state.get('operation') == state.operation
+                and entities(old_state) == entities(current)
+                and all(values(old_state.get(key)) == values(current.get(key))
+                        for key in ('parameters','goals','constraints','details'))
+                and (old_state.get('error') or {}).get('value') ==
+                    (current.get('error') or {}).get('value'))

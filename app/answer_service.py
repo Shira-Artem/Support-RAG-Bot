@@ -8,9 +8,13 @@ from time import perf_counter
 from app.config import Settings
 from app.llm_client import GenerationError, generate
 from app.rag import SearchResult, SimpleRAG
-from app.dialogue_state import CLARIFICATION_SLOTS, DialogueManager, DialogueState, state_from_history
+from app.dialogue_state import (CLARIFICATION_SLOTS, DialogueManager, DialogueState,
+                                classify_user_turn, state_from_history)
 from app.rag_query import QueryNeedsClarification, build_rag_query
-from app.response_grounding import ROLE_WORD, has_named_role, instruction_issue, needs_procedure_grounding, normalize, permission_clauses, repair_response, search_scope_response, statements
+from app.response_grounding import (ROLE_WORD, claim_supported, has_named_role,
+                                    evidence_statements, instruction_issue, needs_procedure_grounding, normalize,
+                                    permission_clauses, repair_response, search_scope_response,
+                                    statements, unsafe_operation_issue)
 
 
 SYSTEM_PROMPT = """Ты — специалист клиентской поддержки по кассовому оборудованию и связанным сервисам. Пиши простым русским языком, кратко и сразу по делу. Обычно достаточно 1–3 полезных шагов. Не повторяй вопрос, не перегружай техническими деталями.
@@ -234,6 +238,18 @@ def _role_issue(answer: str, context: str) -> str | None:
     return None
 
 
+def _evidence_level(retrieval) -> str:
+    level = getattr(retrieval, 'evidence_level', None)
+    if level in {'full', 'partial', 'none', 'unsafe'}:
+        return level
+    status = getattr(retrieval, 'evidence_status', None)
+    if status == 'unsafe':
+        return 'unsafe'
+    if status == 'partial' and getattr(retrieval, 'supported_steps', None):
+        return 'partial'
+    return 'full' if getattr(retrieval, 'sufficient', False) else 'none'
+
+
 def _validation_issue(answer: str, context: str, request: str = "", service: str | None = None) -> str | None:
     """Check final customer text; retrieval mentioning a risky operation is not approval."""
     source = normalize(context)
@@ -271,6 +287,13 @@ def _validation_issue(answer: str, context: str, request: str = "", service: str
         issue = instruction_issue(sentence, context)
         if issue:
             return issue
+        if context and re.search(
+                r"\b(?:можно|нужно|следует|позвол\w*|поддерж\w*|содерж\w*|включ\w*|"
+                r"направля\w*|отправля\w*|показыва\w*|наход\w*|доступ\w*|"
+                r"выберите|перейдите|откройте|нажм\w*|клик\w*|введите|укажите|сохран\w*|найд\w*|"
+                r"отбира\w*|фильтр\w*|проверьте|созда\w*|измен\w*|восстанов\w*)\b",
+                sentence, re.I) and not claim_supported(sentence, context):
+            return "unsupported_claim"
     return None
 
 
@@ -369,6 +392,28 @@ class AnswerService:
                       state: DialogueState) -> Answer:
         started = perf_counter()
         model = self.settings.groq_model if self.settings.llm_provider == "groq" else self.settings.openrouter_model
+        turn_kind = classify_user_turn(user_message)
+        if turn_kind != "task":
+            direct = {
+                "greeting": ("Здравствуйте! Чем могу помочь?", "answer", "pre_retrieval_greeting", "generated"),
+                "thanks": ("Пожалуйста! Если появится ещё вопрос, напишите.", "answer", "pre_retrieval_thanks", "generated"),
+                "capabilities": (
+                    "Я помогаю с вопросами по кассам, ОФД и связанным сервисам. Опишите задачу, ошибку или нужную операцию.",
+                    "answer", "pre_retrieval_capabilities", "generated"),
+                "vague_help": (
+                    "Конечно. Опишите, пожалуйста, что именно нужно сделать или что не работает.",
+                    "clarify", "task_not_specified", "clarification"),
+            }[turn_kind]
+            text, scenario, reason, status = direct
+            diagnostics.update(active_request=None, confirmed_service=state.routing_service)
+            return Answer(
+                text=text, used_model=False, generation_status=status,
+                scenario=scenario, scenario_reason=reason, generation_reason=reason,
+                clarification_slot="task" if scenario == "clarify" else None,
+                model=model, provider=self.settings.llm_provider,
+                rag_chunks=0, context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000),
+            )
         service = state.routing_service
         try:
             active_request = build_rag_query(state)
@@ -438,75 +483,85 @@ class AnswerService:
                 model=model, provider=self.settings.llm_provider,
                 rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
 
-        # A directly sourced navigation fact can be answered without letting a
-        # generator invent extra menu steps. The article covers reports after
-        # an FN swap; broader report types stay explicitly unverified.
-        if retrieval is not None and state.intent == 'report' and state.operation == 'view_reports':
-            report = next((item for item in results
-                           if (item.metadata or {}).get('document_id') == 'atol-online-account-cash-reports'
-                           and '«Отчеты по кассам»' in item.text
-                           and 'После замены ФН' in item.text), None)
-            if report:
-                source_url = (report.metadata or {}).get('source_url')
-                scope = ' '.join(f.value for f in [state.task, state.operation_evidence] if f)
-                after_swap = bool(re.search(r'после\s+замен\w*\s+фн', scope, re.I))
-                text = ('После замены ФН АТОЛ Онлайн направляет отчёты на почту, '
-                        'указанную при регистрации. Доступные отчёты можно посмотреть '
-                        'в личном кабинете в разделе «Отчеты по кассам».')
-                if not after_swap:
-                    text += (' Источник описывает отчёты о закрытии и перерегистрации ФН. '
-                             'Если нужен другой вид отчёта, уточните какой.')
-                if source_url:
-                    text += f'\nИсточник: {source_url}'
-                retrieval.evidence_status = 'source_confirmed' if after_swap else 'partial'
-                retrieval.sufficient = after_swap
-                retrieval.insufficiency_reason = None if after_swap else 'report_scope_unverified'
-                retrieval.missing_evidence = [] if after_swap else ['other_report_types_unverified']
-                diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
-                return Answer(text=text, results=results, generation_status='grounded' if after_swap else 'partial',
-                              scenario='answer', scenario_reason='source_confirmed' if after_swap else 'supported_partial_answer',
-                              generation_reason=None if after_swap else 'report_scope_unverified',
-                              model=model, provider=self.settings.llm_provider, rag_chunks=len(results),
-                              context_chars=len(retrieval.context), duration_ms=round((perf_counter() - started) * 1000))
-
-        if (retrieval is not None and not retrieval.sufficient
-                and getattr(retrieval, 'evidence_status', None) == 'partial'
-                and retrieval.supported_steps):
-            # Relevant but incomplete documentation is still useful. Render
-            # only the retrieved source statements, without a generation call
-            # that could turn a missing step into a fabricated instruction.
-            gaps = {
-                'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
-                'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
-                'role_creation_workflow_unverified': 'Полная процедура создания роли в источнике не подтверждена; завершение и сохранение нужно проверить в актуальном кабинете.',
-                'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
-            }
-            confirmed = []
-            previous_section = None
-            for step in retrieval.supported_steps:
-                section = step.get('section')
-                prefix = f"{section}:\n" if section and section != previous_section else ''
-                confirmed.append(prefix + step['text'])
-                previous_section = section
-            limitations = [gaps[gap] for gap in retrieval.missing_evidence if gap in gaps]
-            text = '\n'.join(confirmed) + '\n\n' + ' '.join(limitations)
-            return Answer(text=text, results=results, generation_status='partial', scenario='answer',
-                          scenario_reason='supported_partial_answer', generation_reason='access_evidence_incomplete',
-                          model=model, provider=self.settings.llm_provider, rag_chunks=len(results),
-                          context_chars=len(retrieval.context), duration_ms=round((perf_counter() - started) * 1000),
-                          response_repair={'mode': 'partial_answer', 'evidence': retrieval.supported_steps})
-
-        if retrieval is not None and not retrieval.sufficient and state.intent in {
-                'access', 'credentials', 'receipt', 'report', 'device', 'fiscal_drive', 'network'}:
-            reason = retrieval.insufficiency_reason or 'insufficient_evidence'
+        unsafe = unsafe_operation_issue(active_request)
+        if unsafe:
             return Answer(
-                text=(f"Для {service} не нашёл инструкции по этому действию. " if service else
-                      "Не нашёл инструкции по этому действию. ") +
-                     "Можете описать недостающую деталь или запросить специалиста кнопкой ниже.",
-                results=results, generation_status="no_context", scenario="escalate",
-                scenario_reason="insufficient_evidence", generation_reason=reason,
-                model=model, provider=self.settings.llm_provider, rag_chunks=0,
-                context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
+                text=("Это ответственная фискальная операция. Не выполняйте её самостоятельно; "
+                      "передайте вопрос специалисту по ККТ."),
+                results=results, generation_status="rejected", scenario="escalate",
+                scenario_reason="unsafe_operation", generation_reason=unsafe,
+                model=model, provider=self.settings.llm_provider,
+                rag_chunks=len(results), context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000),
+                response_repair={"mode": "fiscal_escalation", "evidence": []})
+
+        # Any task can return useful source facts without proving a complete
+        # procedure. Render those statements directly and identify the gap;
+        # do not ask the model to fill missing steps from general knowledge.
+        if (retrieval is not None and _evidence_level(retrieval) == "partial"
+                and (getattr(retrieval, 'supported_steps', None) or results)):
+            steps = [step for step in (getattr(retrieval, 'supported_steps', None)
+                                       or evidence_statements(results, getattr(retrieval, 'context', '')))
+                     if not unsafe_operation_issue(step.get("text", ""))]
+            if steps:
+                gaps = {
+                    'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
+                    'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
+                    'role_creation_workflow_unverified': 'Полная процедура создания роли в источнике не подтверждена; завершение и сохранение нужно проверить в актуальном кабинете.',
+                    'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
+                    'procedure_completeness_unverified': 'Эти сведения подтверждены источником, но полный порядок операции в нём не подтверждён.',
+                }
+                lines, previous_section = [], None
+                for step in steps:
+                    section = step.get('section')
+                    if section and section != previous_section:
+                        lines.append(f"{section}:")
+                    lines.append(step['text'])
+                    previous_section = section
+                limitations = [gaps[gap] for gap in retrieval.missing_evidence if gap in gaps]
+                limitations.extend(
+                    f"По запросу {gap.split(':', 1)[1]} поиск в найденной инструкции не подтверждён. "
+                    "Это не доказывает, что функция недоступна в сервисе."
+                    for gap in retrieval.missing_evidence
+                    if gap.startswith('search_parameter_unconfirmed:')
+                )
+                text = '\n'.join(lines)
+                if limitations:
+                    text += '\n\n' + ' '.join(dict.fromkeys(limitations))
+                elif _evidence_level(retrieval) == 'partial':
+                    text += '\n\nЭти сведения подтверждены найденным текстом, но полнота ответа по всей операции не подтверждена.'
+                diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
+                return Answer(text=text, results=results, generation_status='partial', scenario='answer',
+                              scenario_reason='supported_partial_answer',
+                              generation_reason='evidence_coverage_incomplete', model=model,
+                              provider=self.settings.llm_provider, rag_chunks=len(results),
+                              context_chars=len(retrieval.context),
+                              duration_ms=round((perf_counter() - started) * 1000),
+                              response_repair={'mode': 'partial_answer', 'removed': [],
+                                               'retained': [item['text'] for item in steps],
+                                               'evidence': steps,
+                                               'missing_evidence': retrieval.missing_evidence})
+
+        if retrieval is not None and _evidence_level(retrieval) == 'unsafe':
+            diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
+            return Answer(
+                text="Это ответственная фискальная операция. Не выполняйте её самостоятельно; передайте вопрос специалисту по ККТ.",
+                results=results, generation_status='rejected', scenario='escalate',
+                scenario_reason='unsafe_operation', generation_reason=retrieval.insufficiency_reason,
+                model=model, provider=self.settings.llm_provider, rag_chunks=len(results), context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000))
+
+        if (retrieval is not None and _evidence_level(retrieval) == 'none'
+                and state.operation not in {'unknown', 'explain'}):
+            return Answer(
+                text=(f"Для {service} не нашёл подтверждённых сведений по этому действию. " if service else
+                      "Не нашёл подтверждённых сведений по этому действию.") +
+                     " Не буду дополнять инструкцию неподтверждёнными шагами; при необходимости запросите специалиста.",
+                results=results, generation_status='no_context', scenario='escalate',
+                scenario_reason='insufficient_evidence',
+                generation_reason=(retrieval.insufficiency_reason or 'no_source_evidence'),
+                model=model, provider=self.settings.llm_provider, rag_chunks=0, context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000))
 
         # Navigation questions need the matching task, not every document about
         # the service. Keep adjacent chunks from that task (e.g. search fields).
@@ -609,9 +664,11 @@ class AnswerService:
                         clarification_slot = envelope['clarification_slot']
                 except (ValueError, TypeError):
                     pass
-            validation_reason = _validation_issue(model_answer, context, active_request, service)
-            if not validation_reason and scenario == 'answer' and needs_procedure_grounding(model_answer, context, state, results):
+            validation_reason = None
+            if scenario == 'answer' and needs_procedure_grounding(model_answer, context, state, results):
                 validation_reason = 'procedural_details_not_grounded'
+            if not validation_reason:
+                validation_reason = _validation_issue(model_answer, context, active_request, service)
             validation_status = "modified" if validation_reason else "passed"
             response_repair = {}
             text = (_safe_alternative(model_answer, validation_reason, active_request, context=context,

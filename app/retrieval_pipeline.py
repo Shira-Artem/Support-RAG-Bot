@@ -11,7 +11,9 @@ from typing import Protocol
 
 from app.dialogue_state import DialogueState
 from app.rag import SearchResult
-from app.response_grounding import has_action, has_named_role, normalize, statements
+from app.response_grounding import (claim_supported, evidence_statements, has_action,
+                                    has_named_role, normalize, statements,
+                                    unsafe_operation_issue)
 
 
 class CandidateSource(Protocol):
@@ -51,6 +53,23 @@ class RetrievalResult:
     missing_evidence: list[str] = field(default_factory=list)
     supported_steps: list[dict] = field(default_factory=list)
 
+    @property
+    def evidence_level(self) -> str:
+        """Stable four-state evidence contract; legacy fields remain readable."""
+        if self.evidence_status == "unsafe":
+            return "unsafe"
+        if self.evidence_status in {"full", "source_confirmed"} and self.sufficient:
+            return "full"
+        if self.evidence_status == "partial" and self.supported_steps:
+            return "partial"
+        # Compatibility for callers constructing the pre-v2 RetrievalResult:
+        # a relevant legacy result without a coverage declaration is useful,
+        # but remains partial rather than being promoted to full evidence.
+        if self.evidence_status == "none" and self.sufficient and self.documents:
+            if evidence_statements(self.documents, self.context):
+                return "partial"
+        return "none"
+
     def diagnostics(self) -> dict:
         return {
             "rag_query": self.query,
@@ -61,6 +80,7 @@ class RetrievalResult:
             "insufficiency_reason": self.insufficiency_reason,
             "context": self.context,
             "evidence_status": self.evidence_status,
+            "evidence_level": self.evidence_level,
             "missing_evidence": self.missing_evidence,
             "supported_steps": self.supported_steps,
             "relevant": bool(self.documents),
@@ -253,6 +273,40 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     return max(matches)[1] if matches else None
 
 
+def _related_search_task(state: DialogueState, expected: str | None, actual: str | None) -> bool:
+    """Allow neighboring search scopes to contribute field limits, not steps.
+
+    A receipt-search article can answer whether a fiscal-drive field is
+    documented, while its operation metadata and source text still decide what
+    it can affirm. Service and approved-status gates remain unchanged.
+    """
+    return (state.operation == "search" and state.intent in {"receipt", "fiscal_drive"}
+            and {expected, actual} == {"receipt_search", "fiscal_drive_search"})
+
+
+def _unconfirmed_search_parameters(state: DialogueState, context: str) -> list[str]:
+    """Find requested search fields not positively tied to this search object."""
+    if state.operation != "search":
+        return []
+    missing = []
+    for fact in state.parameters:
+        value = fact.value.strip()
+        if not re.search(r"\bпо\b", value, re.I):
+            continue
+        # The parameter extractor may retain the service suffix ("в ОФД")
+        # with the requested field. Use a neutral search claim so this check
+        # tests field/object evidence rather than requiring the source to use
+        # one specific verb such as "фильтровать".
+        claim = f"Поиск {state.object or 'результатов'} {value}"
+        # A source's explicit negative boundary must override a positive match
+        # assembled from neighboring, unrelated statements (for example a
+        # separate search by the same technical identifier).
+        limitation = f"{value} не подтверждён как фильтр {state.object or 'результатов'}"
+        if claim_supported(limitation, context) or not claim_supported(claim, context):
+            missing.append(value)
+    return missing
+
+
 def _matches_entity(expected: str | None, actual: str | None) -> bool:
     if not expected:
         return True
@@ -376,6 +430,7 @@ class RetrievalPipeline:
         self.expand_chunks = expand_chunks
 
     def search(self, state: DialogueState, query: str) -> RetrievalResult:
+        unsafe = unsafe_operation_issue(query)
         raw = self.source.search(query, top_k=self.candidate_k)
         expected_task = _state_task_category(state, query)
         selected: list[tuple[SearchResult, EvaluatedDocument]] = []
@@ -419,7 +474,8 @@ class RetrievalPipeline:
             ofd = state.entity("ofd") if technical else None
             ofd_match = _matches_entity(ofd, " ".join(str(meta.get(k) or "") for k in ("ofd", "operator", "title", "source", "text")))
             actual_task = meta.get("task_category")
-            task_match = expected_task is None or actual_task == expected_task
+            related_search_task = _related_search_task(state, expected_task, actual_task)
+            task_match = expected_task is None or actual_task == expected_task or related_search_task
             operation_metadata = meta
             if expected_task and actual_task == expected_task and meta.get("document_id"):
                 article_getter = getattr(self.source, "article", None)
@@ -441,7 +497,7 @@ class RetrievalPipeline:
                 reasons.append("equipment_mismatch_or_unlabeled")
             if ofd and not ofd_match:
                 reasons.append("ofd_mismatch_or_unlabeled")
-            if expected_task and actual_task and actual_task != expected_task:
+            if expected_task and actual_task and actual_task != expected_task and not related_search_task:
                 reasons.append(f"task_mismatch:{actual_task}!={expected_task}")
             query_terms = _terms(query)
             body_terms = _terms(hit.text + " " + str(meta.get("title") or ""))
@@ -461,11 +517,12 @@ class RetrievalPipeline:
             # remain hard rejects.
             if expected_task and actual_task is None and not strong_unlabeled_match:
                 reasons.append("task_unconfirmed")
-            task_match = (expected_task is None or actual_task == expected_task or bool(strong_unlabeled_match))
+            task_match = (expected_task is None or actual_task == expected_task
+                          or related_search_task or bool(strong_unlabeled_match))
             service_score = 1.0 if not state.entity("service") or service_match else 0.0
             task_score = 1.0 if task_match else (0.0 if actual_task else lexical_overlap)
             score = 0.55 * task_score + 0.3 * service_score + 0.15 * min(1.0, lexical_overlap * 2)
-            relevance = Relevance("match" if service_match else "unknown_or_mismatch", "match" if task_match else "mismatch", round(score, 4), [f"task_category={actual_task or 'unknown'}", f"lexical_overlap={lexical_overlap:.3f}", f"operation_match={operation_match}", f"procedure_service={procedure_service or 'unreviewed'}"])
+            relevance = Relevance("match" if service_match else "unknown_or_mismatch", "match" if task_match else "mismatch", round(score, 4), [f"task_category={actual_task or 'unknown'}", f"lexical_overlap={lexical_overlap:.3f}", f"operation_match={operation_match}", f"related_search_task={related_search_task}", f"procedure_service={procedure_service or 'unreviewed'}"])
             diagnostic_fields = {"source", "title", "category", "service", "task_category", "operation",
                                  "operations", "manufacturer", "model", "status", "source_type", "section", "page",
                                  "procedure_service", "evidence_coverage"}
@@ -494,8 +551,48 @@ class RetrievalPipeline:
         evidence_status, missing, steps = ("relevance_only" if sufficient else "none"), [], []
         if expected_task == "access" and docs:
             evidence_status, missing, steps = _access_evidence(state, docs, context)
+            if evidence_status == "none":
+                steps = evidence_statements(docs, context)
+                if steps:
+                    evidence_status = "partial"
+                    missing = (["permission_change_workflow_unverified",
+                                "requested_role_or_permissions_unverified"]
+                               if state.operation == "change_permissions"
+                               else ["access_workflow_unverified"])
+                    reason = "access_evidence_incomplete"
             sufficient = sufficient and evidence_status == "full"
             reason = None if sufficient else "access_evidence_incomplete"
+        elif docs:
+            steps = evidence_statements(docs, context)
+            unconfirmed_fields = _unconfirmed_search_parameters(state, context)
+            coverage_keys = {
+                "search": ("search", "search_receipt"),
+                "view_reports": ("view_reports", "view_cash_reports"),
+                "list": ("list", "list_cash_registers", "list_bank_statements"),
+                "connect": ("connect", "configure_integration", "check_integration_compatibility"),
+            }.get(state.operation, (state.operation,))
+            full_coverage = False
+            for doc in docs:
+                meta = doc.metadata or {}
+                coverage = meta.get("evidence_coverage") or {}
+                if (any(coverage.get(key) == "full" for key in coverage_keys) and meta.get("source_url")
+                        and meta.get("source_checked_at") and steps):
+                    full_coverage = True
+                    break
+            if full_coverage and sufficient and not unconfirmed_fields:
+                evidence_status, missing = "full", []
+            elif steps:
+                evidence_status = "partial"
+                missing = ([f"search_parameter_unconfirmed:{field}" for field in unconfirmed_fields]
+                           or ["procedure_completeness_unverified"])
+                reason = "evidence_coverage_incomplete"
+            else:
+                evidence_status, missing = "none", ["no_source_statements_in_context"]
+                sufficient = False
+                reason = "no_source_statements_in_context"
+        if unsafe:
+            evidence_status, missing, sufficient = "unsafe", ["high_risk_operation_requires_specialist"], False
+            reason = "unsafe_operation:" + unsafe
         return RetrievalResult(query, candidates, rejected, docs, sufficient, reason, context,
                                evidence_status, missing, steps)
 
@@ -513,7 +610,8 @@ class RetrievalPipeline:
                 if not _procedure_matches(state, meta):
                     continue
                 fragment_task = meta.get("task_category")
-                if expected_task and fragment_task and fragment_task != expected_task:
+                if (expected_task and fragment_task and fragment_task != expected_task
+                        and not _related_search_task(state, expected_task, fragment_task)):
                     continue
                 if fragment is not hit and expected_task:
                     section = str(meta.get("section") or "")

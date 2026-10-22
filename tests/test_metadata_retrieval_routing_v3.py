@@ -35,7 +35,9 @@ def _loaded_hit(relative_path, *, approved=False):
     loader = DocumentLoader(ROOT / "data/knowledge")
     document = loader.load(loader.root / relative_path)
     chunks = Chunker().split(document)
-    metadata = {**chunks[0].metadata, "status": "approved" if approved else document.status}
+    # The fixture exercises both status branches regardless of a document's
+    # current editorial approval in the knowledge base.
+    metadata = {**chunks[0].metadata, "status": "approved" if approved else "draft"}
     # A SearchResult is the local retrieval boundary under test; no index is written.
     return SearchResult(document.source, "\n\n".join(page for _, page in document.pages), .04,
                         metadata=metadata), chunks

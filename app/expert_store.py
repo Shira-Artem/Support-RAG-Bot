@@ -6,6 +6,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+from secrets import SystemRandom
 import sqlite3
 from uuid import uuid4
 
@@ -22,7 +23,9 @@ def now() -> str:
 
 def load_questions(path: Path = DEFAULT_QUESTIONS) -> list[dict]:
     questions = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    required = {"id", "category", "query", "expected_topic", "expected_behavior", "notes"}
+    required = {"id", "category", "query", "expected_topic", "expected_behavior", "notes",
+                "expected_document", "expected_result", "evaluation_criterion", "difficulty",
+                "source_status"}
     if not questions or any(not required <= q.keys() for q in questions):
         raise ValueError("Invalid evaluation question set")
     if len({q["id"] for q in questions}) != len(questions):
@@ -49,6 +52,8 @@ class ExpertStore:
                     question_id TEXT NOT NULL, category TEXT NOT NULL, query TEXT NOT NULL,
                     expected_topic TEXT, expected_behavior TEXT NOT NULL, notes TEXT NOT NULL,
                     question_type TEXT, expected_document TEXT,
+                    expected_result TEXT, evaluation_criterion TEXT,
+                    difficulty TEXT, source_status TEXT,
                     skipped_at TEXT, PRIMARY KEY(session_id, question_id), UNIQUE(session_id, ordinal)
                 );
                 CREATE TABLE IF NOT EXISTS attempts (
@@ -79,7 +84,9 @@ class ExpertStore:
             # Additive migrations preserve existing session, answer, and review rows.
             migrations = {
                 "sessions": {"specialist_id": "TEXT", "comment_target": "INTEGER"},
-                "items": {"skipped_at": "TEXT", "question_type": "TEXT", "expected_document": "TEXT"},
+                "items": {"skipped_at": "TEXT", "question_type": "TEXT", "expected_document": "TEXT",
+                          "expected_result": "TEXT", "evaluation_criterion": "TEXT",
+                          "difficulty": "TEXT", "source_status": "TEXT"},
                 "attempts": {
                     "provider": "TEXT", "api_call_id": "TEXT", "duration_ms": "INTEGER",
                     "rag_chunks": "INTEGER", "context_chars": "INTEGER", "prompt_tokens": "INTEGER",
@@ -114,23 +121,26 @@ class ExpertStore:
         finally:
             db.close()
 
-    def start(self, expert_id: int, questions: list[dict]) -> str:
+    def start(self, expert_id: int, questions: list[dict], *, shuffle: bool = False) -> str:
         session_id = uuid4().hex
+        ordered = list(questions)
+        if shuffle:
+            SystemRandom().shuffle(ordered)
         with self.connect() as db:
-            # Keep one resumable session per tester. Starting a new run closes the
-            # previous run without removing any of its answers or reviews.
-            db.execute("UPDATE sessions SET finished_at=COALESCE(finished_at,?) WHERE expert_id=?",
-                       (now(), expert_id))
+            # A new run does not mutate any previous session or review.
             db.execute("INSERT OR IGNORE INTO experts(id, telegram_id) VALUES(?,?)", (uuid4().hex, expert_id))
             specialist_id = db.execute("SELECT id FROM experts WHERE telegram_id=?", (expert_id,)).fetchone()["id"]
             db.execute("INSERT INTO sessions(id, expert_id, specialist_id, started_at) VALUES(?,?,?,?)",
                        (session_id, expert_id, specialist_id, now()))
             db.executemany("""INSERT INTO items(session_id, ordinal, question_id, category, query,
-                expected_topic, expected_behavior, notes, question_type, expected_document)
-                VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                expected_topic, expected_behavior, notes, question_type, expected_document,
+                expected_result, evaluation_criterion, difficulty, source_status)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 [(session_id, i, q["id"], q["category"], q["query"], q.get("expected_topic"),
                   q["expected_behavior"], q.get("notes", ""), q.get("question_type"),
-                  q.get("expected_document")) for i, q in enumerate(questions)])
+                  q.get("expected_document"), q.get("expected_result"),
+                  q.get("evaluation_criterion"), q.get("difficulty"), q.get("source_status"))
+                 for i, q in enumerate(ordered)])
         return session_id
 
     def active(self, expert_id: int):
@@ -331,7 +341,8 @@ class ExpertStore:
             query = """SELECT s.id AS session_id, s.specialist_id, s.expert_id AS telegram_id,
                 s.started_at, s.finished_at,
                 i.ordinal, i.question_id, i.category, i.query, i.expected_topic,
-                i.expected_behavior, i.notes, i.question_type, i.expected_document, i.skipped_at,
+                i.expected_behavior, i.notes, i.question_type, i.expected_document,
+                i.expected_result, i.evaluation_criterion, i.difficulty, i.source_status, i.skipped_at,
                 a.id AS attempt_id, a.attempt_no,
                 a.created_at AS answered_at, a.generation_status, a.answer_text, a.results_json,
                 a.model, a.provider, a.api_call_id, a.duration_ms, a.rag_chunks, a.context_chars,

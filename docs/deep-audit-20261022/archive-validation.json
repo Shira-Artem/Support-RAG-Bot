@@ -1,0 +1,21 @@
+{
+  "all_member_sha256": "passed",
+  "answers": 67,
+  "chunks": 927,
+  "documents": 269,
+  "embedding_calls": 0,
+  "environment_secret_values_checked": 2,
+  "json_and_jsonl": "passed",
+  "llm_calls": 0,
+  "members": 328,
+  "messages": 134,
+  "privacy_patterns": "passed",
+  "raw_identifiers_checked": 32,
+  "source_mutations": 0,
+  "sqlite_quick_check_read_only": "passed",
+  "vectors": 927,
+  "zip": "support-rag-bot-deep-audit-20261022.zip",
+  "zip_bytes": 4307710,
+  "zip_sha256": "1ca8cc3a6158900606c511e7840c5cdb9c35dd19fe9b1acace1a1e4040615f0d",
+  "zip_testzip": "passed"
+}

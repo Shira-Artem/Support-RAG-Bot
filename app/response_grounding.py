@@ -35,13 +35,16 @@ ACTION_FAMILIES = {
     "create": r"созда\w*|добав\w*|приглас\w*|приглаш\w*",
     "assign": r"назнач\w*|присва\w*|присво\w*",
     "edit": r"измен\w*|редакт\w*|менять|помен\w*",
-    "input": r"введ\w*|ввод\w*|введите|укаж\w*|указыв\w*|заполн\w*|задайте|задать",
+    "input": r"введ\w*|ввод\w*|введите|укаж\w*|указыв\w*|заполн\w*|зада\w*",
     "save": r"сохран\w*",
     "notification": r"получ\w*.{0,30}(?:письм\w*|уведомлен\w*)|(?:письм\w*|уведомлен\w*).{0,30}(?:прид[её]т|отправ\w*)",
-    "search": r"поиск\w*|найти|найд\w*|фильтр\w*",
+    "search": r"поиск\w*|найти|найд\w*",
+    "filter": r"отбира\w*|фильтр\w*|сортир\w*",
     "configure": r"настро\w*",
     "connect": r"подключ\w*|соедин\w*",
     "reset": r"сброс\w*|восстанов\w*",
+    "click": r"нажм\w*|клик\w*|щелк\w*",
+    "choose": r"выбер\w*|отмет\w*",
 }
 OPERATION_FAMILY = {
     "add_employee": "create", "add": "create", "assign_role": "assign",
@@ -49,6 +52,7 @@ OPERATION_FAMILY = {
     "assign": "assign", "change_permissions": "edit", "change": "edit",
     "search": "search", "configure": "configure", "connect": "connect",
     "reset_password": "reset",
+    "click": "click",
 }
 PERMISSION_TERMS = {
     "view": r"просм[ао]тр\w*|смотр\w*|чтени\w*",
@@ -74,6 +78,154 @@ def has_action(text: str, family: str) -> bool:
 
 def has_named_role(text: str) -> bool:
     return bool(re.search(r'(?i:' + ROLE_WORD + r'\s+)(?:[«"“]|[А-ЯЁA-Z])', text))
+
+
+_EVIDENCE_LIMIT_SECTION = re.compile(
+    r"огранич|границ|важно|предупреж|безопас|когда нужен|перед выполн|"
+    r"услови|применим|неподтверж|что не описано",
+    re.I,
+)
+_NON_EVIDENCE_LINE = re.compile(r"^(?:#|источник:|https?://|\[источник:)", re.I)
+_FACT_STOPWORDS = {
+    "это", "есть", "для", "при", "после", "перед", "через", "можно", "нужно", "следует",
+    "будет", "быть", "этот", "эта", "эти", "того", "который", "которая", "которые",
+    "чтобы", "если", "или", "также", "сервис", "инструкция", "клиент", "клиента",
+    "в", "во", "на", "по", "из", "к", "от", "до", "и", "а", "но", "не", "ни",
+    "у", "за", "как", "что", "где", "какой", "какая", "какие", "ли", "же",
+    "тип",
+    "раздел", "дополнительн", "услови", "затем", "через", "меню",
+}
+_CLAIM_SYNONYMS = {
+    "сумм": "amount", "стоим": "amount", "размер": "amount", "amount": "amount",
+    "способ": "method", "метод": "method", "вид": "method", "тип": "method",
+    "отфильтровать": "filter", "отбирать": "filter",
+    "оплат": "payment", "платеж": "payment", "расчет": "payment", "расчета": "payment",
+    "чек": "receipt", "чека": "receipt", "чеков": "receipt",
+    "период": "period", "дата": "date", "дат": "date",
+    "номер": "number", "номеру": "number", "фн": "fn", "фискальн": "fn",
+    "пользовател": "user", "сотрудник": "user", "учетн": "account", "запис": "account",
+    "фн": "fn", "фд": "fd", "фп": "fp", "офд": "ofd", "1с": "1c",
+    "перейдите": "navigate", "перейти": "navigate", "откройте": "navigate",
+    "выберите": "choose", "задайте": "input", "введите": "input",
+    # Common equivalent wording for delivery checks and status questions.
+    "статус": "transfer", "передач": "transfer", "передан": "transfer",
+    "передано": "transfer", "передачи": "transfer", "передачу": "transfer",
+    "провер": "verify", "проверьте": "verify", "проверить": "verify",
+    "убедитесь": "verify",
+}
+_SHORT_TECHNICAL_TERMS = {"фн", "фд", "фп", "офд", "1с", "эдо"}
+
+
+def _content_terms(text: str) -> set[str]:
+    terms = set()
+    for token in re.findall(r"[a-zа-яё0-9]+", normalize(text)):
+        if token in _FACT_STOPWORDS or (len(token) < 3 and token not in _SHORT_TECHNICAL_TERMS
+                                        and not any(ch.isdigit() for ch in token)):
+            continue
+        # A small suffix fold handles ordinary Russian inflections without
+        # treating broad semantic similarity as proof.
+        stem = re.sub(r"(?:иями|ями|ами|ого|ему|ыми|ими|ее|ей|ам|ям|ах|ях|ов|ев|ом|ем|ой|ый|ая|ое|ые|ую|юю|и|ы|а|я|е|у|ю)$", "", token)
+        stem = _CLAIM_SYNONYMS.get(stem, stem)
+        if stem not in _FACT_STOPWORDS:
+            terms.add(stem)
+    return terms
+
+
+def claim_supported(claim: str, evidence: str) -> bool:
+    """Conservative local check for a paraphrased factual statement.
+
+    Quoted interface labels and numbers must be present literally. Other claims
+    need both predicate/action support and substantial overlap of their concrete
+    terms; semantic similarity alone is never treated as evidence.
+    """
+    evidence_raw = evidence
+    claim, evidence = normalize(claim), normalize(evidence)
+    if not claim:
+        return True
+    if claim in evidence:
+        return True
+    labels = re.findall(r"[«\"“]([^»\"”]{2,80})[»\"”]", claim)
+    if any(normalize(label) not in evidence for label in labels):
+        return False
+    numbers = re.findall(r"(?<!\w)\d+(?:[.,]\d+)?(?!\w)", claim)
+    if any(number not in evidence for number in numbers):
+        return False
+    claim_terms = _content_terms(claim)
+    if not claim_terms:
+        return True
+    action_families = [family for family in ACTION_FAMILIES
+                       if has_action(claim, family)]
+    claim_negated = bool(re.search(r"\bне\b|\bбез\b|недоступ\w*|запре\w*", claim, re.I))
+    source_clauses = []
+    for sentence in statements(evidence_raw):
+        source_clauses.extend(part.strip() for part in re.split(r"\b(?:а не|но)\b", sentence, flags=re.I)
+                              if part.strip())
+    compatible_raw = [item for item in source_clauses
+                      if bool(re.search(r"\bне\b|\bбез\b|недоступ\w*|запре\w*", item, re.I)) == claim_negated]
+    compatible = [normalize(item) for item in compatible_raw]
+    evidence_text = " ".join(compatible)
+    evidence_terms = _content_terms(evidence_text)
+    overlap = len(claim_terms & evidence_terms) / len(claim_terms)
+    action_supported = all(has_action(evidence_text, family) for family in action_families)
+    # Technical identifiers such as FN are relation-sensitive: a separate
+    # source mention cannot be combined with a receipt-search claim. Require
+    # them in the same source paragraph, with matching polarity.
+    critical_terms = claim_terms & {"fn", "fd", "fp"}
+    other_claim_terms = claim_terms - critical_terms
+    critical_supported = (not critical_terms or any(
+        critical_terms <= _content_terms(item)
+        and bool(other_claim_terms & _content_terms(item)) for item in compatible_raw))
+    return action_supported and critical_supported and overlap >= 0.40
+
+
+def evidence_statements(results, context: str, *, limit: int = 12) -> list[dict]:
+    """Return source statements actually included in the model context.
+
+    Metadata can label provenance and coverage, but cannot create factual
+    content: every returned statement must also occur verbatim in the context.
+    """
+    visible = normalize(context)
+    found, seen = [], set()
+    for result in results:
+        metadata = result.metadata or {}
+        section = str(metadata.get("section") or "")
+        for sentence in statements(result.text):
+            sentence = sentence.strip()
+            key = normalize(sentence)
+            if (not key or key in seen or key not in visible or sentence == section
+                    or _NON_EVIDENCE_LINE.match(sentence) or sentence.endswith("?")
+                    or len(sentence.split()) < 2):
+                continue
+            kind = "limitation" if (_EVIDENCE_LIMIT_SECTION.search(section)
+                                    or re.search(r"\bне\b|неподтверж|не описан|не указан", sentence, re.I)) else "fact"
+            if re.search(r"(?:раздел|кнопк|пункт|меню|поле)\s+[«\"“][^»\"”]+[»\"”]", sentence, re.I):
+                kind = "interface"
+            elif re.search(r"сумм|оплат|кассир|период|номер|поиск|фильтр", sentence, re.I):
+                kind = "search"
+            elif any(has_action(sentence, family) for family in ACTION_FAMILIES):
+                kind = "procedure"
+            found.append({"source": result.source,
+                          "document_id": metadata.get("document_id"),
+                          "section": section or None, "kind": kind, "text": sentence})
+            seen.add(key)
+            if len(found) >= limit:
+                return found
+    return found
+
+
+def unsafe_operation_issue(text: str) -> str | None:
+    """Recognize high-risk fiscal operations independently of retrieved text."""
+    patterns = (
+        ("закрыть архив ФН", r"(?:закрыть|закройте|закрывайте|закрыти\w*|заверш\w*).{0,35}архив\w*|фн.{0,25}архив\w*.{0,35}(?:закрыть|закрой|закры|заверш)\w*"),
+        ("перерегистрировать ККТ", r"(?:перерегистрир\w*|перерегистрац\w*).{0,50}\b(?:ккт|касс\w*)\b|\b(?:ккт|касс\w*).{0,50}перерегистрир\w*"),
+        ("заменить ФН", r"(?:заменить|замените|заменяйте|снимите|установите).{0,40}(?:\bфн\b|фискальн\w+\s+накопител\w*)|(?:\bфн\b|фискальн\w+\s+накопител\w*).{0,40}(?:заменить|замените|заменяйте|снимите|установите)"),
+        ("закрыть смену", r"(?:закройте|закрыть|закрывать|нужно закрыть|необходимо закрыть).{0,30}смен\w*"),
+        ("снять ККТ с учёта", r"снять.{0,40}(?:ккт|касс\w*).{0,40}(?:уч[её]т|регистрац)"),
+    )
+    for name, pattern in patterns:
+        if re.search(pattern, text, re.I):
+            return name
+    return None
 
 
 def instruction_issue(answer: str, context: str) -> str | None:
@@ -148,7 +300,7 @@ def needs_procedure_grounding(answer: str, context: str, state, results) -> bool
     if not _evidence(results, context, state.operation):
         return False
     procedural = any(has_action(answer, family) for family in ACTION_FAMILIES)
-    return procedural and any(normalize(s) not in normalize(context) for s in statements(answer))
+    return procedural and any(not claim_supported(s, context) for s in statements(answer))
 
 
 def unconfirmed_search_parameters(state, context: str) -> list[str]:
@@ -271,7 +423,7 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
             retained.insert(0, f"Откройте раздел «{navigation['label']}».")
             evidence.append(navigation)
         text = "\n".join(dict.fromkeys(retained))
-        if role_issue:
+        if role_issue and state.operation in {"assign_role", "change_permissions"}:
             text += "\n\n" + limitation(service, roles=True)
         elif state.operation == "change_permissions" and not any(
                 re.search(r'\bправ(?:а|ам|ами|ах)?\b|доступ\w*|рол[ьи]', item['text'], re.I) for item in evidence):

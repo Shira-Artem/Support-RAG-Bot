@@ -18,6 +18,11 @@ ENTITY_SLOTS = {"service", "manufacturer", "equipment", "ofd", "software"}
 CLARIFICATION_SLOTS = ENTITY_SLOTS | {"goal", "details", "task"}
 RELATIONS = {"new_task", "continue", "parameter_update", "constraint_update",
              "contradiction", "answer_to_clarification", "unknown"}
+NON_TASK_TURN_KINDS = {"greeting", "thanks", "capabilities", "vague_help"}
+NON_TASK_SCENARIO_REASONS = {
+    "pre_retrieval_greeting", "pre_retrieval_thanks",
+    "pre_retrieval_capabilities", "task_not_specified",
+}
 
 
 @dataclass(frozen=True)
@@ -453,6 +458,68 @@ def words(text: str) -> list[str]:
     return re.findall(r"[\w]+(?:[-.,][\w]+)*", text.casefold().replace("ё", "е"))
 
 
+_SOCIAL_PREFIXES = (
+    ("добрый", "день"), ("доброе", "утро"), ("добрый", "вечер"),
+    ("доброго", "дня"), ("доброго", "вечера"),
+    ("здравствуйте",), ("здравствуй",), ("привет",),
+)
+_THANKS_PREFIXES = (("большое", "спасибо"), ("спасибо",), ("благодарю",))
+_COURTESY = {"пожалуйста", "бот", "тебя", "вас"}
+
+
+def _remove_turn_prefixes(tokens: list[str], prefixes: tuple[tuple[str, ...], ...]) -> tuple[list[str], bool]:
+    remaining, removed = list(tokens), False
+    changed = True
+    while changed:
+        changed = False
+        while remaining and remaining[0] in _COURTESY:
+            remaining.pop(0)
+        for prefix in prefixes:
+            if tuple(remaining[:len(prefix)]) == prefix:
+                remaining = remaining[len(prefix):]
+                removed = changed = True
+                break
+    while remaining and remaining[-1] in _COURTESY:
+        remaining.pop()
+    return remaining, removed
+
+
+def classify_user_turn(text: str) -> str:
+    """Classify only turns that are safe to answer without retrieval.
+
+    The allow-list is intentionally narrow. Greetings or courtesy words are
+    stripped only at the edges, so a concrete request such as
+    ``привет, как найти чек?`` remains a normal task.
+    """
+    tokens = words(text)
+    if not tokens:
+        return "vague_help"
+    remaining, greeted = _remove_turn_prefixes(tokens, _SOCIAL_PREFIXES)
+    remaining, thanked = _remove_turn_prefixes(remaining, _THANKS_PREFIXES)
+    phrase = " ".join(remaining)
+    if not remaining:
+        return "thanks" if thanked else "greeting" if greeted else "vague_help"
+    if re.fullmatch(
+        r"что ты умеешь|"
+        r"что вы умеете|"
+        r"чем (?:ты |вы )?можешь помочь|"
+        r"как (?:ты |вы )?можешь помочь|"
+        r"какие (?:вопросы|задачи) (?:ты |вы )?(?:решаешь|решаете)",
+        phrase,
+    ):
+        return "capabilities"
+    if re.fullmatch(
+        r"(?:помоги|помогите)(?: мне)?|"
+        r"(?:мне )?(?:нужна|требуется) помощь|"
+        r"(?:у меня (?:есть )?)?(?:вопрос|проблема|трудность)|"
+        r"(?:не знаю )?что делать|"
+        r"как быть|(?:подскажи|подскажите)",
+        phrase,
+    ):
+        return "vague_help"
+    return "task"
+
+
 def has(tokens: list[str], stems: tuple[str, ...]) -> bool:
     return any(token.startswith(stems) for token in tokens)
 
@@ -758,6 +825,13 @@ class DialogueManager:
         self.analyzer = analyzer or LexicalAnalyzer()
 
     def advance(self, previous: DialogueState, text: str, message_id: int | str) -> DialogueState:
+        # Social/meta turns and requests without a task never establish task
+        # facts. On an existing conversation they also leave the real task and
+        # any pending clarification intact.
+        if classify_user_turn(text) in NON_TASK_TURN_KINDS:
+            state = deepcopy(previous)
+            state.revision = previous.revision + 1
+            return state
         obs = self.analyzer.analyze(text, message_id, deepcopy(previous))
         # Enforce the boundary even for a future model-backed analyser.
         facts = [f for values in obs.entities.values() for f in values]
@@ -903,6 +977,8 @@ class DialogueManager:
                        slot: str | None = None) -> DialogueState:
         """An assistant can open an expected slot, never write client facts."""
         state = deepcopy(previous)
+        if reason in NON_TASK_SCENARIO_REASONS and previous.task_id:
+            return state
         if scenario == "clarify":
             if slot not in CLARIFICATION_SLOTS:
                 slot = ("service" if reason in {"service_not_confirmed", "service_unknown", "service_ambiguous", "missing_service"}

@@ -206,14 +206,14 @@ def test_answer_service_isolated_and_generation_failure(monkeypatch, tmp_path):
     assert failed.generation_status == "error" and not failed.used_model
     assert failed.llm_call_attempted
     assert "secret provider response" not in failed.text
-    unavailable = asyncio.run(AnswerService(Rag(), settings(tmp_path, openrouter_api_key="")).answer("вопрос"))
+    unavailable = asyncio.run(AnswerService(Rag(), settings(tmp_path, openrouter_api_key="")).answer("Как подключить кассу?"))
     assert unavailable.generation_status == "unavailable"
     assert not unavailable.llm_call_attempted
     assert unavailable.total_tokens is None and unavailable.prompt_tokens is None
     class EmptyRag(Rag):
         def search(self, query, top_k):
             return []
-    no_context = asyncio.run(AnswerService(EmptyRag(), settings(tmp_path)).answer("вопрос"))
+    no_context = asyncio.run(AnswerService(EmptyRag(), settings(tmp_path)).answer("Как подключить кассу?"))
     assert no_context.generation_status == "generated" and no_context.used_model
     assert no_context.rag_chunks == 0 and no_context.context_chars == 0
     assert no_context.scenario == "answer"
@@ -240,7 +240,12 @@ def test_client_answer_is_short_and_keeps_rag_details_separate(monkeypatch, tmp_
 
     monkeypatch.setattr("app.answer_service.generate", fake_generate)
     answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Вопрос клиента"))
-    assert answer.text == answer.raw_text
+    # A legacy adapter can return an irrelevant/draft fragment. Keep the raw
+    # model reply for diagnostics, but do not expose unsupported troubleshooting
+    # steps as the customer answer.
+    assert answer.validation_status == "modified"
+    assert answer.validation_reason == "unsupported_claim"
+    assert answer.text != answer.raw_text
     assert "СЕКРЕТНЫЙ RAG-ФРАГМЕНТ" not in answer.text
     assert "semantic" not in answer.text and "score" not in answer.text
     assert answer.results[0].text == fragment
@@ -709,7 +714,7 @@ def test_truncated_generation_is_not_shown_as_a_complete_answer(monkeypatch, tmp
                           80, 2048, 2128, 1000, None, "call-truncated", "length")
 
     monkeypatch.setattr("app.answer_service.generate", fake_generate)
-    answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("вопрос"))
+    answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Как подключить кассу?"))
     assert answer.generation_status == "truncated"
     assert "Обрезанный фрагмент" not in answer.text
     assert "ограничения длины" in answer.text

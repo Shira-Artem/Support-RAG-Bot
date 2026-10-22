@@ -1,0 +1,2589 @@
+{
+  "baseline_report": "docs\\knowledge-sprint-v1\\retrieval.json",
+  "clone_collection": null,
+  "clone_payload_hash": null,
+  "current_chunks": 928,
+  "current_collection": "knowledge_demo",
+  "current_documents": 264,
+  "current_payload_hash_after": "377cd[LONG_NUMBER_REDACTED]e7687a66f057ec68ada6d5e6b03fccec919596df37",
+  "current_payload_hash_before": "377cd[LONG_NUMBER_REDACTED]e7687a66f057ec68ada6d5e6b03fccec919596df37",
+  "dense_retrieval": true,
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "llm_calls": 0,
+  "method": "Client-only state replay; no generated assistant turns. sufficient_evidence is the existing pipeline flag, not a human verdict.",
+  "overlay_stats": null,
+  "rows": [
+    {
+      "collections": {
+        "CURRENT": {
+          "change_from_previous": {
+            "added_selected": [],
+            "changed_rejections": {
+              "atol-online-23349-activate-first-ofd": {
+                "after": [
+                  "service_mismatch_or_unlabeled",
+                  "task_mismatch:equipment_setup!=access"
+                ],
+                "before": [
+                  "service_mismatch_or_unlabeled",
+                  "task_unconfirmed"
+                ]
+              }
+            },
+            "current_chosen": "aqsi-online-account-add-user",
+            "current_sufficient": false,
+            "previous_chosen": "aqsi-online-account-add-user",
+            "previous_sufficient": true,
+            "removed_selected": []
+          },
+          "chosen_document": "aqsi-online-account-add-user",
+          "context": "[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Вопрос клиента; оценка фрагмента=0.04945]\nВопрос клиента\nКак выдать сотруднику доступ к aQsi Online?\n\n---\n\n[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Когда нужен специалист; оценка фрагмента=0.00000]\nКогда нужен специалист\nНе хватает прав администратора или нужна нестандартная матрица доступов — администратору организации.\n\n---\n\n[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Перед выполнением действий; оценка фрагмента=0.00000]\nПеред выполнением действий\nНе выдавайте максимальные права по умолчанию: сначала уточните задачи сотрудника и доступные роли.\n\n---\n\n[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Применимость; оценка фрагмента=0.00000]\nПрименимость\nТолько облачная касса aQsi Online. Не переносить настройки на физические терминалы aQsi. Проверить актуальность интерфейса и нормативных требований на дату обращения.\n\nИсточник: https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya\n\n---\n\n[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Что можно объяснить и проверить; оценка фрагмента=0.00000]\nЧто можно объяснить и проверить\nАдминистратор в разделе «Пользователи» создаёт новую учётную запись, указывает имя и email и присваивает заранее созданную роль. Изменение или удаление существующего пользователя выполняется через меню этой записи.",
+          "evidence_status": "none",
+          "insufficiency_reason": "access_evidence_incomplete",
+          "missing_evidence": [
+            "access_workflow_unverified"
+          ],
+          "rejected": [
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/register-account.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "atol-online-26852-payment-object-ffd12",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/payment-object-ffd12.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-online-usecase-retail-physical-vs-cloud",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/retail-physical-vs-cloud.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/ofd/taxcom-account.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-account-contact-support",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/contact-support.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-online-usecase-housing-register-payments",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/housing-register-payments.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/setup/sign-contract.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/fns/register-ooo.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-vending-telemetry",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/vending-telemetry.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/fns/register-ip.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-account-reset-password",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/reset-password.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-online-integration-1c-setup",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/integration/1c-setup.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-scales",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_devices/peripherals/scales.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-permission-setup",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_devices/marking/permission-setup.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/setup/order-cash-register.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "evotor-tspiot-localmodule-20261019",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "evotor/tspiot/local-module-startup.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/fn/fn-close-safety.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-unbox-hardware",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/start/unbox-hardware.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/setup/company-details.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-scanner",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/peripherals/scanner.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-housing-krasinform-gorod",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/housing-krasinform-gorod.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-android-clock",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/settings/android-clock.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-permission-diagnostics",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/marking/permission-diagnostics.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-deferred-order-refund",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_devices/sales/deferred-order-refund.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-online-receipts-full-refund",
+              "reasons": [
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "aqsi_online/receipts/full-refund.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-device-cash-in-out",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/cash-in-out.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-24147-replace-kaznachey",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "operation_mismatch:assign_role"
+              ],
+              "source": "atol_online/equipment/replace-kaznachey.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "kkt-fns-controls-2026",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "compliance/kkt-fns-2026-risk.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:error_diagnosis!=access"
+              ],
+              "source": "aqsi_devices/errors/fn7-date.md",
+              "task_category": "error_diagnosis"
+            },
+            {
+              "document_id": "aqsi-device-opening-closing",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/opening-closing.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-scanner-hub-power",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-deferred-order",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/deferred-order.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/paper-print-retry.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-shop-assignment",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/catalog/shop-assignment.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-taxi-aggregator",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/taxi-aggregator.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/fn161-document-not-saved.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-x-report",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/x-report.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-ffd12-check",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/correction/ffd12-check.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-create-product",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/catalog/create-product.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-ofd-oism-current-credentials",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/ofd/ofd-oism-current-credentials.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-marked-beer",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/marked-beer.md",
+              "task_category": null
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-operations-name",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "1c/taxes/ens-operations-name.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-first-start-internet",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/start/first-start-internet.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-internet-store-cms-aggregator",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/use_cases/internet-store-cms-aggregator.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "atol-online-12790-catalog-cms-banks",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/integration/catalog-cms-banks.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/fns/finish-reg.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-receipts-enable-manual-receipt",
+              "reasons": [
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "aqsi_online/receipts/enable-manual-receipt.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-online-integration-direct-api",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/integration/direct-api.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/fn18-expired.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-account-my-cash-registers",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/my-cash-registers.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-device-vat22-configuration",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/vat/vat22-configuration.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-fiscal-status-report",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/fiscal-status-report.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/ofd/connection-fields.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-marked-product",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/marked-product.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/standard-refund.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-22560-receipt-journal-export",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/receipt-journal-export.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "platformaofd-archive-kkt",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "platformaofd/ofd/archive-kkt.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-ffd105-check",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/correction/ffd105-check.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-excel-import",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/catalog/excel-import.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-23349-activate-first-ofd",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "atol_online/ofd/activate-first-ofd.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "atol-online-18126-monitoring",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/fn/monitoring.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/advance-closing.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-device-red-blinking-battery",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/red-blinking-battery.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-26152-vat22-api",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/integration/vat22-api.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-12148-company-registration",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/connection/company-registration.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-marking-178",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/marking-178.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-14749-incoming-documents",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:edo!=access"
+              ],
+              "source": "atol_online/edo/incoming-documents.md",
+              "task_category": "edo"
+            },
+            {
+              "document_id": "aqsi-device-goods-not-on-device",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/goods-not-on-device.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-22561-request-errors-26-1008",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/errors/request-errors-26-1008.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-22559-agent-status",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/settings/agent-status.md",
+              "task_category": null
+            },
+            {
+              "document_id": "biz-register-ip-fns",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "business/registration/register-ip-fns.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-11081-included-providers",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/ofd/included-providers.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-18227-removed-from-register",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/fns/removed-from-register.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-21114-mass-correction",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/mass-correction.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "atol-online-25514-referral-program-guide",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/partners/referral-program-guide.md",
+              "task_category": null
+            }
+          ],
+          "rejection_counts": {
+            "operation_mismatch:assign_role": 6,
+            "service_mismatch_or_unlabeled": 54,
+            "task_mismatch:edo!=access": 1,
+            "task_mismatch:equipment_setup!=access": 10,
+            "task_mismatch:error_diagnosis!=access": 1,
+            "task_mismatch:receipt_search!=access": 6,
+            "task_unconfirmed": 51
+          },
+          "selected": [
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "metadata": {
+                "category": "account",
+                "manufacturer": "aQsi Online",
+                "model": "aQsi Online (облачная касса)",
+                "operation": "add_employee",
+                "operations": [
+                  "add_employee"
+                ],
+                "section": "Вопрос клиента",
+                "service": "aQsi Online",
+                "source": "aqsi_online/account/add-user.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "task_category": "access",
+                "title": "aQsi Online: добавление сотрудника в личный кабинет"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=access",
+                  "lexical_overlap=0.500",
+                  "operation_match=True",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 11.2259,
+                "dense": 0.7627919,
+                "rrf": 0.049454
+              },
+              "selected": true,
+              "source": "aqsi_online/account/add-user.md",
+              "status": "draft"
+            }
+          ],
+          "selected_documents": [
+            "aqsi-online-account-add-user"
+          ],
+          "sufficient_evidence": false,
+          "supported_steps": [],
+          "top_candidates": [
+            {
+              "bm25": 11.2259,
+              "dense": 0.7627919,
+              "document_id": "aqsi-online-account-add-user",
+              "rejection_reasons": [],
+              "rrf": 0.049454,
+              "selected": true,
+              "source": "aqsi_online/account/add-user.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 6.35271,
+              "dense": 0.6197816,
+              "document_id": "aqsi-online-account-register-account",
+              "rejection_reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "rrf": 0.041291,
+              "selected": false,
+              "source": "aqsi_online/account/register-account.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 6.38925,
+              "dense": 0.539454,
+              "document_id": "atol-online-26852-payment-object-ffd12",
+              "rejection_reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "rrf": 0.036502,
+              "selected": false,
+              "source": "atol_online/receipts/payment-object-ffd12.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "bm25": 5.89264,
+              "dense": 0.5461419,
+              "document_id": "aqsi-online-usecase-retail-physical-vs-cloud",
+              "rejection_reasons": [
+                "task_unconfirmed"
+              ],
+              "rrf": 0.035088,
+              "selected": false,
+              "source": "aqsi_online/use_cases/retail-physical-vs-cloud.md",
+              "task_category": null
+            },
+            {
+              "bm25": 5.81904,
+              "dense": 0.5393091,
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "rejection_reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "rrf": 0.034171,
+              "selected": false,
+              "source": "aqsi_online/ofd/taxcom-account.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 4.2119,
+              "dense": 0.73624253,
+              "document_id": "aqsi-online-account-contact-support",
+              "rejection_reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "rrf": 0.032522,
+              "selected": false,
+              "source": "aqsi_online/account/contact-support.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 8.41361,
+              "dense": null,
+              "document_id": "aqsi-online-usecase-housing-register-payments",
+              "rejection_reasons": [
+                "task_unconfirmed"
+              ],
+              "rrf": 0.032258,
+              "selected": false,
+              "source": "aqsi_online/use_cases/housing-register-payments.md",
+              "task_category": null
+            },
+            {
+              "bm25": 5.45039,
+              "dense": 0.5099103,
+              "document_id": "aqsi-online-setup-sign-contract",
+              "rejection_reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "rrf": 0.031895,
+              "selected": false,
+              "source": "aqsi_online/setup/sign-contract.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 8.3723,
+              "dense": null,
+              "document_id": "aqsi-online-fns-register-ooo",
+              "rejection_reasons": [
+                "task_unconfirmed"
+              ],
+              "rrf": 0.031746,
+              "selected": false,
+              "source": "aqsi_online/fns/register-ooo.md",
+              "task_category": null
+            },
+            {
+              "bm25": 4.12952,
+              "dense": 0.68869144,
+              "document_id": "aqsi-online-usecase-vending-telemetry",
+              "rejection_reasons": [
+                "task_unconfirmed"
+              ],
+              "rrf": 0.030911,
+              "selected": false,
+              "source": "aqsi_online/use_cases/vending-telemetry.md",
+              "task_category": null
+            }
+          ]
+        },
+        "STAGING": {
+          "change_from_previous": {
+            "added_selected": [],
+            "changed_rejections": {
+              "aqsi-online-account-edit-user": {
+                "after": [
+                  "operation_mismatch:assign_role"
+                ],
+                "before": null
+              },
+              "atol-online-23349-activate-first-ofd": {
+                "after": [
+                  "service_mismatch_or_unlabeled",
+                  "procedure_service_mismatch:Первый ОФД",
+                  "task_mismatch:equipment_setup!=access"
+                ],
+                "before": [
+                  "service_mismatch_or_unlabeled",
+                  "task_unconfirmed"
+                ]
+              }
+            },
+            "current_chosen": "aqsi-online-account-add-user",
+            "current_sufficient": false,
+            "previous_chosen": "aqsi-online-account-add-user",
+            "previous_sufficient": true,
+            "removed_selected": [
+              "aqsi-online-account-edit-user"
+            ]
+          },
+          "chosen_document": "aqsi-online-account-add-user",
+          "context": "[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Создать пользователя; оценка фрагмента=0.03333]\nСоздать пользователя\nОткройте «Пользователи» → «Добавить пользователя». Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.\n\n---\n\n[Источник: aqsi_online/account/add-user.md; документ=aqsi-online-account-add-user; статус=draft; раздел=Ограничения; оценка фрагмента=0.00000]\nОграничения\nЭто создание новой записи. Для существующей записи есть отдельная карточка редактирования. Источник не устанавливает обязательное название роли администратора и не задаёт матрицу полномочий для задач сотрудника. Уточните необходимые задачи у владельца кабинета.\n\n---\n\n[Источник: aqsi_online/account/create-role.md; документ=aqsi-online-account-create-role; статус=draft; раздел=Создать и назначить роль; оценка фрагмента=0.03279]\nСоздать и назначить роль\nВо вкладке «Роли» задайте название роли. Выберите доступные инструменты и отметьте режим просмотра либо редактирования. Внизу формы можно выбрать пользователей для назначения роли.\n\n---\n\n[Источник: aqsi_online/account/create-role.md; документ=aqsi-online-account-create-role; статус=draft; раздел=Ограничения; оценка фрагмента=0.00000]\nОграничения\nРазвёрнутые разрешения на рисунке скрыты. Нельзя обещать права на конкретный отчёт или изменение кассы по одному названию раздела. Для задачи «только смотреть кассы и отчёты» специалист должен сверить актуальные подразделы и проверить доступ тестовой учётной записью.\n\n---\n\n[Источник: aqsi_online/account/create-role.md; документ=aqsi-online-account-create-role; статус=draft; раздел=Полномочия; оценка фрагмента=0.00000]\nПолномочия\nТекст статьи называет блок «Расширения», а официальный рисунок 30 — «Разрешения». На рисунке видны разделы мониторинга, магазинов, касс, документов, пользователей, чеков и услуг с колонками просмотра и редактирования. Это пример настроенной роли, а не обязательный набор прав для каждой роли.",
+          "evidence_status": "partial",
+          "insufficiency_reason": "access_evidence_incomplete",
+          "missing_evidence": [
+            "access_workflow_unverified"
+          ],
+          "rejected": [
+            {
+              "document_id": "atol-online-14749-incoming-documents",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:edo!=access"
+              ],
+              "source": "atol_online/edo/incoming-documents.md",
+              "task_category": "edo"
+            },
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/register-account.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "atol-online-26852-payment-object-ffd12",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/payment-object-ffd12.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-online-usecase-retail-physical-vs-cloud",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/retail-physical-vs-cloud.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/ofd/taxcom-account.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-account-contact-support",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/contact-support.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-online-account-settings",
+              "reasons": [
+                "task_mismatch:account_settings!=access"
+              ],
+              "source": "aqsi_online/account/settings.md",
+              "task_category": "account_settings"
+            },
+            {
+              "document_id": "aqsi-online-account-monitoring",
+              "reasons": [
+                "task_mismatch:cash_list!=access"
+              ],
+              "source": "aqsi_online/account/monitoring.md",
+              "task_category": "cash_list"
+            },
+            {
+              "document_id": "aqsi-online-usecase-vending-telemetry",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/vending-telemetry.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/fns/register-ip.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-account-my-cash-registers",
+              "reasons": [
+                "task_mismatch:cash_list!=access"
+              ],
+              "source": "aqsi_online/account/my-cash-registers.md",
+              "task_category": "cash_list"
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/setup/sign-contract.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-integration-1c-setup",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/integration/1c-setup.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-account-edit-user",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/edit-user.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/fns/register-ooo.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-scales",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_devices/peripherals/scales.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-account-reset-password",
+              "reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_online/account/reset-password.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-device-permission-setup",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_devices/marking/permission-setup.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-online-usecase-housing-register-payments",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/housing-register-payments.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/setup/company-details.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/fn/fn-close-safety.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-housing-krasinform-gorod",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/housing-krasinform-gorod.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-unbox-hardware",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/start/unbox-hardware.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-receipts-full-refund",
+              "reasons": [
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "aqsi_online/receipts/full-refund.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/setup/order-cash-register.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-first-start-internet",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/start/first-start-internet.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-scanner",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/peripherals/scanner.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-android-clock",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/settings/android-clock.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-permission-diagnostics",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/marking/permission-diagnostics.md",
+              "task_category": null
+            },
+            {
+              "document_id": "evotor-tspiot-localmodule-20261019",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "evotor/tspiot/local-module-startup.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-cash-in-out",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/cash-in-out.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-deferred-order-refund",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "operation_mismatch:assign_role"
+              ],
+              "source": "aqsi_devices/sales/deferred-order-refund.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:error_diagnosis!=access"
+              ],
+              "source": "aqsi_devices/errors/fn7-date.md",
+              "task_category": "error_diagnosis"
+            },
+            {
+              "document_id": "aqsi-device-opening-closing",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/opening-closing.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-24147-replace-kaznachey",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "operation_mismatch:assign_role"
+              ],
+              "source": "atol_online/equipment/replace-kaznachey.md",
+              "task_category": "access"
+            },
+            {
+              "document_id": "aqsi-device-scanner-hub-power",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-deferred-order",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/deferred-order.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/paper-print-retry.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-shop-assignment",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/catalog/shop-assignment.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-18126-monitoring",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:cash_list!=access"
+              ],
+              "source": "atol_online/fn/monitoring.md",
+              "task_category": "cash_list"
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/fn161-document-not-saved.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-ffd12-check",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/correction/ffd12-check.md",
+              "task_category": null
+            },
+            {
+              "document_id": "kkt-fns-controls-2026",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "compliance/kkt-fns-2026-risk.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-taxi-aggregator",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/use_cases/taxi-aggregator.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-x-report",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/x-report.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-usecase-internet-store-cms-aggregator",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/use_cases/internet-store-cms-aggregator.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "atol-online-12790-catalog-cms-banks",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/integration/catalog-cms-banks.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "reasons": [
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_online/fns/finish-reg.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-create-product",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/catalog/create-product.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-online-receipts-enable-manual-receipt",
+              "reasons": [
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "aqsi_online/receipts/enable-manual-receipt.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-online-integration-direct-api",
+              "reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "aqsi_online/integration/direct-api.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "aqsi-device-ofd-oism-current-credentials",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/ofd/ofd-oism-current-credentials.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-marked-beer",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/marked-beer.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/fn18-expired.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-vat22-configuration",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/vat/vat22-configuration.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-fiscal-status-report",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/shifts/fiscal-status-report.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/ofd/connection-fields.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-22560-receipt-journal-export",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/receipt-journal-export.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-device-marked-product",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/marked-product.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/sales/standard-refund.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-ffd105-check",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/correction/ffd105-check.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/advance-closing.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "atol-online-26152-vat22-api",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/integration/vat22-api.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-23349-activate-first-ofd",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "procedure_service_mismatch:Первый ОФД",
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "source": "atol_online/ofd/activate-first-ofd.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "atol-online-12148-company-registration",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/connection/company-registration.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-excel-import",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/catalog/excel-import.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-22561-request-errors-26-1008",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/errors/request-errors-26-1008.md",
+              "task_category": null
+            },
+            {
+              "document_id": "biz-register-ip-fns",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "business/registration/register-ip-fns.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-18227-removed-from-register",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/fns/removed-from-register.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-red-blinking-battery",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/red-blinking-battery.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-21114-mass-correction",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "source": "atol_online/receipts/mass-correction.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "document_id": "aqsi-device-marking-178",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/marking-178.md",
+              "task_category": null
+            },
+            {
+              "document_id": "aqsi-device-goods-not-on-device",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "aqsi_devices/errors/goods-not-on-device.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-25514-referral-program-guide",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/partners/referral-program-guide.md",
+              "task_category": null
+            },
+            {
+              "document_id": "atol-online-11239-change-provider",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "atol_online/ofd/change-provider.md",
+              "task_category": null
+            },
+            {
+              "document_id": "platformaofd-archive-kkt",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_unconfirmed"
+              ],
+              "source": "platformaofd/ofd/archive-kkt.md",
+              "task_category": null
+            }
+          ],
+          "rejection_counts": {
+            "operation_mismatch:assign_role": 6,
+            "procedure_service_mismatch:Первый ОФД": 1,
+            "service_mismatch_or_unlabeled": 52,
+            "task_mismatch:account_settings!=access": 1,
+            "task_mismatch:cash_list!=access": 3,
+            "task_mismatch:edo!=access": 1,
+            "task_mismatch:equipment_setup!=access": 10,
+            "task_mismatch:error_diagnosis!=access": 1,
+            "task_mismatch:receipt_search!=access": 6,
+            "task_unconfirmed": 48
+          },
+          "selected": [
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "metadata": {
+                "category": "account",
+                "evidence_coverage": {
+                  "add_employee": "full",
+                  "assign_role": "partial"
+                },
+                "manufacturer": "aQsi Online",
+                "model": "aQsi Online (облачная касса)",
+                "operation": "add_employee",
+                "operations": [
+                  "add_employee",
+                  "assign_role"
+                ],
+                "section": "Создать пользователя",
+                "service": "aQsi Online",
+                "source": "aqsi_online/account/add-user.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "task_category": "access",
+                "title": "aQsi Online: добавление сотрудника в личный кабинет"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=access",
+                  "lexical_overlap=0.500",
+                  "operation_match=True",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 17.14135,
+                "dense": null,
+                "rrf": 0.033333
+              },
+              "selected": true,
+              "source": "aqsi_online/account/add-user.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "metadata": {
+                "category": "access",
+                "evidence_coverage": {
+                  "assign_role": "partial",
+                  "configure_role": "partial",
+                  "create_role": "partial"
+                },
+                "manufacturer": "aQsi Online",
+                "model": "aQsi Online (облачная касса)",
+                "operation": "create_role",
+                "operations": [
+                  "create_role",
+                  "configure_role",
+                  "assign_role"
+                ],
+                "section": "Создать и назначить роль",
+                "service": "aQsi Online",
+                "source": "aqsi_online/account/create-role.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "task_category": "access",
+                "title": "aQsi Online: создание роли и доступ к разделам"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=access",
+                  "lexical_overlap=0.500",
+                  "operation_match=True",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 15.95015,
+                "dense": null,
+                "rrf": 0.032787
+              },
+              "selected": true,
+              "source": "aqsi_online/account/create-role.md",
+              "status": "draft"
+            }
+          ],
+          "selected_documents": [
+            "aqsi-online-account-add-user",
+            "aqsi-online-account-create-role"
+          ],
+          "sufficient_evidence": false,
+          "supported_steps": [
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "section": "Создать и назначить роль",
+              "source": "aqsi_online/account/create-role.md",
+              "text": "Внизу формы можно выбрать пользователей для назначения роли."
+            }
+          ],
+          "top_candidates": [
+            {
+              "bm25": 8.59492,
+              "dense": 0.63634765,
+              "document_id": "atol-online-14749-incoming-documents",
+              "rejection_reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:edo!=access"
+              ],
+              "rrf": 0.044776,
+              "selected": false,
+              "source": "atol_online/edo/incoming-documents.md",
+              "task_category": "edo"
+            },
+            {
+              "bm25": 6.41669,
+              "dense": 0.6197816,
+              "document_id": "aqsi-online-account-register-account",
+              "rejection_reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "rrf": 0.039829,
+              "selected": false,
+              "source": "aqsi_online/account/register-account.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 6.0033,
+              "dense": 0.539454,
+              "document_id": "atol-online-26852-payment-object-ffd12",
+              "rejection_reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:receipt_search!=access"
+              ],
+              "rrf": 0.034337,
+              "selected": false,
+              "source": "atol_online/receipts/payment-object-ffd12.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "bm25": 5.9488,
+              "dense": 0.5461419,
+              "document_id": "aqsi-online-usecase-retail-physical-vs-cloud",
+              "rejection_reasons": [
+                "task_unconfirmed"
+              ],
+              "rrf": 0.034091,
+              "selected": false,
+              "source": "aqsi_online/use_cases/retail-physical-vs-cloud.md",
+              "task_category": null
+            },
+            {
+              "bm25": 17.14135,
+              "dense": null,
+              "document_id": "aqsi-online-account-add-user",
+              "rejection_reasons": [],
+              "rrf": 0.033333,
+              "selected": true,
+              "source": "aqsi_online/account/add-user.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 5.86982,
+              "dense": 0.5393091,
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "rejection_reasons": [
+                "task_mismatch:equipment_setup!=access"
+              ],
+              "rrf": 0.033238,
+              "selected": false,
+              "source": "aqsi_online/ofd/taxcom-account.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 15.95015,
+              "dense": null,
+              "document_id": "aqsi-online-account-create-role",
+              "rejection_reasons": [],
+              "rrf": 0.032787,
+              "selected": true,
+              "source": "aqsi_online/account/create-role.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 4.30193,
+              "dense": 0.73624253,
+              "document_id": "aqsi-online-account-contact-support",
+              "rejection_reasons": [
+                "operation_mismatch:assign_role"
+              ],
+              "rrf": 0.032522,
+              "selected": false,
+              "source": "aqsi_online/account/contact-support.md",
+              "task_category": "access"
+            },
+            {
+              "bm25": 12.3568,
+              "dense": null,
+              "document_id": "aqsi-online-account-settings",
+              "rejection_reasons": [
+                "task_mismatch:account_settings!=access"
+              ],
+              "rrf": 0.031746,
+              "selected": false,
+              "source": "aqsi_online/account/settings.md",
+              "task_category": "account_settings"
+            },
+            {
+              "bm25": 11.74008,
+              "dense": null,
+              "document_id": "aqsi-online-account-monitoring",
+              "rejection_reasons": [
+                "task_mismatch:cash_list!=access"
+              ],
+              "rrf": 0.03125,
+              "selected": false,
+              "source": "aqsi_online/account/monitoring.md",
+              "task_category": "cash_list"
+            }
+          ]
+        }
+      },
+      "conversation": "role-standalone",
+      "id": "role",
+      "message": "Как создать новую роль в aQsi Online?",
+      "origin": "requested_small_probe",
+      "query": "сервис: aQsi Online — назначение роли сотруднику",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 36,
+              "message_id": "message-unmapped",
+              "quote": "aQsi Online",
+              "start": 25,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "object_reference": null,
+        "operation": "assign_role",
+        "operation_evidence": {
+          "end": 37,
+          "message_id": "message-unmapped",
+          "quote": "Как создать новую роль в aQsi Online?",
+          "start": 0,
+          "value": "Как создать новую роль в aQsi Online?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 37,
+          "message_id": "message-unmapped",
+          "quote": "Как создать новую роль в aQsi Online?",
+          "start": 0,
+          "value": "Как создать новую роль в aQsi Online?"
+        },
+        "task_id": "task:message-unmapped",
+        "topic_start_message_id": "message-unmapped",
+        "transition": "new_task",
+        "unresolved": null
+      }
+    },
+    {
+      "collections": {
+        "CURRENT": {
+          "change_from_previous": {
+            "added_selected": [],
+            "changed_rejections": {},
+            "current_chosen": "atol-online-18126-monitoring",
+            "current_sufficient": true,
+            "previous_chosen": "atol-online-18126-monitoring",
+            "previous_sufficient": true,
+            "removed_selected": []
+          },
+          "chosen_document": "atol-online-18126-monitoring",
+          "context": "[Источник: atol_online/fn/monitoring.md; документ=atol-online-18126-monitoring; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.04973]\nВажно / когда передать специалисту\nНе полагайтесь только на прогноз: фактический срок и статус ФН сверяют в кабинете и с поддержкой.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/fn/monitoring.md; документ=atol-online-18126-monitoring; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nГде посмотреть, когда закончится ФН?\n\n---\n\n[Источник: atol_online/fn/monitoring.md; документ=atol-online-18126-monitoring; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.00000]\nПодтверждённые сведения\nОткройте личный кабинет АТОЛ Онлайн → «Мониторинг касс». Виджет прогнозируемого ресурса ФН показывает срок и степень заполнения по кассам; детали доступны при выборе нужной ККТ. При приближении предела рекомендуется заранее обратиться за плановой заменой.\n\n---\n\n[Источник: atol_online/fn/blocked.md; документ=atol-online-18220-blocked; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.04728]\nВажно / когда передать специалисту\nЕсли ФНС сняла кассу с учёта, нужна диагностика сервисом и специалистом по регистрации; не обещайте простую разблокировку.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/fn/blocked.md; документ=atol-online-18220-blocked; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nПочему облачная касса показывает «ФН заблокирован»?\n\n---\n\n[Источник: atol_online/fn/blocked.md; документ=atol-online-18220-blocked; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.00000]\nПодтверждённые сведения\nПроверьте отдельно подписку на ОФД и текущий регистрационный статус кассы в личном кабинете ФНС. Источник связывает остановку фискализации как с неактивным ОФД, так и с проблемами регистрации ККТ после замены ФН. По одному коду 403 нельзя установить причину без дополнительных проверок.\n\n---\n\n[Источник: atol_online/fn/replacement-process.md; документ=atol-online-20054-replacement-process; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.04713]\nПодтверждённые сведения\nЗамена ФН на облачной кассе организуется специалистами АТОЛ Онлайн после уведомления и оплаты; отчёты о закрытии старого ФН и перерегистрации направляют на контактную почту. При смене СНО сервис описывает предварительную заявку на изменение данных.\n\n---\n\n[Источник: atol_online/fn/replacement-process.md; документ=atol-online-20054-replacement-process; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.00000]\nВажно / когда передать специалисту\nПосле замены ФН необходима корректная перерегистрация ККТ в ФНС. Клиенту не следует выполнять опасные операции без инженера.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/fn/replacement-process.md; документ=atol-online-20054-replacement-process; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nНужно ли самостоятельно вскрывать облачную кассу для замены ФН?\n\n---\n\n[Источник: atol_online/integration/test-cashier.md; документ=atol-online-11254-test-cashier; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.04382]\nПодтверждённые сведения\nАТОЛ Онлайн описывает отдельную тестовую ККТ с массогабаритным макетом ФН. Она применяется для проверки интеграции и нагрузки; её тестовые документы не являются реальными фискальными чеками, передаваемыми в ФНС. Подключение тестовой кассы согласуют с сервисом.\n\n---\n\n[Источник: atol_online/integration/test-cashier.md; документ=atol-online-11254-test-cashier; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.00000]\nВажно / когда передать специалисту\nНельзя использовать тестовые документы вместо фискализации реальных продаж.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/integration/test-cashier.md; документ=atol-online-11254-test-cashier; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nМожно ли тестировать регистрацию чеков, не отправляя их в ФНС?\n\n---\n\n[Источник: atol_online/ofd/activate-first-ofd.md; документ=atol-online-23349-activate-first-ofd; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.04327]\nВажно / когда передать специалисту\nЕсли статус не обновляется, сопоставьте РНМ/ФН и договор; не подставляйте код другой кассы.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/ofd/activate-first-ofd.md; документ=atol-online-23349-activate-first-ofd; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nКак активировать подписку Первого ОФД для облачной кассы?\n\n---\n\n[Источник: atol_online/ofd/activate-first-ofd.md; документ=atol-online-23349-activate-first-ofd; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.00000]\nПодтверждённые сведения\nПроверьте в кабинете Первого ОФД список касс; при необходимости добавьте зарегистрированную ККТ по сведениям из АТОЛ Онлайн. Затем выберите активацию тарифа и внесите предназначенный для этой кассы код активации из письма или личного кабинета сервиса.",
+          "evidence_status": "relevance_only",
+          "insufficiency_reason": null,
+          "missing_evidence": [],
+          "rejected": [
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "reasons": [
+                "service_mismatch_or_unlabeled"
+              ],
+              "source": "platformaofd/atol/ofd-transmission-checks.md",
+              "task_category": "receipt_transmission"
+            }
+          ],
+          "rejection_counts": {
+            "service_mismatch_or_unlabeled": 1
+          },
+          "selected": [
+            {
+              "document_id": "atol-online-18126-monitoring",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Важно / когда передать специалисту",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/fn/monitoring.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "Как проверить срок и заполненность ФН в АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 8.76267,
+                "dense": 0.6956766,
+                "rrf": 0.049727
+              },
+              "selected": true,
+              "source": "atol_online/fn/monitoring.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-18220-blocked",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Важно / когда передать специалисту",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/fn/blocked.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "ФН заблокирован или ошибка 403 в АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 8.31749,
+                "dense": 0.66916513,
+                "rrf": 0.04728
+              },
+              "selected": true,
+              "source": "atol_online/fn/blocked.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-20054-replacement-process",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Подтверждённые сведения",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/fn/replacement-process.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "Как организована замена ФН в АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.750",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 8.23048,
+                "dense": 0.6833223,
+                "rrf": 0.047131
+              },
+              "selected": true,
+              "source": "atol_online/fn/replacement-process.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-11254-test-cashier",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Подтверждённые сведения",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/integration/test-cashier.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "task_category": "equipment_setup",
+                "title": "Тестовая облачная касса АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=equipment_setup",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 7.73045,
+                "dense": 0.6614718,
+                "rrf": 0.043817
+              },
+              "selected": true,
+              "source": "atol_online/integration/test-cashier.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-23349-activate-first-ofd",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Важно / когда передать специалисту",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/ofd/activate-first-ofd.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "task_category": "equipment_setup",
+                "title": "Активация кассы АТОЛ Онлайн в Первом ОФД"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=equipment_setup",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 7.74969,
+                "dense": 0.6498196,
+                "rrf": 0.043269
+              },
+              "selected": true,
+              "source": "atol_online/ofd/activate-first-ofd.md",
+              "status": "draft"
+            }
+          ],
+          "selected_documents": [
+            "atol-online-18126-monitoring",
+            "atol-online-18220-blocked",
+            "atol-online-20054-replacement-process",
+            "atol-online-11254-test-cashier",
+            "atol-online-23349-activate-first-ofd"
+          ],
+          "sufficient_evidence": true,
+          "supported_steps": [],
+          "top_candidates": [
+            {
+              "bm25": 8.76267,
+              "dense": 0.6956766,
+              "document_id": "atol-online-18126-monitoring",
+              "rejection_reasons": [],
+              "rrf": 0.049727,
+              "selected": true,
+              "source": "atol_online/fn/monitoring.md",
+              "task_category": null
+            },
+            {
+              "bm25": 8.31749,
+              "dense": 0.66916513,
+              "document_id": "atol-online-18220-blocked",
+              "rejection_reasons": [],
+              "rrf": 0.04728,
+              "selected": true,
+              "source": "atol_online/fn/blocked.md",
+              "task_category": null
+            },
+            {
+              "bm25": 8.23048,
+              "dense": 0.6833223,
+              "document_id": "atol-online-20054-replacement-process",
+              "rejection_reasons": [],
+              "rrf": 0.047131,
+              "selected": true,
+              "source": "atol_online/fn/replacement-process.md",
+              "task_category": null
+            },
+            {
+              "bm25": 7.73045,
+              "dense": 0.6614718,
+              "document_id": "atol-online-11254-test-cashier",
+              "rejection_reasons": [],
+              "rrf": 0.043817,
+              "selected": true,
+              "source": "atol_online/integration/test-cashier.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 7.74969,
+              "dense": 0.6498196,
+              "document_id": "atol-online-23349-activate-first-ofd",
+              "rejection_reasons": [],
+              "rrf": 0.043269,
+              "selected": true,
+              "source": "atol_online/ofd/activate-first-ofd.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 6.62517,
+              "dense": 0.69218343,
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "rejection_reasons": [],
+              "rrf": 0.041129,
+              "selected": false,
+              "source": "atol_online/connection/step7-fn-activation.md",
+              "task_category": null
+            },
+            {
+              "bm25": 7.5945,
+              "dense": 0.61971474,
+              "document_id": "atol-online-11251-replacement-reasons",
+              "rejection_reasons": [],
+              "rrf": 0.040267,
+              "selected": false,
+              "source": "atol_online/fn/replacement-reasons.md",
+              "task_category": null
+            },
+            {
+              "bm25": 7.50158,
+              "dense": 0.6011156,
+              "document_id": "atol-online-18227-removed-from-register",
+              "rejection_reasons": [],
+              "rrf": 0.038758,
+              "selected": false,
+              "source": "atol_online/fns/removed-from-register.md",
+              "task_category": null
+            },
+            {
+              "bm25": 6.53086,
+              "dense": 0.65491104,
+              "document_id": "atol-online-12149-select-ofd",
+              "rejection_reasons": [],
+              "rrf": 0.037211,
+              "selected": false,
+              "source": "atol_online/connection/select-ofd.md",
+              "task_category": null
+            },
+            {
+              "bm25": 6.46917,
+              "dense": 0.6252676,
+              "document_id": "atol-online-11257-automatic-shifts",
+              "rejection_reasons": [],
+              "rrf": 0.034966,
+              "selected": false,
+              "source": "atol_online/receipts/automatic-shifts.md",
+              "task_category": "receipt_search"
+            }
+          ]
+        },
+        "STAGING": {
+          "change_from_previous": {
+            "added_selected": [
+              "atol-online-11251-replacement-reasons"
+            ],
+            "changed_rejections": {
+              "atol-online-23349-activate-first-ofd": {
+                "after": [
+                  "service_mismatch_or_unlabeled",
+                  "procedure_service_mismatch:Первый ОФД"
+                ],
+                "before": null
+              }
+            },
+            "current_chosen": "atol-online-18220-blocked",
+            "current_sufficient": true,
+            "previous_chosen": "atol-online-18220-blocked",
+            "previous_sufficient": true,
+            "removed_selected": [
+              "atol-online-23349-activate-first-ofd"
+            ]
+          },
+          "chosen_document": "atol-online-18220-blocked",
+          "context": "[Источник: atol_online/fn/blocked.md; документ=atol-online-18220-blocked; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.04804]\nВажно / когда передать специалисту\nЕсли ФНС сняла кассу с учёта, нужна диагностика сервисом и специалистом по регистрации; не обещайте простую разблокировку.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/fn/blocked.md; документ=atol-online-18220-blocked; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nПочему облачная касса показывает «ФН заблокирован»?\n\n---\n\n[Источник: atol_online/fn/blocked.md; документ=atol-online-18220-blocked; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.00000]\nПодтверждённые сведения\nПроверьте отдельно подписку на ОФД и текущий регистрационный статус кассы в личном кабинете ФНС. Источник связывает остановку фискализации как с неактивным ОФД, так и с проблемами регистрации ККТ после замены ФН. По одному коду 403 нельзя установить причину без дополнительных проверок.\n\n---\n\n[Источник: atol_online/fn/replacement-process.md; документ=atol-online-20054-replacement-process; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.04788]\nПодтверждённые сведения\nЗамена ФН на облачной кассе организуется специалистами АТОЛ Онлайн после уведомления и оплаты; отчёты о закрытии старого ФН и перерегистрации направляют на контактную почту. При смене СНО сервис описывает предварительную заявку на изменение данных.\n\n---\n\n[Источник: atol_online/fn/replacement-process.md; документ=atol-online-20054-replacement-process; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.00000]\nВажно / когда передать специалисту\nПосле замены ФН необходима корректная перерегистрация ККТ в ФНС. Клиенту не следует выполнять опасные операции без инженера.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/fn/replacement-process.md; документ=atol-online-20054-replacement-process; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nНужно ли самостоятельно вскрывать облачную кассу для замены ФН?\n\n---\n\n[Источник: atol_online/integration/test-cashier.md; документ=atol-online-11254-test-cashier; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.04400]\nПодтверждённые сведения\nАТОЛ Онлайн описывает отдельную тестовую ККТ с массогабаритным макетом ФН. Она применяется для проверки интеграции и нагрузки; её тестовые документы не являются реальными фискальными чеками, передаваемыми в ФНС. Подключение тестовой кассы согласуют с сервисом.\n\n---\n\n[Источник: atol_online/integration/test-cashier.md; документ=atol-online-11254-test-cashier; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.00000]\nВажно / когда передать специалисту\nНельзя использовать тестовые документы вместо фискализации реальных продаж.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/integration/test-cashier.md; документ=atol-online-11254-test-cashier; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nМожно ли тестировать регистрацию чеков, не отправляя их в ФНС?\n\n---\n\n[Источник: atol_online/connection/step7-fn-activation.md; документ=atol-online-16568-step7-fn-activation; статус=draft; раздел=Что проверено по инструкции производителя; оценка фрагмента=0.04171]\nЧто проверено по инструкции производителя\nВ личном кабинете АТОЛ Онлайн предусмотрена загрузка отчёта об активации ФН в формате XML. В статье описано завершение регистрации в ЛК ФНС с помощью данных отчёта, затем проверка состояния ККТ и подтверждение завершения этапа в АТОЛ Онлайн. Данные отчёта и РНМ должны относиться к одной кассе.\n\n---\n\n[Источник: atol_online/connection/step7-fn-activation.md; документ=atol-online-16568-step7-fn-activation; статус=draft; раздел=Важное ограничение / передача специалисту; оценка фрагмента=0.00000]\nВажное ограничение / передача специалисту\nНе вводите номер фискального документа, признак или дату вручную «по примеру» без сверки с полученным XML. Для фактической регистрации нужен сотрудник с полномочиями и КЭП.\n\n> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.\n\n---\n\n[Источник: atol_online/connection/step7-fn-activation.md; документ=atol-online-16568-step7-fn-activation; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nКак завершить регистрацию облачной кассы в ФНС после активации ФН?\n\n---\n\n[Источник: atol_online/fn/replacement-reasons.md; документ=atol-online-11251-replacement-reasons; статус=draft; раздел=Важно / когда передать специалисту; оценка фрагмента=0.04060]\nВажно / когда передать специалисту\nРешение о необходимости замены при смене СНО принимают с учётом конкретного ФН, ККТ и правил 54-ФЗ.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.\n\n---\n\n[Источник: atol_online/fn/replacement-reasons.md; документ=atol-online-11251-replacement-reasons; статус=draft; раздел=Вопрос пользователя; оценка фрагмента=0.00000]\nВопрос пользователя\nКакие причины требуют замены ФН в АТОЛ Онлайн?\n\n---\n\n[Источник: atol_online/fn/replacement-reasons.md; документ=atol-online-11251-replacement-reasons; статус=draft; раздел=Подтверждённые сведения; оценка фрагмента=0.00000]\nПодтверждённые сведения\nПроизводитель перечисляет основные поводы: окончание срока действия, исчерпание памяти фискальных документов и определённые изменения налогового режима. Дату и заполненность проверяют в «Мониторинге касс». При своевременной оплате специалисты сервиса организуют замену.",
+          "evidence_status": "relevance_only",
+          "insufficiency_reason": null,
+          "missing_evidence": [],
+          "rejected": [
+            {
+              "document_id": "atol-online-23349-activate-first-ofd",
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "procedure_service_mismatch:Первый ОФД"
+              ],
+              "source": "atol_online/ofd/activate-first-ofd.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "reasons": [
+                "service_mismatch_or_unlabeled"
+              ],
+              "source": "platformaofd/atol/ofd-transmission-checks.md",
+              "task_category": "receipt_transmission"
+            }
+          ],
+          "rejection_counts": {
+            "procedure_service_mismatch:Первый ОФД": 1,
+            "service_mismatch_or_unlabeled": 2
+          },
+          "selected": [
+            {
+              "document_id": "atol-online-18220-blocked",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Важно / когда передать специалисту",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/fn/blocked.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "ФН заблокирован или ошибка 403 в АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 8.31112,
+                "dense": 0.66916513,
+                "rrf": 0.048039
+              },
+              "selected": true,
+              "source": "atol_online/fn/blocked.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-20054-replacement-process",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Подтверждённые сведения",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/fn/replacement-process.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "Как организована замена ФН в АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.750",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 8.21319,
+                "dense": 0.6833223,
+                "rrf": 0.047883
+              },
+              "selected": true,
+              "source": "atol_online/fn/replacement-process.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-11254-test-cashier",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Подтверждённые сведения",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/integration/test-cashier.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "task_category": "equipment_setup",
+                "title": "Тестовая облачная касса АТОЛ Онлайн"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=equipment_setup",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 7.73102,
+                "dense": 0.6614718,
+                "rrf": 0.044002
+              },
+              "selected": true,
+              "source": "atol_online/integration/test-cashier.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Что проверено по инструкции производителя",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/connection/step7-fn-activation.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "Шаг 7 подключения АТОЛ Онлайн: завершение регистрации по отчёту ФН"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.750",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 6.64592,
+                "dense": 0.69218343,
+                "rrf": 0.04171
+              },
+              "selected": true,
+              "source": "atol_online/connection/step7-fn-activation.md",
+              "status": "draft"
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "metadata": {
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "operations": [],
+                "section": "Важно / когда передать специалисту",
+                "service": "АТОЛ Онлайн",
+                "source": "atol_online/fn/replacement-reasons.md",
+                "source_type": "vendor_support_article",
+                "status": "draft",
+                "title": "Когда нужно менять ФН облачной кассы"
+              },
+              "reasons": [],
+              "relevance": {
+                "reasons": [
+                  "task_category=unknown",
+                  "lexical_overlap=0.500",
+                  "operation_match=False",
+                  "procedure_service=unreviewed"
+                ],
+                "score": 1.0,
+                "service": "match",
+                "task": "match"
+              },
+              "retrieval": {
+                "bm25": 7.5922,
+                "dense": 0.61971474,
+                "rrf": 0.040603
+              },
+              "selected": true,
+              "source": "atol_online/fn/replacement-reasons.md",
+              "status": "draft"
+            }
+          ],
+          "selected_documents": [
+            "atol-online-18220-blocked",
+            "atol-online-20054-replacement-process",
+            "atol-online-11254-test-cashier",
+            "atol-online-16568-step7-fn-activation",
+            "atol-online-11251-replacement-reasons"
+          ],
+          "sufficient_evidence": true,
+          "supported_steps": [],
+          "top_candidates": [
+            {
+              "bm25": 8.31112,
+              "dense": 0.66916513,
+              "document_id": "atol-online-18220-blocked",
+              "rejection_reasons": [],
+              "rrf": 0.048039,
+              "selected": true,
+              "source": "atol_online/fn/blocked.md",
+              "task_category": null
+            },
+            {
+              "bm25": 8.21319,
+              "dense": 0.6833223,
+              "document_id": "atol-online-20054-replacement-process",
+              "rejection_reasons": [],
+              "rrf": 0.047883,
+              "selected": true,
+              "source": "atol_online/fn/replacement-process.md",
+              "task_category": null
+            },
+            {
+              "bm25": 7.73102,
+              "dense": 0.6614718,
+              "document_id": "atol-online-11254-test-cashier",
+              "rejection_reasons": [],
+              "rrf": 0.044002,
+              "selected": true,
+              "source": "atol_online/integration/test-cashier.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 7.75125,
+              "dense": 0.6498196,
+              "document_id": "atol-online-23349-activate-first-ofd",
+              "rejection_reasons": [
+                "service_mismatch_or_unlabeled",
+                "procedure_service_mismatch:Первый ОФД"
+              ],
+              "rrf": 0.043427,
+              "selected": false,
+              "source": "atol_online/ofd/activate-first-ofd.md",
+              "task_category": "equipment_setup"
+            },
+            {
+              "bm25": 6.64592,
+              "dense": 0.69218343,
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "rejection_reasons": [],
+              "rrf": 0.04171,
+              "selected": true,
+              "source": "atol_online/connection/step7-fn-activation.md",
+              "task_category": null
+            },
+            {
+              "bm25": 7.5922,
+              "dense": 0.61971474,
+              "document_id": "atol-online-11251-replacement-reasons",
+              "rejection_reasons": [],
+              "rrf": 0.040603,
+              "selected": true,
+              "source": "atol_online/fn/replacement-reasons.md",
+              "task_category": null
+            },
+            {
+              "bm25": 7.50287,
+              "dense": 0.6011156,
+              "document_id": "atol-online-18227-removed-from-register",
+              "rejection_reasons": [],
+              "rrf": 0.039027,
+              "selected": false,
+              "source": "atol_online/fns/removed-from-register.md",
+              "task_category": null
+            },
+            {
+              "bm25": 6.53987,
+              "dense": 0.65491104,
+              "document_id": "atol-online-12149-select-ofd",
+              "rejection_reasons": [],
+              "rrf": 0.037678,
+              "selected": false,
+              "source": "atol_online/connection/select-ofd.md",
+              "task_category": null
+            },
+            {
+              "bm25": 6.47539,
+              "dense": 0.6252676,
+              "document_id": "atol-online-11257-automatic-shifts",
+              "rejection_reasons": [],
+              "rrf": 0.035626,
+              "selected": false,
+              "source": "atol_online/receipts/automatic-shifts.md",
+              "task_category": "receipt_search"
+            },
+            {
+              "bm25": 6.9573,
+              "dense": 0.59082174,
+              "document_id": "atol-online-18251-deregister-kkt",
+              "rejection_reasons": [],
+              "rrf": 0.035287,
+              "selected": false,
+              "source": "atol_online/fns/deregister-kkt.md",
+              "task_category": null
+            }
+          ]
+        }
+      },
+      "conversation": "atol-report",
+      "id": "atol-report",
+      "message": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+      "origin": "requested_small_probe",
+      "query": "сервис: АТОЛ Онлайн — проверка ФН",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 61,
+              "message_id": "message-unmapped",
+              "quote": "АТОЛ Онлайн",
+              "start": 50,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "check",
+        "operation_evidence": {
+          "end": 62,
+          "message_id": "message-unmapped",
+          "quote": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 62,
+          "message_id": "message-unmapped",
+          "quote": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:message-unmapped",
+        "topic_start_message_id": "message-unmapped",
+        "transition": "new_task",
+        "unresolved": null
+      }
+    }
+  ],
+  "staging_chunks": 927,
+  "staging_collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+  "staging_documents": 269
+}

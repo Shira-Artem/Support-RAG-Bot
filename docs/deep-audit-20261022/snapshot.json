@@ -1,0 +1,10 @@
+{
+  "collection": "knowledge_sprint_v1_20261022_quality_gate",
+  "embedding_calls": 0,
+  "finished_at_utc": "2026-10-22T09:05:28.778641+00:00",
+  "llm_calls": 0,
+  "qdrant_access": "scroll/get_collection read-only; no indexing",
+  "qdrant_payload_fingerprint_sha256": "0c4cbcd7258c576751372dd09bfa6e65149746714d20b044721dfa7a5cb2e34c",
+  "source_database_access": "sqlite mode=ro; no source backup or mutation",
+  "started_at_utc": "2026-10-22T09:05:24.335307+00:00"
+}

@@ -1,0 +1,4341 @@
+{
+  "latest_snapshots": [
+    {
+      "conversation_id": "c0016",
+      "processed_message_id": "m0022",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0015",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0021",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0015",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "add_employee",
+        "operation_evidence": {
+          "end": 38,
+          "message_id": "m0021",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "revision": 6,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "change_service",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0012",
+      "processed_message_id": "m0032",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0027",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 30,
+              "message_id": "m0031",
+              "quote": "АТОЛ Онлайн",
+              "start": 19,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0027",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 47,
+          "message_id": "m0029",
+          "quote": "А где изменить права уже созданному сотруднику?",
+          "start": 0,
+          "value": "А где изменить права уже созданному сотруднику?"
+        },
+        "revision": 5,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0023",
+        "topic_start_message_id": "m0023",
+        "transition": "change_service",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0019",
+      "processed_message_id": "m0048",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [
+          {
+            "end": 13,
+            "message_id": "m0047",
+            "quote": "Настроить все",
+            "start": 0,
+            "value": "Настроить все"
+          }
+        ],
+        "entities": {
+          "equipment": [
+            {
+              "end": 1,
+              "message_id": "m0043",
+              "quote": "7",
+              "start": 0,
+              "value": "Эвотор 7"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0041",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0048",
+          "question": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "reason": "message_ambiguous",
+          "slot": "task"
+        },
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "configure",
+        "operation_evidence": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "revision": 8,
+        "schema_version": 1,
+        "task": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "task_id": "task:m0039",
+        "topic_start_message_id": "m0039",
+        "transition": "clarification",
+        "unresolved": {
+          "end": 14,
+          "message_id": "m0045",
+          "quote": "Помочь с егаис",
+          "start": 0,
+          "value": "Помочь с егаис"
+        }
+      }
+    },
+    {
+      "conversation_id": "c0005",
+      "processed_message_id": "m0056",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 66,
+            "message_id": "m0053",
+            "quote": "но не менять настройки",
+            "start": 44,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 24,
+              "message_id": "m0055",
+              "quote": "АТОЛ Онлайн",
+              "start": 13,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 42,
+            "message_id": "m0053",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 6,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "revision": 4,
+        "schema_version": 1,
+        "task": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0049",
+        "topic_start_message_id": "m0049",
+        "transition": "change_service",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0008",
+      "processed_message_id": "m0062",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "operation": "search",
+        "operation_evidence": {
+          "end": 31,
+          "message_id": "m0061",
+          "quote": "И можно найти его по номеру ФН?",
+          "start": 0,
+          "value": "И можно найти его по номеру ФН?"
+        },
+        "revision": 3,
+        "schema_version": 1,
+        "task": {
+          "end": 31,
+          "message_id": "m0061",
+          "quote": "И можно найти его по номеру ФН?",
+          "start": 0,
+          "value": "И можно найти его по номеру ФН?"
+        },
+        "task_id": "task:m0061",
+        "topic_start_message_id": "m0061",
+        "transition": "new_task",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0013",
+      "processed_message_id": "m0070",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 69,
+            "message_id": "m0067",
+            "quote": "но не менять настройки",
+            "start": 47,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 27,
+              "message_id": "m0069",
+              "quote": "АТОЛ Онлайн",
+              "start": 16,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 45,
+            "message_id": "m0067",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 9,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "object_reference": null,
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 45,
+          "message_id": "m0065",
+          "quote": "2. Он уже есть, мне нужно изменить ему права.",
+          "start": 0,
+          "value": "2. Он уже есть, мне нужно изменить ему права."
+        },
+        "parameters": [],
+        "revision": 4,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 51,
+          "message_id": "m0063",
+          "quote": "1. Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "1. Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0063",
+        "topic_start_message_id": "m0063",
+        "transition": "change_service",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0007",
+      "processed_message_id": "m0078",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 35,
+              "message_id": "m0077",
+              "quote": "Платформе ОФД",
+              "start": 22,
+              "value": "Платформа ОФД"
+            }
+          ],
+          "service": [
+            {
+              "end": 40,
+              "message_id": "m0075",
+              "quote": "АТОЛ Онлайн",
+              "start": 29,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "search",
+        "operation_evidence": {
+          "end": 36,
+          "message_id": "m0077",
+          "quote": "Как найти чек по ФД в Платформе ОФД?",
+          "start": 0,
+          "value": "Как найти чек по ФД в Платформе ОФД?"
+        },
+        "parameters": [
+          {
+            "end": 35,
+            "message_id": "m0077",
+            "quote": "по ФД в Платформе ОФД",
+            "start": 14,
+            "value": "по ФД в Платформе ОФД"
+          }
+        ],
+        "revision": 4,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 36,
+          "message_id": "m0077",
+          "quote": "Как найти чек по ФД в Платформе ОФД?",
+          "start": 0,
+          "value": "Как найти чек по ФД в Платформе ОФД?"
+        },
+        "task_id": "task:m0077",
+        "topic_start_message_id": "m0077",
+        "transition": "new_task",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0004",
+      "processed_message_id": "m0086",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 9,
+              "message_id": "m0085",
+              "quote": "Эвотор",
+              "start": 3,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": {
+          "end": 23,
+          "message_id": "m0085",
+          "quote": "999",
+          "start": 20,
+          "value": "999"
+        },
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "diagnose",
+        "operation_evidence": {
+          "end": 23,
+          "message_id": "m0085",
+          "quote": "4. Эвотор ошибка ФН 999",
+          "start": 0,
+          "value": "4. Эвотор ошибка ФН 999"
+        },
+        "parameters": [],
+        "revision": 4,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "task_id": "task:m0079",
+        "topic_start_message_id": "m0079",
+        "transition": "change_parameter",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0014",
+      "processed_message_id": "m0102",
+      "state": {
+        "analysis_required": true,
+        "constraints": [
+          {
+            "end": 62,
+            "message_id": "m0099",
+            "quote": "а не финансовая аналитика",
+            "start": 37,
+            "value": "а не финансовая аналитика"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 17,
+              "message_id": "m0097",
+              "quote": "АТОЛ Онлайн",
+              "start": 6,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0102",
+          "question": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "reason": "message_ambiguous",
+          "slot": "task"
+        },
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 78,
+          "message_id": "m0099",
+          "quote": "Мне нужны именно отчёты о замене ФН, а не финансовая аналитика. Где их искать?",
+          "start": 0,
+          "value": "Мне нужны именно отчёты о замене ФН, а не финансовая аналитика. Где их искать?"
+        },
+        "parameters": [],
+        "revision": 8,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": {
+          "end": 48,
+          "message_id": "m0101",
+          "quote": "В кабинете этого раздела у меня нет. Что делать?",
+          "start": 0,
+          "value": "В кабинете этого раздела у меня нет. Что делать?"
+        }
+      }
+    },
+    {
+      "conversation_id": "c0017",
+      "processed_message_id": "m0108",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [
+          {
+            "end": 53,
+            "message_id": "m0107",
+            "quote": "А если к телефону тоже доступа нет, как теперь войти?",
+            "start": 0,
+            "value": "А если к телефону тоже доступа нет, как теперь войти?"
+          }
+        ],
+        "entities": {
+          "service": [
+            {
+              "end": 44,
+              "message_id": "m0103",
+              "quote": "aQsi Online",
+              "start": 33,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0108",
+          "question": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "reason": "message_ambiguous",
+          "slot": "task"
+        },
+        "goals": [],
+        "intent": "credentials",
+        "object": "учётная запись",
+        "object_reference": null,
+        "operation": "reset_password",
+        "operation_evidence": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "task_id": "task:m0103",
+        "topic_start_message_id": "m0103",
+        "transition": "clarification",
+        "unresolved": {
+          "end": 72,
+          "message_id": "m0105",
+          "quote": "К старой почте доступа нет, но номер телефона остался. Через него можно?",
+          "start": 0,
+          "value": "К старой почте доступа нет, но номер телефона остался. Через него можно?"
+        }
+      }
+    },
+    {
+      "conversation_id": "c0011",
+      "processed_message_id": "m0114",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 33,
+            "message_id": "m0113",
+            "quote": "только номер ФН кассы",
+            "start": 12,
+            "value": "только номер ФН кассы"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 15,
+              "message_id": "m0109",
+              "quote": "Платформе ОФД",
+              "start": 2,
+              "value": "Платформа ОФД"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "search",
+        "operation_evidence": {
+          "end": 72,
+          "message_id": "m0113",
+          "quote": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?",
+          "start": 0,
+          "value": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?"
+        },
+        "parameters": [
+          {
+            "end": 71,
+            "message_id": "m0113",
+            "quote": "по нему",
+            "start": 64,
+            "value": "по нему"
+          }
+        ],
+        "revision": 3,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 72,
+          "message_id": "m0113",
+          "quote": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?",
+          "start": 0,
+          "value": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?"
+        },
+        "task_id": "task:m0113",
+        "topic_start_message_id": "m0113",
+        "transition": "new_task",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0003",
+      "processed_message_id": "m0118",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "equipment": [
+            {
+              "end": 12,
+              "message_id": "m0117",
+              "quote": "Эвоторе 6",
+              "start": 3,
+              "value": "Эвоторе 6"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 10,
+              "message_id": "m0117",
+              "quote": "Эвоторе",
+              "start": 3,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 83,
+          "message_id": "m0115",
+          "quote": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?",
+          "start": 0,
+          "value": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 83,
+          "message_id": "m0115",
+          "quote": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?",
+          "start": 0,
+          "value": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?"
+        },
+        "task_id": "task:m0115",
+        "topic_start_message_id": "m0115",
+        "transition": "refine_requirements",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0001",
+      "processed_message_id": "m0122",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "software": [
+            {
+              "end": 8,
+              "message_id": "m0119",
+              "quote": "1С",
+              "start": 6,
+              "value": "1С"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0122",
+          "question": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "reason": "message_ambiguous",
+          "slot": "task"
+        },
+        "goals": [],
+        "intent": "network",
+        "object": "соединение",
+        "object_reference": null,
+        "operation": "connect",
+        "operation_evidence": {
+          "end": 118,
+          "message_id": "m0119",
+          "quote": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?",
+          "start": 0,
+          "value": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "software",
+        "schema_version": 1,
+        "task": {
+          "end": 118,
+          "message_id": "m0119",
+          "quote": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?",
+          "start": 0,
+          "value": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?"
+        },
+        "task_id": "task:m0119",
+        "topic_start_message_id": "m0119",
+        "transition": "continue_task",
+        "unresolved": {
+          "end": 47,
+          "message_id": "m0121",
+          "quote": "Где вообще находится список банковских выписок?",
+          "start": 0,
+          "value": "Где вообще находится список банковских выписок?"
+        }
+      }
+    },
+    {
+      "conversation_id": "c0015",
+      "processed_message_id": "m0128",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 59,
+            "message_id": "m0125",
+            "quote": "но точную модель и версию модуля пока не знаю",
+            "start": 14,
+            "value": "но точную модель и версию модуля пока не знаю"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 12,
+              "message_id": "m0125",
+              "quote": "Эвотор",
+              "start": 6,
+              "value": "Эвотор"
+            }
+          ],
+          "service": [
+            {
+              "end": 36,
+              "message_id": "m0123",
+              "quote": "ТС ПИоТ",
+              "start": 29,
+              "value": "ТС ПиОТ"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0128",
+          "question": "В каком приложении вы ищете документы, которые не отправились оператору ОФД?",
+          "reason": "не хватает сведений о конкретном приложении",
+          "slot": "software"
+        },
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "check",
+        "operation_evidence": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "task_id": "task:m0123",
+        "topic_start_message_id": "m0123",
+        "transition": "clarification",
+        "unresolved": null
+      }
+    },
+    {
+      "conversation_id": "c0006",
+      "processed_message_id": "m0134",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [
+          {
+            "end": 20,
+            "message_id": "m0131",
+            "quote": "узнать срок действия",
+            "start": 0,
+            "value": "узнать срок действия"
+          }
+        ],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 20,
+            "message_id": "m0131",
+            "quote": "узнать срок действия",
+            "start": 0,
+            "value": "узнать срок действия"
+          }
+        ],
+        "intent": "unknown",
+        "object": null,
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": null,
+        "schema_version": 1,
+        "task": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "task_id": "task:m0129",
+        "topic_start_message_id": "m0129",
+        "transition": "continue_task",
+        "unresolved": null
+      }
+    }
+  ],
+  "turns": [
+    {
+      "conversation_id": "c0016",
+      "message_id": "m0011",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0011",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "add_employee",
+        "operation_evidence": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "revision": 1,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0011"
+    },
+    {
+      "conversation_id": "c0016",
+      "message_id": "m0013",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0011",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "assign_role",
+        "operation_evidence": {
+          "end": 27,
+          "message_id": "m0013",
+          "quote": "А какую роль ему назначить?",
+          "start": 0,
+          "value": "А какую роль ему назначить?"
+        },
+        "revision": 2,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0011"
+    },
+    {
+      "conversation_id": "c0016",
+      "message_id": "m0015",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0015",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0011",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0015",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "assign_role",
+        "operation_evidence": {
+          "end": 27,
+          "message_id": "m0013",
+          "quote": "А какую роль ему назначить?",
+          "start": 0,
+          "value": "А какую роль ему назначить?"
+        },
+        "revision": 3,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0011"
+    },
+    {
+      "conversation_id": "c0016",
+      "message_id": "m0017",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0015",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0011",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0015",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 47,
+          "message_id": "m0017",
+          "quote": "А где изменить права уже созданному сотруднику?",
+          "start": 0,
+          "value": "А где изменить права уже созданному сотруднику?"
+        },
+        "revision": 4,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0011"
+    },
+    {
+      "conversation_id": "c0016",
+      "message_id": "m0019",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0015",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 30,
+              "message_id": "m0019",
+              "quote": "АТОЛ Онлайн",
+              "start": 19,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0015",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 47,
+          "message_id": "m0017",
+          "quote": "А где изменить права уже созданному сотруднику?",
+          "start": 0,
+          "value": "А где изменить права уже созданному сотруднику?"
+        },
+        "revision": 5,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "clarification",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0011"
+    },
+    {
+      "conversation_id": "c0016",
+      "message_id": "m0021",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0015",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0021",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0015",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "add_employee",
+        "operation_evidence": {
+          "end": 38,
+          "message_id": "m0021",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "revision": 6,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0011",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0011",
+        "topic_start_message_id": "m0011",
+        "transition": "change_service",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0011"
+    },
+    {
+      "conversation_id": "c0012",
+      "message_id": "m0023",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0023",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "add_employee",
+        "operation_evidence": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "revision": 1,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0023",
+        "topic_start_message_id": "m0023",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0023"
+    },
+    {
+      "conversation_id": "c0012",
+      "message_id": "m0025",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0023",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "assign_role",
+        "operation_evidence": {
+          "end": 27,
+          "message_id": "m0025",
+          "quote": "А какую роль ему назначить?",
+          "start": 0,
+          "value": "А какую роль ему назначить?"
+        },
+        "revision": 2,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0023",
+        "topic_start_message_id": "m0023",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0023"
+    },
+    {
+      "conversation_id": "c0012",
+      "message_id": "m0027",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0027",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0023",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0027",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "assign_role",
+        "operation_evidence": {
+          "end": 27,
+          "message_id": "m0025",
+          "quote": "А какую роль ему назначить?",
+          "start": 0,
+          "value": "А какую роль ему назначить?"
+        },
+        "revision": 3,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0023",
+        "topic_start_message_id": "m0023",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0023"
+    },
+    {
+      "conversation_id": "c0012",
+      "message_id": "m0029",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0027",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 37,
+              "message_id": "m0023",
+              "quote": "aQsi Online",
+              "start": 26,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0027",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 47,
+          "message_id": "m0029",
+          "quote": "А где изменить права уже созданному сотруднику?",
+          "start": 0,
+          "value": "А где изменить права уже созданному сотруднику?"
+        },
+        "revision": 4,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0023",
+        "topic_start_message_id": "m0023",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0023"
+    },
+    {
+      "conversation_id": "c0012",
+      "message_id": "m0031",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 71,
+            "message_id": "m0027",
+            "quote": "но не менять настройки",
+            "start": 49,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 30,
+              "message_id": "m0031",
+              "quote": "АТОЛ Онлайн",
+              "start": 19,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 47,
+            "message_id": "m0027",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 11,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 47,
+          "message_id": "m0029",
+          "quote": "А где изменить права уже созданному сотруднику?",
+          "start": 0,
+          "value": "А где изменить права уже созданному сотруднику?"
+        },
+        "revision": 5,
+        "schema_version": 1,
+        "task": {
+          "end": 38,
+          "message_id": "m0023",
+          "quote": "Как добавить сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как добавить сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0023",
+        "topic_start_message_id": "m0023",
+        "transition": "change_service",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0023"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0033",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "unknown",
+        "object": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 4,
+          "message_id": "m0033",
+          "quote": "Меню",
+          "start": 0,
+          "value": "Меню"
+        },
+        "revision": 1,
+        "schema_version": 1,
+        "task": {
+          "end": 4,
+          "message_id": "m0033",
+          "quote": "Меню",
+          "start": 0,
+          "value": "Меню"
+        },
+        "task_id": "task:m0033",
+        "topic_start_message_id": "m0033",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0033"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0035",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": {
+          "message_id": "m0034",
+          "question": "Уточните, о каком меню идёт речь: в 1С, aQsi или другом?",
+          "reason": "нужна уточняющая информация о системе и задаче",
+          "slot": "software"
+        },
+        "goals": [],
+        "intent": "unknown",
+        "object": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 4,
+          "message_id": "m0033",
+          "quote": "Меню",
+          "start": 0,
+          "value": "Меню"
+        },
+        "revision": 2,
+        "schema_version": 1,
+        "task": {
+          "end": 4,
+          "message_id": "m0033",
+          "quote": "Меню",
+          "start": 0,
+          "value": "Меню"
+        },
+        "task_id": "task:m0033",
+        "topic_start_message_id": "m0033",
+        "transition": "clarification",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0033"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0037",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": {
+          "message_id": "m0036",
+          "question": "О каком меню идёт речь: в 1С, aQsi или другом?",
+          "reason": "нужна уточнение, о каком меню идёт речь",
+          "slot": "software"
+        },
+        "goals": [],
+        "intent": "unknown",
+        "object": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 4,
+          "message_id": "m0033",
+          "quote": "Меню",
+          "start": 0,
+          "value": "Меню"
+        },
+        "revision": 3,
+        "schema_version": 1,
+        "task": {
+          "end": 4,
+          "message_id": "m0033",
+          "quote": "Меню",
+          "start": 0,
+          "value": "Меню"
+        },
+        "task_id": "task:m0033",
+        "topic_start_message_id": "m0033",
+        "transition": "clarification",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0033"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0039",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "configure",
+        "operation_evidence": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "revision": 4,
+        "schema_version": 1,
+        "task": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "task_id": "task:m0039",
+        "topic_start_message_id": "m0039",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0039"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0041",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0041",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0040",
+          "question": "Какой тип кассы вы хотите настроить?",
+          "reason": "Не хватает информации о типе кассы и системе",
+          "slot": "equipment"
+        },
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "configure",
+        "operation_evidence": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "revision": 5,
+        "schema_version": 1,
+        "task": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "task_id": "task:m0039",
+        "topic_start_message_id": "m0039",
+        "transition": "change_parameter",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0039"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0043",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "equipment": [
+            {
+              "end": 1,
+              "message_id": "m0043",
+              "quote": "7",
+              "start": 0,
+              "value": "Эвотор 7"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0041",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "configure",
+        "operation_evidence": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "revision": 6,
+        "schema_version": 1,
+        "task": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "task_id": "task:m0039",
+        "topic_start_message_id": "m0039",
+        "transition": "clarification",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0039"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0045",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "equipment": [
+            {
+              "end": 1,
+              "message_id": "m0043",
+              "quote": "7",
+              "start": 0,
+              "value": "Эвотор 7"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0041",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "configure",
+        "operation_evidence": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "revision": 7,
+        "schema_version": 1,
+        "task": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "task_id": "task:m0039",
+        "topic_start_message_id": "m0039",
+        "transition": "continue_task",
+        "unresolved": {
+          "end": 14,
+          "message_id": "m0045",
+          "quote": "Помочь с егаис",
+          "start": 0,
+          "value": "Помочь с егаис"
+        }
+      },
+      "topic_start_message_id": "m0039"
+    },
+    {
+      "conversation_id": "c0019",
+      "message_id": "m0047",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [
+          {
+            "end": 13,
+            "message_id": "m0047",
+            "quote": "Настроить все",
+            "start": 0,
+            "value": "Настроить все"
+          }
+        ],
+        "entities": {
+          "equipment": [
+            {
+              "end": 1,
+              "message_id": "m0043",
+              "quote": "7",
+              "start": 0,
+              "value": "Эвотор 7"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0041",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0046",
+          "question": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "reason": "message_ambiguous",
+          "slot": "task"
+        },
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "configure",
+        "operation_evidence": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "revision": 8,
+        "schema_version": 1,
+        "task": {
+          "end": 15,
+          "message_id": "m0039",
+          "quote": "Настроить кассу",
+          "start": 0,
+          "value": "Настроить кассу"
+        },
+        "task_id": "task:m0039",
+        "topic_start_message_id": "m0039",
+        "transition": "clarification",
+        "unresolved": {
+          "end": 14,
+          "message_id": "m0045",
+          "quote": "Помочь с егаис",
+          "start": 0,
+          "value": "Помочь с егаис"
+        }
+      },
+      "topic_start_message_id": "m0039"
+    },
+    {
+      "conversation_id": "c0005",
+      "message_id": "m0049",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 47,
+              "message_id": "m0049",
+              "quote": "aQsi Online",
+              "start": 36,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "revision": 1,
+        "schema_version": 1,
+        "task": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0049",
+        "topic_start_message_id": "m0049",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0049"
+    },
+    {
+      "conversation_id": "c0005",
+      "message_id": "m0051",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 47,
+              "message_id": "m0049",
+              "quote": "aQsi Online",
+              "start": 36,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "revision": 2,
+        "schema_version": 1,
+        "task": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0049",
+        "topic_start_message_id": "m0049",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0049"
+    },
+    {
+      "conversation_id": "c0005",
+      "message_id": "m0053",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 66,
+            "message_id": "m0053",
+            "quote": "но не менять настройки",
+            "start": 44,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 47,
+              "message_id": "m0049",
+              "quote": "aQsi Online",
+              "start": 36,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 42,
+            "message_id": "m0053",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 6,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "revision": 3,
+        "schema_version": 1,
+        "task": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0049",
+        "topic_start_message_id": "m0049",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0049"
+    },
+    {
+      "conversation_id": "c0005",
+      "message_id": "m0055",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 66,
+            "message_id": "m0053",
+            "quote": "но не менять настройки",
+            "start": 44,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 24,
+              "message_id": "m0055",
+              "quote": "АТОЛ Онлайн",
+              "start": 13,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 42,
+            "message_id": "m0053",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 6,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "revision": 4,
+        "schema_version": 1,
+        "task": {
+          "end": 48,
+          "message_id": "m0049",
+          "quote": "Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0049",
+        "topic_start_message_id": "m0049",
+        "transition": "change_service",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0049"
+    },
+    {
+      "conversation_id": "c0008",
+      "message_id": "m0057",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 63,
+              "message_id": "m0057",
+              "quote": "Платформы ОФД",
+              "start": 50,
+              "value": "Платформа ОФД"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "operation": "check",
+        "operation_evidence": {
+          "end": 64,
+          "message_id": "m0057",
+          "quote": "Как посмотреть список моих касс в личном кабинете Платформы ОФД?",
+          "start": 0,
+          "value": "Как посмотреть список моих касс в личном кабинете Платформы ОФД?"
+        },
+        "revision": 1,
+        "schema_version": 1,
+        "task": {
+          "end": 64,
+          "message_id": "m0057",
+          "quote": "Как посмотреть список моих касс в личном кабинете Платформы ОФД?",
+          "start": 0,
+          "value": "Как посмотреть список моих касс в личном кабинете Платформы ОФД?"
+        },
+        "task_id": "task:m0057",
+        "topic_start_message_id": "m0057",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0057"
+    },
+    {
+      "conversation_id": "c0008",
+      "message_id": "m0059",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "operation": "search",
+        "operation_evidence": {
+          "end": 46,
+          "message_id": "m0059",
+          "quote": "А теперь мне нужно найти чек за прошлый месяц.",
+          "start": 0,
+          "value": "А теперь мне нужно найти чек за прошлый месяц."
+        },
+        "revision": 2,
+        "schema_version": 1,
+        "task": {
+          "end": 46,
+          "message_id": "m0059",
+          "quote": "А теперь мне нужно найти чек за прошлый месяц.",
+          "start": 0,
+          "value": "А теперь мне нужно найти чек за прошлый месяц."
+        },
+        "task_id": "task:m0059",
+        "topic_start_message_id": "m0059",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0059"
+    },
+    {
+      "conversation_id": "c0008",
+      "message_id": "m0061",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "operation": "search",
+        "operation_evidence": {
+          "end": 31,
+          "message_id": "m0061",
+          "quote": "И можно найти его по номеру ФН?",
+          "start": 0,
+          "value": "И можно найти его по номеру ФН?"
+        },
+        "revision": 3,
+        "schema_version": 1,
+        "task": {
+          "end": 31,
+          "message_id": "m0061",
+          "quote": "И можно найти его по номеру ФН?",
+          "start": 0,
+          "value": "И можно найти его по номеру ФН?"
+        },
+        "task_id": "task:m0061",
+        "topic_start_message_id": "m0061",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0061"
+    },
+    {
+      "conversation_id": "c0013",
+      "message_id": "m0063",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 50,
+              "message_id": "m0063",
+              "quote": "aQsi Online",
+              "start": 39,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "object_reference": null,
+        "operation": "add_employee",
+        "operation_evidence": {
+          "end": 51,
+          "message_id": "m0063",
+          "quote": "1. Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "1. Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 51,
+          "message_id": "m0063",
+          "quote": "1. Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "1. Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0063",
+        "topic_start_message_id": "m0063",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0063"
+    },
+    {
+      "conversation_id": "c0013",
+      "message_id": "m0065",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 50,
+              "message_id": "m0063",
+              "quote": "aQsi Online",
+              "start": 39,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "access",
+        "object": "сотрудник",
+        "object_reference": null,
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 45,
+          "message_id": "m0065",
+          "quote": "2. Он уже есть, мне нужно изменить ему права.",
+          "start": 0,
+          "value": "2. Он уже есть, мне нужно изменить ему права."
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 51,
+          "message_id": "m0063",
+          "quote": "1. Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "1. Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0063",
+        "topic_start_message_id": "m0063",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0063"
+    },
+    {
+      "conversation_id": "c0013",
+      "message_id": "m0067",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 69,
+            "message_id": "m0067",
+            "quote": "но не менять настройки",
+            "start": 47,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 50,
+              "message_id": "m0063",
+              "quote": "aQsi Online",
+              "start": 39,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 45,
+            "message_id": "m0067",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 9,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "object_reference": null,
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 45,
+          "message_id": "m0065",
+          "quote": "2. Он уже есть, мне нужно изменить ему права.",
+          "start": 0,
+          "value": "2. Он уже есть, мне нужно изменить ему права."
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 51,
+          "message_id": "m0063",
+          "quote": "1. Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "1. Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0063",
+        "topic_start_message_id": "m0063",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0063"
+    },
+    {
+      "conversation_id": "c0013",
+      "message_id": "m0069",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 69,
+            "message_id": "m0067",
+            "quote": "но не менять настройки",
+            "start": 47,
+            "value": "но не менять настройки"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 27,
+              "message_id": "m0069",
+              "quote": "АТОЛ Онлайн",
+              "start": 16,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 45,
+            "message_id": "m0067",
+            "quote": "чтобы он мог смотреть кассы и отчёты",
+            "start": 9,
+            "value": "чтобы он мог смотреть кассы и отчёты"
+          }
+        ],
+        "intent": "access",
+        "object": "сотрудник",
+        "object_reference": null,
+        "operation": "change_permissions",
+        "operation_evidence": {
+          "end": 45,
+          "message_id": "m0065",
+          "quote": "2. Он уже есть, мне нужно изменить ему права.",
+          "start": 0,
+          "value": "2. Он уже есть, мне нужно изменить ему права."
+        },
+        "parameters": [],
+        "revision": 4,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 51,
+          "message_id": "m0063",
+          "quote": "1. Как завести учётку для сотрудника в aQsi Online?",
+          "start": 0,
+          "value": "1. Как завести учётку для сотрудника в aQsi Online?"
+        },
+        "task_id": "task:m0063",
+        "topic_start_message_id": "m0063",
+        "transition": "change_service",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0063"
+    },
+    {
+      "conversation_id": "c0007",
+      "message_id": "m0071",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 43,
+              "message_id": "m0071",
+              "quote": "АТОЛ Онлайн",
+              "start": 32,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "list",
+        "operation_evidence": {
+          "end": 44,
+          "message_id": "m0071",
+          "quote": "1. Как посмотреть список касс в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Как посмотреть список касс в АТОЛ Онлайн?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 44,
+          "message_id": "m0071",
+          "quote": "1. Как посмотреть список касс в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Как посмотреть список касс в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0071",
+        "topic_start_message_id": "m0071",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0071"
+    },
+    {
+      "conversation_id": "c0007",
+      "message_id": "m0073",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 42,
+              "message_id": "m0073",
+              "quote": "Первом ОФД",
+              "start": 32,
+              "value": "Первый ОФД"
+            }
+          ],
+          "service": [
+            {
+              "end": 43,
+              "message_id": "m0071",
+              "quote": "АТОЛ Онлайн",
+              "start": 32,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "list",
+        "operation_evidence": {
+          "end": 43,
+          "message_id": "m0073",
+          "quote": "2. Как посмотреть список касс в Первом ОФД?",
+          "start": 0,
+          "value": "2. Как посмотреть список касс в Первом ОФД?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 44,
+          "message_id": "m0071",
+          "quote": "1. Как посмотреть список касс в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Как посмотреть список касс в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0071",
+        "topic_start_message_id": "m0071",
+        "transition": "change_parameter",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0071"
+    },
+    {
+      "conversation_id": "c0007",
+      "message_id": "m0075",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 42,
+              "message_id": "m0073",
+              "quote": "Первом ОФД",
+              "start": 32,
+              "value": "Первый ОФД"
+            }
+          ],
+          "service": [
+            {
+              "end": 40,
+              "message_id": "m0075",
+              "quote": "АТОЛ Онлайн",
+              "start": 29,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "list",
+        "operation_evidence": {
+          "end": 41,
+          "message_id": "m0075",
+          "quote": "Как посмотреть список касс в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "Как посмотреть список касс в АТОЛ Онлайн?"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 44,
+          "message_id": "m0071",
+          "quote": "1. Как посмотреть список касс в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Как посмотреть список касс в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0071",
+        "topic_start_message_id": "m0071",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0071"
+    },
+    {
+      "conversation_id": "c0007",
+      "message_id": "m0077",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 35,
+              "message_id": "m0077",
+              "quote": "Платформе ОФД",
+              "start": 22,
+              "value": "Платформа ОФД"
+            }
+          ],
+          "service": [
+            {
+              "end": 40,
+              "message_id": "m0075",
+              "quote": "АТОЛ Онлайн",
+              "start": 29,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "search",
+        "operation_evidence": {
+          "end": 36,
+          "message_id": "m0077",
+          "quote": "Как найти чек по ФД в Платформе ОФД?",
+          "start": 0,
+          "value": "Как найти чек по ФД в Платформе ОФД?"
+        },
+        "parameters": [
+          {
+            "end": 35,
+            "message_id": "m0077",
+            "quote": "по ФД в Платформе ОФД",
+            "start": 14,
+            "value": "по ФД в Платформе ОФД"
+          }
+        ],
+        "revision": 4,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 36,
+          "message_id": "m0077",
+          "quote": "Как найти чек по ФД в Платформе ОФД?",
+          "start": 0,
+          "value": "Как найти чек по ФД в Платформе ОФД?"
+        },
+        "task_id": "task:m0077",
+        "topic_start_message_id": "m0077",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0077"
+    },
+    {
+      "conversation_id": "c0004",
+      "message_id": "m0079",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0079",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "235",
+          "start": 17,
+          "value": "235"
+        },
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "diagnose",
+        "operation_evidence": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "task_id": "task:m0079",
+        "topic_start_message_id": "m0079",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0079"
+    },
+    {
+      "conversation_id": "c0004",
+      "message_id": "m0081",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0081",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": {
+          "end": 20,
+          "message_id": "m0081",
+          "quote": "234",
+          "start": 17,
+          "value": "234"
+        },
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "diagnose",
+        "operation_evidence": {
+          "end": 20,
+          "message_id": "m0081",
+          "quote": "Эвотор ошибка ФН 234",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 234"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "task_id": "task:m0079",
+        "topic_start_message_id": "m0079",
+        "transition": "change_parameter",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0079"
+    },
+    {
+      "conversation_id": "c0004",
+      "message_id": "m0083",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 6,
+              "message_id": "m0083",
+              "quote": "Эвотор",
+              "start": 0,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": {
+          "end": 20,
+          "message_id": "m0083",
+          "quote": "235",
+          "start": 17,
+          "value": "235"
+        },
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "diagnose",
+        "operation_evidence": {
+          "end": 20,
+          "message_id": "m0083",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "task_id": "task:m0079",
+        "topic_start_message_id": "m0079",
+        "transition": "change_parameter",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0079"
+    },
+    {
+      "conversation_id": "c0004",
+      "message_id": "m0085",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 9,
+              "message_id": "m0085",
+              "quote": "Эвотор",
+              "start": 3,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": {
+          "end": 23,
+          "message_id": "m0085",
+          "quote": "999",
+          "start": 20,
+          "value": "999"
+        },
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "diagnose",
+        "operation_evidence": {
+          "end": 23,
+          "message_id": "m0085",
+          "quote": "4. Эвотор ошибка ФН 999",
+          "start": 0,
+          "value": "4. Эвотор ошибка ФН 999"
+        },
+        "parameters": [],
+        "revision": 4,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 20,
+          "message_id": "m0079",
+          "quote": "Эвотор ошибка ФН 235",
+          "start": 0,
+          "value": "Эвотор ошибка ФН 235"
+        },
+        "task_id": "task:m0079",
+        "topic_start_message_id": "m0079",
+        "transition": "change_parameter",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0079"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0087",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 64,
+              "message_id": "m0087",
+              "quote": "АТОЛ Онлайн",
+              "start": 53,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0089",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 48,
+              "message_id": "m0089",
+              "quote": "АТОЛ Онлайн",
+              "start": 37,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 49,
+          "message_id": "m0089",
+          "quote": "2. Где посмотреть отчёты по кассам в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "2. Где посмотреть отчёты по кассам в АТОЛ Онлайн?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0091",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 48,
+              "message_id": "m0089",
+              "quote": "АТОЛ Онлайн",
+              "start": 37,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 41,
+          "message_id": "m0091",
+          "quote": "3. Где посмотреть отчёты после замены ФН?",
+          "start": 0,
+          "value": "3. Где посмотреть отчёты после замены ФН?"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0093",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 48,
+              "message_id": "m0089",
+              "quote": "АТОЛ Онлайн",
+              "start": 37,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 38,
+          "message_id": "m0093",
+          "quote": "Где посмотреть отчёты после замены ФН?",
+          "start": 0,
+          "value": "Где посмотреть отчёты после замены ФН?"
+        },
+        "parameters": [],
+        "revision": 4,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0095",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 17,
+              "message_id": "m0095",
+              "quote": "АТОЛ Онлайн",
+              "start": 6,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 62,
+          "message_id": "m0095",
+          "quote": "Где в АТОЛ Онлайн посмотреть отчёты по кассам после замены ФН?",
+          "start": 0,
+          "value": "Где в АТОЛ Онлайн посмотреть отчёты по кассам после замены ФН?"
+        },
+        "parameters": [],
+        "revision": 5,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0097",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 17,
+              "message_id": "m0097",
+              "quote": "АТОЛ Онлайн",
+              "start": 6,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 62,
+          "message_id": "m0097",
+          "quote": "Где в АТОЛ Онлайн посмотреть отчёты по кассам после замены ФН?",
+          "start": 0,
+          "value": "Где в АТОЛ Онлайн посмотреть отчёты по кассам после замены ФН?"
+        },
+        "parameters": [],
+        "revision": 6,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0099",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 62,
+            "message_id": "m0099",
+            "quote": "а не финансовая аналитика",
+            "start": 37,
+            "value": "а не финансовая аналитика"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 17,
+              "message_id": "m0097",
+              "quote": "АТОЛ Онлайн",
+              "start": 6,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 78,
+          "message_id": "m0099",
+          "quote": "Мне нужны именно отчёты о замене ФН, а не финансовая аналитика. Где их искать?",
+          "start": 0,
+          "value": "Мне нужны именно отчёты о замене ФН, а не финансовая аналитика. Где их искать?"
+        },
+        "parameters": [],
+        "revision": 7,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0014",
+      "message_id": "m0101",
+      "state": {
+        "analysis_required": true,
+        "constraints": [
+          {
+            "end": 62,
+            "message_id": "m0099",
+            "quote": "а не финансовая аналитика",
+            "start": 37,
+            "value": "а не финансовая аналитика"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 17,
+              "message_id": "m0097",
+              "quote": "АТОЛ Онлайн",
+              "start": 6,
+              "value": "АТОЛ Онлайн"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "report",
+        "object": "отчёт",
+        "object_reference": null,
+        "operation": "view_reports",
+        "operation_evidence": {
+          "end": 78,
+          "message_id": "m0099",
+          "quote": "Мне нужны именно отчёты о замене ФН, а не финансовая аналитика. Где их искать?",
+          "start": 0,
+          "value": "Мне нужны именно отчёты о замене ФН, а не финансовая аналитика. Где их искать?"
+        },
+        "parameters": [],
+        "revision": 8,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 65,
+          "message_id": "m0087",
+          "quote": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+          "start": 0,
+          "value": "1. Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?"
+        },
+        "task_id": "task:m0087",
+        "topic_start_message_id": "m0087",
+        "transition": "continue_task",
+        "unresolved": {
+          "end": 48,
+          "message_id": "m0101",
+          "quote": "В кабинете этого раздела у меня нет. Что делать?",
+          "start": 0,
+          "value": "В кабинете этого раздела у меня нет. Что делать?"
+        }
+      },
+      "topic_start_message_id": "m0087"
+    },
+    {
+      "conversation_id": "c0017",
+      "message_id": "m0103",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 44,
+              "message_id": "m0103",
+              "quote": "aQsi Online",
+              "start": 33,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "credentials",
+        "object": "учётная запись",
+        "object_reference": null,
+        "operation": "reset_password",
+        "operation_evidence": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "task_id": "task:m0103",
+        "topic_start_message_id": "m0103",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0103"
+    },
+    {
+      "conversation_id": "c0017",
+      "message_id": "m0105",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 44,
+              "message_id": "m0103",
+              "quote": "aQsi Online",
+              "start": 33,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "credentials",
+        "object": "учётная запись",
+        "object_reference": null,
+        "operation": "reset_password",
+        "operation_evidence": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "task_id": "task:m0103",
+        "topic_start_message_id": "m0103",
+        "transition": "continue_task",
+        "unresolved": {
+          "end": 72,
+          "message_id": "m0105",
+          "quote": "К старой почте доступа нет, но номер телефона остался. Через него можно?",
+          "start": 0,
+          "value": "К старой почте доступа нет, но номер телефона остался. Через него можно?"
+        }
+      },
+      "topic_start_message_id": "m0103"
+    },
+    {
+      "conversation_id": "c0017",
+      "message_id": "m0107",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [
+          {
+            "end": 53,
+            "message_id": "m0107",
+            "quote": "А если к телефону тоже доступа нет, как теперь войти?",
+            "start": 0,
+            "value": "А если к телефону тоже доступа нет, как теперь войти?"
+          }
+        ],
+        "entities": {
+          "service": [
+            {
+              "end": 44,
+              "message_id": "m0103",
+              "quote": "aQsi Online",
+              "start": 33,
+              "value": "aQsi Online"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0106",
+          "question": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "reason": "message_ambiguous",
+          "slot": "task"
+        },
+        "goals": [],
+        "intent": "credentials",
+        "object": "учётная запись",
+        "object_reference": null,
+        "operation": "reset_password",
+        "operation_evidence": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 63,
+          "message_id": "m0103",
+          "quote": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?",
+          "start": 0,
+          "value": "Забыл пароль от личного кабинета aQsi Online. Как восстановить?"
+        },
+        "task_id": "task:m0103",
+        "topic_start_message_id": "m0103",
+        "transition": "clarification",
+        "unresolved": {
+          "end": 72,
+          "message_id": "m0105",
+          "quote": "К старой почте доступа нет, но номер телефона остался. Через него можно?",
+          "start": 0,
+          "value": "К старой почте доступа нет, но номер телефона остался. Через него можно?"
+        }
+      },
+      "topic_start_message_id": "m0103"
+    },
+    {
+      "conversation_id": "c0011",
+      "message_id": "m0109",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 15,
+              "message_id": "m0109",
+              "quote": "Платформе ОФД",
+              "start": 2,
+              "value": "Платформа ОФД"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "search",
+        "operation_evidence": {
+          "end": 61,
+          "message_id": "m0109",
+          "quote": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?",
+          "start": 0,
+          "value": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?"
+        },
+        "parameters": [
+          {
+            "end": 60,
+            "message_id": "m0109",
+            "quote": "за прошлый месяц. Куда зайти",
+            "start": 32,
+            "value": "за прошлый месяц. Куда зайти"
+          }
+        ],
+        "revision": 1,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 61,
+          "message_id": "m0109",
+          "quote": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?",
+          "start": 0,
+          "value": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?"
+        },
+        "task_id": "task:m0109",
+        "topic_start_message_id": "m0109",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0109"
+    },
+    {
+      "conversation_id": "c0011",
+      "message_id": "m0111",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 15,
+              "message_id": "m0109",
+              "quote": "Платформе ОФД",
+              "start": 2,
+              "value": "Платформа ОФД"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "search",
+        "operation_evidence": {
+          "end": 61,
+          "message_id": "m0109",
+          "quote": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?",
+          "start": 0,
+          "value": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?"
+        },
+        "parameters": [
+          {
+            "end": 60,
+            "message_id": "m0109",
+            "quote": "за прошлый месяц. Куда зайти",
+            "start": 32,
+            "value": "за прошлый месяц. Куда зайти"
+          }
+        ],
+        "revision": 2,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 61,
+          "message_id": "m0109",
+          "quote": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?",
+          "start": 0,
+          "value": "В Платформе ОФД нужно найти чек за прошлый месяц. Куда зайти?"
+        },
+        "task_id": "task:m0109",
+        "topic_start_message_id": "m0109",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0109"
+    },
+    {
+      "conversation_id": "c0011",
+      "message_id": "m0113",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 33,
+            "message_id": "m0113",
+            "quote": "только номер ФН кассы",
+            "start": 12,
+            "value": "только номер ФН кассы"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "ofd": [
+            {
+              "end": 15,
+              "message_id": "m0109",
+              "quote": "Платформе ОФД",
+              "start": 2,
+              "value": "Платформа ОФД"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "fiscal_drive",
+        "object": "ФН",
+        "object_reference": null,
+        "operation": "search",
+        "operation_evidence": {
+          "end": 72,
+          "message_id": "m0113",
+          "quote": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?",
+          "start": 0,
+          "value": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?"
+        },
+        "parameters": [
+          {
+            "end": 71,
+            "message_id": "m0113",
+            "quote": "по нему",
+            "start": 64,
+            "value": "по нему"
+          }
+        ],
+        "revision": 3,
+        "routing_slot": "ofd",
+        "schema_version": 1,
+        "task": {
+          "end": 72,
+          "message_id": "m0113",
+          "quote": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?",
+          "start": 0,
+          "value": "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?"
+        },
+        "task_id": "task:m0113",
+        "topic_start_message_id": "m0113",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0113"
+    },
+    {
+      "conversation_id": "c0003",
+      "message_id": "m0115",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "equipment": [
+            {
+              "end": 12,
+              "message_id": "m0115",
+              "quote": "Эвоторе 6",
+              "start": 3,
+              "value": "Эвоторе 6"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 10,
+              "message_id": "m0115",
+              "quote": "Эвоторе",
+              "start": 3,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 83,
+          "message_id": "m0115",
+          "quote": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?",
+          "start": 0,
+          "value": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 83,
+          "message_id": "m0115",
+          "quote": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?",
+          "start": 0,
+          "value": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?"
+        },
+        "task_id": "task:m0115",
+        "topic_start_message_id": "m0115",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0115"
+    },
+    {
+      "conversation_id": "c0003",
+      "message_id": "m0117",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "equipment": [
+            {
+              "end": 12,
+              "message_id": "m0117",
+              "quote": "Эвоторе 6",
+              "start": 3,
+              "value": "Эвоторе 6"
+            }
+          ],
+          "manufacturer": [
+            {
+              "end": 10,
+              "message_id": "m0117",
+              "quote": "Эвоторе",
+              "start": 3,
+              "value": "Эвотор"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "receipt",
+        "object": "чек",
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 83,
+          "message_id": "m0115",
+          "quote": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?",
+          "start": 0,
+          "value": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 83,
+          "message_id": "m0115",
+          "quote": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?",
+          "start": 0,
+          "value": "На Эвоторе 6 нужно повторно распечатать старый чек. Номер ФД известен. Как сделать?"
+        },
+        "task_id": "task:m0115",
+        "topic_start_message_id": "m0115",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0115"
+    },
+    {
+      "conversation_id": "c0001",
+      "message_id": "m0119",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "software": [
+            {
+              "end": 8,
+              "message_id": "m0119",
+              "quote": "1С",
+              "start": 6,
+              "value": "1С"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "network",
+        "object": "соединение",
+        "object_reference": null,
+        "operation": "connect",
+        "operation_evidence": {
+          "end": 118,
+          "message_id": "m0119",
+          "quote": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?",
+          "start": 0,
+          "value": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "software",
+        "schema_version": 1,
+        "task": {
+          "end": 118,
+          "message_id": "m0119",
+          "quote": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?",
+          "start": 0,
+          "value": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?"
+        },
+        "task_id": "task:m0119",
+        "topic_start_message_id": "m0119",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0119"
+    },
+    {
+      "conversation_id": "c0001",
+      "message_id": "m0121",
+      "state": {
+        "analysis_required": true,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "software": [
+            {
+              "end": 8,
+              "message_id": "m0119",
+              "quote": "1С",
+              "start": 6,
+              "value": "1С"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "network",
+        "object": "соединение",
+        "object_reference": null,
+        "operation": "connect",
+        "operation_evidence": {
+          "end": 118,
+          "message_id": "m0119",
+          "quote": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?",
+          "start": 0,
+          "value": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "software",
+        "schema_version": 1,
+        "task": {
+          "end": 118,
+          "message_id": "m0119",
+          "quote": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?",
+          "start": 0,
+          "value": "У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?"
+        },
+        "task_id": "task:m0119",
+        "topic_start_message_id": "m0119",
+        "transition": "continue_task",
+        "unresolved": {
+          "end": 47,
+          "message_id": "m0121",
+          "quote": "Где вообще находится список банковских выписок?",
+          "start": 0,
+          "value": "Где вообще находится список банковских выписок?"
+        }
+      },
+      "topic_start_message_id": "m0119"
+    },
+    {
+      "conversation_id": "c0015",
+      "message_id": "m0123",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "service": [
+            {
+              "end": 36,
+              "message_id": "m0123",
+              "quote": "ТС ПИоТ",
+              "start": 29,
+              "value": "ТС ПиОТ"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "check",
+        "operation_evidence": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": "service",
+        "schema_version": 1,
+        "task": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "task_id": "task:m0123",
+        "topic_start_message_id": "m0123",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0123"
+    },
+    {
+      "conversation_id": "c0015",
+      "message_id": "m0125",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 59,
+            "message_id": "m0125",
+            "quote": "но точную модель и версию модуля пока не знаю",
+            "start": 14,
+            "value": "но точную модель и версию модуля пока не знаю"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 12,
+              "message_id": "m0125",
+              "quote": "Эвотор",
+              "start": 6,
+              "value": "Эвотор"
+            }
+          ],
+          "service": [
+            {
+              "end": 36,
+              "message_id": "m0123",
+              "quote": "ТС ПИоТ",
+              "start": 29,
+              "value": "ТС ПиОТ"
+            }
+          ]
+        },
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "check",
+        "operation_evidence": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "task_id": "task:m0123",
+        "topic_start_message_id": "m0123",
+        "transition": "change_parameter",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0123"
+    },
+    {
+      "conversation_id": "c0015",
+      "message_id": "m0127",
+      "state": {
+        "analysis_required": false,
+        "constraints": [
+          {
+            "end": 59,
+            "message_id": "m0125",
+            "quote": "но точную модель и версию модуля пока не знаю",
+            "start": 14,
+            "value": "но точную модель и версию модуля пока не знаю"
+          }
+        ],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "end": 12,
+              "message_id": "m0125",
+              "quote": "Эвотор",
+              "start": 6,
+              "value": "Эвотор"
+            }
+          ],
+          "service": [
+            {
+              "end": 36,
+              "message_id": "m0123",
+              "quote": "ТС ПИоТ",
+              "start": 29,
+              "value": "ТС ПиОТ"
+            }
+          ]
+        },
+        "error": null,
+        "expected": {
+          "message_id": "m0126",
+          "question": "Пожалуйста, уточните модель кассы и версию прошивки (или версии драйвера ТС ПИоТ).",
+          "reason": "нужна уточняющая информация о модели и версии кассы",
+          "slot": "equipment"
+        },
+        "goals": [],
+        "intent": "device",
+        "object": "касса",
+        "object_reference": null,
+        "operation": "check",
+        "operation_evidence": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": "manufacturer",
+        "schema_version": 1,
+        "task": {
+          "end": 60,
+          "message_id": "m0123",
+          "quote": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?",
+          "start": 0,
+          "value": "На кассе не инициализируется ТС ПИоТ. Что проверить сначала?"
+        },
+        "task_id": "task:m0123",
+        "topic_start_message_id": "m0123",
+        "transition": "clarification",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0123"
+    },
+    {
+      "conversation_id": "c0006",
+      "message_id": "m0129",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [],
+        "intent": "unknown",
+        "object": null,
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "parameters": [],
+        "revision": 1,
+        "routing_slot": null,
+        "schema_version": 1,
+        "task": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "task_id": "task:m0129",
+        "topic_start_message_id": "m0129",
+        "transition": "new_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0129"
+    },
+    {
+      "conversation_id": "c0006",
+      "message_id": "m0131",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [
+          {
+            "end": 20,
+            "message_id": "m0131",
+            "quote": "узнать срок действия",
+            "start": 0,
+            "value": "узнать срок действия"
+          }
+        ],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 20,
+            "message_id": "m0131",
+            "quote": "узнать срок действия",
+            "start": 0,
+            "value": "узнать срок действия"
+          }
+        ],
+        "intent": "unknown",
+        "object": null,
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "parameters": [],
+        "revision": 2,
+        "routing_slot": null,
+        "schema_version": 1,
+        "task": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "task_id": "task:m0129",
+        "topic_start_message_id": "m0129",
+        "transition": "refine_requirements",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0129"
+    },
+    {
+      "conversation_id": "c0006",
+      "message_id": "m0133",
+      "state": {
+        "analysis_required": false,
+        "constraints": [],
+        "details": [
+          {
+            "end": 20,
+            "message_id": "m0131",
+            "quote": "узнать срок действия",
+            "start": 0,
+            "value": "узнать срок действия"
+          }
+        ],
+        "entities": {},
+        "error": null,
+        "expected": null,
+        "goals": [
+          {
+            "end": 20,
+            "message_id": "m0131",
+            "quote": "узнать срок действия",
+            "start": 0,
+            "value": "узнать срок действия"
+          }
+        ],
+        "intent": "unknown",
+        "object": null,
+        "object_reference": null,
+        "operation": "unknown",
+        "operation_evidence": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "parameters": [],
+        "revision": 3,
+        "routing_slot": null,
+        "schema_version": 1,
+        "task": {
+          "end": 22,
+          "message_id": "m0129",
+          "quote": "Привет! помогите с офд",
+          "start": 0,
+          "value": "Привет! помогите с офд"
+        },
+        "task_id": "task:m0129",
+        "topic_start_message_id": "m0129",
+        "transition": "continue_task",
+        "unresolved": null
+      },
+      "topic_start_message_id": "m0129"
+    }
+  ]
+}

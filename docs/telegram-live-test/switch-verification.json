@@ -1,0 +1,21 @@
+{
+  "verified_at": "2026-10-22T07:49:28.857510+00:00",
+  "worker_pid": 28228,
+  "launcher_pid": 26284,
+  "collection": "knowledge_sprint_v1_20261022_quality_gate",
+  "points": 927,
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "source_hashes_match": true,
+  "instance_lock_held": true,
+  "polling_started": true,
+  "sqlite_byte_identical": true,
+  "collection_counts": {
+    "knowledge_demo": 928,
+    "knowledge_sprint_v1_20261022_quality_gate": 927
+  },
+  "backup_directory": "C:\\Users\\Shira\\Documents\\ChatGPT\\Rag\\.local\\backups\\telegram-live-20261022T074745Z",
+  "marker_after_message_id": 62,
+  "automatic_llm_calls": 0
+}

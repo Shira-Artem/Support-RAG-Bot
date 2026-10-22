@@ -1,0 +1,521 @@
+{
+  "escalation_events": [
+    {
+      "answer_message_id": "m0102",
+      "basis": "user_requested",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:37:03.292960+00:00",
+      "event_id": "x0001",
+      "event_type": "requested",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "request_status": "pending_confirmation",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0102",
+      "basis": "user_requested",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:37:07.910926+00:00",
+      "event_id": "x0002",
+      "event_type": "confirmed",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "request_status": "saved",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0108",
+      "basis": "user_requested",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0017",
+      "created_at": "2026-10-22T08:37:53.242735+00:00",
+      "event_id": "x0003",
+      "event_type": "requested",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "request_status": "pending_confirmation",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0108",
+      "basis": "user_requested",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0017",
+      "created_at": "2026-10-22T08:37:55.714470+00:00",
+      "event_id": "x0004",
+      "event_type": "confirmed",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "request_status": "saved",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0114",
+      "basis": "insufficient_knowledge",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0011",
+      "created_at": "2026-10-22T08:39:54.939912+00:00",
+      "event_id": "x0005",
+      "event_type": "requested",
+      "generation_reason": "no_task_matched_candidates",
+      "generation_status": "no_context",
+      "request_status": "pending_confirmation",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "escalate"
+    },
+    {
+      "answer_message_id": "m0114",
+      "basis": "insufficient_knowledge",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0011",
+      "created_at": "2026-10-22T08:39:56.382267+00:00",
+      "event_id": "x0006",
+      "event_type": "confirmed",
+      "generation_reason": "no_task_matched_candidates",
+      "generation_status": "no_context",
+      "request_status": "saved",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "escalate"
+    }
+  ],
+  "feedback_events": [
+    {
+      "answer_message_id": "m0096",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:31:15.790825+00:00",
+      "event_id": "f0001",
+      "generation_reason": null,
+      "generation_status": "grounded",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "source_confirmed",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "atol-online-account-cash-reports"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0098",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:31:30.790405+00:00",
+      "event_id": "f0002",
+      "generation_reason": null,
+      "generation_status": "grounded",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "source_confirmed",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "atol-online-account-cash-reports"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0098",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:36:22.411857+00:00",
+      "event_id": "f0003",
+      "generation_reason": null,
+      "generation_status": "grounded",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "source_confirmed",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "atol-online-account-cash-reports"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0100",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:36:47.053829+00:00",
+      "event_id": "f0004",
+      "generation_reason": null,
+      "generation_status": "grounded",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "source_confirmed",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "atol-online-account-cash-reports"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0102",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:36:58.258752+00:00",
+      "event_id": "f0005",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0104",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0017",
+      "created_at": "2026-10-22T08:37:29.495303+00:00",
+      "event_id": "f0006",
+      "generation_reason": "access_evidence_incomplete",
+      "generation_status": "partial",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "partial",
+        "insufficiency_reason": "access_evidence_incomplete",
+        "missing_evidence": [
+          "access_workflow_unverified"
+        ],
+        "selected_document_ids": [
+          "aqsi-online-account-reset-password"
+        ],
+        "sufficient": false
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0106",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0017",
+      "created_at": "2026-10-22T08:37:41.057736+00:00",
+      "event_id": "f0007",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0108",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0017",
+      "created_at": "2026-10-22T08:37:50.290398+00:00",
+      "event_id": "f0008",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0110",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0011",
+      "created_at": "2026-10-22T08:38:12.905609+00:00",
+      "event_id": "f0009",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "relevance_only",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "platformaofd-lkk-receipt-search"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0112",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0011",
+      "created_at": "2026-10-22T08:38:30.875837+00:00",
+      "event_id": "f0010",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "relevance_only",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "platformaofd-lkk-receipt-search"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0114",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0011",
+      "created_at": "2026-10-22T08:39:53.217734+00:00",
+      "event_id": "f0011",
+      "generation_reason": "no_task_matched_candidates",
+      "generation_status": "no_context",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "escalate"
+    },
+    {
+      "answer_message_id": "m0116",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0003",
+      "created_at": "2026-10-22T08:40:13.823404+00:00",
+      "event_id": "f0012",
+      "generation_reason": "no_task_matched_candidates",
+      "generation_status": "no_context",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "escalate"
+    },
+    {
+      "answer_message_id": "m0118",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0003",
+      "created_at": "2026-10-22T08:40:25.514607+00:00",
+      "event_id": "f0013",
+      "generation_reason": "no_task_matched_candidates",
+      "generation_status": "no_context",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "escalate"
+    },
+    {
+      "answer_message_id": "m0120",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0001",
+      "created_at": "2026-10-22T08:42:59.749931+00:00",
+      "event_id": "f0014",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "relevance_only",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "aqsi-online-integration-1c-setup",
+          "atol-online-12790-integration-1c-versions",
+          "aqsi-online-setup-add-store",
+          "atol-online-26409-tax-2026-business-prep"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0122",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0001",
+      "created_at": "2026-10-22T08:43:13.387735+00:00",
+      "event_id": "f0015",
+      "generation_reason": "message_ambiguous",
+      "generation_status": "clarification",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "selected_document_ids": []
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0124",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0015",
+      "created_at": "2026-10-22T08:43:28.306746+00:00",
+      "event_id": "f0016",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "relevance_only",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "astral-tspiot-diagnostics-2026",
+          "tspiot-licence-and-sale-checks-astral-2026",
+          "tspiot-initial-diagnostics-astral-2026",
+          "astral-tspiot-errors-453-500-514"
+        ],
+        "sufficient": true
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0128",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0015",
+      "created_at": "2026-10-22T08:44:01.516874+00:00",
+      "event_id": "f0017",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "unhelpful",
+      "retrieval_json": {
+        "evidence_status": "relevance_only",
+        "insufficiency_reason": null,
+        "missing_evidence": [],
+        "selected_document_ids": [
+          "evotor-tspiot-localmodule-[LONG_NUMBER_REDACTED]",
+          "evotor-tspiot-requirements-[LONG_NUMBER_REDACTED]",
+          "evotor-model-6-lite-1d8e8869",
+          "evotor-mobile-network-check-[LONG_NUMBER_REDACTED]",
+          "evotor-model-7-3-[LONG_NUMBER_REDACTED]"
+        ],
+        "sufficient": true
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0132",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0006",
+      "created_at": "2026-10-22T08:45:53.813337+00:00",
+      "event_id": "f0018",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "answer"
+    },
+    {
+      "answer_message_id": "m0130",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0006",
+      "created_at": "2026-10-22T08:45:54.794595+00:00",
+      "event_id": "f0019",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "clarify"
+    },
+    {
+      "answer_message_id": "m0134",
+      "collection": "knowledge_sprint_v1_[LONG_NUMBER_REDACTED]_quality_gate",
+      "conversation_id": "c0006",
+      "created_at": "2026-10-22T08:46:10.897169+00:00",
+      "event_id": "f0020",
+      "generation_reason": null,
+      "generation_status": "generated",
+      "rating": "helpful",
+      "retrieval_json": {
+        "evidence_status": "none",
+        "insufficiency_reason": "no_task_matched_candidates",
+        "missing_evidence": [],
+        "selected_document_ids": [],
+        "sufficient": false
+      },
+      "scenario": "answer"
+    }
+  ],
+  "support_requests": [
+    {
+      "answer_message_id": "m0102",
+      "basis": "user_requested",
+      "confirmed_at": "2026-10-22T08:37:07.910926+00:00",
+      "conversation_id": "c0014",
+      "created_at": "2026-10-22T08:37:03.292960+00:00",
+      "delivered_at": null,
+      "question_message_id": "m0101",
+      "request_id": "r0001",
+      "status": "saved"
+    },
+    {
+      "answer_message_id": "m0108",
+      "basis": "user_requested",
+      "confirmed_at": "2026-10-22T08:37:55.714470+00:00",
+      "conversation_id": "c0017",
+      "created_at": "2026-10-22T08:37:53.242735+00:00",
+      "delivered_at": null,
+      "question_message_id": "m0107",
+      "request_id": "r0002",
+      "status": "saved"
+    },
+    {
+      "answer_message_id": "m0114",
+      "basis": "insufficient_knowledge",
+      "confirmed_at": "2026-10-22T08:39:56.382267+00:00",
+      "conversation_id": "c0011",
+      "created_at": "2026-10-22T08:39:54.939912+00:00",
+      "delivered_at": null,
+      "question_message_id": "m0113",
+      "request_id": "r0003",
+      "status": "saved"
+    }
+  ]
+}
