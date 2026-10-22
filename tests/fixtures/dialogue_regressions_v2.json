@@ -1,0 +1,66 @@
+{
+  "provenance": "synthetic; reconstructed only from the cases documented in the task, not historical user messages",
+  "scenarios": {
+    "A": {
+      "name": "Платформа ОФД — поиск чека по ФН",
+      "messages": [
+        "Платформа ОФД, найти чек",
+        "У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?"
+      ],
+      "expected_before_followup": null,
+      "target": "receipt/search stays active, service remains Платформа ОФД, ФН is a parameter, query remains about receipt search"
+    },
+    "B": {
+      "name": "aQsi Online — восстановление пароля",
+      "messages": [
+        "aQsi Online, восстановить пароль",
+        "К старой почте доступа нет, но номер телефона остался. Через него можно?",
+        "А если к телефону тоже доступа нет, как теперь войти?"
+      ],
+      "expected_before_followup": null,
+      "target": "both follow-ups continue one password-reset task and produce retrieval queries"
+    },
+    "C": {
+      "name": "АТОЛ Онлайн — возражение по отсутствующему разделу",
+      "messages": [
+        "АТОЛ Онлайн, где посмотреть отчёты?",
+        "В кабинете этого раздела у меня нет. Что делать?"
+      ],
+      "expected_before_followup": null,
+      "target": "contradiction keeps the report task and allows diagnosis or escalation retrieval"
+    },
+    "D": {
+      "name": "ТС ПиОТ — смена темы",
+      "messages": [
+        "ТС ПиОТ, какая модель оборудования?",
+        "Где посмотреть документы, которые не отправились оператору ОФД?"
+      ],
+      "expected_before_followup": {"slot": "equipment", "question": "Какая модель оборудования?"},
+      "target": "new task cancels stale equipment clarification and excludes TS PiOT context from its query"
+    },
+    "E": {
+      "name": "1С:ДиректБанк — список банковских выписок",
+      "messages": [
+        "Как посмотреть банковские выписки в 1С?",
+        "А где посмотреть список выписок?"
+      ],
+      "expected_before_followup": null,
+      "target": "bank statement intent and continuation are retained; known classification defect remains a regression"
+    },
+    "F": {
+      "name": "Эвотор 6 — повторная печать чека по ФД",
+      "messages": ["Эвотор 6, как повторно распечатать старый чек по номеру ФД?"],
+      "expected_before_followup": null,
+      "target": "receipt intent, repeat_print operation, and fiscal-document retrieval query"
+    },
+    "G": {
+      "name": "Смена aQsi Online на АТОЛ Онлайн в задаче доступа",
+      "messages": [
+        "aQsi Online, добавить сотрудника для просмотра касс, без права менять настройки",
+        "АТОЛ Онлайн"
+      ],
+      "expected_before_followup": null,
+      "target": "same task and goals/constraints, active route switches to ATOL, old product is not mixed into the query"
+    }
+  }
+}
