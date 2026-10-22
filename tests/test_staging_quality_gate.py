@@ -13,7 +13,7 @@ from test_retrieval_pipeline import Source, _state
 def hit(text, **metadata):
     return SearchResult(metadata.pop('source', 'aqsi_online/account/guide.md'), text, .04,
                         metadata={'document_id': 'guide', 'category': 'account', 'service': 'aQsi Online',
-                                  'status': 'draft', **metadata})
+                                  'status': 'approved', **metadata})
 
 
 def test_partial_existing_user_instructions_survive_without_fabricated_permissions(monkeypatch, tmp_path):

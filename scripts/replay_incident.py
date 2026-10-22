@@ -6,7 +6,7 @@ This verifies state, gates and response repair; it is not a live model evaluatio
 from __future__ import annotations
 
 import asyncio
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import json
 from pathlib import Path
 import sys
@@ -26,10 +26,15 @@ from app.retrieval_pipeline import RetrievalPipeline
 
 
 class LocalCards:
-    def __init__(self):
+    def __init__(self, *, approved_snapshot_for_test: bool = False):
         root = ROOT / 'data/knowledge'
         loader, chunker = DocumentLoader(root), Chunker()
         self.chunks = [chunk for p in sorted(root.rglob('*.md')) for chunk in chunker.split(loader.load(p))]
+        if approved_snapshot_for_test:
+            # Replay-only fixture: simulate the status filter after human review.
+            # Source Markdown is never changed, and CLI replay keeps the safe default.
+            self.chunks = [replace(chunk, metadata={**chunk.metadata, 'status': 'approved'})
+                           for chunk in self.chunks]
         self.vectors = [(v, _norm(v)) for v in (_char_ngrams(c.text + ' ' + c.metadata['title']) for c in self.chunks)]
         self.pipeline = RetrievalPipeline(self)
 
@@ -48,9 +53,9 @@ class LocalCards:
         return self.pipeline.search(state, query)
 
 
-async def replay():
+async def replay(*, approved_snapshot_for_test: bool = False):
     recorded = json.loads((ROOT / 'tests/fixtures/telegram-2026-10-21.json').read_text(encoding='utf-8'))
-    source = LocalCards()
+    source = LocalCards(approved_snapshot_for_test=approved_snapshot_for_test)
     # Explicit settings with a patched provider; never use configured credentials.
     settings = Settings(telegram_bot_token='', openrouter_api_key='', openrouter_model='offline',
                         app_name='offline', app_url='http://localhost', show_sources=False,

@@ -50,20 +50,19 @@ def query_or_none(state):
         return None
 
 
-@pytest.mark.xfail(strict=True, reason="v1 lexical analysis binds the FN argument as a new fiscal_drive task")
 def test_a_receipt_search_survives_fn_parameter():
     case = scenario("A")
     state = advance(case["messages"])
     query = query_or_none(state)
     assert state.intent == "receipt"
     assert state.operation == "search"
+    assert state.relation == "parameter_update"
     assert state.routing_service == "Платформа ОФД"
     assert state.task_id == "task:1"
     assert state.parameters and "ФН" in state.parameters[-1].value
     assert query and "чек" in query and "Платформа ОФД" in query
 
 
-@pytest.mark.xfail(strict=True, reason="v1 leaves the relation unresolved and suppresses retrieval for these credential follow-ups")
 def test_b_password_recovery_followups_continue_with_retrieval():
     case = scenario("B")
     state = advance(case["messages"], case["expected_before_followup"])
@@ -71,10 +70,10 @@ def test_b_password_recovery_followups_continue_with_retrieval():
     assert state.task_id == "task:1"
     assert state.expected is None
     assert not state.analysis_required
+    assert "доступа нет" in " ".join(f.value for f in state.constraints)
     assert query_or_none(state)
 
 
-@pytest.mark.xfail(strict=True, reason="v1 classifies the contradiction as unresolved instead of a task relation")
 def test_c_missing_report_section_is_a_contradiction_on_same_task():
     case = scenario("C")
     state = advance(case["messages"], case["expected_before_followup"])
@@ -84,19 +83,18 @@ def test_c_missing_report_section_is_a_contradiction_on_same_task():
     assert query_or_none(state)
 
 
-@pytest.mark.xfail(strict=True, reason="v1 retains stale task/clarification when the new OFD-document question is not classified")
 def test_d_new_ofd_question_cancels_tspiot_equipment_clarification():
     case = scenario("D")
     state = advance(case["messages"], case["expected_before_followup"])
     query = query_or_none(state)
     assert state.task_id == "task:2"
     assert state.expected is None
-    assert state.routing_service == "Платформа ОФД"
+    assert state.routing_service is None  # generic OFD mention does not confirm a vendor
     assert state.intent == "receipt"
     assert query and "ТС ПиОТ" not in query
+    assert "ОФД" in query and "отправ" in query
 
 
-@pytest.mark.xfail(strict=True, reason="v1 has no bank-statement intent/object vocabulary and cannot bind the elliptical follow-up")
 def test_e_1c_directbank_keeps_bank_statement_task():
     case = scenario("E")
     state = advance(case["messages"])
@@ -106,7 +104,6 @@ def test_e_1c_directbank_keeps_bank_statement_task():
     assert query_or_none(state)
 
 
-@pytest.mark.xfail(strict=True, reason="v1 has no repeat_print operation; analyzer leaves the operation unknown")
 def test_f_evotor_old_receipt_records_repeat_print_operation():
     case = scenario("F")
     state = advance(case["messages"])
@@ -122,6 +119,7 @@ def test_g_service_switch_preserves_requirements_without_mixing_products():
     query = query_or_none(state)
     assert state.task_id == "task:1"
     assert state.routing_service == "АТОЛ Онлайн"
+    assert state.relation == "parameter_update"
     assert state.goals and state.constraints
     assert query and "АТОЛ Онлайн" in query and "aQsi Online" not in query
 
@@ -137,7 +135,6 @@ def test_h_new_task_clears_task_facts_but_keeps_session_entities():
     assert not new.goals and not new.constraints and not new.parameters
 
 
-@pytest.mark.xfail(strict=True, reason="v1 reuses the previous session service as the new task route without a user fact")
 def test_h_session_service_is_not_implicitly_bound_to_new_task():
     manager = DialogueManager()
     state = manager.advance(DialogueState(), "aQsi Online, добавить сотрудника", 1)
@@ -153,8 +150,11 @@ def test_h_assistant_clarification_does_not_become_a_client_fact():
     before = state.to_dict()
     after = manager.observe_answer(state, scenario="clarify", reason=None,
                                    question="Подтвердите пароль", message_id=2, slot="details")
-    assert after.to_dict() == {**before, "expected": {
-        "slot": "details", "question": "Подтвердите пароль", "message_id": 2, "reason": None}}
+    after_dict = after.to_dict()
+    assert after_dict["entities"] == before["entities"]
+    assert after_dict["task_context"]["task_fact"] == before["task_context"]["task_fact"]
+    assert after_dict["task_context"]["expected"] == {
+        "slot": "details", "question": "Подтвердите пароль", "message_id": 2, "reason": None}
 
 
 def test_h_new_conversation_reload_and_pending_recovery_are_isolated(tmp_path):
@@ -188,3 +188,102 @@ def test_h_fact_citations_are_exact_and_ambiguous_entities_are_not_invented():
     ambiguous = manager.advance(DialogueState(), "Как изменить права: aQsi Online или АТОЛ Онлайн?", 42)
     assert ambiguous.entity("service") is None
     assert ambiguous.analysis_required
+
+
+@pytest.mark.parametrize("messages", [
+    ["Платформа ОФД, нужен поиск чека.", "Можно искать только по номеру ФН кассы?"],
+    ["Платформа ОФД, найти чек", "Если известен только номер фискального накопителя, получится найти чек?"]
+])
+def test_a_receipt_fn_paraphrases_keep_receipt_search(messages):
+    state = advance(messages)
+    assert state.intent == "receipt" and state.operation == "search"
+    assert state.task_id == "task:1" and state.routing_service == "Платформа ОФД"
+    assert state.parameters
+    query = build_rag_query(state)
+    assert "чек" in query and any(term in query for term in ("ФН", "накопител"))
+
+
+def test_b_password_recovery_paraphrase_keeps_task_and_retrieval():
+    state = advance(["aQsi Online, восстановить пароль",
+                     "Почта для восстановления недоступна, телефон остался. Можно через SMS?"])
+    assert state.intent == "credentials" and state.operation == "reset_password"
+    assert state.task_id == "task:1" and not state.analysis_required
+    assert "aQsi Online" in build_rag_query(state)
+
+
+def test_c_report_contradiction_paraphrase_keeps_task():
+    state = advance(["АТОЛ Онлайн, как открыть отчёты?",
+                     "В инструкции указан пункт отчёты, но в кабинете его нет."])
+    assert state.intent == "report" and state.task_id == "task:1"
+    assert state.relation == "contradiction" and not state.analysis_required
+    assert build_rag_query(state)
+
+
+def test_d_new_topic_paraphrase_clears_stale_equipment_slot():
+    state = advance(["ТС ПиОТ, какая модель кассы?",
+                     "Куда зайти за неотправленными оператору ОФД документами?"] ,
+                    {"slot": "equipment", "question": "Какая модель оборудования?"})
+    assert state.task_id == "task:2" and state.expected is None
+    assert state.relation == "new_task" and "ТС ПиОТ" not in build_rag_query(state)
+
+
+def test_e_bank_statement_paraphrase_is_classified():
+    state = advance(["Где в 1С посмотреть банковские выписки?",
+                     "А где открыть список этих выписок?"])
+    assert state.intent == "bank_statement" and state.task_id == "task:1"
+    assert not state.analysis_required and build_rag_query(state)
+
+
+def test_f_repeat_print_paraphrase_keeps_fd_parameter():
+    state = advance(["Эвотор 6, как распечатать старый чек повторно по ФД 741?"])
+    assert state.intent == "receipt" and state.operation == "repeat_print"
+    assert state.parameters and "ФД" in state.parameters[0].value
+    assert "повтор" in build_rag_query(state) and "ФД" in build_rag_query(state)
+
+
+def test_v1_snapshot_migration_is_additive_idempotent_and_restarts(tmp_path):
+    path = tmp_path / "v1-copy.sqlite3"
+    store = ConversationStore(path)
+    cid = store.new(8, 80)
+    source_state = DialogueManager().advance(DialogueState(), "aQsi Online, восстановить пароль", 1).to_dict()
+    source_state["schema_version"] = 1
+    source_state.pop("session")
+    source_state.pop("task_context")
+    raw = json.dumps(source_state, ensure_ascii=False, separators=(",", ":"))
+    with store.connect() as db:
+        db.execute("INSERT INTO dialogue_states VALUES(?,?,?)", (cid, raw, 0))
+        before_conversations = db.execute("SELECT * FROM conversations").fetchall()
+        before_messages = db.execute("SELECT * FROM messages").fetchall()
+
+    result = store.migrate_dialogue_states()
+    assert result == {"migrated": 1, "already_migrated": 0,
+                      "blocked_unknown_version": 0, "blocked_invalid_payload": 0}
+    assert ConversationStore(path).migrate_dialogue_states()["already_migrated"] == 1
+    reloaded = ConversationStore(path).dialogue_state(cid)
+    assert reloaded.schema_version == 2
+    assert reloaded.intent == "credentials" and reloaded.routing_service == "aQsi Online"
+    with store.connect() as db:
+        assert db.execute("SELECT state_json FROM dialogue_states WHERE conversation_id=?", (cid,)).fetchone()[0] == raw
+        assert db.execute("SELECT source_state_json FROM dialogue_state_migration_archive WHERE conversation_id=?",
+                          (cid,)).fetchone()[0] == raw
+        assert [tuple(row) for row in db.execute("SELECT * FROM conversations")] == [tuple(row) for row in before_conversations]
+        assert [tuple(row) for row in db.execute("SELECT * FROM messages")] == [tuple(row) for row in before_messages]
+        assert db.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+
+
+def test_unknown_snapshot_migration_is_archived_and_never_rewritten(tmp_path):
+    path = tmp_path / "unknown-copy.sqlite3"
+    store = ConversationStore(path)
+    cid = store.new(9, 90)
+    raw = '{"schema_version":999,"keep":"byte-for-byte"}'
+    with store.connect() as db:
+        db.execute("INSERT INTO dialogue_states VALUES(?,?,?)", (cid, raw, 0))
+    result = store.migrate_dialogue_states()
+    assert result["blocked_unknown_version"] == 1 and result["migrated"] == 0
+    with pytest.raises(ValueError, match="Unsupported"):
+        ConversationStore(path).dialogue_state(cid)
+    with store.connect() as db:
+        assert db.execute("SELECT state_json FROM dialogue_states WHERE conversation_id=?", (cid,)).fetchone()[0] == raw
+        archive = db.execute("SELECT source_state_json,status FROM dialogue_state_migration_archive WHERE conversation_id=?",
+                             (cid,)).fetchone()
+    assert tuple(archive) == (raw, "blocked_unknown_version")

@@ -10,6 +10,13 @@ source_type: vendor_support_article
 published_at:
 collected_at: 2026-10-12
 verified_at:
+task_category: receipt_print
+operations:
+- repeat_print
+search_fields:
+- fiscal_document_number
+evidence_coverage:
+  repeat_print: full
 status: draft
 ---
 

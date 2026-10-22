@@ -324,6 +324,7 @@ class Answer:
     dialogue_state: dict | None = None
     clarification_slot: str | None = None
     retrieval_diagnostics: dict | None = None
+    retrieval_collection: str | None = None
     reasoning_effort: str | None = None
     llm_call_attempted: bool = False
     response_repair: dict | None = None
@@ -355,6 +356,7 @@ class AnswerService:
         answer.confirmed_service = diagnostics.get('confirmed_service')
         answer.dialogue_state = state.to_dict()
         answer.retrieval_diagnostics = diagnostics.get('retrieval_diagnostics')
+        answer.retrieval_collection = getattr(getattr(getattr(self.rag, 'retriever', None), 'store', None), 'collection', None)
         answer.reasoning_effort = (self.settings.groq_reasoning_effort if self.settings.llm_provider == 'groq' else None)
         answer.llm_call_attempted = diagnostics.get('llm_call_attempted', False)
         if answer.scenario == 'clarify':
@@ -379,7 +381,7 @@ class AnswerService:
                           generation_reason=reason, model=model, provider=self.settings.llm_provider,
                           rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
         diagnostics.update(active_request=active_request, confirmed_service=service)
-        needs_service = ((state.intent in {'access', 'credentials'} and state.operation != 'explain')
+        needs_service = ((state.intent in {'access', 'credentials', 'report'} and state.operation != 'explain')
                          or (state.intent == 'receipt' and state.operation in {'search', 'check', 'status', 'transmit'})
                          or _needs_service_context(active_request))
         pending_service_question = bool(state.expected and state.expected.slot == 'service')
@@ -436,6 +438,37 @@ class AnswerService:
                 model=model, provider=self.settings.llm_provider,
                 rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
 
+        # A directly sourced navigation fact can be answered without letting a
+        # generator invent extra menu steps. The article covers reports after
+        # an FN swap; broader report types stay explicitly unverified.
+        if retrieval is not None and state.intent == 'report' and state.operation == 'view_reports':
+            report = next((item for item in results
+                           if (item.metadata or {}).get('document_id') == 'atol-online-account-cash-reports'
+                           and '«Отчеты по кассам»' in item.text
+                           and 'После замены ФН' in item.text), None)
+            if report:
+                source_url = (report.metadata or {}).get('source_url')
+                scope = ' '.join(f.value for f in [state.task, state.operation_evidence] if f)
+                after_swap = bool(re.search(r'после\s+замен\w*\s+фн', scope, re.I))
+                text = ('После замены ФН АТОЛ Онлайн направляет отчёты на почту, '
+                        'указанную при регистрации. Доступные отчёты можно посмотреть '
+                        'в личном кабинете в разделе «Отчеты по кассам».')
+                if not after_swap:
+                    text += (' Источник описывает отчёты о закрытии и перерегистрации ФН. '
+                             'Если нужен другой вид отчёта, уточните какой.')
+                if source_url:
+                    text += f'\nИсточник: {source_url}'
+                retrieval.evidence_status = 'source_confirmed' if after_swap else 'partial'
+                retrieval.sufficient = after_swap
+                retrieval.insufficiency_reason = None if after_swap else 'report_scope_unverified'
+                retrieval.missing_evidence = [] if after_swap else ['other_report_types_unverified']
+                diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
+                return Answer(text=text, results=results, generation_status='grounded' if after_swap else 'partial',
+                              scenario='answer', scenario_reason='source_confirmed' if after_swap else 'supported_partial_answer',
+                              generation_reason=None if after_swap else 'report_scope_unverified',
+                              model=model, provider=self.settings.llm_provider, rag_chunks=len(results),
+                              context_chars=len(retrieval.context), duration_ms=round((perf_counter() - started) * 1000))
+
         if (retrieval is not None and not retrieval.sufficient
                 and getattr(retrieval, 'evidence_status', None) == 'partial'
                 and retrieval.supported_steps):
@@ -445,6 +478,7 @@ class AnswerService:
             gaps = {
                 'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
                 'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
+                'role_creation_workflow_unverified': 'Полная процедура создания роли в источнике не подтверждена; завершение и сохранение нужно проверить в актуальном кабинете.',
                 'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
             }
             confirmed = []
@@ -463,12 +497,12 @@ class AnswerService:
                           response_repair={'mode': 'partial_answer', 'evidence': retrieval.supported_steps})
 
         if retrieval is not None and not retrieval.sufficient and state.intent in {
-                'access', 'credentials', 'receipt', 'device', 'fiscal_drive', 'network'}:
+                'access', 'credentials', 'receipt', 'report', 'device', 'fiscal_drive', 'network'}:
             reason = retrieval.insufficiency_reason or 'insufficient_evidence'
             return Answer(
                 text=(f"Для {service} не нашёл инструкции по этому действию. " if service else
                       "Не нашёл инструкции по этому действию. ") +
-                     "Уточнить порядок действий можно в поддержке сервиса.",
+                     "Можете описать недостающую деталь или запросить специалиста кнопкой ниже.",
                 results=results, generation_status="no_context", scenario="escalate",
                 scenario_reason="insufficient_evidence", generation_reason=reason,
                 model=model, provider=self.settings.llm_provider, rag_chunks=0,

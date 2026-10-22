@@ -2,6 +2,8 @@
 
 Date: 2026-10-22. Branch: `fix/rag-p0-dialogue-v2`.
 
+This is the captured pre-implementation baseline. Its XFAIL counts describe behavior before Step 2 and are retained as historical evidence; current results are in [regressions.md](regressions.md) and [implementation.md](implementation.md).
+
 ## Scope and reproducibility
 
 - Starting commit: `9bf892be3880b015f1bdaeb76ce9f63385ee3c75` (`main`).

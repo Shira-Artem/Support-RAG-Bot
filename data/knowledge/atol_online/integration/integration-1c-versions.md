@@ -10,6 +10,17 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+service: АТОЛ Онлайн
+software: 1С
+task_category: integration
+operations:
+- check_integration_compatibility
+search_fields:
+- configuration
+- edition
+- release
+- ffd
+procedure_service: АТОЛ Онлайн
 status: draft
 ---
 

@@ -10,6 +10,13 @@ source_type: vendor_article
 published_at: '2026-05-01'
 collected_at: '2026-10-13'
 verified_at: null
+software: 1С:Бухгалтерия 8
+task_category: bank_statement
+operations:
+- schedule_bank_statement_import
+search_fields:
+- configuration_release
+- bank_exchange_settings
 status: draft
 ---
 

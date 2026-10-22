@@ -10,6 +10,8 @@ source_type: ofd_knowledge_base
 published_at: null
 collected_at: 2026-10-12
 verified_at: null
+evidence_coverage:
+  search_receipt: full
 status: draft
 service: Платформа ОФД
 task_category: receipt_search

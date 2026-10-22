@@ -6,9 +6,11 @@ from app.dialogue_state import DialogueState
 
 OPERATIONS = {
     "add_employee": "добавление сотрудника", "assign_role": "назначение роли сотруднику",
+    "create_role": "создание роли", "view_reports": "просмотр отчётов",
     "change_permissions": "изменение прав существующего сотрудника",
     "reset_password": "восстановление пароля учётной записи", "search": "поиск",
-    "list": "просмотр списка касс",
+    "list": "просмотр списка",
+    "repeat_print": "повторная печать ранее выданного",
     "check": "проверка", "status": "проверка статуса", "diagnose": "диагностика ошибки",
     "connect": "подключение", "configure": "настройка", "close": "закрытие",
     "replace": "замена", "return": "возврат", "add": "добавление", "change": "изменение", "assign": "назначение",
@@ -23,21 +25,36 @@ class QueryNeedsClarification(ValueError):
 def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
     if state.analysis_required:
         raise QueryNeedsClarification("Message relationship is unresolved")
-    if state.intent == "unknown" or state.operation in {"explain", "unknown"}:
+    if state.intent == "receipt" and state.operation == "search":
+        task = "поиск чека"
+    elif state.intent == "receipt" and state.operation == "repeat_print":
+        task = "повторная печать ранее выданного чека"
+    elif state.intent == "receipt" and state.operation == "transmit":
+        task = "поиск документов, не переданных оператору ОФД"
+    elif state.intent == "unknown" or state.operation in {"explain", "unknown"}:
         task = state.task.value if state.task else ""
     else:
         task = OPERATIONS[state.operation]
-        if state.intent not in {"access", "credentials"} and state.object and state.operation != 'list':
+        if state.intent not in {"access", "credentials", "report"} and state.object and (
+                state.operation != 'list' or state.intent == 'bank_statement') and not (
+                    state.intent == 'receipt' and state.operation in {'repeat_print', 'transmit', 'search'}):
             task += " " + state.object
-    entities = [f"{label}: {state.entity(slot)}" for slot, label in (
+        if state.intent == "bank_statement" and state.operation == "list":
+            task = "просмотр списка банковских выписок"
+    entities = [f"{label}: {state.task_entity(slot)}" for slot, label in (
         ("service", "сервис"), ("equipment", "оборудование"), ("manufacturer", "производитель"),
-        ("ofd", "ОФД"), ("software", "ПО")) if slot in state.task_entities and state.entity(slot)]
+        ("ofd", "ОФД"), ("software", "ПО")) if slot in state.task_entities and state.task_entity(slot)]
     required = [*entities, task]
     if state.error:
         required.append("код ошибки " + state.error.value)
     # Never cut the middle of a fact or drop an exclusion to satisfy the search
     # API limit. Oversized states need a targeted clarification/compression step.
     parts = [*required]
+    report_request = state.operation_evidence or state.task
+    if state.intent == 'report' and report_request:
+        # Preserve the requested report kind and conditions from the client;
+        # compressing to «проверка ФН» loses the object and changes the task.
+        parts.append("запрос клиента: " + report_request.value)
     if state.goals:
         parts.append("цель: " + "; ".join(f.value for f in state.goals))
     if state.constraints:
@@ -45,7 +62,8 @@ def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
     if state.details:
         parts.append("уточнение клиента: " + "; ".join(f.value for f in state.details))
     if state.parameters:
-        parts.append("параметры текущего поиска: " + "; ".join(f.value for f in state.parameters))
+        label = "параметры текущего поиска" if state.operation == "search" else "параметры клиента"
+        parts.append(label + ": " + "; ".join(f.value for f in state.parameters))
     query = " — ".join(parts).strip()
     if not query or len(query) > max_chars:
         raise QueryNeedsClarification("Task and grounded requirements exceed retrieval budget")

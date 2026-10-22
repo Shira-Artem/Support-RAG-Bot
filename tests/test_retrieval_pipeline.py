@@ -37,7 +37,7 @@ def test_employee_document_supports_role_and_existing_user_operations():
             "Изменение существующего пользователя выполняется через меню этой записи.")
     hit = SearchResult("aqsi_online/account/add-user.md", text, 0.03,
         metadata={"document_id": "user-1", "title": "Добавление сотрудника в личный кабинет",
-                  "category": "account", "manufacturer": "aQsi Online", "status": "draft"})
+                  "category": "account", "manufacturer": "aQsi Online", "status": "approved"})
     source = Source([hit], {"user-1": [hit]})
     pipeline = RetrievalPipeline(source)
     state = _state("Где изменить права уже созданному сотруднику в aQsi Online?")
@@ -46,4 +46,4 @@ def test_employee_document_supports_role_and_existing_user_operations():
     assert result.evidence_status == "partial"
     assert result.supported_steps
     assert "permission_change_workflow_unverified" in result.missing_evidence
-    assert result.documents[0].metadata["status"] == "draft"
+    assert result.documents[0].metadata["status"] == "approved"

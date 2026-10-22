@@ -67,6 +67,15 @@ def test_hybrid_exact_codes_filters_and_abstain(tmp_path: Path):
     assert Retriever(store, demo=True).search("ЕГАИС секретная")
 
 
+def test_numbered_question_is_not_treated_as_exact_error_code(tmp_path: Path):
+    store, _ = make_store(tmp_path)
+    store.index(DocumentLoader(tmp_path).load_all())
+    retriever = Retriever(store)
+    assert retriever.search('1. Где ошибка ФН 235?')
+    assert all('235' in hit.text for hit in retriever.search('1. Где ошибка ФН 235?'))
+    assert retriever.search('запрос клиента: 2. Где посмотреть кассу АТОЛ?')
+
+
 def test_semantic_result_without_lexical_overlap(tmp_path: Path):
     store = QdrantStore(QdrantClient(":memory:"), FakeEmbedding())
     (tmp_path / "printing.txt").write_text("Печать фискального документа не работает.", encoding="utf-8")

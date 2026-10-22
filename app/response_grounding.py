@@ -35,7 +35,7 @@ ACTION_FAMILIES = {
     "create": r"созда\w*|добав\w*|приглас\w*|приглаш\w*",
     "assign": r"назнач\w*|присва\w*|присво\w*",
     "edit": r"измен\w*|редакт\w*|менять|помен\w*",
-    "input": r"введ\w*|ввод\w*|введите|укаж\w*|указыв\w*|заполн\w*",
+    "input": r"введ\w*|ввод\w*|введите|укаж\w*|указыв\w*|заполн\w*|задайте|задать",
     "save": r"сохран\w*",
     "notification": r"получ\w*.{0,30}(?:письм\w*|уведомлен\w*)|(?:письм\w*|уведомлен\w*).{0,30}(?:прид[её]т|отправ\w*)",
     "search": r"поиск\w*|найти|найд\w*|фильтр\w*",
@@ -45,6 +45,7 @@ ACTION_FAMILIES = {
 }
 OPERATION_FAMILY = {
     "add_employee": "create", "add": "create", "assign_role": "assign",
+    "create_role": "create",
     "assign": "assign", "change_permissions": "edit", "change": "edit",
     "search": "search", "configure": "configure", "connect": "connect",
     "reset_password": "reset",

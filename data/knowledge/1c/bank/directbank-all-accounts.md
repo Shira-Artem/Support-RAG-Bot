@@ -10,6 +10,16 @@ source_type: vendor_article
 published_at: '2024-02-19'
 collected_at: '2026-10-13'
 verified_at: null
+software: 1С:Бухгалтерия 8
+task_category: bank_statement
+operations:
+- load_bank_statements
+- list_bank_statements
+search_fields:
+- bank_account
+- configuration_release
+evidence_coverage:
+  load_bank_statements: partial
 status: draft
 ---
 

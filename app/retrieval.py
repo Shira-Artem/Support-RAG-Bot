@@ -66,14 +66,18 @@ class Retriever:
             return []
         dense = self.store.semantic(query, min(max(top_k * 8, 30), 100), qfilter)
         dense_scores = {str(point.id): float(point.score) for point in dense}
-        query_tokens = tokens(query)
+        # Numbered Telegram test questions are not error codes. Keep numbers
+        # inside the actual task (ФН 235, ФФД 1.2) subject to the exact guard.
+        lexical_query = re.sub(r'(^|запрос клиента:\s*)\d{1,2}[.)]\s+',
+                               lambda match: match.group(1), query, flags=re.I)
+        query_tokens = tokens(lexical_query)
         expanded = query_tokens + [syn for token in query_tokens for syn in EXPANSIONS.get(token, [])]
         query_counts = Counter(lexical_token(word) for word in expanded)
         corpus = [Counter(lexical_token(word) for word in tokens(point.payload["text"] + ' ' + str(point.payload.get('title') or ''))) for point in points]
         df = Counter(token for counts in corpus for token in counts)
         avgdl = sum(sum(counts.values()) for counts in corpus) / len(corpus) or 1
         codes = {token for token in query_tokens if any(char.isdigit() for char in token)}
-        explicit_code = re.search(r'(?:\bфн|ошибк\w*|код)\s*[:№#-]?\s*(-?\d{2,5})\b', query, re.I)
+        explicit_code = re.search(r'(?:\bфн|ошибк\w*|код)\s*[:№#-]?\s*(-?\d{2,5})\b', lexical_query, re.I)
         brands = set(query_tokens) & {"атол", "штрих", "эвотор"}
         model_match = re.search(r"\bэвотор\s+\d+(?:[.,]\d+)?(?:\s+lite)?\b", query.lower())
         requested_model = model_match.group().replace(",", ".") if model_match else None

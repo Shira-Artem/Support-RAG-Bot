@@ -70,6 +70,9 @@ class RetrievalResult:
 # Broad task families map existing, inconsistent labels and source folders to
 # one runtime vocabulary. This is a derived view: it does not mutate files/index.
 _TASK_TERMS = {
+    "bank_statement": ("директбанк", "банковская выписка", "банковских выписок", "список выписок"),
+    "integration": ("интеграция с 1с", "подключить к 1с", "1с:унф", "1с:розница", "1с:бухгалтерия"),
+    "receipt_print": ("копия чека", "копию чека", "печать документа по номеру", "повторная печать"),
     "cash_list": ("список касс", "мониторинг касс", "раздел кассы"),
     "access": ("сотрудник", "пользователь", "учетная запись", "доступ", "права", "роль", "account", "user"),
     "receipt_search": ("поиск чека", "найти чек", "чек по", "receipt search", "receipts/search"),
@@ -79,8 +82,12 @@ _TASK_TERMS = {
     "equipment_setup": ("подключение", "настройка", "конфигурация", "установка", "активация", "configure", "setup"),
 }
 _TASK_EVIDENCE = {
+    "bank_statement": ("выписк", "директбанк", "банковск"),
+    "integration": ("интеграци", "драйвер", "1с", "совместим"),
+    "receipt_print": ("копия", "печать", "фискальн", "фд"),
     "cash_list": ("мониторинг", "отобрать кассы", "список касс"),
     "access": ("сотрудник", "пользователь", "учетн", "доступ", "прав", "рол"),
+    "cash_reports": ("отчет", "отчёт"),
     "receipt_search": ("чек", "найт", "поиск", "журнал", "квитанц"),
     "receipt_transmission": ("передач", "отправ", "неотправ", "очеред", "офд"),
     "error_diagnosis": ("ошиб", "код", "диагност", "фн", "ккт"),
@@ -108,6 +115,9 @@ def normalize_metadata(metadata: dict) -> dict:
         }.get(parts[0] if parts else "")
         if parts and parts[0] == "platformaofd":
             service = "Платформа ОФД"
+    software = raw.get("software")
+    if not software and parts and parts[0] == "1c":
+        software = "1С"
     task_category = raw.get("task_category") or raw.get("operation")
     if not task_category:
         task_category = _derive_task_category(searchable, category, parts, title)
@@ -117,6 +127,7 @@ def normalize_metadata(metadata: dict) -> dict:
     return {
         **raw,
         "service": service,
+        "software": str(software).strip() if software else None,
         "task_category": str(task_category) if task_category else None,
         "operation": str(operation) if operation else None,
         "operations": list(operations),
@@ -131,6 +142,10 @@ def _derive_task_category(searchable: str, category: str, parts: list[str], titl
     path = set(parts)
     if "edo" in path or category == "edo":
         return "edo"
+    if "bank" in path and any(term in searchable for term in ("директбанк", "банковск", "выписк")):
+        return "bank_statement"
+    if "integration" in path and "1с" in searchable:
+        return "integration"
     # An identified error article retains its subject when its diagnostic
     # explanation mentions transmission. Generic OFD guides do not inherit it.
     identity = title.casefold().replace("ё", "е")
@@ -198,10 +213,23 @@ def _derive_operations(searchable: str, task_category: str | None) -> list[str]:
 
 
 def _terms(text: str) -> set[str]:
-    return {x for x in re.findall(r"[a-zа-яё0-9]+", text.casefold().replace("ё", "е")) if len(x) > 2}
+    return {x for x in re.findall(r"[a-zа-яё0-9]+", text.casefold().replace("ё", "е"))
+            if len(x) > 2 or any(char.isdigit() for char in x)}
 
 
 def _state_task_category(state: DialogueState, query: str) -> str | None:
+    query_folded = query.casefold().replace("ё", "е")
+    if state.intent == "bank_statement" or any(term in query_folded for term in _TASK_TERMS["bank_statement"]):
+        return "bank_statement"
+    if (state.routing_service and state.task_entities.get("software")
+            and any(term in query_folded for term in _TASK_TERMS["integration"])):
+        return "integration"
+    if state.intent == "receipt" and state.operation == "repeat_print":
+        return "receipt_print"
+    if state.intent == "receipt" and any(term in query_folded for term in _TASK_TERMS["receipt_print"]):
+        return "receipt_print"
+    if state.intent == 'report' and state.operation == 'view_reports':
+        return 'cash_reports'
     if state.intent == 'device' and state.operation == 'list' and not state.error:
         return 'cash_list'
     if state.intent == 'fiscal_drive' and state.operation == 'search':
@@ -245,19 +273,23 @@ def _procedure_matches(state: DialogueState, metadata: dict) -> bool:
 
 
 def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> bool:
-    if operation == "explain":
+    if operation in {"explain", "unknown"}:
         return True
     aliases = {
         "add_employee": {"add_employee"},
         "assign_role": {"assign_role"},
+        "create_role": {"create_role"},
+        "view_reports": {"view_cash_reports"},
         "change_permissions": {"change_permissions"},
         "reset_password": {"reset_password"},
         "search": {"search_receipt"},
         "diagnose": {"diagnose_error", "check_transmission"},
         "status": {"check_transmission"},
         "check": {"check_transmission"},
-        "list": {"list_cash_registers"},
         "transmit": {"check_transmission"},
+        "repeat_print": {"repeat_print"},
+        "connect": {"configure_integration", "check_integration_compatibility", "connect"},
+        "list": {"list_cash_registers", "list_bank_statements"},
     }
     supported = set(metadata.get("operations") or ())
     if supported & aliases.get(operation, {operation}):
@@ -286,6 +318,7 @@ def _access_evidence(state, documents, context):
     """
     steps, seen = [], set()
     families = {"change_permissions": ("edit", "search"), "assign_role": ("assign",),
+                "create_role": ("create", "input", "configure", "edit"),
                 "add_employee": ("create", "input", "assign", "save"),
                 "reset_password": ("reset",)}.get(state.operation, ())
     full = False
@@ -322,8 +355,8 @@ def _access_evidence(state, documents, context):
             full = True
     missing = []
     if not full:
-        missing.append("permission_change_workflow_unverified" if state.operation == "change_permissions"
-                       else "access_workflow_unverified")
+        missing.append({"change_permissions": "permission_change_workflow_unverified",
+                        "create_role": "role_creation_workflow_unverified"}.get(state.operation, "access_workflow_unverified"))
     request = " ".join(f.value for f in [*state.goals, *state.constraints, *state.details,
                                         *([state.task] if state.task else [])])
     if state.goals or state.constraints or has_named_role(request):
@@ -358,6 +391,11 @@ class RetrievalPipeline:
             if doc_key:
                 seen_docs.add(doc_key)
             reasons: list[str] = []
+            # The pipeline is a second safety boundary: drafts and unlabeled
+            # snapshots never become answer context, even if a source adapter
+            # accidentally returns them.
+            if meta.get("status") != "approved":
+                reasons.append("status_unapproved")
             # Session facts persist across tasks. Only the cabinet bound to the
             # current task is a hard service constraint; hardware is required
             # separately for technical tasks, not for an OFD receipt filter.
@@ -368,6 +406,10 @@ class RetrievalPipeline:
             elif state.routing_slot == 'software':
                 routing_metadata = meta.get('software') or meta.get('service')
             service_match = _matches_entity(routing, routing_metadata)
+            software = state.task_entity("software")
+            software_match = _matches_entity(software, meta.get("software"))
+            if expected_task == "integration" and software and not software_match:
+                reasons.append("software_mismatch_or_unlabeled")
             if meta.get("procedure_service") and state.routing_slot not in {"manufacturer", "software"}:
                 service_match = _procedure_matches(state, meta)
             # Keep manufacturer, equipment model and operator as independent facts.
@@ -401,20 +443,25 @@ class RetrievalPipeline:
                 reasons.append("ofd_mismatch_or_unlabeled")
             if expected_task and actual_task and actual_task != expected_task:
                 reasons.append(f"task_mismatch:{actual_task}!={expected_task}")
-            if expected_task and actual_task == expected_task and not operation_match:
-                reasons.append(f"operation_mismatch:{state.operation}")
-            if state.operation == 'unknown':
-                reasons.append('operation_unconfirmed')
-            # Unlabeled category is not an automatic rejection, but cannot pass
-            # a task-specific evidence gate without lexical task evidence.
             query_terms = _terms(query)
             body_terms = _terms(hit.text + " " + str(meta.get("title") or ""))
             lexical_overlap = len(query_terms & body_terms) / max(1, len(query_terms))
-            if expected_task and actual_task is None:
-                task_match = False
+            strong_unlabeled_match = (expected_task and actual_task is None
+                                      and service_match and lexical_overlap >= 0.60)
+            if (expected_task and actual_task == expected_task and state.operation != "unknown"
+                    and meta.get("_operations_explicit") and meta.get("operations") and not operation_match):
+                reasons.append(f"operation_mismatch:{state.operation}")
+            elif (expected_task and actual_task == expected_task and state.operation != "unknown"
+                  and not meta.get("_operations_explicit") and not operation_match
+                  and lexical_overlap < 0.30):
+                reasons.append("operation_evidence_missing")
+            # Missing task/operation labels are not contradictions. A strong
+            # lexical match can pass the relevance gate when service and
+            # approved-status constraints agree; explicit conflicting labels
+            # remain hard rejects.
+            if expected_task and actual_task is None and not strong_unlabeled_match:
                 reasons.append("task_unconfirmed")
-            if expected_task and actual_task == expected_task and not operation_match:
-                task_match = False
+            task_match = (expected_task is None or actual_task == expected_task or bool(strong_unlabeled_match))
             service_score = 1.0 if not state.entity("service") or service_match else 0.0
             task_score = 1.0 if task_match else (0.0 if actual_task else lexical_overlap)
             score = 0.55 * task_score + 0.3 * service_score + 0.15 * min(1.0, lexical_overlap * 2)

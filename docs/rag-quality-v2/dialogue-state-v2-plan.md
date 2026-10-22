@@ -1,6 +1,6 @@
-# DialogueState v2 migration and implementation plan
+# DialogueState v2 migration and implementation status
 
-This is a technical plan only. It does not implement v2 or alter runtime behavior.
+Core state, reducer, query projection, and additive SQLite migration are implemented in this branch. This document retains the broader rollout plan; items outside the Step 2 scope remain follow-up work. See [implementation.md](implementation.md) for the implemented behavior and verification results.
 
 ## Proposed state model
 
@@ -71,14 +71,14 @@ Old SQLite data must never be dropped, overwritten, or silently reset. Use an ad
 
 For any future semantic/LLM analyzer, compute a proposed observation outside the DB transaction using a snapshot revision. Inside a short transaction, compare the current revision/cursor; apply the observation only if still current. On conflict, re-analyze or request clarification. Never hold the SQLite write lock across a network request.
 
-## Implementation sequence after baseline review
+## Implementation sequence and status
 
-1. Agree on relation semantics and the explicit task/session contracts.
-2. Implement pure v1-to-v2 conversion and serializer tests; test unknown versions and corrupt snapshots remain intact.
-3. Implement reducer transitions against the synthetic regression matrix, then add genuinely redacted historical cases where available.
-4. Add a compatibility facade and migrate CLI/stateless callers.
-5. Add additive SQLite migration, backup/restore drills and restart/pending tests.
-6. Switch Telegram and retrieval consumers behind a rollout flag; validate with shadow state traces before enabling writes.
-7. Compare reports and task/query traces, then enable v2 for a small cohort. Keep a documented rollback to v1 reads and preserve both formats.
+1. **Implemented:** relation semantics and explicit session/task state, with a legacy flat-property facade.
+2. **Implemented:** v1-to-v2 serialization, additive migration, temporary-DB tests for unknown/corrupt payloads and preservation of source snapshots.
+3. **Implemented:** reducer transitions for the synthetic regression matrix and paraphrases; all seven baseline failures now pass.
+4. **Partially implemented:** compatibility facade supports current Python consumers and CLI/stateless state paths; broader consumer-by-consumer adapter contracts remain follow-up work.
+5. **Implemented in code/tests:** additive SQLite migration and restart/pending recovery coverage. A production backup/restore drill has not run.
+6. **Follow-up:** rollout flags and shadow-state deployment validation have not been added here. This change set does not modify Qdrant, retrieval ranking/metadata, Telegram UI, prompts, validation, or knowledge content.
+7. **Follow-up:** compare production reports and enable a controlled cohort only after operational backup/rollback procedures are defined.
 
-No runtime, SQLite schema, production data, Telegram UI, Qdrant, knowledge, or LLM configuration was changed in this baseline task.
+The implementation does add SQLite tables at runtime but has only been exercised against temporary test databases; it does not rewrite legacy `dialogue_states` rows. No production database, Telegram UI, Qdrant, knowledge, or LLM configuration was changed.

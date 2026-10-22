@@ -42,6 +42,7 @@ class Document:
     source: str
     pages: list[tuple[int | None, str]]
     service: str | None = None
+    software: str | None = None
     task_category: str | None = None
     operations: list[str] = field(default_factory=list)
     search_fields: list[str] = field(default_factory=list)
@@ -127,7 +128,7 @@ class DocumentLoader:
         def optional_text(key: str) -> str | None:
             value = metadata.get(key)
             return str(value).strip() if value is not None and str(value).strip() else None
-        for key in ("service", "task_category", "procedure_service"):
+        for key in ("service", "software", "task_category", "procedure_service"):
             if metadata.get(key) is not None and not isinstance(metadata[key], str):
                 raise ValueError(f"{key} must be text: {rel}")
         coverage = metadata.get("evidence_coverage")
@@ -159,7 +160,8 @@ class DocumentLoader:
             collected_at=str(metadata["collected_at"]) if metadata.get("collected_at") else None,
             status=status, content_hash=sha256(body.encode("utf-8")).hexdigest(),
             source=rel, pages=pages,
-            service=optional_text("service"), task_category=optional_text("task_category"),
+            service=optional_text("service"), software=optional_text("software"),
+            task_category=optional_text("task_category"),
             operations=text_list("operations"), search_fields=text_list("search_fields"),
             source_checked_at=str(metadata["source_checked_at"]) if metadata.get("source_checked_at") else None,
             procedure_service=optional_text("procedure_service"), evidence_coverage=coverage,

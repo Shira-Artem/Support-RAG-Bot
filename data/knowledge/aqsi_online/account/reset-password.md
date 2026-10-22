@@ -10,6 +10,15 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
+service: aQsi Online
+task_category: access
+operations:
+- reset_password
+search_fields:
+- registered_phone
+- registered_email
+evidence_coverage:
+  reset_password: partial
 status: draft
 ---
 

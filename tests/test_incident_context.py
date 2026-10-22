@@ -9,7 +9,9 @@ from scripts.replay_incident import replay
 
 
 def test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output():
-    rows = asyncio.run(replay())
+    # Exercise the positive retrieval path on an in-memory reviewed snapshot.
+    # The repository cards remain draft; a separate test verifies those drafts are blocked.
+    rows = asyncio.run(replay(approved_snapshot_for_test=True))
     assert len(rows) == 7
     states = [row['after_user'] for row in rows]
     assert [s['operation'] for s in states] == [

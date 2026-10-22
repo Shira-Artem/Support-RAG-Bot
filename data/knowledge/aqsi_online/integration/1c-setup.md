@@ -10,6 +10,17 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
+service: aQsi Online
+software: 1С:УНФ
+task_category: integration
+operations:
+- configure_integration
+search_fields:
+- configuration
+- release
+- driver
+- ffd
+procedure_service: aQsi Online
 status: draft
 ---
 

@@ -10,6 +10,8 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-21'
 verified_at: null
+evidence_coverage:
+  view_cash_reports: partial
 status: draft
 service: АТОЛ Онлайн
 task_category: cash_reports
