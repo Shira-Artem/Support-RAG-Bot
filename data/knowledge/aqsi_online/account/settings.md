@@ -2,15 +2,15 @@
 document_id: aqsi-online-account-settings
 title: 'aQsi Online: настройки профиля и чеков'
 category: account
-manufacturer: aQsi Online
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/account/nastrojki
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: aQsi Online
 task_category: account_settings
 operations:
@@ -18,7 +18,7 @@ operations:
 - configure_receipt_reports
 - change_password
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # aQsi Online: настройки профиля и ежедневного отчёта

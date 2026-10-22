@@ -2,6 +2,9 @@
 document_id: evotor-vat22-components-20261019
 title: 'Эвотор: минимальные компоненты для НДС 22%'
 category: vat
+service: "Эвотор"
+task_category: vat_settings
+operations: [configure_vat_rate]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Версии, тарифы или требования привязаны к 2026 году; нужна проверка актуального релиза и условий применения."
 ---
 
 # Эвотор не показывает или не печатает НДС 22%

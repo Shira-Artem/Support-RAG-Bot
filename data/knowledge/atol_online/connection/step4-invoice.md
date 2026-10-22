@@ -2,6 +2,9 @@
 document_id: atol-online-12178-step4-invoice
 title: 'Шаг 4 подключения АТОЛ Онлайн: заявка и счёт'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, request_connection_invoice]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/12178
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Шаг 4 подключения АТОЛ Онлайн: заявка и счёт
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не предлагайте оплачивать по произвольным реквизитам; тариф, НДС и получателя сверяйте в актуальном счёте.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

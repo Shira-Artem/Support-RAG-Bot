@@ -2,7 +2,10 @@
 document_id: aqsi-online-receipts-correction-12
 title: 'aQsi Online: чек коррекции при ФФД 1.2'
 category: receipts
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: correction_receipt
+operations: [correct_receipt]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/account/chek-korrektsii-na-ffd-1-2
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Первоисточник сейчас возвращает 404; требуется актуальная ссылка и сверка процедуры."
 ---
 
 # aQsi Online: чек коррекции при ФФД 1.2

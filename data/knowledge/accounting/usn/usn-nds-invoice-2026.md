@@ -2,6 +2,9 @@
 document_id: acc-usn-nds-invoice-2026
 title: 'УСН: счёт-фактура с НДС при действующем освобождении'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, check_invoice_vat]
 manufacturer: ''
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
 source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Счёт-фактура с выделенным НДС у освобождённого от НДС плательщика УСН

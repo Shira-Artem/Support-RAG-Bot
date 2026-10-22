@@ -2,6 +2,9 @@
 document_id: atol-online-25514-referral-program-guide
 title: 'Партнёрская программа АТОЛ Онлайн: куда направить и что уточнить'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: partner_program
+operations: [check_partner_program]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/25514
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Условия партнёрской программы могут меняться; требуется сверка актуальной оферты и правил участия у АТОЛ Онлайн."
 ---
 
 # Партнёрская программа АТОЛ Онлайн: куда направить и что уточнить

@@ -2,6 +2,9 @@
 document_id: aqsi-device-vat22-configuration
 title: 'aQsi: подготовка кассы к НДС 22%'
 category: kkt
+service: "aQsi"
+task_category: vat_settings
+operations: [configure_vat_rate]
 manufacturer: aQsi
 model: aQsi (физическая ККТ)
 version: null
@@ -10,7 +13,9 @@ source_type: manufacturer_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Версии, тарифы или требования привязаны к 2026 году; нужна проверка актуального релиза и условий применения."
 ---
 
 # aQsi: подготовка кассы к НДС 22%

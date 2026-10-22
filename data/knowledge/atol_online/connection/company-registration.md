@@ -2,6 +2,9 @@
 document_id: "atol-online-12148-company-registration"
 title: "Добавление компании в личном кабинете АТОЛ Онлайн"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, register_company]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/12148"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Добавление компании в личном кабинете АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Налоговый режим и регистрационные данные должны соответствовать фактическим сведениям организации. Самостоятельно не подбирайте СНО за клиента.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

@@ -2,6 +2,9 @@
 document_id: evotor-mark-check-error-20261019
 title: 'Эвотор: маркированный товар не проходит проверку'
 category: marking
+service: "Эвотор"
+task_category: marking
+operations: [check_marking_code]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/6116921465106
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # «Марка не была проверена» при продаже

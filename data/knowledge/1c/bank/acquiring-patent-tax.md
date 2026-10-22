@@ -2,6 +2,10 @@
 document_id: batch-20261013-bank-acquiring-patent-tax
 title: 'Эквайринг при совмещении ПСН и УСН: классификация аванса в 1С'
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: bank_statement
+operations: [load_bank_statements]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.174
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-ekvayring-pri-so
 source_type: vendor_article
 published_at: '2025-04-22'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Эквайринг при совмещении ПСН и УСН: классификация аванса в 1С
@@ -29,5 +34,3 @@ status: draft
 
 ## Ограничение
 Нельзя автоматически распределять всё поступление на патент по одному факту эквайринга: вопрос конкретной деятельности и налогового учёта решает бухгалтер.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

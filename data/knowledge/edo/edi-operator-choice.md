@@ -2,6 +2,9 @@
 document_id: edo-operator-choice-criteria-2026
 title: "Как выбрать оператора ЭДО для маркированной продукции"
 category: edo
+service: "ЭДО"
+task_category: edo
+operations: [exchange_edo_documents]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: 2025-06-16
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Материал является отраслевым объяснением; для точных требований нужна актуальная инструкция оператора или регулятора."
 ---
 
 # Выбор оператора ЭДО

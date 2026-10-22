@@ -2,6 +2,10 @@
 document_id: batch-20261013-closing-close-several-months
 title: Закрытие сразу нескольких месяцев в 1С:Бухгалтерии 3.0
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: period_close
+operations: [close_period]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.144
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zakrytie-neskolk
 source_type: vendor_article
 published_at: '2023-11-23'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Закрытие сразу нескольких месяцев в 1С:Бухгалтерии 3.0
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 При изменении старых проводок и закрытых отчётных периодов — к бухгалтеру и администратору 1С.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

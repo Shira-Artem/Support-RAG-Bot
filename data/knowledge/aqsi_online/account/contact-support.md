@@ -2,15 +2,19 @@
 document_id: aqsi-online-account-contact-support
 title: 'aQsi Online: обращение в поддержку из кабинета'
 category: account
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: support
+operations: [contact_support]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/account/kak-svyazatsya-s-tekhnicheskoj-podderzhkoj
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: обращение в поддержку из кабинета

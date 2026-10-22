@@ -2,6 +2,9 @@
 document_id: acc-usn-income-acquiring-2026
 title: 'УСН: доходы, эквайринг и лимит НДС в 2026 году'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules]
 manufacturer: ''
 model: ''
 version: ''
@@ -10,7 +13,9 @@ source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Для налогового вывода требуется сверить конкретное правило и применимость с актуальным первоисточником ФНС/НК РФ."
 ---
 
 # Как учитывать доходы для лимита освобождения от НДС на УСН

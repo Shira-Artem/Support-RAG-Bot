@@ -2,6 +2,9 @@
 document_id: atol-online-12789-bring-own-fn
 title: Можно ли передать собственный купленный ФН в АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: fiscal_drive
+operations: [inspect_fiscal_drive, check_fiscal_drive_eligibility]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/12789
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Можно ли передать собственный купленный ФН в АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не отправляйте ФН по произвольному адресу и не обещайте приём без письменного подтверждения АТОЛ Онлайн.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

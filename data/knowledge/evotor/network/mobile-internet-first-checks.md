@@ -2,6 +2,9 @@
 document_id: evotor-mobile-network-check-20261019
 title: 'Эвотор: не работает мобильный интернет — первичные проверки'
 category: internet
+service: "Эвотор"
+task_category: network_diagnostics
+operations: [diagnose_network]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360019883019
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Мобильный интернет на Эвоторе не работает

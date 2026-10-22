@@ -2,6 +2,9 @@
 document_id: edo-upd-discrepancy-2026
 title: "Несовпадение товара и УПД с кодами маркировки"
 category: edo
+service: "ЭДО"
+task_category: edo
+operations: [exchange_edo_documents]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: 2025-06-16
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Материал является отраслевым объяснением; для точных требований нужна актуальная инструкция оператора или регулятора."
 ---
 
 # Расхождения между поставкой и УПД

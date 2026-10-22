@@ -2,6 +2,9 @@
 document_id: "atol-online-18220-blocked"
 title: "ФН заблокирован или ошибка 403 в АТОЛ Онлайн"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: fiscal_drive
+operations: [inspect_fiscal_drive, diagnose_fiscal_drive_block]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/18220"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # ФН заблокирован или ошибка 403 в АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Если ФНС сняла кассу с учёта, нужна диагностика сервисом и специалистом по регистрации; не обещайте простую разблокировку.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

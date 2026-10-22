@@ -2,6 +2,9 @@
 document_id: aqsi-online-usecase-retail-physical-vs-cloud
 title: 'aQsi: розничная касса aQsi 5 и облачный сервис — как не перепутать инструкции'
 category: cash_register
+service: "aQsi Online"
+task_category: applicability
+operations: [assess_service_fit]
 manufacturer: aQsi
 model: aQsi Online / aQsi 5 (сравнение)
 version: ''
@@ -10,7 +13,9 @@ source_type: vendor_product_page
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Источник описывает типовой сценарий; конкретная интеграция и применимость для клиента требуют подтверждения у сервиса."
 ---
 
 # aQsi: розничная касса aQsi 5 и облачный сервис — как не перепутать инструкции

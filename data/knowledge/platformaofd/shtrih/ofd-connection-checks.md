@@ -2,6 +2,9 @@
 document_id: platformaofd-shtrih-connection-checks
 title: "Штрих-М: проверка связи ККТ с Платформой ОФД"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [check_transmission]
 manufacturer: Штрих-М
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/nastroika-kkt-shtrih/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # ККТ Штрих-М не передаёт чеки в Платформу ОФД

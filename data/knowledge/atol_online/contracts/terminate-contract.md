@@ -2,6 +2,9 @@
 document_id: atol-online-11072-terminate-contract
 title: Как расторгнуть договор АТОЛ Онлайн и закрыть кассу
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: contract
+operations: [manage_contract]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/11072
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как расторгнуть договор АТОЛ Онлайн и закрыть кассу
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Расторжение, судьба остатка средств, хранение ФН и снятие ККТ — отдельные юридически значимые вопросы. Перед действиями нужен сотрудник владельца ККТ.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

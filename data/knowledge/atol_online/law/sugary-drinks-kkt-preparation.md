@@ -2,6 +2,9 @@
 document_id: atol-online-14419-sugary-drinks-kkt-preparation
 title: Подготовка АТОЛ Онлайн к продаже подакцизных напитков
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: kkt_rules
+operations: [check_kkt_rules]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # Подготовка АТОЛ Онлайн к продаже подакцизных напитков

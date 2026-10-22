@@ -2,6 +2,9 @@
 document_id: platformaofd-connect-kkt-to-lkk
 title: "Платформа ОФД: подключение ККТ к личному кабинету"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [check_transmission]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/podklyuchenie-kkt-k-lkk/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Подключение кассы к Платформе ОФД

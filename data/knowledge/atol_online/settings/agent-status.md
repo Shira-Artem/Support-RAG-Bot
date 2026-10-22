@@ -2,6 +2,9 @@
 document_id: atol-online-22559-agent-status
 title: Как указать агентский признак у облачной кассы АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: settings
+operations: [configure_settings]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/22559
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как указать агентский признак у облачной кассы АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Агентский статус, регистрационные признаки и API-теги нельзя выбирать только по названию услуги. Согласовать с юристом, бухгалтером и интегратором.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

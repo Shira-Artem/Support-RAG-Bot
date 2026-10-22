@@ -2,6 +2,9 @@
 document_id: atol-online-14134-documents-operations
 title: 'Раздел «Документы и операции»: запросить счёт или получить документы'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: billing
+operations: [manage_billing, request_invoice]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/14134
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Раздел «Документы и операции»: запросить счёт или получить документы
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Счёт на продление может быть недоступен задолго до окончания лицензии; не считайте отсутствие кнопки ошибкой без проверки срока.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

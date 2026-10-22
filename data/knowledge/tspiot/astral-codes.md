@@ -2,6 +2,9 @@
 document_id: astral-tspiot-errors-453-500-514
 title: "ТС ПИоТ: сообщения 453, 500 и 514"
 category: tspiot
+service: "ТС ПиОТ"
+task_category: tspiot
+operations: [diagnose_tspiot]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: industry_article
 published_at:
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Материал является отраслевым объяснением; для точных требований нужна актуальная инструкция оператора или регулятора."
 ---
 
 # ТС ПИоТ: сообщения 453, 500 и 514

@@ -2,6 +2,9 @@
 document_id: marking-canned-goods-edo-osu-202610
 title: "Консервы: ЭДО и объёмно-сортовой учёт с октября 2026 года"
 category: marking
+service: "Маркировка и Честный ЗНАК"
+task_category: marking
+operations: [check_marking_code]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: official_marking_knowledge
 published_at: 2026-03-06
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Версии, тарифы или требования привязаны к 2026 году; нужна проверка актуального релиза и условий применения."
 ---
 
 # Оборот консервированной продукции через ЭДО

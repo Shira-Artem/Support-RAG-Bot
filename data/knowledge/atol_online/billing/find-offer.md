@@ -2,6 +2,9 @@
 document_id: atol-online-11059-find-offer
 title: Где найти действующую оферту АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: billing
+operations: [manage_billing, find_offer]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/11059
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Где найти действующую оферту АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Юридическую силу и применимость конкретной редакции договора следует сверять по дате заключения и условиям клиента.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

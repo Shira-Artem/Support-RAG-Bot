@@ -2,6 +2,9 @@
 document_id: batch-20261013-vat-usn-invoice-on-exempt
 title: 'Счёт-фактура с НДС при освобождении на УСН: последствия'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, check_invoice_vat]
 manufacturer: null
 model: null
 version: null
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
 source_type: fns_guidance
 published_at: null
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Счёт-фактура с НДС при освобождении на УСН: последствия
@@ -29,5 +33,3 @@ status: draft
 
 ## Эскалация
 Вопрос декларации, уплаты НДС и возможного исправления документов решает бухгалтер.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

@@ -2,6 +2,9 @@
 document_id: platformaofd-partner-kkt-diagnostics
 title: "Платформа ОФД: техническая информация о ККТ в кабинете партнёра"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [check_transmission]
 manufacturer: Эвотор
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/lkp-razdel-kassy/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Раздел «Кассы» в кабинете партнёра

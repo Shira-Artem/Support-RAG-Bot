@@ -2,6 +2,10 @@
 document_id: batch-20261013-goods-single-upd-many-warehouses
 title: Один УПД поставщика, поступление товара на несколько складов
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: goods_receipt
+operations: [receive_goods]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.188
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-gostuplenie-tova
 source_type: vendor_article
 published_at: '2025-12-17'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Один УПД поставщика, поступление товара на несколько складов
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 Некорректные складские остатки, закрытые периоды или расхождения по маркированным товарам требуют специалиста по учёту/1С.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

@@ -2,15 +2,19 @@
 document_id: aqsi-online-setup-add-store
 title: 'aQsi Online: добавление интернет-магазина'
 category: kkt
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: service_connection
+operations: [connect_cash_register, add_store]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/getting-started/kak-dobavit-magazin
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: добавление интернет-магазина

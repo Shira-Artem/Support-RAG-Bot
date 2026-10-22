@@ -2,6 +2,7 @@
 document_id: batch-20261013-bank-directbank-all-accounts
 title: Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк
 category: 1c
+service: "1С:Бухгалтерия 8"
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.148
@@ -9,7 +10,7 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zagruzka-vypiski
 source_type: vendor_article
 published_at: '2024-02-19'
 collected_at: '2026-10-13'
-verified_at: null
+verified_at: 2026-10-22
 software: 1С:Бухгалтерия 8
 task_category: bank_statement
 operations:
@@ -20,7 +21,8 @@ search_fields:
 - configuration_release
 evidence_coverage:
   load_bank_statements: partial
-status: draft
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк
@@ -39,5 +41,3 @@ status: draft
 
 ## Передать специалисту
 Если счета доступны, но часть платежей отсутствует или дублируется, потребуется сверка с оригинальной банковской выпиской.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

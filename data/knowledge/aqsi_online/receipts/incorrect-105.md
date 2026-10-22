@@ -2,15 +2,19 @@
 document_id: aqsi-online-receipts-incorrect-105
 title: 'aQsi Online: ошибочный чек при ФФД 1.05'
 category: receipts
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: correction_receipt
+operations: [correct_receipt]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/account/kak-ispravit-oshibku-v-cheke
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: ошибочный чек при ФФД 1.05

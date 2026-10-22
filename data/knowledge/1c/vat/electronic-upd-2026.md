@@ -2,6 +2,10 @@
 document_id: batch-20261013-vat-electronic-upd-2026
 title: 'Электронный счёт-фактура и УПД 2026: строка 5б в 1С'
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: vat_accounting
+operations: [configure_vat_accounting]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.190.22
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-elektronnyy-sche
 source_type: vendor_article
 published_at: '2026-02-06'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Электронный счёт-фактура и УПД 2026: строка 5б в 1С
@@ -29,5 +34,3 @@ status: draft
 
 ## Безопасность
 Не удалять строку вручную из формата УПД; корректность заполнения проверяет бухгалтер.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

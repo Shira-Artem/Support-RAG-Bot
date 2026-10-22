@@ -2,6 +2,9 @@
 document_id: "atol-online-22561-amount-errors-16-23"
 title: "Ошибки АТОЛ Онлайн [16] и [23]: суммы в чеке"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: error_diagnosis
+operations: [diagnose_error]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/22561"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Ошибки АТОЛ Онлайн [16] и [23]: суммы в чеке
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Повторно не отправляйте чек без проверки его статуса и предотвращения дублей.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

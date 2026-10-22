@@ -2,6 +2,9 @@
 document_id: evotor-ffd-version-check-20261019
 title: 'Эвотор: как узнать используемую версию ФФД'
 category: ffd
+service: "Эвотор"
+task_category: fiscal_format
+operations: [check_ffd]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360010214553
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как узнать формат фискальных документов на Эвоторе

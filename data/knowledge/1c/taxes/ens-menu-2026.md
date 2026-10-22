@@ -2,6 +2,10 @@
 document_id: batch-20261013-taxes-ens-menu-2026
 title: Где в 1С находятся документы ЕНС в простом интерфейсе
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: ens
+operations: [check_ens]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.200
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-otchetnost-i-dok
 source_type: vendor_article
 published_at: '2026-07-07'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Где в 1С находятся документы ЕНС в простом интерфейсе
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 Если документов действительно нет в данных, нужен администратор или специалист 1С для проверки прав и журнала операций.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

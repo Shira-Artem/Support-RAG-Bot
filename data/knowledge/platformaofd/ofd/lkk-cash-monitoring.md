@@ -9,14 +9,14 @@ source_url: https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/
 source_type: ofd_knowledge_base
 published_at: null
 collected_at: 2026-10-12
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: Платформа ОФД
 task_category: cash_list
 operations:
 - list_cash_registers
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # Платформа ОФД: список и мониторинг касс

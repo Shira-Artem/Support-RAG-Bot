@@ -2,6 +2,9 @@
 document_id: atol-online-16667-ffd-105-vs-12-basics
 title: Чем отличаются ФФД 1.05 и 1.2 в АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: kkt_rules
+operations: [check_kkt_rules]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # Чем отличаются ФФД 1.05 и 1.2 в АТОЛ Онлайн

@@ -2,6 +2,9 @@
 document_id: "atol-online-22561-gateway-errors-timeout-128-protocol"
 title: "Ошибки timeout, [128] и протокола группы АТОЛ Онлайн"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: error_diagnosis
+operations: [diagnose_error]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/22561"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Ошибки timeout, [128] и протокола группы АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Не выполняйте слепой повтор фискализации: риск дублирования чеков и некорректной коррекции.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

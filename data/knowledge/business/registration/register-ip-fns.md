@@ -2,6 +2,9 @@
 document_id: biz-register-ip-fns
 title: 'Регистрация ИП: доступные способы подачи документов в ФНС'
 category: business_registration
+service: "Регистрация бизнеса"
+task_category: business_registration
+operations: [register_business]
 manufacturer: ''
 model: ''
 version: ''
@@ -10,7 +13,9 @@ source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # Как зарегистрировать ИП

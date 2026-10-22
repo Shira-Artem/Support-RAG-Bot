@@ -2,6 +2,10 @@
 document_id: sw-1c-faq-directory
 title: Где найти официальные ответы по 1С:Бухгалтерии, ЗУП, ERP и Рознице
 category: software_1c
+service: "1С"
+software: "1С"
+task_category: reference_directory
+operations: [find_official_instruction]
 manufacturer: 1С
 model: ''
 version: ''
@@ -10,7 +14,9 @@ source_type: software_vendor_reference
 published_at: ''
 collected_at: '2026-10-13'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Справочник охватывает разные конфигурации; нужно подтвердить актуальные ссылки для каждой из них."
 ---
 
 # Официальный справочник ответов по программам 1С

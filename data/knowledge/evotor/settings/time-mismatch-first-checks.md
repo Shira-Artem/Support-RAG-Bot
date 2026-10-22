@@ -2,6 +2,9 @@
 document_id: evotor-time-mismatch-check-20261019
 title: 'Эвотор: расхождение времени кассы и планшета'
 category: settings
+service: "Эвотор"
+task_category: settings
+operations: [configure_settings]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360010106933
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Ошибки расхождения даты и времени на Эвоторе

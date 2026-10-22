@@ -2,6 +2,9 @@
 document_id: kkt-fns-controls-2026
 title: "ККТ в 2026: сигналы риска и подготовка к проверке ФНС"
 category: kkt
+service: "ККТ и законодательство"
+task_category: kkt_rules
+operations: [check_kkt_rules]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: industry_article
 published_at:
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # ККТ в 2026: сигналы риска и подготовка к проверке ФНС

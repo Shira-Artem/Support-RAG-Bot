@@ -2,6 +2,9 @@
 document_id: platformaofd-crpt-indicators
 title: "Платформа ОФД: индикаторы ЦРПТ для маркированных товаров"
 category: marking
+service: "Платформа ОФД"
+task_category: marking
+operations: [check_marking_code]
 manufacturer:
 model:
 version: ФФД 1.2
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/kn-razdel-crpt/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Раздел ЦРПТ в контроле нарушений

@@ -2,7 +2,10 @@
 document_id: aqsi-online-fns-reregister-fn
 title: 'aQsi Online: перерегистрация ККТ после замены ФН'
 category: kkt
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: fns_registration
+operations: [check_reregistration]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/fns/pereregistratsiya-kkt-v-fns
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Первоисточник сейчас возвращает 404; требуется актуальная ссылка и сверка процедуры."
 ---
 
 # aQsi Online: перерегистрация ККТ после замены ФН

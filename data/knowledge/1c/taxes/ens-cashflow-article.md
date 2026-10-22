@@ -2,6 +2,10 @@
 document_id: batch-20261013-taxes-ens-cashflow-article
 title: Статья движения денежных средств «Единый налоговый платёж»
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: ens
+operations: [check_ens]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.189
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-statya-dvizheniy
 source_type: vendor_article
 published_at: '2026-01-21'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Статья движения денежных средств «Единый налоговый платёж»
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 Некорректное формирование ОДДС, классификацию и ретроспективные изменения должен проверить бухгалтер.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

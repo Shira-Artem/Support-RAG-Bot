@@ -2,6 +2,9 @@
 document_id: kkt-correction-receipt-2026
 title: "Чек коррекции: когда требуется проверка и обращение к специалисту"
 category: kkt
+service: "ККТ и законодательство"
+task_category: kkt_rules
+operations: [correct_receipt]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: industry_article
 published_at:
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # Чек коррекции: когда требуется проверка и обращение к специалисту

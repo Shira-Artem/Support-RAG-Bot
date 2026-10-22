@@ -2,6 +2,9 @@
 document_id: aqsi-kkt-error-126
 title: "aQsi: ошибка ККТ 126 — длина кадра приёма"
 category: kkt
+service: "aQsi"
+task_category: error_diagnosis
+operations: [diagnose_error]
 manufacturer: aQsi
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://knowledge-base.aqsi.ru/pages/viewpage.action?pageId=41418776
 source_type: vendor_knowledge_base
 published_at:
 collected_at: 2026-10-13
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi: ошибка ККТ 126 — длина кадра приёма

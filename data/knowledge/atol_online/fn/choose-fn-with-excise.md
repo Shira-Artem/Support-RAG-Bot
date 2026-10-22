@@ -2,6 +2,9 @@
 document_id: atol-online-22553-choose-fn-with-excise
 title: Как выбирать ФН для УСН, ОСН и подакцизной торговли в АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: fiscal_drive
+operations: [inspect_fiscal_drive, choose_fiscal_drive]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/22553
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как выбирать ФН для УСН, ОСН и подакцизной торговли в АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не назначать срок службы или модель ФН исключительно по словам «у меня УСН»: есть исключения и изменяющиеся юридические требования.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

@@ -2,6 +2,9 @@
 document_id: batch-20261013-ens-notification-errors
 title: 'Ошибки уведомлений об исчисленных налогах: первичная проверка'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: ens
+operations: [check_ens]
 manufacturer: null
 model: null
 version: null
@@ -10,7 +13,9 @@ source_type: fns_news
 published_at: '2026-06-24'
 collected_at: '2026-10-13'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Для налогового вывода требуется сверить конкретное правило и применимость с актуальным первоисточником ФНС/НК РФ."
 ---
 
 # Ошибки уведомлений об исчисленных налогах: первичная проверка

@@ -9,14 +9,14 @@ source_url: https://platformaofd.ru/baza-znaniy/kn-razdel-fns/
 source_type: ofd_knowledge_base
 published_at: null
 collected_at: 2026-10-12
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: Платформа ОФД
 task_category: fns_monitoring
 operations:
 - inspect_fns_indicators
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # Платформа ОФД: индикаторы ФНС

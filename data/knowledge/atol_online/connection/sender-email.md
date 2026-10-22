@@ -2,6 +2,9 @@
 document_id: atol-online-11255-sender-email
 title: Какой e-mail указать отправителем электронного чека в АТОЛ Онлайн?
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, configure_receipt_sender]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/11255
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Какой e-mail указать отправителем электронного чека в АТОЛ Онлайн?
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Перед вводом убедитесь, что этот e-mail действительно принадлежит вашей организации либо согласован с ОФД.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

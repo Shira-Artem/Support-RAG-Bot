@@ -2,6 +2,7 @@
 document_id: batch-20261013-bank-directbank-other-banks
 title: Загрузка выписки другого банка через посредника в 1С:ДиректБанк
 category: 1c
+service: "1С:Бухгалтерия 8"
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.203
@@ -9,7 +10,7 @@ source_url: https://buh.ru/articles/kak-v-1s-bukhgalterii-8-zagruzhat-vypiski-v-
 source_type: vendor_article
 published_at: '2026-08-13'
 collected_at: '2026-10-13'
-verified_at: null
+verified_at: 2026-10-22
 software: 1С:Бухгалтерия 8
 task_category: bank_statement
 operations:
@@ -17,7 +18,8 @@ operations:
 search_fields:
 - bank_name
 - configuration_release
-status: draft
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Загрузка выписки другого банка через посредника в 1С:ДиректБанк
@@ -36,5 +38,3 @@ status: draft
 
 ## Ограничение
 Это функция банковского обмена, а не универсальный парсер любых выписок.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

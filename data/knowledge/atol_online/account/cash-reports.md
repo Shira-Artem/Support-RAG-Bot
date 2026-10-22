@@ -9,16 +9,16 @@ source_url: https://help.atol.online/article/11069
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-21'
-verified_at: null
+verified_at: 2026-10-22
 evidence_coverage:
   view_cash_reports: partial
-status: draft
+status: approved
 service: АТОЛ Онлайн
 task_category: cash_reports
 operations:
 - view_cash_reports
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # АТОЛ Онлайн: отчёты после замены ФН

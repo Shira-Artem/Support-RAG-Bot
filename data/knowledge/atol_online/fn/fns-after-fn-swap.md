@@ -9,14 +9,14 @@ source_url: https://help.atol.online/article/11069
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: АТОЛ Онлайн
 task_category: fns_registration
 operations:
 - check_reregistration
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # АТОЛ Онлайн: проверка перерегистрации после замены ФН

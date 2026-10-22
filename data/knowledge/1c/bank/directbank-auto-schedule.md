@@ -2,6 +2,7 @@
 document_id: batch-20261013-bank-directbank-auto-schedule
 title: Автоматическое получение выписок через 1С:ДиректБанк
 category: 1c
+service: "1С:Бухгалтерия 8"
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.195
@@ -9,7 +10,7 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtoma
 source_type: vendor_article
 published_at: '2026-05-01'
 collected_at: '2026-10-13'
-verified_at: null
+verified_at: 2026-10-22
 software: 1С:Бухгалтерия 8
 task_category: bank_statement
 operations:
@@ -17,7 +18,8 @@ operations:
 search_fields:
 - configuration_release
 - bank_exchange_settings
-status: draft
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Автоматическое получение выписок через 1С:ДиректБанк
@@ -36,5 +38,3 @@ status: draft
 
 ## Когда нужен специалист
 Если автоматическая синхронизация недоступна у банка или операции появились дважды. Не удалять проведённые платежи до сверки.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

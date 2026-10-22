@@ -9,10 +9,10 @@ source_url: https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/
 source_type: ofd_knowledge_base
 published_at: null
 collected_at: 2026-10-12
-verified_at: null
+verified_at: 2026-10-22
 evidence_coverage:
   search_receipt: full
-status: draft
+status: approved
 service: Платформа ОФД
 task_category: receipt_search
 operations:
@@ -34,7 +34,7 @@ search_fields:
 - calculation_sign
 - fns_status
 - marking
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # Платформа ОФД: поиск чеков и фильтры

@@ -2,6 +2,9 @@
 document_id: batch-20261013-vat-usn-rates-2026
 title: 'НДС при УСН в 2026: специальные ставки 5%/7% и общая ставка 22%'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, compare_vat_rates]
 manufacturer: null
 model: null
 version: null
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/new2026/
 source_type: fns_guidance
 published_at: null
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # НДС при УСН в 2026: специальные ставки 5%/7% и общая ставка 22%
@@ -26,5 +30,3 @@ status: draft
 
 ## Ограничение
 Нельзя выбирать «самую выгодную» ставку автоматически: это решение бухгалтера с расчётом налоговой нагрузки.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

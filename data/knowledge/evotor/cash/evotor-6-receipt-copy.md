@@ -2,6 +2,7 @@
 document_id: evotor-6-receipt-copy-360005002514
 title: "Эвотор 6: печать копии фискального документа"
 category: cash_operations
+service: "Эвотор"
 manufacturer: Эвотор
 model: Эвотор 6
 version:
@@ -9,7 +10,7 @@ source_url: https://support.evotor.ru/article/360005002514
 source_type: vendor_support_article
 published_at:
 collected_at: 2026-10-12
-verified_at:
+verified_at: 2026-10-22
 task_category: receipt_print
 operations:
 - repeat_print
@@ -17,7 +18,8 @@ search_fields:
 - fiscal_document_number
 evidence_coverage:
   repeat_print: full
-status: draft
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Копия чека или отчёта на Эвоторе 6

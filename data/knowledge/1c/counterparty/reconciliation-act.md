@@ -2,6 +2,10 @@
 document_id: batch-20261013-counterparty-reconciliation-act
 title: Электронный акт сверки с контрагентом в 1С
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: reconciliation
+operations: [reconcile_counterparty]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
@@ -9,8 +13,9 @@ source_url: https://buh.ru/articles/elektronnyy-akt-sverki-vzaimnykh-raschetov-v
 source_type: vendor_article
 published_at: '2023-02-01'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Электронный акт сверки с контрагентом в 1С
@@ -30,5 +35,3 @@ status: draft
 
 ## Эскалация
 Если акт показывает расхождения по закрытым периодам, исправления согласует бухгалтер. Акт сверки сам по себе не заменяет первичные документы.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

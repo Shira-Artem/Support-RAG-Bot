@@ -2,6 +2,9 @@
 document_id: "atol-online-11077-service-blocked"
 title: "Ошибка 403: сервис АТОЛ Онлайн заблокирован за неоплату"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: billing
+operations: [manage_billing, diagnose_service_block]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/11077"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Ошибка 403: сервис АТОЛ Онлайн заблокирован за неоплату
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 В период остановки чеки могли не формироваться; вопрос последующей фискализации и коррекции решает специалист.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

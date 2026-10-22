@@ -2,6 +2,9 @@
 document_id: "atol-online-12149-select-ofd"
 title: "Выбор ОФД при подключении АТОЛ Онлайн"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, select_ofd]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/12149"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Выбор ОФД при подключении АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Не обещайте бесплатный ОФД без проверки тарифа.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

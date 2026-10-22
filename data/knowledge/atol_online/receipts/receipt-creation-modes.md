@@ -2,6 +2,9 @@
 document_id: atol-online-11242-receipt-creation-modes
 title: Три способа формирования чеков в АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: receipt_issue
+operations: [issue_receipt]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/11242
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Три способа формирования чеков в АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Один и тот же платёж не должен быть фискализирован повторно из разных каналов. Перед массовой загрузкой сверить историю чеков.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

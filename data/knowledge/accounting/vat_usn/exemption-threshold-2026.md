@@ -2,6 +2,9 @@
 document_id: batch-20261013-vat-usn-exemption-threshold-2026
 title: 'Освобождение от НДС на УСН: порог 20 млн рублей в 2026'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, check_vat_exemption]
 manufacturer: null
 model: null
 version: null
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
 source_type: fns_guidance
 published_at: null
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Освобождение от НДС на УСН: порог 20 млн рублей в 2026
@@ -28,5 +32,3 @@ status: draft
 
 ## Важно
 Не путать право применять УСН с освобождением от НДС. Не все денежные поступления одинаково входят в налоговую базу; оценка зависит от НК РФ.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

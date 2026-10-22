@@ -2,6 +2,9 @@
 document_id: "atol-online-22555-switch-ffd12"
 title: "Переход облачной кассы АТОЛ Онлайн на ФФД 1.2"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: integration
+operations: [configure_integration]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: "ФФД 1.05 → 1.2"
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/22555"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Переход облачной кассы АТОЛ Онлайн на ФФД 1.2
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Переход затрагивает регистрацию ККТ и может быть необратим без замены ФН. Самостоятельно не запускайте смену без инженера.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

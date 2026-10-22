@@ -2,15 +2,19 @@
 document_id: aqsi-online-receipts-partial-refund
 title: 'aQsi Online: частичный возврат по чеку'
 category: receipts
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: refund
+operations: [issue_refund]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/account/kak-probit-chek
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: частичный возврат по чеку

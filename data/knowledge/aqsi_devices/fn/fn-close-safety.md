@@ -2,6 +2,9 @@
 document_id: aqsi-device-fn-close-safety
 title: 'aQsi: что проверить перед закрытием ФН'
 category: fn
+service: "aQsi"
+task_category: fiscal_drive
+operations: [inspect_fiscal_drive]
 manufacturer: aQsi
 model: aQsi (физическая ККТ)
 version: null
@@ -9,8 +12,9 @@ source_url: https://aqsi.ru/support/zakryit-fiskalnyiy-nakopitel/
 source_type: manufacturer_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi: что проверить перед закрытием ФН
@@ -31,5 +35,3 @@ status: draft
 Материал относится к физическим кассам aQsi, а не к облачному сервису aQsi Online. Названия разделов могут отличаться по модели и версии ПО. Не выполнять финансовые, фискальные или регистрационные операции без проверки контекста и полномочий.
 
 Источник: https://aqsi.ru/support/zakryit-fiskalnyiy-nakopitel/
-
-**Статус: черновик.** Не утверждён профильным специалистом.

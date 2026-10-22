@@ -2,6 +2,9 @@
 document_id: atol-online-12161-ffd-choice-step3
 title: Как выбрать ФФД 1.05 или 1.2 на третьем шаге АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, select_ffd]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: ФФД 1.05 / 1.2
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/12161
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как выбрать ФФД 1.05 или 1.2 на третьем шаге АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не устанавливайте ФФД автоматически: переход или неверный выбор может повлиять на регистрацию ККТ и интеграцию. Требуется специалист.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

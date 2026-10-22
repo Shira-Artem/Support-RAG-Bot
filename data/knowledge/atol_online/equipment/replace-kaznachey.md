@@ -2,6 +2,9 @@
 document_id: atol-online-24147-replace-kaznachey
 title: Замена облачной ККТ Казначей ФА на АТОЛ 42-ФА
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: equipment_replacement
+operations: [replace_equipment]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/24147
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Замена облачной ККТ Казначей ФА на АТОЛ 42-ФА
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Смена модели и регистрация требуют отдельной координации с АТОЛ Онлайн и ФНС. Не запускать процедуры и не обещать сроки без подтверждения.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

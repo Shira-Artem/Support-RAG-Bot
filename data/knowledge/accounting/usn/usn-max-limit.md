@@ -2,6 +2,9 @@
 document_id: batch-20261013-usn-usn-max-limit
 title: Предельный доход для применения УСН в 2026 году
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules]
 manufacturer: null
 model: null
 version: null
@@ -10,7 +13,9 @@ source_type: fns_news
 published_at: '2026-01-01'
 collected_at: '2026-10-13'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Для налогового вывода требуется сверить конкретное правило и применимость с актуальным первоисточником ФНС/НК РФ."
 ---
 
 # Предельный доход для применения УСН в 2026 году

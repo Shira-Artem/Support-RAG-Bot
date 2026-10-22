@@ -2,6 +2,10 @@
 document_id: batch-20261013-counterparty-reconciliation-monitor
 title: Монитор сверки с контрагентами и отправка ссылки на акт
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: reconciliation
+operations: [reconcile_counterparty]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.168.19
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/vypushchena-versiya-3-0-168-19-konfiguratsii-buk
 source_type: vendor_article
 published_at: '2025-01-19'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Монитор сверки с контрагентами и отправка ссылки на акт
@@ -29,5 +34,3 @@ status: draft
 
 ## Ограничение
 Наличие функции отправки ссылки не означает, что контрагент подписал акт или признал сальдо; юридический статус следует уточнять отдельно.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

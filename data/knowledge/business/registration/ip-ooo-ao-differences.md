@@ -2,6 +2,9 @@
 document_id: biz-ip-ooo-ao-differences
 title: 'Чем отличаются ИП, ООО и АО: первичная консультация'
 category: business_registration
+service: "Регистрация бизнеса"
+task_category: business_registration
+operations: [register_business]
 manufacturer: ''
 model: ''
 version: ''
@@ -10,7 +13,9 @@ source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # ИП, ООО и АО: основные различия

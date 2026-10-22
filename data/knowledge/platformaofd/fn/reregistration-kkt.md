@@ -2,6 +2,9 @@
 document_id: platformaofd-reregistration-kkt
 title: "Платформа ОФД: контроль перерегистрации ККТ через кабинет"
 category: fn
+service: "Платформа ОФД"
+task_category: fiscal_drive
+operations: [check_reregistration]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/pereregistraciya-kkt-v-fns/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Перерегистрация ККТ через Платформу ОФД

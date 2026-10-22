@@ -2,15 +2,19 @@
 document_id: aqsi-online-integration-direct-api
 title: 'aQsi Online: прямое подключение API или CMS'
 category: integration
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: integration
+operations: [configure_integration]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/getting-started/kak-nastroit-pryamoe-podklyuchenie-k-servisu
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: прямое подключение API или CMS

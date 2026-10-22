@@ -2,6 +2,9 @@
 document_id: acc-usn-special-vat-switch-2026
 title: 'УСН: смена специальных ставок НДС 5%/7% в 2026 году'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules]
 manufacturer: ''
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/new2026/
 source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Отказ от специальных ставок НДС на УСН

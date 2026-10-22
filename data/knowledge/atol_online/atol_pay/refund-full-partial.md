@@ -2,6 +2,9 @@
 document_id: atol-online-22853-refund-full-partial
 title: 'АТОЛ Pay: полный и частичный возврат — чек «Возврат прихода»'
 category: atol_pay
+service: "АТОЛ Онлайн"
+task_category: refund
+operations: [issue_refund]
 manufacturer: АТОЛ
 model: АТОЛ Pay
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/22853
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # АТОЛ Pay: полный и частичный возврат — чек «Возврат прихода»
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Это отдельный сценарий АТОЛ Pay. Нельзя считать, что создание чека само переводит деньги покупателю; возврат платежа и фискализация различаются.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

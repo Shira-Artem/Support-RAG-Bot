@@ -2,6 +2,9 @@
 document_id: tspiot-licence-and-sale-checks-astral-2026
 title: "ТС ПИоТ: проблемы с лицензией и проверкой марки при продаже"
 category: tspiot
+service: "ТС ПиОТ"
+task_category: tspiot
+operations: [diagnose_tspiot]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: industry_explainer
 published_at: 2026-05-26
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Материал является отраслевым объяснением; для точных требований нужна актуальная инструкция оператора или регулятора."
 ---
 
 # Лицензия ТС ПИоТ и блокировка продажи

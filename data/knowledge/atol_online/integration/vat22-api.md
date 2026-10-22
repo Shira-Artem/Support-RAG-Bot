@@ -2,6 +2,9 @@
 document_id: "atol-online-26152-vat22-api"
 title: "Ставки НДС 22% и 22/122 в API АТОЛ Онлайн"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: integration
+operations: [configure_integration]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: "API v4 / API v5"
@@ -10,7 +13,9 @@ source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
 verified_at: null
-status: "draft"
+source_checked_at: 2026-10-22
+status: draft
+review_note: "Версии, тарифы или требования привязаны к 2026 году; нужна проверка актуального релиза и условий применения."
 ---
 
 # Ставки НДС 22% и 22/122 в API АТОЛ Онлайн

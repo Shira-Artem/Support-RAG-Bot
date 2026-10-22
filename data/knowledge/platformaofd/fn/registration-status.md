@@ -2,6 +2,9 @@
 document_id: platformaofd-registration-status
 title: "Платформа ОФД: статус «Регистрация ККТ не завершена»"
 category: fn
+service: "Платформа ОФД"
+task_category: fiscal_drive
+operations: [check_registration]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/proverka-statusa-registracii-kkt
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # ККТ отмечена как незарегистрированная

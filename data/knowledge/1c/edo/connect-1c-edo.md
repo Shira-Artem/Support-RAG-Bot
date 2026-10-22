@@ -2,6 +2,10 @@
 document_id: batch-20261013-edo-connect-1c-edo
 title: С чего начать подключение 1С-ЭДО к контрагенту
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: edo
+operations: [exchange_edo_documents]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
@@ -9,8 +13,9 @@ source_url: https://buh.ru/articles/1s-edo-beskontaktnyy-sposob-peredachi-dokume
 source_type: vendor_article
 published_at: '2020-07-01'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # С чего начать подключение 1С-ЭДО к контрагенту
@@ -30,5 +35,3 @@ status: draft
 
 ## Ограничение
 Статья о подключении датируется прошлым периодом. Актуальность тарифов, договора и интерфейса нужно проверять на текущем сервисе; не обещать бесплатную отправку или совместимость всех операторов.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

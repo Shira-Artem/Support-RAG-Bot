@@ -2,7 +2,7 @@
 document_id: aqsi-online-integration-1c-setup
 title: 'aQsi Online: интеграция с 1С через драйвер ККТ'
 category: 1c
-manufacturer: aQsi Online
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/integrations/nastrojka-integratsii-1s-s-aqsi-online
@@ -21,7 +21,9 @@ search_fields:
 - driver
 - ffd
 procedure_service: aQsi Online
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Первоисточник сейчас возвращает 404; требуется актуальная ссылка и сверка процедуры."
 ---
 
 # aQsi Online: интеграция с 1С через драйвер ККТ

@@ -2,21 +2,21 @@
 document_id: aqsi-online-account-edit-user
 title: 'aQsi Online: изменение существующего пользователя'
 category: access
-manufacturer: aQsi Online
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: null
 source_url: https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-21'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: aQsi Online
 task_category: access
 operations:
 - edit_user
 search_fields: []
-source_checked_at: '2026-10-22'
+source_checked_at: 2026-10-22
 evidence_coverage:
   edit_user: partial
   change_permissions: partial

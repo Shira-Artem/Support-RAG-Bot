@@ -2,6 +2,9 @@
 document_id: marking-gtin-vs-item-2026
 title: "Объёмно-сортовой и поэкземплярный учёт: что уточнять"
 category: marking
+service: "Маркировка и Честный ЗНАК"
+task_category: marking
+operations: [check_marking_code]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: 2022-06-14
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Режим учёта зависит от товарной группы и даты; требуется сверка действующих правил Честного ЗНАКа."
 ---
 
 # Объёмно-сортовой и поэкземплярный учёт

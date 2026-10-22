@@ -2,6 +2,9 @@
 document_id: atol-online-18251-deregister-kkt
 title: Как организовать снятие облачной ККТ АТОЛ Онлайн с учёта ФНС
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: fns_registration
+operations: [check_registration]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/18251
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как организовать снятие облачной ККТ АТОЛ Онлайн с учёта ФНС
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Снятие с учёта необратимо для текущей регистрации. Не выполнять через бота без подтверждения владельца и специалиста; причины снятия и перерегистрации нужно различать.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

@@ -2,6 +2,9 @@
 document_id: aqsi-online-usecase-couriers-fiscalization
 title: 'aQsi Online: кассовые решения для курьеров и доставки'
 category: integration
+service: "aQsi Online"
+task_category: applicability
+operations: [assess_service_fit]
 manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
@@ -10,7 +13,9 @@ source_type: vendor_product_page
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Источник описывает типовой сценарий; конкретная интеграция и применимость для клиента требуют подтверждения у сервиса."
 ---
 
 # aQsi Online: кассовые решения для курьеров и доставки

@@ -2,6 +2,9 @@
 document_id: evotor-ofd-subscription-8865646794770
 title: "Эвотор: проверка оплаты обслуживания ОФД"
 category: ofd
+service: "Эвотор"
+task_category: receipt_transmission
+operations: [check_transmission]
 manufacturer: Эвотор
 model:
 version:
@@ -9,12 +12,17 @@ source_url: https://support.evotor.ru/article/8865646794770
 source_type: vendor_support_article
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Чеки не уходят в ОФД: срок обслуживания
 
+## Возможная причина
+
 Одна из причин отсутствия передачи — завершившийся оплаченный период обслуживания оператора. Проверять баланс и срок подписки нужно в личном кабинете **своего** ОФД. Если доступ к кабинету неизвестен, обратитесь в поддержку оператора. После продления производитель советует повторно проверить параметры ОФД на кассе.
+
+## Ограничение
 
 Этот конспект не утверждает, что оплата является причиной любого сбоя связи: параллельно могут требоваться проверки сети и настроек кассы.

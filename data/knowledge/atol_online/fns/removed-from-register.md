@@ -2,6 +2,9 @@
 document_id: "atol-online-18227-removed-from-register"
 title: "ФНС сняла облачную кассу АТОЛ Онлайн с учета"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: fns_registration
+operations: [check_registration]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/18227"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # ФНС сняла облачную кассу АТОЛ Онлайн с учета
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Снятие с учёта и дальнейшая регистрация — юридически значимые операции. Передайте специалисту, не нажимайте «снять с регистрации» автоматически.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

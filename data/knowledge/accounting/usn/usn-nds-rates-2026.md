@@ -2,6 +2,9 @@
 document_id: acc-usn-nds-rates-2026
 title: 'НДС на УСН в 2026 году: стандартные и специальные ставки'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, compare_vat_rates]
 manufacturer: ''
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/new2026/
 source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Выбор ставки НДС на УСН в 2026 году

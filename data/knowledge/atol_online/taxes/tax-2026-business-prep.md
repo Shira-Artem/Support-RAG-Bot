@@ -2,6 +2,9 @@
 document_id: atol-online-26409-tax-2026-business-prep
 title: 'Подготовка бизнеса к изменениям налогов 2026: чек-лист без расчёта ставки'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: vat_usn
+operations: [check_vat_rules]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # Подготовка бизнеса к изменениям налогов 2026: чек-лист без расчёта ставки

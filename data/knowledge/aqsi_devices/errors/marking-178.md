@@ -2,6 +2,9 @@
 document_id: aqsi-device-marking-178
 title: 'aQsi: ошибка 178 при продаже маркированного товара'
 category: kkt
+service: "aQsi"
+task_category: error_diagnosis
+operations: [diagnose_error]
 manufacturer: aQsi
 model: aQsi 5Ф
 version: null
@@ -9,8 +12,9 @@ source_url: https://aqsi.ru/support/oshibka-178-zapreshhena-rabota-s-markirovann
 source_type: manufacturer_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi: ошибка 178 при продаже маркированного товара
@@ -30,5 +34,3 @@ aQsi ошибка 178 запрещена работа с маркированн�
 Материал относится к физическим кассам aQsi, а не к облачному сервису aQsi Online. Названия разделов могут отличаться по модели и версии ПО. Не выполнять финансовые, фискальные или регистрационные операции без проверки контекста и полномочий.
 
 Источник: https://aqsi.ru/support/oshibka-178-zapreshhena-rabota-s-markirovannyimi-tovarami/
-
-**Статус: черновик.** Не утверждён профильным специалистом.

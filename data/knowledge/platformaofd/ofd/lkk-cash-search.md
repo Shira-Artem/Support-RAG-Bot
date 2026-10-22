@@ -9,8 +9,8 @@ source_url: https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/
 source_type: ofd_knowledge_base
 published_at: null
 collected_at: '2026-10-21'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: Платформа ОФД
 task_category: cash_search
 operations:
@@ -20,7 +20,7 @@ search_fields:
 - registration_number
 - cash_serial_number
 - fiscal_drive_number
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # Платформа ОФД: поиск кассы

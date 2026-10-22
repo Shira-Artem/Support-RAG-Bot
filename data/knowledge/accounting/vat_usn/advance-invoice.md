@@ -2,6 +2,9 @@
 document_id: batch-20261013-vat-usn-advance-invoice
 title: 'НДС на УСН: нужен ли авансовый счёт-фактура при ставке 5% или 7%'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules]
 manufacturer: null
 model: null
 version: null
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
 source_type: fns_guidance
 published_at: null
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # НДС на УСН: нужен ли авансовый счёт-фактура при ставке 5% или 7%
@@ -29,5 +33,3 @@ status: draft
 
 ## Эскалация
 Не рассчитывать сумму НДС по переписке без анализа договора и налоговых документов; направить бухгалтеру.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

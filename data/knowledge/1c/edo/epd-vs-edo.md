@@ -2,6 +2,10 @@
 document_id: batch-20261013-edo-epd-vs-edo
 title: '1С-ЭПД: обмен транспортными ЭПД и ошибка «контрагент не найден»'
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: edo
+operations: [exchange_edo_documents]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
@@ -9,8 +13,9 @@ source_url: https://buh.ru/articles/tekhpodderzhka-1s-edo-otvetila-na-voprosy-po
 source_type: vendor_article
 published_at: '2026-09-01'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # 1С-ЭПД: обмен транспортными ЭПД и ошибка «контрагент не найден»
@@ -29,5 +34,3 @@ status: draft
 
 ## Важно
 Правила приглашений для обычного ЭДО и транспортного ЭПД различаются. Нельзя смешивать эти процессы.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

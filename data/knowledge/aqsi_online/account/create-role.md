@@ -2,15 +2,15 @@
 document_id: aqsi-online-account-create-role
 title: 'aQsi Online: создание роли и доступ к разделам'
 category: access
-manufacturer: aQsi Online
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: null
 source_url: https://aqsi.online/instructions/account/kak-sozdat-novuyu-rol
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-21'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: aQsi Online
 task_category: access
 operations:
@@ -18,7 +18,7 @@ operations:
 - configure_role
 - assign_role
 search_fields: []
-source_checked_at: '2026-10-22'
+source_checked_at: 2026-10-22
 evidence_coverage:
   create_role: partial
   configure_role: partial

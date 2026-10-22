@@ -2,6 +2,9 @@
 document_id: atol-online-16669-cloud-kkt-applicability
 title: Когда подходит облачная касса АТОЛ Онлайн, а когда нет
 category: kkt_law
+service: "АТОЛ Онлайн"
+task_category: kkt_rules
+operations: [check_kkt_rules]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 
 # Когда подходит облачная касса АТОЛ Онлайн, а когда нет

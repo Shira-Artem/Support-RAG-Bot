@@ -2,6 +2,9 @@
 document_id: "atol-online-11243-correct-ffd105"
 title: "Исправление ошибочного чека при ФФД 1.05"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: correction_receipt
+operations: [correct_receipt]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: "ФФД 1.05"
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/11243"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Исправление ошибочного чека при ФФД 1.05
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Не формируйте чеки-исправления автоматически: уточните факт расчёта, ФФД и схему исправления со специалистом.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

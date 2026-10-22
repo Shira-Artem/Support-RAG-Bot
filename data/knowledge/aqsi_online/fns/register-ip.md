@@ -2,15 +2,19 @@
 document_id: aqsi-online-fns-register-ip
 title: 'aQsi Online: регистрация облачной ККТ в ФНС для ИП'
 category: kkt
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: fns_registration
+operations: [check_registration]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/fns/registratsiya-kassy-v-fns-dlya-ip
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: регистрация облачной ККТ в ФНС для ИП

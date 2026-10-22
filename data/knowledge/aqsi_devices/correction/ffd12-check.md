@@ -2,6 +2,9 @@
 document_id: aqsi-device-ffd12-check
 title: 'aQsi: особенности чека коррекции на ФФД 1.2'
 category: kkt
+service: "aQsi"
+task_category: correction_receipt
+operations: [prepare_correction_receipt]
 manufacturer: aQsi
 model: aQsi (физическая ККТ)
 version: null
@@ -10,7 +13,9 @@ source_type: manufacturer_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Сценарий чека коррекции зависит от ФФД и фискальных обстоятельств; требуется сверка первоисточника и специалиста."
 ---
 
 # aQsi: особенности чека коррекции на ФФД 1.2

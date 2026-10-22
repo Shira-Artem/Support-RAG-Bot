@@ -9,15 +9,15 @@ source_url: https://help.atol.online/article/14749
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: АТОЛ Онлайн
 task_category: edo
 operations:
 - accept_edo_invitation
 - configure_edo_roaming
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # АТОЛ Онлайн: входящие документы через ЭДО

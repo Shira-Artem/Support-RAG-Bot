@@ -2,21 +2,21 @@
 document_id: aqsi-online-account-my-cash-registers
 title: 'aQsi Online: где посмотреть кассы и их состояние'
 category: account
-manufacturer: aQsi Online
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/account/moi-kassy
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: aQsi Online
 task_category: cash_list
 operations:
 - list_cash_registers
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # aQsi Online: список касс

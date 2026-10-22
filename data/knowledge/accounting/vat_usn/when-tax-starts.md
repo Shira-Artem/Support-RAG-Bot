@@ -2,6 +2,9 @@
 document_id: batch-20261013-vat-usn-when-tax-starts
 title: 'Превышен порог НДС при УСН в середине 2026 года: с какого месяца начислять'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, determine_vat_start]
 manufacturer: null
 model: null
 version: null
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/rn52/ifns/mri15/info/16597003/
 source_type: fns_news
 published_at: '2026-03-01'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Превышен порог НДС при УСН в середине 2026 года: с какого месяца начислять
@@ -29,5 +33,3 @@ status: draft
 
 ## Эскалация
 Расчёт НДС, восстановление учёта и исправление документов должен подтвердить бухгалтер.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

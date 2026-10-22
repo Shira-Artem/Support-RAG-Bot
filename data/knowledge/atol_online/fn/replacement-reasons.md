@@ -2,6 +2,9 @@
 document_id: "atol-online-11251-replacement-reasons"
 title: "Когда нужно менять ФН облачной кассы"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: fiscal_drive
+operations: [inspect_fiscal_drive, check_replacement_need]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/11251"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Когда нужно менять ФН облачной кассы
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Решение о необходимости замены при смене СНО принимают с учётом конкретного ФН, ККТ и правил 54-ФЗ.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

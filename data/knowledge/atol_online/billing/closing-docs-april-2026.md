@@ -2,6 +2,9 @@
 document_id: atol-online-14145-closing-docs-april-2026
 title: Что изменилось в ежемесячных услугах АТОЛ Онлайн с апреля 2026 года
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: billing
+operations: [manage_billing, inspect_closing_documents]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Версии, тарифы или требования привязаны к 2026 году; нужна проверка актуального релиза и условий применения."
 ---
 
 # Что изменилось в ежемесячных услугах АТОЛ Онлайн с апреля 2026 года

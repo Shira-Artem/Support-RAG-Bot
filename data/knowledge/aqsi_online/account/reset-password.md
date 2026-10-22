@@ -2,14 +2,14 @@
 document_id: aqsi-online-account-reset-password
 title: 'aQsi Online: восстановление доступа к личному кабинету'
 category: account
-manufacturer: aQsi Online
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/faq/zabyl-parol-ot-lichnogo-kabineta-chto-delat
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
+verified_at: 2026-10-22
 service: aQsi Online
 task_category: access
 operations:
@@ -19,7 +19,8 @@ search_fields:
 - registered_email
 evidence_coverage:
   reset_password: partial
-status: draft
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: восстановление доступа к личному кабинету

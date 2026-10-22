@@ -2,6 +2,10 @@
 document_id: batch-20261013-closing-error-first-diagnostics
 title: 'Не закрывается месяц: первые вопросы для диагностики'
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: period_close
+operations: [close_period]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
@@ -9,8 +13,9 @@ source_url: https://buh.ru/articles/sim-sim-zakroysya-ili-neskolko-sekretov-zakr
 source_type: vendor_article
 published_at: '2013-01-01'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Не закрывается месяц: первые вопросы для диагностики
@@ -30,5 +35,3 @@ status: draft
 
 ## Передать специалисту
 Точный текст ошибки, релиз, отчёт/счёт с расхождением и дату последнего успешного закрытия.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

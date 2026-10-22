@@ -2,6 +2,10 @@
 document_id: batch-20261013-vat-usn-advances-2026
 title: 'Переход с освобождения от НДС: учёт авансов в 1С в 2026'
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: vat_accounting
+operations: [configure_vat_accounting]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.198
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-izmenenie-poryad
 source_type: vendor_article
 published_at: '2026-06-03'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Переход с освобождения от НДС: учёт авансов в 1С в 2026
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 Это переходный налоговый случай. Без сверки договора и учёта нельзя рекомендовать массовое перепроведение или изменение прошлого периода.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

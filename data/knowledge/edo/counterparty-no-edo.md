@@ -2,6 +2,9 @@
 document_id: edo-counterparty-no-edi-2026
 title: "Контрагент не подключён к ЭДО: первичная диагностика"
 category: edo
+service: "ЭДО"
+task_category: edo
+operations: [exchange_edo_documents]
 manufacturer:
 model:
 version:
@@ -10,7 +13,9 @@ source_type: vendor_support_article
 published_at: 2022-06-14
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Материал является отраслевым объяснением; для точных требований нужна актуальная инструкция оператора или регулятора."
 ---
 
 # Контрагент не подключён к ЭДО

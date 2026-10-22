@@ -2,6 +2,10 @@
 document_id: batch-20261013-taxes-ens-accounting-settings
 title: Способ учёта операций по ЕНС в настройках 1С
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: ens
+operations: [check_ens]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.194
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyka-ucheta
 source_type: vendor_article
 published_at: '2026-03-19'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Способ учёта операций по ЕНС в настройках 1С
@@ -29,5 +34,3 @@ status: draft
 2. Сопоставить выбранный способ учёта с процессом бухгалтерии.
 3. Сверить статус принятия отчётности и фактическое сальдо по данным ФНС.
 4. Не менять метод задним числом без согласования бухгалтера.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

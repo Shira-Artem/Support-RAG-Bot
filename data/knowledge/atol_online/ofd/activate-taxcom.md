@@ -2,6 +2,9 @@
 document_id: "atol-online-23415-activate-taxcom"
 title: "Активация ККТ АТОЛ Онлайн в Такском ОФД"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: ofd_connection
+operations: [activate_tariff]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/23415"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Активация ККТ АТОЛ Онлайн в Такском ОФД
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Стоимость тарифов, адрес размещения ККТ и идентификаторы из старой инструкции обязательно сверяйте с действующими реквизитами.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

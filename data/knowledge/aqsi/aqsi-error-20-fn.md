@@ -2,6 +2,9 @@
 document_id: aqsi-fn-error-20
 title: "aQsi: ошибка ФН 20 — ограничение ресурса"
 category: fn
+service: "aQsi"
+task_category: error_diagnosis
+operations: [diagnose_error]
 manufacturer: aQsi
 model:
 version:
@@ -10,7 +13,9 @@ source_type: vendor_knowledge_base
 published_at:
 collected_at: 2026-10-13
 verified_at:
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Причина ошибки ФН 20 зависит от состояния и версии ФН; нужна проверка диагностики конкретной кассы."
 ---
 
 # aQsi: ошибка ФН 20 — ограничение ресурса

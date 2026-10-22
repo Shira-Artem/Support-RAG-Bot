@@ -2,6 +2,9 @@
 document_id: evotor-model-7-2-360002718353
 title: "Эвотор 7.2: питание и индикация"
 category: kkt
+service: "Эвотор"
+task_category: model_features
+operations: [check_model_features]
 manufacturer: Эвотор
 model: Эвотор 7.2
 version:
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360002718353
 source_type: vendor_model_article
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Эвотор 7.2

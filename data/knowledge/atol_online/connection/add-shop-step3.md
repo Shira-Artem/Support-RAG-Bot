@@ -2,6 +2,9 @@
 document_id: atol-online-12161-add-shop-step3
 title: 'Шаг 3 подключения АТОЛ Онлайн: магазин, URL и параметры'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, add_shop]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/12161
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Шаг 3 подключения АТОЛ Онлайн: магазин, URL и параметры
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не рекомендуйте выдуманный URL и не выбирайте налоговые и регистрационные признаки без проверки фактической модели продаж.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

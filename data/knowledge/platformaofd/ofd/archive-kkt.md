@@ -2,6 +2,9 @@
 document_id: platformaofd-archive-kkt
 title: "Платформа ОФД: архивирование кассы в кабинете"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [check_transmission]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/archive-kkt/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Архив ККТ в кабинете Платформы ОФД

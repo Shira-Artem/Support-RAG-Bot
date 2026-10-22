@@ -2,6 +2,9 @@
 document_id: evotor-correction-receipt-scope-20261019
 title: 'Эвотор: какой сценарий исправления чека выбрать'
 category: kkt
+service: "Эвотор"
+task_category: kkt_rules
+operations: [correct_receipt]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360003363673
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Исправление ошибки в кассовом чеке Эвотора

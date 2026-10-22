@@ -2,6 +2,9 @@
 document_id: evotor-6-shift-360006708093
 title: "Эвотор 6: открытие и закрытие смены"
 category: cash_operations
+service: "Эвотор"
+task_category: cash_operations
+operations: [manage_shift]
 manufacturer: Эвотор
 model: Эвотор 6
 version:
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360006708093
 source_type: vendor_support_article
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Смена на Эвоторе 6

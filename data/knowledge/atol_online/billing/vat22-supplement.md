@@ -2,6 +2,9 @@
 document_id: "atol-online-27074-vat22-supplement"
 title: "НДС 22% в счетах АТОЛ Онлайн за услуги 2026 года"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: billing
+operations: [manage_billing, inspect_vat_supplement]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -10,7 +13,9 @@ source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
 verified_at: null
-status: "draft"
+source_checked_at: 2026-10-22
+status: draft
+review_note: "Версии, тарифы или требования привязаны к 2026 году; нужна проверка актуального релиза и условий применения."
 ---
 
 # НДС 22% в счетах АТОЛ Онлайн за услуги 2026 года

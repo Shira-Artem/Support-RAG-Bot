@@ -2,6 +2,10 @@
 document_id: batch-20261013-closing-monthly-schedule
 title: Закрытие месяца по расписанию в 1С
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: period_close
+operations: [close_period]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.158
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-vypolnenie-zakry
 source_type: vendor_article
 published_at: '2024-08-30'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Закрытие месяца по расписанию в 1С
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 Автоматическое перепроведение способно повлиять на отчёты; без согласования и резервной копии менять расписание не следует.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

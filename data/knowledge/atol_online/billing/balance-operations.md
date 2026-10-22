@@ -2,6 +2,9 @@
 document_id: atol-online-11053-balance-operations
 title: 'Баланс АТОЛ Онлайн: доступные и зарезервированные средства'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: billing
+operations: [manage_billing, view_balance]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/11053
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Баланс АТОЛ Онлайн: доступные и зарезервированные средства
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не интерпретируйте зарезервированные средства как свободные к возврату и не пересчитывайте баланс по одному скриншоту.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

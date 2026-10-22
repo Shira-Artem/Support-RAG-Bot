@@ -2,6 +2,7 @@
 document_id: batch-20261013-bank-import-file-directbank
 title: Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк
 category: 1c
+service: "1С:Бухгалтерия 8"
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.117
@@ -9,7 +10,7 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zagruzka-bankovs
 source_type: vendor_article
 published_at: '2022-08-11'
 collected_at: '2026-10-13'
-verified_at: null
+verified_at: 2026-10-22
 software: 1С:Бухгалтерия 8
 task_category: bank_statement
 operations:
@@ -17,7 +18,8 @@ operations:
 search_fields:
 - configuration_release
 - file_format
-status: draft
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк
@@ -36,5 +38,3 @@ status: draft
 
 ## Когда нужен специалист
 При неверно выбранном виде операций, контрагентах и двойном отражении платежей. Не удалять дубли массово без проверки проводок.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.

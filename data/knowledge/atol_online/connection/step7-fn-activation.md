@@ -2,6 +2,9 @@
 document_id: atol-online-16568-step7-fn-activation
 title: 'Шаг 7 подключения АТОЛ Онлайн: завершение регистрации по отчёту ФН'
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, activate_fiscal_drive]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/16568
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Шаг 7 подключения АТОЛ Онлайн: завершение регистрации по отчёту ФН
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не вводите номер фискального документа, признак или дату вручную «по примеру» без сверки с полученным XML. Для фактической регистрации нужен сотрудник с полномочиями и КЭП.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

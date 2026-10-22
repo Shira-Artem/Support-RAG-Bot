@@ -9,13 +9,13 @@ source_url: "https://help.atol.online/article/23349"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+status: approved
 service: "АТОЛ Онлайн"
 procedure_service: "Первый ОФД"
 task_category: "equipment_setup"
 operations: [activate_tariff]
-source_checked_at: '2026-10-22'
+source_checked_at: 2026-10-22
 ---
 
 # Активация кассы АТОЛ Онлайн в Первом ОФД
@@ -29,4 +29,4 @@ source_checked_at: '2026-10-22'
 ## Важно / когда передать специалисту
 Если статус не обновляется, сопоставьте РНМ/ФН и договор; не подставляйте код другой кассы.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

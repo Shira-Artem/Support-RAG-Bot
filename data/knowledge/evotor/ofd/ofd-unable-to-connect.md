@@ -2,6 +2,9 @@
 document_id: evotor-ofd-error-not-connected-20261019
 title: 'Эвотор: «Касса не может связаться с ОФД» — первичная диагностика'
 category: ofd
+service: "Эвотор"
+task_category: receipt_transmission
+operations: [check_transmission]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360014099534
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Эвотор сообщает «Касса не может связаться с ОФД»

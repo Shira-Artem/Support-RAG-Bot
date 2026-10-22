@@ -9,14 +9,14 @@ source_url: https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/
 source_type: ofd_knowledge_base
 published_at: null
 collected_at: '2026-10-21'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+status: approved
 service: Платформа ОФД
 task_category: receipt_status
 operations:
 - inspect_fns_status
 search_fields: []
-source_checked_at: '2026-10-21'
+source_checked_at: 2026-10-22
 ---
 
 # Платформа ОФД: статусы чеков ФНС

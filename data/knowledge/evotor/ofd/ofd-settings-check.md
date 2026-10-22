@@ -2,6 +2,9 @@
 document_id: evotor-ofd-settings-reference-20261019
 title: 'Эвотор: где проверять параметры ОФД и ОИСМ'
 category: ofd
+service: "Эвотор"
+task_category: receipt_transmission
+operations: [check_transmission]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/5965166793746
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Где на Эвоторе посмотреть параметры ОФД и ОИСМ

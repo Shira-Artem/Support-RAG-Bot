@@ -2,6 +2,9 @@
 document_id: "atol-online-21944-fns-preparation"
 title: "Подготовка к регистрации облачной кассы АТОЛ Онлайн в ФНС"
 category: "atol_online"
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, prepare_fns_registration]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""
@@ -9,8 +12,9 @@ source_url: "https://help.atol.online/article/21944"
 source_type: "vendor_support_article"
 published_at: null
 collected_at: "2026-10-19"
-verified_at: null
-status: "draft"
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Подготовка к регистрации облачной кассы АТОЛ Онлайн в ФНС
@@ -24,4 +28,4 @@ status: "draft"
 ## Важно / когда передать специалисту
 Никому не передавайте закрытый ключ ЭП, пароли ФНС или ОФД в чате; перед началом согласуйте безопасный способ помощи.
 
-> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ. Черновик: проверить у профильного специалиста перед публикацией.
+> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.

@@ -2,6 +2,9 @@
 document_id: platformaofd-fn-number-in-lkk
 title: "Платформа ОФД: смена номера ФН в карточке ККТ"
 category: fn
+service: "Платформа ОФД"
+task_category: fiscal_drive
+operations: [inspect_fiscal_drive]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/smena-fn-v-lkk/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Номер нового ФН в личном кабинете ОФД

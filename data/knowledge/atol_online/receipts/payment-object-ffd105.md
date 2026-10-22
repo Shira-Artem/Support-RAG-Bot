@@ -2,6 +2,9 @@
 document_id: atol-online-26773-payment-object-ffd105
 title: Тег 1212 / payment_object для ФФД 1.05 АТОЛ Онлайн
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: receipt_issue
+operations: [issue_receipt]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: ФФД 1.05
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/26773
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Тег 1212 / payment_object для ФФД 1.05 АТОЛ Онлайн
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Не копируйте на ФФД 1.05 перечень признаков ФФД 1.2; для спорных значений и налоговых случаев привлекайте специалиста.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

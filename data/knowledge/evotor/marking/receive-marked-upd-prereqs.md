@@ -2,6 +2,9 @@
 document_id: evotor-marked-goods-upd-20261019
 title: 'Эвотор: условия приёмки маркированного товара по УПД'
 category: marking
+service: "Эвотор"
+task_category: marking
+operations: [check_marking_code]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360015465580
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Как подготовиться к приёмке маркированного товара по УПД

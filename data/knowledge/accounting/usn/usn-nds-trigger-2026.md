@@ -2,6 +2,9 @@
 document_id: acc-usn-nds-trigger-2026
 title: 'УСН: что происходит после превышения 20 млн рублей в 2026 году'
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: vat_usn
+operations: [check_vat_rules, determine_vat_start]
 manufacturer: ''
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
 source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Превышение лимита 20 млн рублей в 2026 году

@@ -2,6 +2,9 @@
 document_id: platformaofd-fns-registration
 title: "Платформа ОФД: контроль этапов регистрации ККТ в ФНС"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [check_registration]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/registraciya-kkt-v-fns/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Регистрация ККТ в ФНС через кабинет ОФД

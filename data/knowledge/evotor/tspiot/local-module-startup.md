@@ -2,6 +2,9 @@
 document_id: evotor-tspiot-localmodule-20261019
 title: 'Эвотор: локальный модуль Честного ЗНАКа не запускается'
 category: tspiot
+service: "Эвотор"
+task_category: tspiot
+operations: [diagnose_tspiot]
 manufacturer: Эвотор
 model: ''
 version: ''
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/6a713998-a0af-4b0d-9373-20a539f7f6
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Локальный модуль «Честный ЗНАК» завис на запуске

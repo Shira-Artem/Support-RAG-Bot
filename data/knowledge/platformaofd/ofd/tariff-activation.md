@@ -2,6 +2,9 @@
 document_id: platformaofd-tariff-activation
 title: "Платформа ОФД: покупка и активация тарифа ККТ"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [activate_tariff]
 manufacturer:
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/aktivacija-kkt-i-popolnenie-bala
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Активация тарифа Платформы ОФД

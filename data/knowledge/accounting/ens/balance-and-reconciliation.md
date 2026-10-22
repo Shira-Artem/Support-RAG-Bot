@@ -2,6 +2,9 @@
 document_id: batch-20261013-ens-balance-and-reconciliation
 title: Как проверить сальдо ЕНС и получить справку ФНС
 category: accounting
+service: "Налоги и бухгалтерский учёт"
+task_category: ens
+operations: [check_ens]
 manufacturer: null
 model: null
 version: null
@@ -10,7 +13,9 @@ source_type: fns_guidance
 published_at: null
 collected_at: '2026-10-13'
 verified_at: null
+source_checked_at: 2026-10-22
 status: draft
+review_note: "Для налогового вывода требуется сверить конкретное правило и применимость с актуальным первоисточником ФНС/НК РФ."
 ---
 
 # Как проверить сальдо ЕНС и получить справку ФНС

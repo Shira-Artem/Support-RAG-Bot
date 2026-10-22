@@ -2,6 +2,9 @@
 document_id: atol-online-11247-shop-without-url
 title: Что писать вместо URL, если у бизнеса нет интернет-магазина
 category: atol_online
+service: "АТОЛ Онлайн"
+task_category: service_connection
+operations: [connect_cash_register, configure_shop_address]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
@@ -9,8 +12,9 @@ source_url: https://help.atol.online/article/11247
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Что писать вместо URL, если у бизнеса нет интернет-магазина
@@ -24,4 +28,4 @@ status: draft
 ## Важное ограничение / передача специалисту
 Нельзя подставлять случайные адреса: проверьте соответствие сведениям ФНС и текущему интерфейсу. В разных статьях сервиса примеры формулируются по-разному.
 
-> Черновик для тестирования RAG. Перед публикацией сверить с действующим регламентом и профильным специалистом. Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.
+> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.

@@ -2,6 +2,9 @@
 document_id: evotor-7-3-ofd-connection-360014099534
 title: "Эвотор 7.3: диагностика отсутствия связи с ОФД"
 category: ofd
+service: "Эвотор"
+task_category: receipt_transmission
+operations: [check_transmission]
 manufacturer: Эвотор
 model: Эвотор 7.3
 version:
@@ -9,8 +12,9 @@ source_url: https://support.evotor.ru/article/360014099534
 source_type: vendor_support_article
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Эвотор 7.3 не отправляет чеки в ОФД

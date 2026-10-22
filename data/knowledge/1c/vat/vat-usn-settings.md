@@ -2,6 +2,10 @@
 document_id: batch-20261013-vat-vat-usn-settings
 title: Настройка НДС на УСН в 1С:Бухгалтерии в 2026 году
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: vat_accounting
+operations: [configure_vat_accounting]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
@@ -9,8 +13,9 @@ source_url: https://buh.ru/articles/nds-na-usn-v-2026-godu-voprosakh-i-otvetakh.
 source_type: vendor_article
 published_at: '2026-01-20'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Настройка НДС на УСН в 1С:Бухгалтерии в 2026 году
@@ -27,5 +32,3 @@ status: draft
 
 ## Важно
 Нельзя выбирать ставку или месяц перехода по одному вопросу клиента; они зависят от доходов, иных операций и правил НК РФ. Перед изменением настроек — согласование бухгалтера.
-
-> **Статус:** черновик. Документ не проверен профильным специалистом. Не давать клиенту индивидуальные налоговые или рискованные технические указания без проверки.

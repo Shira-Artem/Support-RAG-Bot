@@ -2,6 +2,9 @@
 document_id: platformaofd-atol-transmission-checks
 title: "АТОЛ: проверка передачи документов в Платформу ОФД"
 category: ofd
+service: "Платформа ОФД"
+task_category: ofd_connection
+operations: [check_transmission]
 manufacturer: АТОЛ
 model:
 version:
@@ -9,8 +12,9 @@ source_url: https://platformaofd.ru/baza-znaniy/nastrojka-kkt-atol/
 source_type: ofd_knowledge_base
 published_at:
 collected_at: 2026-10-12
-verified_at:
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # ККТ АТОЛ не передаёт документы в Платформу ОФД

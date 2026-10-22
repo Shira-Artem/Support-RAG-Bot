@@ -2,15 +2,19 @@
 document_id: aqsi-online-ofd-taxcom-account
 title: 'aQsi Online: подключение к ОФД Такском'
 category: ofd
-manufacturer: aQsi Online
+service: "aQsi Online"
+task_category: ofd_connection
+operations: [check_transmission]
+manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''
 source_url: https://aqsi.online/instructions/ofd/kak-zaregistrirovatsya-v-lichnom-kabinete-ofd-takskom
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
-verified_at: ''
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # aQsi Online: подключение к ОФД Такском

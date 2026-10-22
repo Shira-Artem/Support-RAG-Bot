@@ -2,6 +2,10 @@
 document_id: batch-20261013-vat-invoice-forms-april
 title: Новые формы счёта-фактуры и книг НДС с апреля 2026 в 1С
 category: 1c
+service: "1С:Бухгалтерия 8"
+software: "1С:Бухгалтерия 8"
+task_category: vat_accounting
+operations: [configure_vat_accounting]
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.194
@@ -9,8 +13,9 @@ source_url: https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-scheta-faktury-k
 source_type: vendor_article
 published_at: '2026-03-18'
 collected_at: '2026-10-13'
-verified_at: null
-status: draft
+verified_at: 2026-10-22
+source_checked_at: 2026-10-22
+status: approved
 ---
 
 # Новые формы счёта-фактуры и книг НДС с апреля 2026 в 1С
@@ -29,5 +34,3 @@ status: draft
 
 ## Эскалация
 Перед перепечаткой и исправлением уже переданных документов нужен бухгалтер.
-
-> **Статус:** черновик. Уточнять применимость к релизу и процессам клиента.
