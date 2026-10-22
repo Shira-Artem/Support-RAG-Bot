@@ -1,0 +1,52 @@
+[
+  {
+    "path": "aqsi_online/account/add-user.md",
+    "document_id": "aqsi-online-account-add-user",
+    "proposed_status": "draft",
+    "source_url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-22",
+    "evidence_coverage": {
+      "add_employee": "full",
+      "assign_role": "partial"
+    },
+    "procedure_service": null
+  },
+  {
+    "path": "aqsi_online/account/edit-user.md",
+    "document_id": "aqsi-online-account-edit-user",
+    "proposed_status": "draft",
+    "source_url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-22",
+    "evidence_coverage": {
+      "edit_user": "partial",
+      "change_permissions": "partial"
+    },
+    "procedure_service": null
+  },
+  {
+    "path": "aqsi_online/account/create-role.md",
+    "document_id": "aqsi-online-account-create-role",
+    "proposed_status": "draft",
+    "source_url": "https://aqsi.online/instructions/account/kak-sozdat-novuyu-rol",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-22",
+    "evidence_coverage": {
+      "create_role": "partial",
+      "configure_role": "partial",
+      "assign_role": "partial"
+    },
+    "procedure_service": null
+  },
+  {
+    "path": "atol_online/ofd/activate-first-ofd.md",
+    "document_id": "atol-online-23349-activate-first-ofd",
+    "proposed_status": "draft",
+    "source_url": "https://help.atol.online/article/23349",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-22",
+    "evidence_coverage": {},
+    "procedure_service": "Первый ОФД"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "dense_retrieval": true,
+  "llm_calls": 0,
+  "method": "Client-only state replay; no generated assistant turns. sufficient_evidence is the existing pipeline flag, not a human verdict.",
+  "current_collection": "knowledge_demo",
+  "staging_collection": "knowledge_sprint_v1_20261022_quality_gate",
+  "current_payload_hash_before": "377cd65951920917153040e7687a66f057ec68ada6d5e6b03fccec919596df37",
+  "current_payload_hash_after": "377cd65951920917153040e7687a66f057ec68ada6d5e6b03fccec919596df37",
+  "current_documents": 264,
+  "current_chunks": 928,
+  "staging_chunks": 927,
+  "staging_documents": 269,
+  "overlay_stats": {
+    "indexed": 4,
+    "unchanged": 0,
+    "removed": 0
+  },
+  "clone_collection": "knowledge_sprint_v1_20261021_final",
+  "clone_payload_hash": "c9ef8004bd67702d3f3366adc023f0ffe22c230aef29c5213ce96078790b2f75",
+  "baseline_report": "docs\\knowledge-sprint-v1\\retrieval.json"
+}

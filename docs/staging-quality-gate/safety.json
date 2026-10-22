@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-10-22",
+  "current_and_original_staging_identical": true,
+  "sqlite_files_byte_identical": true,
+  "collections": {
+    "knowledge_demo": {
+      "points": 928,
+      "documents": 264,
+      "payload_hash": "377cd65951920917153040e7687a66f057ec68ada6d5e6b03fccec919596df37",
+      "vectors_hash": "52f1ddf39228886142a309b0a09688f22af45d6d908269673e4e4b384fb4908e"
+    },
+    "knowledge_sprint_v1_20261021_final": {
+      "points": 927,
+      "documents": 269,
+      "payload_hash": "c9ef8004bd67702d3f3366adc023f0ffe22c230aef29c5213ce96078790b2f75",
+      "vectors_hash": "e04e7e04a5e15f3f1ec83f5fc0710b5566f41b2b21e577da96a826fbac4aae8e"
+    }
+  },
+  "sqlite_files_checked": [
+    "data\\conversations.sqlite3",
+    "data\\evaluations\\expert_reviews.sqlite3"
+  ]
+}

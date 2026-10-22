@@ -11,6 +11,11 @@ published_at: null
 collected_at: "2026-10-19"
 verified_at: null
 status: "draft"
+service: "АТОЛ Онлайн"
+procedure_service: "Первый ОФД"
+task_category: "equipment_setup"
+operations: [activate_tariff]
+source_checked_at: '2026-10-22'
 ---
 
 # Активация кассы АТОЛ Онлайн в Первом ОФД

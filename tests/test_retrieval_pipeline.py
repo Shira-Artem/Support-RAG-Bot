@@ -42,5 +42,8 @@ def test_employee_document_supports_role_and_existing_user_operations():
     pipeline = RetrievalPipeline(source)
     state = _state("Где изменить права уже созданному сотруднику в aQsi Online?")
     result = pipeline.search(state, "сервис: aQsi Online — изменение прав существующего сотрудника")
-    assert result.sufficient
+    assert not result.sufficient
+    assert result.evidence_status == "partial"
+    assert result.supported_steps
+    assert "permission_change_workflow_unverified" in result.missing_evidence
     assert result.documents[0].metadata["status"] == "draft"

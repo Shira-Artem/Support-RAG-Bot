@@ -1,0 +1,549 @@
+[
+  {
+    "document_id": "aqsi-online-account-add-user",
+    "path": "aqsi_online/account/add-user.md",
+    "source_url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Добавлен законченный маршрут создания и сохранение формы; редактирование вынесено отдельно"
+    ],
+    "preserved_facts": [
+      "Имя, email и предварительно созданная роль"
+    ],
+    "lost_in_old_card": [
+      "Кнопка добавления, сохранение, необязательное изображение"
+    ],
+    "unsupported_facts": [
+      "Обязательное название роли «администратор» источник не устанавливает; исключено"
+    ],
+    "remaining_gaps": [
+      "Какое полномочие разрешает создавать пользователей в актуальном ЛК"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "aQsi Online; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Пользователи",
+      "Добавить пользователя",
+      "Роли",
+      "СОХРАНИТЬ"
+    ],
+    "evidence": [
+      "aqsi-add"
+    ],
+    "split": "Редактирование существующего пользователя → aqsi-online-account-edit-user"
+  },
+  {
+    "document_id": "aqsi-online-account-edit-user",
+    "path": "aqsi_online/account/edit-user.md",
+    "source_url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "created",
+    "changed_facts": [
+      "Создана отдельная карточка входа в редактирование"
+    ],
+    "preserved_facts": [
+      "Действие через меню существующей записи из старой add-user"
+    ],
+    "lost_in_old_card": [
+      "Троеточие было сокращено до «меню»"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Поля редактирования, смена роли и сохранение у существующего пользователя"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Существующая запись aQsi Online; изменение записи не равно подтверждённой смене прав"
+    ],
+    "confirmed_ui": [
+      "Пользователи",
+      "Меню с троеточием"
+    ],
+    "evidence": [
+      "aqsi-add"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "aqsi-online-account-create-role",
+    "path": "aqsi_online/account/create-role.md",
+    "source_url": "https://aqsi.online/instructions/account/kak-sozdat-novuyu-rol",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "created",
+    "changed_facts": [
+      "Добавлено знание о создании роли, режимах доступа и назначении пользователям"
+    ],
+    "preserved_facts": [],
+    "lost_in_old_card": [
+      "Карточки создания роли ранее не было"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Вложенные полномочия, доступ к конкретным отчётам и актуальная матрица ролей"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "aQsi Online; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Роли",
+      "Название роли",
+      "Разрешения (рис.30)",
+      "Просмотр",
+      "Редактирование",
+      "Пользователи (рис.31)"
+    ],
+    "evidence": [
+      "aqsi-role",
+      "aqsi-image-30",
+      "aqsi-image-31"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "aqsi-online-account-my-cash-registers",
+    "path": "aqsi_online/account/my-cash-registers.md",
+    "source_url": "https://aqsi.online/instructions/account/moi-kassy",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Добавлены колонки ККТ/ФН, количества чеков, статуса, даты выдачи по официальному рисунку 27; task_category=cash_list"
+    ],
+    "preserved_facts": [
+      "Список касс и сведения об их работе"
+    ],
+    "lost_in_old_card": [
+      "Колонки и кнопка Фильтр на рисунке 27"
+    ],
+    "unsupported_facts": [
+      "Назначение раздела для сверки перед регистрацией не подтверждено инструкцией"
+    ],
+    "remaining_gaps": [
+      "Содержимое фильтра и права конкретной роли"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "aQsi Online; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Мои кассы",
+      "Номер ККТ",
+      "ФН",
+      "Кол-во чеков",
+      "Статус",
+      "Дата выдачи",
+      "Фильтр"
+    ],
+    "evidence": [
+      "aqsi-cash",
+      "aqsi-image-27"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "aqsi-online-account-monitoring",
+    "path": "aqsi_online/account/monitoring.md",
+    "source_url": "https://aqsi.online/instructions/account/monitoring",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Явно отделён просмотр мониторинга от управления доступом"
+    ],
+    "preserved_facts": [
+      "Статистика продаж, аналитика и состояние ФН"
+    ],
+    "lost_in_old_card": [],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Фильтры, выгрузки и разрешения на отчёты"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "aQsi Online; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Мониторинг"
+    ],
+    "evidence": [
+      "aqsi-monitoring"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "aqsi-online-account-settings",
+    "path": "aqsi_online/account/settings.md",
+    "source_url": "https://aqsi.online/instructions/account/nastrojki",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Добавлен идентификатор из пакета и точные вкладки; явно отделено от прав сотрудников"
+    ],
+    "preserved_facts": [
+      "Контакты, тип кассы, доступ к чекам, ежедневный отчёт, смена пароля"
+    ],
+    "lost_in_old_card": [
+      "Фамилия, телефон, идентификатор из пакета, названия вкладок"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Детали идентификатора и влияние его отключения; права на настройку рассылки"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "aQsi Online; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Общее",
+      "Смена пароля"
+    ],
+    "evidence": [
+      "aqsi-settings"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "platformaofd-lkk-cash-monitoring",
+    "path": "platformaofd/ofd/lkk-cash-monitoring.md",
+    "source_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/",
+    "source_type": "ofd_knowledge_base",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Восстановлен маршрут и расширено описание фильтров; отмечено противоречие источника"
+    ],
+    "preserved_facts": [
+      "Оплата и признаки ресурса ФН"
+    ],
+    "lost_in_old_card": [
+      "Маршрут Кассы → Мониторинг, набор предустановленных фильтров"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Противоречие 72/48 часов и актуальность исторических индикаторов"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Платформа ОФД; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Кассы",
+      "Мониторинг"
+    ],
+    "evidence": [
+      "platform-cash"
+    ],
+    "split": "Поиск кассы → platformaofd-lkk-cash-search; подключение и регистрация сюда не включены"
+  },
+  {
+    "document_id": "platformaofd-lkk-cash-search",
+    "path": "platformaofd/ofd/lkk-cash-search.md",
+    "source_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/",
+    "source_type": "ofd_knowledge_base",
+    "source_checked_at": "2026-10-21",
+    "action": "created",
+    "changed_facts": [
+      "Добавлен поиск кассы по тексту и официальному рисунку"
+    ],
+    "preserved_facts": [],
+    "lost_in_old_card": [
+      "Отдельная операция поиска и поля отсутствовали"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Наличие прямого фильтра ФН в актуальном поиске чеков"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Только ранее добавленная ККТ; поиск ККТ не равен поиску чека"
+    ],
+    "confirmed_ui": [
+      "Кассы",
+      "Поиск кассы",
+      "Найти"
+    ],
+    "evidence": [
+      "platform-cash",
+      "platform-cash-search-image"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "platformaofd-lkk-receipt-search",
+    "path": "platformaofd/ofd/lkk-receipt-search.md",
+    "source_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/",
+    "source_type": "ofd_knowledge_base",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Восстановлены дополнительные фильтры и условия; статусы вынесены отдельно"
+    ],
+    "preserved_facts": [
+      "Период, тип документа, магазин, касса, ФД и ФП"
+    ],
+    "lost_in_old_card": [
+      "Смена, сумма, кассир, тип оплаты, признак расчёта, теги и условия маркировки"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Прямой фильтр ФН в актуальном интерфейсе"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Платформа ОФД; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Чеки",
+      "Поиск чеков",
+      "Поиск по ФД",
+      "Поиск по ФП",
+      "Содержание тега"
+    ],
+    "evidence": [
+      "platform-receipt"
+    ],
+    "split": "Статусы → platformaofd-lkk-receipt-fns-status"
+  },
+  {
+    "document_id": "platformaofd-lkk-receipt-fns-status",
+    "path": "platformaofd/ofd/lkk-receipt-fns-status.md",
+    "source_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/",
+    "source_type": "ofd_knowledge_base",
+    "source_checked_at": "2026-10-21",
+    "action": "created",
+    "changed_facts": [
+      "Отдельная карточка значений статуса и ограничения карантина"
+    ],
+    "preserved_facts": [
+      "Четыре результата приёма из старой карточки"
+    ],
+    "lost_in_old_card": [
+      "Ограничение проверки в ФНС и подсказка иконки"
+    ],
+    "unsupported_facts": [
+      "В старой карточке названия статусов были пересказаны, а не точными UI-метками"
+    ],
+    "remaining_gaps": [
+      "Действия по конкретному коду ФЛК"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Платформа ОФД; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Статус чека ФНС",
+      "Подсказка иконки"
+    ],
+    "evidence": [
+      "platform-receipt"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "platformaofd-fns-indicators",
+    "path": "platformaofd/ofd/fns-indicators.md",
+    "source_url": "https://platformaofd.ru/baza-znaniy/kn-razdel-fns/",
+    "source_type": "ofd_knowledge_base",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Добавлены переходы к детализации и отчёту, условие выхода из карантина"
+    ],
+    "preserved_facts": [
+      "60 дней, исключение автономного режима, запрет, типы ошибок"
+    ],
+    "lost_in_old_card": [
+      "Детализация и переход к отчёту"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Разбор конкретных ошибок ФЛК"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Платформа ОФД; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "ФНС",
+      "Нет чеков более 60 дней",
+      "Запрет от ФНС",
+      "Чеки с ошибками"
+    ],
+    "evidence": [
+      "platform-fns"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "atol-online-14749-incoming-documents",
+    "path": "atol_online/edo/incoming-documents.md",
+    "source_url": "https://help.atol.online/article/14749",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Точное подменю приглашений; явно отделено от доступа сотрудников ЛК"
+    ],
+    "preserved_facts": [
+      "Приглашение в Диадоке и роуминг других операторов"
+    ],
+    "lost_in_old_card": [
+      "Приглашают вас и идентификатор сервиса для роуминга"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [],
+    "knowledge_gap": false,
+    "proposed_status": "draft",
+    "applicability": [
+      "АТОЛ Онлайн; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Диадок → Контрагенты → Приглашают вас"
+    ],
+    "evidence": [
+      "atol-edo"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "atol-online-18126-monitoring",
+    "path": "atol_online/fn/monitoring.md",
+    "source_url": "https://help.atol.online/article/18126",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Точное название виджета и критерии обращения"
+    ],
+    "preserved_facts": [
+      "Маршрут мониторинга, срок, заполненность и детали кассы"
+    ],
+    "lost_in_old_card": [
+      "Название виджета, 90% и два месяца"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Права ролей на мониторинг"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "АТОЛ Онлайн; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Мониторинг касс",
+      "Прогнозируемое время эксплуатации ФН"
+    ],
+    "evidence": [
+      "atol-monitoring"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "atol-online-11069-fns-after-fn-swap",
+    "path": "atol_online/fn/fns-after-fn-swap.md",
+    "source_url": "https://help.atol.online/article/11069",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "updated",
+    "changed_facts": [
+      "Возвращены условие оплаты ОФД и маршрут к отчётам"
+    ],
+    "preserved_facts": [
+      "Автоматический сценарий, сверка ФН и состояния ОФД, ручное участие при ошибке"
+    ],
+    "lost_in_old_card": [
+      "Подключённый и оплаченный тариф ОФД, Отчеты по кассам"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Права сотрудников на просмотр отчётов"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "АТОЛ Онлайн; личный кабинет клиента"
+    ],
+    "confirmed_ui": [
+      "Отчеты по кассам"
+    ],
+    "evidence": [
+      "atol-fn-swap"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "atol-online-account-cash-reports",
+    "path": "atol_online/account/cash-reports.md",
+    "source_url": "https://help.atol.online/article/11069",
+    "source_type": "vendor_support_article",
+    "source_checked_at": "2026-10-21",
+    "action": "created",
+    "changed_facts": [
+      "Отделено законченное знание о просмотре отчётов после замены ФН"
+    ],
+    "preserved_facts": [],
+    "lost_in_old_card": [
+      "Маршрут к отчётам отсутствовал в старом конспекте"
+    ],
+    "unsupported_facts": [],
+    "remaining_gaps": [
+      "Роли и права на отчёты; финансовые отчёты"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "applicability": [
+      "Отчёты после замены ФН; не общая инструкция по аналитике"
+    ],
+    "confirmed_ui": [
+      "Отчеты по кассам"
+    ],
+    "evidence": [
+      "atol-fn-swap"
+    ],
+    "split": null
+  },
+  {
+    "document_id": "knowledge-gap-atol-online-access",
+    "source_url": "https://help.atol.online/category/3716",
+    "source_type": "vendor_help_catalog",
+    "source_checked_at": "2026-10-21",
+    "action": "gap_only_no_card",
+    "changed_facts": [],
+    "unsupported_facts": [
+      "Создание сотрудников, роли и изменение прав в ЛК не подтверждены найденными публичными инструкциями"
+    ],
+    "remaining_gaps": [
+      "Попросить специалиста показать актуальные Пользователи/Сотрудники/Роли, если такие разделы существуют; поля, кнопки, изменение прав и режим просмотра касс/отчётов"
+    ],
+    "knowledge_gap": true,
+    "proposed_status": "draft",
+    "evidence": [
+      "atol-home",
+      "atol-service-category"
+    ],
+    "search_scope": [
+      "Публичный каталог help.atol.online и раздел Работа с сервисом и кассой; site search по пользователям, сотрудникам, ролям, управлению пользователями"
+    ],
+    "conclusion": "Публичное подтверждение не найдено; это не доказательство отсутствия функции"
+  }
+]

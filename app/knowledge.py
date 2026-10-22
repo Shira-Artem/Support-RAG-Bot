@@ -1,7 +1,7 @@
 """Validated knowledge documents and section-aware ingestion."""
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import date
 from hashlib import sha256
 from pathlib import Path
@@ -41,6 +41,13 @@ class Document:
     content_hash: str
     source: str
     pages: list[tuple[int | None, str]]
+    service: str | None = None
+    task_category: str | None = None
+    operations: list[str] = field(default_factory=list)
+    search_fields: list[str] = field(default_factory=list)
+    source_checked_at: str | None = None
+    procedure_service: str | None = None
+    evidence_coverage: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -109,7 +116,7 @@ class DocumentLoader:
             raise ValueError(f"Invalid status in {rel}: {status}")
         if status == "approved" and not metadata.get("verified_at"):
             raise ValueError(f"Approved document requires verified_at: {rel}")
-        for key in ("published_at", "verified_at", "collected_at"):
+        for key in ("published_at", "verified_at", "collected_at", "source_checked_at"):
             if metadata.get(key):
                 date.fromisoformat(str(metadata[key]))
         source_url = metadata.get("source_url")
@@ -120,6 +127,28 @@ class DocumentLoader:
         def optional_text(key: str) -> str | None:
             value = metadata.get(key)
             return str(value).strip() if value is not None and str(value).strip() else None
+        for key in ("service", "task_category", "procedure_service"):
+            if metadata.get(key) is not None and not isinstance(metadata[key], str):
+                raise ValueError(f"{key} must be text: {rel}")
+        coverage = metadata.get("evidence_coverage")
+        if coverage is None:
+            coverage = {}
+        if not isinstance(coverage, dict) or any(
+            not isinstance(key, str) or not key.strip() or value not in ("full", "partial")
+            for key, value in coverage.items()
+        ):
+            raise ValueError(f"evidence_coverage must map operations to full/partial: {rel}")
+
+        def text_list(key: str) -> list[str]:
+            value = metadata.get(key)
+            if value is None:
+                return []
+            if isinstance(value, str):
+                value = [value]
+            if not isinstance(value, list) or any(not isinstance(item, str) or not item.strip() for item in value):
+                raise ValueError(f"{key} must be a list of nonempty strings: {rel}")
+            return list(dict.fromkeys(item.strip() for item in value))
+
         return Document(
             document_id=document_id, title=title, category=str(metadata.get("category", "uncategorized")),
             manufacturer=optional_text("manufacturer"), model=optional_text("model"),
@@ -130,6 +159,10 @@ class DocumentLoader:
             collected_at=str(metadata["collected_at"]) if metadata.get("collected_at") else None,
             status=status, content_hash=sha256(body.encode("utf-8")).hexdigest(),
             source=rel, pages=pages,
+            service=optional_text("service"), task_category=optional_text("task_category"),
+            operations=text_list("operations"), search_fields=text_list("search_fields"),
+            source_checked_at=str(metadata["source_checked_at"]) if metadata.get("source_checked_at") else None,
+            procedure_service=optional_text("procedure_service"), evidence_coverage=coverage,
         )
 
     def load_all(self) -> list[Document]:

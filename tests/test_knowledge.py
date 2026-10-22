@@ -83,3 +83,46 @@ def test_status_validation(tmp_path: Path):
     path.write_text("---\nstatus: approved\n---\nТекст", encoding="utf-8")
     with pytest.raises(ValueError, match="requires verified_at"):
         DocumentLoader(tmp_path).load(path)
+
+
+def test_normalized_metadata_survives_sidecar_and_qdrant_update(tmp_path: Path):
+    from qdrant_client import QdrantClient
+    from app.vector_store import QdrantStore
+
+    class Embedding:
+        dimension = 2
+
+        def embed(self, texts):
+            return [[1.0, 0.0] for _ in texts]
+
+    path = tmp_path / "guide.md"
+    path.write_text("---\nservice: Cloud service\ntask_category: access\n"
+                    "operations: [assign_role, assign_role]\nsearch_fields: email\n"
+                    "source_checked_at: 2026-10-21\n---\n# User guide\n\nChoose a role.", encoding="utf-8")
+    loader = DocumentLoader(tmp_path)
+    before = loader.load(path)
+    store = QdrantStore(QdrantClient(":memory:"), Embedding())
+    store.index([before])
+    original_ids = {p.id for p in store.all_points()}
+    # A metadata-only edit must refresh payload despite the unchanged body hash.
+    path.with_name(path.name + ".meta.yaml").write_text(
+        "operations: [change_permissions]\nsearch_fields: [email, user_name]\n", encoding="utf-8")
+    after = loader.load(path)
+    assert before.content_hash == after.content_hash
+    assert store.index([after])["indexed"] == 1
+    assert {p.id for p in store.all_points()} == original_ids
+    payload = store.all_points()[0].payload
+    assert payload["service"] == "Cloud service" and payload["task_category"] == "access"
+    assert payload["operations"] == ["change_permissions"]
+    assert payload["search_fields"] == ["email", "user_name"]
+    assert payload["source_checked_at"] == "2026-10-21" and payload["status"] == "draft"
+    assert store.index([after])["unchanged"] == 1
+
+
+@pytest.mark.parametrize("metadata", ["operations: [1]", "search_fields: {bad: value}",
+                                     "service: [bad]", "source_checked_at: yesterday"])
+def test_normalized_metadata_rejects_malformed_values(tmp_path: Path, metadata):
+    path = tmp_path / "bad.md"
+    path.write_text(f"---\n{metadata}\n---\nUseful text", encoding="utf-8")
+    with pytest.raises(ValueError):
+        DocumentLoader(tmp_path).load(path)

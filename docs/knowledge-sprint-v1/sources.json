@@ -1,0 +1,161 @@
+[
+  {
+    "key": "aqsi-add",
+    "url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "final_url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "http_status": 200,
+    "sha256": "1d7ea7e564162f86803c94c8286ae4a05997fff565aa0def2737ccd9046487a9",
+    "source_checked_at": "2026-10-21",
+    "declared_encoding": "utf-8",
+    "decoded_encoding": "utf-8",
+    "decoding_reason": "Strict UTF-8 verified; earlier console mojibake was output encoding, not website encoding"
+  },
+  {
+    "key": "aqsi-role",
+    "url": "https://aqsi.online/instructions/account/kak-sozdat-novuyu-rol",
+    "final_url": "https://aqsi.online/instructions/account/kak-sozdat-novuyu-rol",
+    "http_status": 200,
+    "sha256": "8139fade1d259abe3877007f921d3256b2852ccb5eca817248f2d449ae3b7f64",
+    "source_checked_at": "2026-10-21",
+    "declared_encoding": "utf-8",
+    "decoded_encoding": "utf-8",
+    "decoding_reason": "Strict UTF-8 verified; earlier console mojibake was output encoding, not website encoding"
+  },
+  {
+    "key": "aqsi-cash",
+    "url": "https://aqsi.online/instructions/account/moi-kassy",
+    "final_url": "https://aqsi.online/instructions/account/moi-kassy",
+    "http_status": 200,
+    "sha256": "e0b3982af6489844e11a6f694ba93ba3ed7919714827b1b6859745e3e89c54ab",
+    "source_checked_at": "2026-10-21",
+    "declared_encoding": "utf-8",
+    "decoded_encoding": "utf-8",
+    "decoding_reason": "Strict UTF-8 verified; earlier console mojibake was output encoding, not website encoding"
+  },
+  {
+    "key": "aqsi-monitoring",
+    "url": "https://aqsi.online/instructions/account/monitoring",
+    "final_url": "https://aqsi.online/instructions/account/monitoring",
+    "http_status": 200,
+    "sha256": "e9c4ef81c8dab0b82ab6a6948c8c93ab7af0c9efe9d232cb82e86274c3afae29",
+    "source_checked_at": "2026-10-21",
+    "declared_encoding": "utf-8",
+    "decoded_encoding": "utf-8",
+    "decoding_reason": "Strict UTF-8 verified; earlier console mojibake was output encoding, not website encoding"
+  },
+  {
+    "key": "aqsi-settings",
+    "url": "https://aqsi.online/instructions/account/nastrojki",
+    "final_url": "https://aqsi.online/instructions/account/nastrojki",
+    "http_status": 200,
+    "sha256": "985d39caa2203988df996431cc687ac7bd0e48a1b78f6276ceea5dd6c8ce1252",
+    "source_checked_at": "2026-10-21",
+    "declared_encoding": "utf-8",
+    "decoded_encoding": "utf-8",
+    "decoding_reason": "Strict UTF-8 verified; earlier console mojibake was output encoding, not website encoding"
+  },
+  {
+    "key": "platform-cash",
+    "url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/",
+    "final_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/",
+    "http_status": 200,
+    "sha256": "266fe6c8ad5a3aff94fdcddbc6643410ff3d3eb4e760ed5bde6dea43b0e10928",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "platform-receipt",
+    "url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/",
+    "final_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/",
+    "http_status": 200,
+    "sha256": "bcf59bae1ba1c6b1cfbfbc5accda145a8dd4094d79b66971d9d18af0eed404f7",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "platform-fns",
+    "url": "https://platformaofd.ru/baza-znaniy/kn-razdel-fns/",
+    "final_url": "https://platformaofd.ru/baza-znaniy/kn-razdel-fns/",
+    "http_status": 200,
+    "sha256": "3b264bb1b416485b66d0a5ddfbd424891eb87be2c0736e5d1ad8e1cc1fe0829f",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "atol-home",
+    "url": "https://help.atol.online/",
+    "final_url": "https://help.atol.online/",
+    "http_status": 200,
+    "sha256": "9c5eb3947ec53b8bdab0fe47ea372aef1bd098aa0a2bd4e4d0863d69d0f75713",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "atol-edo",
+    "url": "https://help.atol.online/article/14749",
+    "final_url": "https://help.atol.online/article/14749",
+    "http_status": 200,
+    "sha256": "7b6e077fc1969c87eb7f5b120a362430301234eb9bc0cc59273e03eb26736be3",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "groq-search",
+    "url": "https://console.groq.com/docs/tool-use/built-in-tools/browser-search",
+    "final_url": "https://console.groq.com/docs/tool-use/built-in-tools/browser-search",
+    "http_status": 200,
+    "sha256": "e4598a4ea16fd2f4326c69cd38db7d9e1eec97d24da5d7065a7df571d8a03414",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "aqsi-image-30",
+    "url": "https://aqsi.online/images/uploads/30.jpg",
+    "http_status": 200,
+    "sha256": "25e8134b0e7e5374f579fc4736775d2f91b53e6a18f0765126ed8eb1314b2212",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "aqsi-image-31",
+    "url": "https://aqsi.online/images/uploads/31.jpg",
+    "http_status": 200,
+    "sha256": "170f7bc42e329a7cc0d2c89847c2e5e977f1fb54768b06e9b33415ef5f324296",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "aqsi-image-29",
+    "url": "https://aqsi.online/images/uploads/29.jpg",
+    "http_status": 200,
+    "sha256": "02948abdc846dc843e6e18b71ded88e4a671c05c94b66a67473d5222bbf158bf",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "atol-monitoring",
+    "url": "https://help.atol.online/article/18126",
+    "http_status": 200,
+    "sha256": "bd5eb4039627bc39ec395e5453c585fe98e9cf861602fa2b8b0534478ab363bb",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "atol-fn-swap",
+    "url": "https://help.atol.online/article/11069",
+    "http_status": 200,
+    "sha256": "85f257ad814b3a630b3382d71f4624fb13a1f8e0f947ff64e5016ab2800c454e",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "atol-service-category",
+    "url": "https://help.atol.online/category/3716",
+    "http_status": 200,
+    "sha256": "d023792465d60b700b2770be7b118c7d11f266bbba9ec2a468a205b52a749578",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "platform-cash-search-image",
+    "url": "https://platformaofd.ru/wp-content/uploads/2023/01/razdel-kassy-0016.png",
+    "http_status": 200,
+    "sha256": "b808509e55305e71b26d1985029f69b4c852843afd0b9ef83256fd2bff01f4f7",
+    "source_checked_at": "2026-10-21"
+  },
+  {
+    "key": "aqsi-image-27",
+    "url": "https://aqsi.online/images/uploads/27.jpg",
+    "sha256": "248176e5061fbeead327a657d4418a7e127a5667a2c50db7f3db95e6e7ae3584",
+    "http_status": 200,
+    "source_checked_at": "2026-10-21"
+  }
+]

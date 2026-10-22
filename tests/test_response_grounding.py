@@ -14,8 +14,10 @@ from app.rag import SearchResult
 from test_expert import settings
 
 
-CARD = Path(__file__).resolve().parents[1] / 'data/knowledge/aqsi_online/account/add-user.md'
-PROCEDURE = CARD.read_text(encoding='utf-8').split('## Что можно объяснить и проверить\n', 1)[1].split('\n## ', 1)[0].strip()
+# Preserve the observed d720ab3 evidence while the live draft is split/enriched.
+# These regressions deliberately exercise the original, incomplete procedure.
+CARD = Path(__file__).parent / 'fixtures/aqsi-add-user-d720ab3.txt'
+PROCEDURE = CARD.read_text(encoding='utf-8').strip()
 
 
 @pytest.mark.parametrize('question,raw,required,forbidden', [
@@ -28,7 +30,7 @@ PROCEDURE = CARD.read_text(encoding='utf-8').split('## Что можно объ�
      ('Пользователи', 'через меню этой записи'),
      ('Настроить доступ', 'Наблюдатель')),
 ])
-def test_real_card_recovers_supported_actions_without_a_second_call(monkeypatch, tmp_path, question, raw, required, forbidden):
+def test_recorded_card_recovers_supported_actions_without_a_second_call(monkeypatch, tmp_path, question, raw, required, forbidden):
     hit = SearchResult('aqsi_online/account/add-user.md', PROCEDURE, .9,
                        metadata={'category': 'account', 'section': 'Что можно объяснить и проверить'})
     rag = SimpleNamespace(search=lambda *args, **kwargs: [hit], build_context=lambda results: PROCEDURE)

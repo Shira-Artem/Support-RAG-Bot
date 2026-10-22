@@ -1,0 +1,23 @@
+[
+  {
+    "key": "aqsi-user",
+    "url": "https://aqsi.online/instructions/account/kak-sozdat-novogo-polzovatelya",
+    "checked_at": "2026-10-22",
+    "http_status": 200,
+    "sha256": "0560f29c986d90ed9432c380878f73ce98d00e171ac57a519d72235b48d655a6"
+  },
+  {
+    "key": "aqsi-role",
+    "url": "https://aqsi.online/instructions/account/kak-sozdat-novuyu-rol",
+    "checked_at": "2026-10-22",
+    "http_status": 200,
+    "sha256": "f3bf5be8303c87df67fb41057a74d4496ff45ca38f48e29f0d1e41182acbfd5f"
+  },
+  {
+    "key": "atol-ofd",
+    "url": "https://help.atol.online/article/23349",
+    "checked_at": "2026-10-22",
+    "http_status": 200,
+    "sha256": "11ad346e0970da006dae875a7e2c9a9bcf282cb0972bd7e9231e91cf78744113"
+  }
+]

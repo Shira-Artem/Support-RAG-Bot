@@ -1,0 +1,41 @@
+{
+  "head": "d720ab3",
+  "remote_main": "d720ab3ee445a6d4abe87d668ddc4a0a510b5a0b",
+  "collection": "knowledge_demo",
+  "points": 928,
+  "documents": 264,
+  "vector_size": 384,
+  "status": "green",
+  "payload_keys": [
+    "category",
+    "chunk_id",
+    "collected_at",
+    "content_hash",
+    "document_id",
+    "manufacturer",
+    "model",
+    "page",
+    "published_at",
+    "section",
+    "source",
+    "source_type",
+    "source_url",
+    "status",
+    "text",
+    "title",
+    "verified_at",
+    "version"
+  ],
+  "statuses": {
+    "draft": 928
+  },
+  "payload_fingerprint": "377cd65951920917153040e7687a66f057ec68ada6d5e6b03fccec919596df37",
+  "checked_at": "2026-10-21",
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "generation_provider": "groq",
+  "generation_model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "rag_backend": "qdrant",
+  "rag_demo_mode": "1",
+  "distance": "Cosine"
+}

@@ -436,6 +436,32 @@ class AnswerService:
                 model=model, provider=self.settings.llm_provider,
                 rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
 
+        if (retrieval is not None and not retrieval.sufficient
+                and getattr(retrieval, 'evidence_status', None) == 'partial'
+                and retrieval.supported_steps):
+            # Relevant but incomplete documentation is still useful. Render
+            # only the retrieved source statements, without a generation call
+            # that could turn a missing step into a fabricated instruction.
+            gaps = {
+                'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
+                'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
+                'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
+            }
+            confirmed = []
+            previous_section = None
+            for step in retrieval.supported_steps:
+                section = step.get('section')
+                prefix = f"{section}:\n" if section and section != previous_section else ''
+                confirmed.append(prefix + step['text'])
+                previous_section = section
+            limitations = [gaps[gap] for gap in retrieval.missing_evidence if gap in gaps]
+            text = '\n'.join(confirmed) + '\n\n' + ' '.join(limitations)
+            return Answer(text=text, results=results, generation_status='partial', scenario='answer',
+                          scenario_reason='supported_partial_answer', generation_reason='access_evidence_incomplete',
+                          model=model, provider=self.settings.llm_provider, rag_chunks=len(results),
+                          context_chars=len(retrieval.context), duration_ms=round((perf_counter() - started) * 1000),
+                          response_repair={'mode': 'partial_answer', 'evidence': retrieval.supported_steps})
+
         if retrieval is not None and not retrieval.sufficient and state.intent in {
                 'access', 'credentials', 'receipt', 'device', 'fiscal_drive', 'network'}:
             reason = retrieval.insufficiency_reason or 'insufficient_evidence'

@@ -1,0 +1,57 @@
+--- a/data/knowledge/aqsi_online/account/add-user.md
++++ b/data/knowledge/aqsi_online/account/add-user.md
+@@ -17,7 +17,10 @@
+ - add_employee
+ - assign_role
+ search_fields: []
+-source_checked_at: '2026-10-21'
++source_checked_at: '2026-10-22'
++evidence_coverage:
++  add_employee: full
++  assign_role: partial
+ ---
+ 
+ # aQsi Online: создание пользователя
+--- a/data/knowledge/aqsi_online/account/edit-user.md
++++ b/data/knowledge/aqsi_online/account/edit-user.md
+@@ -16,7 +16,10 @@
+ operations:
+ - edit_user
+ search_fields: []
+-source_checked_at: '2026-10-21'
++source_checked_at: '2026-10-22'
++evidence_coverage:
++  edit_user: partial
++  change_permissions: partial
+ ---
+ 
+ # aQsi Online: изменение существующего пользователя
+--- a/data/knowledge/aqsi_online/account/create-role.md
++++ b/data/knowledge/aqsi_online/account/create-role.md
+@@ -18,7 +18,11 @@
+ - configure_role
+ - assign_role
+ search_fields: []
+-source_checked_at: '2026-10-21'
++source_checked_at: '2026-10-22'
++evidence_coverage:
++  create_role: partial
++  configure_role: partial
++  assign_role: partial
+ ---
+ 
+ # aQsi Online: создание роли и доступ к разделам
+--- a/data/knowledge/atol_online/ofd/activate-first-ofd.md
++++ b/data/knowledge/atol_online/ofd/activate-first-ofd.md
+@@ -11,6 +11,11 @@
+ collected_at: "2026-10-19"
+ verified_at: null
+ status: "draft"
++service: "АТОЛ Онлайн"
++procedure_service: "Первый ОФД"
++task_category: "equipment_setup"
++operations: [activate_tariff]
++source_checked_at: '2026-10-22'
+ ---
+ 
+ # Активация кассы АТОЛ Онлайн в Первом ОФД

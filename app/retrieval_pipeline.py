@@ -11,6 +11,7 @@ from typing import Protocol
 
 from app.dialogue_state import DialogueState
 from app.rag import SearchResult
+from app.response_grounding import has_action, has_named_role, normalize, statements
 
 
 class CandidateSource(Protocol):
@@ -46,6 +47,9 @@ class RetrievalResult:
     sufficient: bool
     insufficiency_reason: str | None
     context: str
+    evidence_status: str = "none"
+    missing_evidence: list[str] = field(default_factory=list)
+    supported_steps: list[dict] = field(default_factory=list)
 
     def diagnostics(self) -> dict:
         return {
@@ -56,6 +60,10 @@ class RetrievalResult:
             "sufficient": self.sufficient,
             "insufficiency_reason": self.insufficiency_reason,
             "context": self.context,
+            "evidence_status": self.evidence_status,
+            "missing_evidence": self.missing_evidence,
+            "supported_steps": self.supported_steps,
+            "relevant": bool(self.documents),
         }
 
 
@@ -68,7 +76,7 @@ _TASK_TERMS = {
     "receipt_transmission": ("передача чеков", "передача документов", "отправка чеков", "не отправляются", "не передаются", "ofd transmission"),
     "error_diagnosis": ("код ошибки", "ошибка фн", "ошибка ккт", "диагностика ошибки", "error code"),
     "edo": ("эдо", "электронный документооборот", "приглашени", "контрагент", "диадок"),
-    "equipment_setup": ("подключение", "настройка", "конфигурация", "установка", "configure", "setup"),
+    "equipment_setup": ("подключение", "настройка", "конфигурация", "установка", "активация", "configure", "setup"),
 }
 _TASK_EVIDENCE = {
     "cash_list": ("мониторинг", "отобрать кассы", "список касс"),
@@ -102,7 +110,8 @@ def normalize_metadata(metadata: dict) -> dict:
             service = "Платформа ОФД"
     task_category = raw.get("task_category") or raw.get("operation")
     if not task_category:
-        task_category = _derive_task_category(searchable, category, parts)
+        task_category = _derive_task_category(searchable, category, parts, title)
+    explicit_operations = raw.get("_operations_explicit", bool(raw.get("operations")))
     operations = raw.get("operations") or _derive_operations(searchable, task_category)
     operation = raw.get("operation") or (operations[0] if operations else None)
     return {
@@ -111,16 +120,24 @@ def normalize_metadata(metadata: dict) -> dict:
         "task_category": str(task_category) if task_category else None,
         "operation": str(operation) if operation else None,
         "operations": list(operations),
+        "_operations_explicit": explicit_operations,
         "manufacturer": str(raw.get("manufacturer") or "").strip() or None,
         "model": str(raw.get("model") or "").strip() or None,
         "status": str(raw.get("status") or "unknown"),
     }
 
 
-def _derive_task_category(searchable: str, category: str, parts: list[str]) -> str | None:
+def _derive_task_category(searchable: str, category: str, parts: list[str], title: str = "") -> str | None:
     path = set(parts)
     if "edo" in path or category == "edo":
         return "edo"
+    # An identified error article retains its subject when its diagnostic
+    # explanation mentions transmission. Generic OFD guides do not inherit it.
+    identity = title.casefold().replace("ё", "е")
+    if category in {"fn", "kkt"} and any(term in identity for term in _TASK_TERMS["error_diagnosis"]):
+        return "error_diagnosis"
+    if any(term in identity for term in _TASK_TERMS["equipment_setup"]):
+        return "equipment_setup"
     if any(term in searchable for term in _TASK_TERMS['cash_list']):
         return 'cash_list'
     if "account" in path or "users" in path or "access" in path or category in {"account", "users", "access"}:
@@ -216,6 +233,17 @@ def _matches_entity(expected: str | None, actual: str | None) -> bool:
     return _terms(expected) <= _terms(actual) or _terms(actual) <= _terms(expected)
 
 
+def _procedure_matches(state: DialogueState, metadata: dict) -> bool:
+    scope = metadata.get("procedure_service")
+    if not scope or not state.routing_service:
+        return True
+    # A publisher's integration article may legitimately apply to another
+    # cabinet only when that cabinet is established in the active client task.
+    return any(_matches_entity(value.value, scope)
+               for slot, values in state.task_entities.items() if slot in {"service", "ofd", "software"}
+               for value in values)
+
+
 def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> bool:
     if operation == "explain":
         return True
@@ -234,6 +262,10 @@ def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> boo
     supported = set(metadata.get("operations") or ())
     if supported & aliases.get(operation, {operation}):
         return True
+    if metadata.get("_operations_explicit"):
+        # Opening an existing record / configuring a role is useful partial
+        # evidence for changing permissions, not proof of a complete workflow.
+        return operation == "change_permissions" and bool(supported & {"edit_user", "configure_role"})
     text = " ".join((hit.text, str(metadata.get("title") or ""), str(metadata.get("source") or ""))).casefold()
     if operation == "assign_role":
         return bool(re.search(r"\b(?:роль|роли|ролей|ролям|ролями|ролях)\b", text)) and any(x in text for x in ("назнач", "присва", "выда", "присво"))
@@ -243,6 +275,61 @@ def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> boo
         return (any(x in text for x in ("существующ", "уже создан", "existing user"))
                 and any(x in text for x in ("измен", "редакт", "меню этой записи", "change user")))
     return False
+
+
+def _access_evidence(state, documents, context):
+    """Coverage is reviewed source metadata, never a relevance-score claim.
+
+    Full coverage of a generic operation does not establish a named role or
+    client-specific privileges. Those remain partial until independently checked.
+    Only complete statements actually sent in context can become useful steps.
+    """
+    steps, seen = [], set()
+    families = {"change_permissions": ("edit", "search"), "assign_role": ("assign",),
+                "add_employee": ("create", "input", "assign", "save"),
+                "reset_password": ("reset",)}.get(state.operation, ())
+    full = False
+    for doc in documents:
+        meta = doc.metadata or {}
+        if not families:
+            continue
+        if (state.operation == "change_permissions" and meta.get("_operations_explicit")
+                and not set(meta.get("operations") or ()) & {"change_permissions", "edit_user"}):
+            continue
+        section = str(meta.get("section") or "")
+        if _SAFETY_SECTION.search(section) or re.search(r"границ|вопрос|полномочия", section, re.I):
+            continue
+        coverage = meta.get("evidence_coverage") or {}
+        # A declaration counts only if that article contributes an actual step.
+        contributes = False
+        for sentence in statements(doc.text):
+            key = normalize(sentence)
+            if (sentence == section or sentence.startswith(("#", "Источник:", "http"))
+                    or sentence.endswith("?") or len(sentence.split()) < 4
+                    or re.search(r"\bне\b|неподтверж", sentence, re.I)
+                    or key not in normalize(context)
+                    or not any(has_action(sentence, family) for family in families)):
+                continue
+            if state.operation == "assign_role" and has_action(sentence, "create"):
+                continue
+            contributes = True
+            if key not in seen:
+                steps.append(dict(source=doc.source, document_id=meta.get("document_id"),
+                                  section=section, text=sentence))
+                seen.add(key)
+        if (contributes and coverage.get(state.operation) == "full"
+                and meta.get("source_url") and meta.get("source_checked_at")):
+            full = True
+    missing = []
+    if not full:
+        missing.append("permission_change_workflow_unverified" if state.operation == "change_permissions"
+                       else "access_workflow_unverified")
+    request = " ".join(f.value for f in [*state.goals, *state.constraints, *state.details,
+                                        *([state.task] if state.task else [])])
+    if state.goals or state.constraints or has_named_role(request):
+        missing.append("requested_role_or_permissions_unverified")
+    status = "full" if steps and not missing else "partial" if steps else "none"
+    return status, missing, steps[:4]
 
 
 class RetrievalPipeline:
@@ -281,6 +368,8 @@ class RetrievalPipeline:
             elif state.routing_slot == 'software':
                 routing_metadata = meta.get('software') or meta.get('service')
             service_match = _matches_entity(routing, routing_metadata)
+            if meta.get("procedure_service") and state.routing_slot not in {"manufacturer", "software"}:
+                service_match = _procedure_matches(state, meta)
             # Keep manufacturer, equipment model and operator as independent facts.
             manufacturer_match = _matches_entity(state.entity("manufacturer"), meta.get("manufacturer"))
             model_match = _matches_entity(state.entity("equipment"), meta.get("model"))
@@ -295,10 +384,15 @@ class RetrievalPipeline:
                 if callable(article_getter):
                     article_chunks = article_getter(meta["document_id"])
                     article_text = " ".join(chunk.text for chunk in article_chunks)
-                    operation_metadata = normalize_metadata({**meta, "text": article_text, "operations": [], "operation": None})
+                    operation_metadata = normalize_metadata({**meta, "text": article_text})
+                    if not meta.get("_operations_explicit"):
+                        operation_metadata["operations"] = _derive_operations(article_text.casefold(), actual_task)
             operation_match = _operation_matches(state.operation, operation_metadata, hit)
             if routing and not service_match:
                 reasons.append("service_mismatch_or_unlabeled")
+            procedure_service = meta.get("procedure_service")
+            if not _procedure_matches(state, meta):
+                reasons.append(f"procedure_service_mismatch:{procedure_service}")
             if technical and state.entity("manufacturer") and not manufacturer_match:
                 reasons.append("manufacturer_mismatch_or_unlabeled")
             if technical and state.entity("equipment") and not model_match:
@@ -324,9 +418,10 @@ class RetrievalPipeline:
             service_score = 1.0 if not state.entity("service") or service_match else 0.0
             task_score = 1.0 if task_match else (0.0 if actual_task else lexical_overlap)
             score = 0.55 * task_score + 0.3 * service_score + 0.15 * min(1.0, lexical_overlap * 2)
-            relevance = Relevance("match" if service_match else "unknown_or_mismatch", "match" if task_match else "mismatch", round(score, 4), [f"task_category={actual_task or 'unknown'}", f"lexical_overlap={lexical_overlap:.3f}"])
+            relevance = Relevance("match" if service_match else "unknown_or_mismatch", "match" if task_match else "mismatch", round(score, 4), [f"task_category={actual_task or 'unknown'}", f"lexical_overlap={lexical_overlap:.3f}", f"operation_match={operation_match}", f"procedure_service={procedure_service or 'unreviewed'}"])
             diagnostic_fields = {"source", "title", "category", "service", "task_category", "operation",
-                                 "operations", "manufacturer", "model", "status", "source_type", "section", "page"}
+                                 "operations", "manufacturer", "model", "status", "source_type", "section", "page",
+                                 "procedure_service", "evidence_coverage"}
             diagnostic_metadata = {k: v for k, v in meta.items() if k in diagnostic_fields and v is not None}
             evaluated = EvaluatedDocument(str(meta.get("source") or "unknown"), meta.get("document_id"), meta.get("status"), diagnostic_metadata, {"rrf": hit.score, "dense": hit.semantic_score, "bm25": hit.lexical_score}, relevance, reasons)
             if reasons:
@@ -346,7 +441,16 @@ class RetrievalPipeline:
         context = _format_context(docs, self.max_context_chars)
         sufficient = bool(docs) and any(item.relevance.task == "match" and item.relevance.score >= 0.62 for _, item in selected)
         reason = None if sufficient else ("no_task_matched_candidates" if raw else "no_candidates")
-        return RetrievalResult(query, candidates, rejected, docs, sufficient, reason, context)
+        # The new source-coverage contract is scoped to access workflows.
+        # Other task families retain their existing gate, without claiming a
+        # reviewed proof of every search parameter or business requirement.
+        evidence_status, missing, steps = ("relevance_only" if sufficient else "none"), [], []
+        if expected_task == "access" and docs:
+            evidence_status, missing, steps = _access_evidence(state, docs, context)
+            sufficient = sufficient and evidence_status == "full"
+            reason = None if sufficient else "access_evidence_incomplete"
+        return RetrievalResult(query, candidates, rejected, docs, sufficient, reason, context,
+                               evidence_status, missing, steps)
 
     def _expand(self, selected, expected_task, state, query) -> list[SearchResult]:
         result: list[SearchResult] = []
@@ -359,13 +463,18 @@ class RetrievalPipeline:
                 related += getter(evaluated.document_id)
             for fragment in related:
                 meta = normalize_metadata({**(fragment.metadata or {}), "text": fragment.text})
+                if not _procedure_matches(state, meta):
+                    continue
                 fragment_task = meta.get("task_category")
                 if expected_task and fragment_task and fragment_task != expected_task:
                     continue
                 if fragment is not hit and expected_task:
                     section = str(meta.get("section") or "")
                     evidence_terms = _TASK_EVIDENCE.get(expected_task, ())
-                    if not _SAFETY_SECTION.search(section) and not any(term in fragment.text.casefold() for term in evidence_terms):
+                    reviewed_operation = (meta.get("_operations_explicit")
+                                          and _operation_matches(state.operation, meta, fragment))
+                    if (not _SAFETY_SECTION.search(section) and not reviewed_operation
+                            and not any(term in fragment.text.casefold() for term in evidence_terms)):
                         continue
                 key = (str(meta.get("source") or source), fragment.text)
                 if key in seen:

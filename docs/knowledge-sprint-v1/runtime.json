@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-10-21",
+  "head": "d720ab3",
+  "telegram_identity_ok": true,
+  "groq_models_http_status": 200,
+  "configured_model_available": true,
+  "telegram_webhook_disabled": true,
+  "polling_workers": 1,
+  "launcher_pid": 26976,
+  "worker_pid": 11176,
+  "instance_lock_held": true,
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "collection": "knowledge_demo",
+  "llm_completion_calls": 0,
+  "sqlite_quick_checks": "ok",
+  "sqlite_rows_preserved": true,
+  "backup_directory": ".local/backups/knowledge-sprint-v1-20261021-191816",
+  "conversation_messages": 62,
+  "human_reviews": 31,
+  "tests": "113 passed",
+  "note": "Readiness confirms transport, configuration and real retrieval; quality of fresh GPT-OSS answers awaits manual Telegram testing."
+}

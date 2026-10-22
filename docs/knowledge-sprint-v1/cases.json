@@ -1,0 +1,92 @@
+[
+  {
+    "id": "49",
+    "conversation": "dialogue-1",
+    "message": "Как завести учётку для сотрудника в aQsi Online?",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "51",
+    "conversation": "dialogue-1",
+    "message": "Он уже есть, мне нужно изменить ему права.",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "53",
+    "conversation": "dialogue-1",
+    "message": "Хочу, чтобы он мог смотреть кассы и отчёты, но не менять настройки.",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "55",
+    "conversation": "dialogue-1",
+    "message": "А если у нас АТОЛ Онлайн — там это делается так же?",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "57",
+    "conversation": "dialogue-2",
+    "message": "Как посмотреть список моих касс в личном кабинете Платформы ОФД?",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "59",
+    "conversation": "dialogue-2",
+    "message": "А теперь мне нужно найти чек за прошлый месяц.",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "61",
+    "conversation": "dialogue-2",
+    "message": "И можно найти его по номеру ФН?",
+    "origin": "real_telegram_fixture"
+  },
+  {
+    "id": "fd",
+    "conversation": "fd",
+    "message": "Как найти чек по номеру ФД в Платформе ОФД?",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "fp",
+    "conversation": "fp",
+    "message": "Как найти чек по ФП в Платформе ОФД?",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "role",
+    "conversation": "role-standalone",
+    "message": "Как создать новую роль в aQsi Online?",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "aqsi-list",
+    "conversation": "aqsi-list",
+    "message": "Где посмотреть список касс в aQsi Online?",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "atol-list",
+    "conversation": "atol-list",
+    "message": "Как посмотреть список касс в АТОЛ Онлайн?",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "atol-report",
+    "conversation": "atol-report",
+    "message": "Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "fn234",
+    "conversation": "fn234",
+    "message": "Эвотор ошибка ФН 234",
+    "origin": "requested_small_probe"
+  },
+  {
+    "id": "fn235",
+    "conversation": "fn235",
+    "message": "Эвотор ошибка ФН 235",
+    "origin": "requested_small_probe"
+  }
+]

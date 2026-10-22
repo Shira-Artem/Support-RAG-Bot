@@ -17,9 +17,16 @@ def test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output
         'list', 'search', 'search']
     assert rows[0]['answer']['text'].find('имя и email') >= 0
     assert not any(word in rows[0]['answer']['text'] for word in ('фамилию', 'пароль'))
-    assert 'вой' not in rows[1]['answer']['text'].lower()  # unsupported login verification removed
+    # The new card legitimately contains «новой роли»; check the unsupported
+    # login instruction itself rather than a substring inside «новой».
+    assert 'войдя в кабинет' not in rows[1]['answer']['text'].lower()
+    assert 'войти в кабинет' not in rows[1]['answer']['text'].lower()
     assert states[2]['goals'] and states[2]['constraints']
-    assert 'меню этой записи' in rows[2]['answer']['text']
+    assert 'Полный порядок изменения прав' in rows[2]['answer']['text']
+    assert rows[2]['answer']['retrieval_diagnostics']['evidence_status'] == 'partial'
+    assert not rows[2]['answer']['retrieval_diagnostics']['sufficient']
+    assert rows[2]['simulated_generation_calls'] == 0
+    assert 'Читатель' not in rows[2]['answer']['text']
     assert 'aQsi' not in rows[3]['query']
     assert rows[3]['simulated_generation_calls'] == 0
     assert not rows[3]['answer']['retrieval_diagnostics']['selected']
@@ -31,9 +38,11 @@ def test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output
         assert {d['source'] for d in row['answer']['retrieval_diagnostics']['selected']} == {
             'platformaofd/ofd/lkk-receipt-search.md'}
         assert 'Мониторинг' not in row['answer']['text']
-    assert 'не подтверждён поиск по номеру ФН' in rows[6]['answer']['text']
-    assert 'номер ФД' in rows[6]['answer']['text']
-    assert rows[6]['answer']['response_repair']['mode'] == 'documented_search_scope'
+    # The updated card now states the FN limitation explicitly; absence-only
+    # repair is no longer the only valid way to convey the documented boundary.
+    assert 'ФН не подтверждён как прямой фильтр чеков' in rows[6]['answer']['text']
+    assert 'Смена ФН' not in rows[6]['answer']['text']
+    assert rows[6]['answer']['response_repair']['evidence']
 
 
 def test_search_arguments_do_not_outrank_objects_or_explicit_new_operations():
