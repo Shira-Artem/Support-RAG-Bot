@@ -182,6 +182,27 @@ def _needs_service_context(text: str) -> bool:
     return _needs_account_service_clarification(text) or bool(_SERVICE_NAVIGATION.search(text))
 
 
+def _confirmed_state_service(state: DialogueState) -> str | None:
+    """Return a single service fact without promoting a loose search hit.
+
+    OFD is intentionally separate from the active cabinet route: fiscal-drive
+    questions may keep it in the task entity set while the reducer leaves the
+    route slot empty.  That is still a confirmed operator for retrieval.  We
+    do not infer a service from a manufacturer, software, or document title.
+    """
+    if state.routing_service:
+        return state.routing_service
+    for slot in ("ofd", "service"):
+        # An OFD name does not identify the hardware for an error diagnosis;
+        # keep the existing manufacturer/model clarification gate intact.
+        if slot == "ofd" and state.error:
+            continue
+        value = state.task_entity(slot)
+        if value:
+            return value
+    return None
+
+
 def _matching_service_results(results: list[SearchResult], service: str | None, *, strict: bool = False) -> list[SearchResult]:
     prefixes = tuple(prefix.casefold() for prefix in _SERVICE_SOURCE_PREFIXES.get(service or "", ()))
     selected = []
@@ -588,7 +609,7 @@ class AnswerService:
                 rag_chunks=0, context_chars=0,
                 duration_ms=round((perf_counter() - started) * 1000),
             )
-        service = state.routing_service
+        service = _confirmed_state_service(state)
         try:
             # Retrieval receives the enriched query; the compact request kept
             # in Answer diagnostics remains backward-compatible for clients
@@ -916,7 +937,9 @@ class AnswerService:
                 rag_chunks=len(results),
                 context_chars=len(context),
                 generation_error={'http_status': exc.http_status, 'error_type': exc.error_type,
-                                  'retry_after_seconds': exc.retry_after_seconds},
+                                  'retry_after_seconds': exc.retry_after_seconds,
+                                  'stage': exc.stage, 'cause_message': exc.cause_message,
+                                  'traceback': exc.traceback_text},
             )
 
     @staticmethod

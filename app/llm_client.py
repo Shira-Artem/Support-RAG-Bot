@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import traceback
 
 import httpx
 
@@ -10,11 +11,16 @@ from app.config import Settings
 
 class GenerationError(RuntimeError):
     def __init__(self, message: str, *, http_status: int | None = None,
-                 error_type: str | None = None, retry_after_seconds: float | None = None):
+                 error_type: str | None = None, retry_after_seconds: float | None = None,
+                 stage: str | None = None, cause_message: str | None = None,
+                 traceback_text: str | None = None):
         super().__init__(message)
         self.http_status = http_status
         self.error_type = error_type
         self.retry_after_seconds = retry_after_seconds
+        self.stage = stage
+        self.cause_message = cause_message
+        self.traceback_text = traceback_text
 
 
 @dataclass(frozen=True)
@@ -53,19 +59,26 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
     if not key:
         raise GenerationError("LLM API key is not configured")
     headers["Authorization"] = f"Bearer {key}"
+    stage = "provider_request"
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=15)) as client:
             response = await client.post(url, headers=headers, json={
                 "model": model, "messages": messages, "temperature": 0.2, **token_limit,
             })
+        stage = "http_status"
         response.raise_for_status()
+        stage = "decode_json"
         data = response.json()
+        stage = "validate_payload"
         if not isinstance(data, dict):
             raise ValueError("Unexpected completion response")
+        stage = "extract_choice"
         choice = data["choices"][0]
         content = choice["message"]["content"]
+        stage = "validate_content"
         if not isinstance(content, str) or not content.strip():
             raise ValueError("Empty completion")
+        stage = "extract_usage"
         usage = data.get("usage") or {}
         if not isinstance(usage, dict):
             usage = {}
@@ -96,5 +109,9 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
                     retry_after = value
             except ValueError:
                 pass
-        raise GenerationError("LLM request failed", http_status=status,
-                              error_type=type(exc).__name__, retry_after_seconds=retry_after) from exc
+        raise GenerationError(
+            "LLM request failed", http_status=status,
+            error_type=type(exc).__name__, retry_after_seconds=retry_after,
+            stage=stage, cause_message=str(exc)[:240],
+            traceback_text=traceback.format_exc(),
+        ) from exc

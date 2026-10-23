@@ -136,3 +136,44 @@ def test_provider_failure_keeps_safe_status_without_response_body(monkeypatch, t
     assert error.http_status == 429 and error.retry_after_seconds == 12
     assert error.error_type == 'HTTPStatusError'
     assert str(error) == 'LLM request failed'
+
+
+def test_provider_payload_failure_records_local_stage_without_response_body(monkeypatch, tmp_path):
+    class Response:
+        def raise_for_status(self): pass
+        def json(self): return []
+
+    class Client:
+        def __init__(self, **kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+        async def post(self, *args, **kwargs): return Response()
+
+    monkeypatch.setattr('app.llm_client.httpx.AsyncClient', Client)
+    with pytest.raises(GenerationError) as caught:
+        asyncio.run(generate([], settings(tmp_path)))
+    error = caught.value
+    assert error.error_type == 'ValueError'
+    assert error.stage == 'validate_payload'
+    assert error.cause_message == 'Unexpected completion response'
+    assert 'ValueError' in error.traceback_text
+
+
+def test_empty_completion_failure_is_distinguished_from_http_failure(monkeypatch, tmp_path):
+    class Response:
+        def raise_for_status(self): pass
+        def json(self): return {'choices': [{'message': {'content': ''}}]}
+
+    class Client:
+        def __init__(self, **kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *args): pass
+        async def post(self, *args, **kwargs): return Response()
+
+    monkeypatch.setattr('app.llm_client.httpx.AsyncClient', Client)
+    with pytest.raises(GenerationError) as caught:
+        asyncio.run(generate([], settings(tmp_path)))
+    error = caught.value
+    assert error.error_type == 'ValueError'
+    assert error.stage == 'validate_content'
+    assert error.cause_message == 'Empty completion'
