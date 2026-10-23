@@ -10,6 +10,7 @@ import re
 from typing import Callable
 
 from app.dialogue_state import words
+from app.procedure_policy import operation_compatibility
 
 ROLE_WORD = r'\bрол(?:ь(?:ю)?|и|ей|ям|ями|ях)\b'
 
@@ -431,9 +432,14 @@ def claim_supported(claim: str, evidence: str, *, evidence_results=()) -> bool:
     evidence_text = " ".join(compatible)
     evidence_terms = _content_terms(evidence_text)
     overlap = len(claim_terms & evidence_terms) / len(claim_terms)
-    action_supported = all(_action_supported(claim, evidence_text, family)
-                           and _action_object_supported(claim, evidence_text, family)
-                           for family in action_families)
+    # Each proposed action must be supported by one applicable source clause.
+    # Do not borrow a verb from one sentence and its object/parameters from
+    # another merely because they occur in the same document.
+    action_supported = all(any(
+        _action_supported(claim, clause, family)
+        and _action_object_supported(claim, clause, family)
+        for clause in compatible_raw
+    ) for family in action_families)
     # Technical identifiers such as FN are relation-sensitive: a separate
     # source mention cannot be combined with a receipt-search claim. Require
     # them in the same source paragraph, with matching polarity.
@@ -599,7 +605,8 @@ def _unique_action_fragment(candidate: str, retained: list[str]) -> str | None:
     return None
 
 
-def _evidence(results, context: str, operation: str) -> list[dict]:
+def _evidence(results, context: str, operation: str, request: str = "",
+              task_category: str | None = None) -> list[dict]:
     """Pick substantive statements from the exact context, with provenance.
 
     Matching retrieval metadata is not sufficient: a statement cut off by the
@@ -613,6 +620,7 @@ def _evidence(results, context: str, operation: str) -> list[dict]:
         metadata = result.metadata or {}
         section = str((result.metadata or {}).get("section") or "")
         operations = set(metadata.get("operations") or ())
+        allowed = None
         if operations:
             allowed = {
                 "add_employee": {"add_employee"},
@@ -627,6 +635,9 @@ def _evidence(results, context: str, operation: str) -> list[dict]:
                 # The add-user article also mentions assigning a pre-created
                 # role, but it is not evidence for editing an existing user.
                 continue
+        if (allowed is None and operation_compatibility(
+                operation, metadata, request, task_category=task_category) == "mismatch"):
+            continue
         for sentence in statements(result.text):
             if (sentence == section or sentence.startswith(("#", "Источник:", "http", "[Источник:"))
                     or sentence.endswith("?") or len(sentence.split()) < 4):
@@ -665,7 +676,10 @@ def needs_procedure_grounding(answer: str, context: str, state, results) -> bool
     """
     if state.operation not in OPERATION_FAMILY or state.operation == 'assign_role':
         return False
-    if not _evidence(results, context, state.operation):
+    scope_category = (state.intent if state.intent in {"device", "fiscal_drive", "network"}
+                      and state.operation in {"change", "configure"} else None)
+    if not _evidence(results, context, state.operation, state.task.value if state.task else "",
+                     task_category=scope_category):
         return False
     procedural = any(has_action(answer, family) for family in ACTION_FAMILIES)
     return procedural and any(not claim_supported(s, context, evidence_results=results)
@@ -743,7 +757,10 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
             removed.append({"text": sentence, "reason": reason, "scope": "statement"})
         else:
             retained.append(sentence)
-    evidence = [item for item in _evidence(results, context, state.operation)
+    scope_category = (state.intent if state.intent in {"device", "fiscal_drive", "network"}
+                      and state.operation in {"change", "configure"} else None)
+    evidence = [item for item in _evidence(results, context, state.operation, request,
+                                           task_category=scope_category)
                 if not check(item["text"], context, request, service)]
 
     role_issue = any(item["reason"] == "unsupported_role_or_permissions" for item in removed)

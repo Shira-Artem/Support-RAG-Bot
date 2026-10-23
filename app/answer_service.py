@@ -299,6 +299,14 @@ def _pre_retrieval_clarification(state: DialogueState) -> tuple[str, str] | None
             and not state.details):
         return ("Товар уже приняли по фактическому количеству или приёмка ещё не завершена?",
                 "document_discrepancy_stage_missing")
+    if state.intent == "fiscal_drive" and state.operation in {"change", "configure"}:
+        equipment = state.entity("equipment") or state.task_entity("equipment")
+        exact_target = bool(re.search(
+            r"\b(?:параметр\w*|значени\w*|ставк\w*|режим\w*|адрес\w*|срок\w*|ресурс\w*)\b",
+            receipt_context, re.I))
+        if not equipment or not exact_target:
+            return ("Что именно нужно изменить и какая касса используется? Укажите производителя и модель.",
+                    "fiscal_drive_change_scope_missing")
     return None
 
 
@@ -681,6 +689,19 @@ class AnswerService:
                 retrieval.sufficient = False
                 retrieval.insufficiency_reason = "exact_error_document_missing"
                 diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
+        if (retrieval is not None and _evidence_level(retrieval) == 'none'
+                and retrieval.insufficiency_reason == 'applicability_context_missing'):
+            if state.intent == 'fiscal_drive':
+                question = "Что именно нужно узнать или изменить и какая касса используется? Укажите производителя и модель."
+            else:
+                question = "В каком приложении или на какой кассе нужно это проверить? Укажите сервис, производителя и модель."
+            return Answer(
+                text=question, results=results, generation_status='clarification',
+                scenario='clarify', scenario_reason='applicability_context_missing',
+                generation_reason='applicability_context_missing', clarification_slot='details',
+                model=model, provider=self.settings.llm_provider, rag_chunks=0, context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000),
+            )
         if error_code(active_request) and not results:
             missing_product = not service
             return Answer(

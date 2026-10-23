@@ -10,6 +10,8 @@ import re
 from typing import Protocol
 
 from app.dialogue_state import DialogueState
+from app.procedure_policy import (document_applicability, normalize_operation,
+                                  operation_compatibility, query_operation_hints)
 from app.rag import SearchResult
 from app.response_grounding import (claim_supported, evidence_statements, has_action,
                                     has_named_role, normalize, permission_clauses, statements,
@@ -150,82 +152,8 @@ _SAFETY_SECTION = re.compile(r"важно|огранич|предупреж|бе
 # operation names.  Both sides are projected into one operation vocabulary
 # before comparison; task context prevents a generic verb such as ``change``
 # from matching unrelated changes in the same service.
-_CONTEXTUAL_OPERATIONS = {
-    ("billing", "change"): "change_plan",
-    ("billing", "close"): "get_closing_documents",
-    ("billing", "check"): "get_reconciliation_act",
-    ("billing", "search"): "get_renewal_invoice",
-    ("billing", "return"): "request_refund",
-    ("billing", "change_permissions"): "pay_debt",
-    ("settings", "add"): "configure_settings",
-    ("integration", "check"): "integration_connect",
-    ("integration", "configure"): "integration_connect",
-    ("edo", "connect"): "exchange_edo_documents",
-    ("product_catalog", "add"): "manage_product_catalog",
-    ("period_close", "close"): "close_period",
-    ("reconciliation", "reconcile"): "reconcile_counterparty",
-    ("edo", "transmit"): "exchange_edo_documents",
-    ("cash_list", "check"): "list_cash_registers",
-    ("cash_list", "search"): "list_cash_registers",
-    ("network_diagnostics", "check"): "diagnose_network",
-    ("vat_usn", "check"): "check_vat_rules",
-    ("cash_operations", "change"): "manage_shift",
-    ("shift_management", "repeat_print"): "print_x_report",
-    ("shift_management", "check"): "manage_shift",
-    ("model_features", "check"): "check_model_features",
-    ("fns_monitoring", "check"): "inspect_fns_indicators",
-    ("ofd_connection", "check"): "connect_cash_register",
-    ("ofd_connection", "connect"): "connect_cash_register",
-    ("fiscal_format", "check"): "check_ffd",
-    ("fiscal_drive", "replace"): "inspect_fiscal_drive",
-    ("fiscal_drive", "check"): "inspect_fiscal_drive",
-    ("sales", "return"): "issue_refund",
-    ("refund", "return"): "issue_refund",
-    ("cash_search", "search"): "search_cash_register",
-    ("access", "assign"): "assign_role",
-    ("document_discrepancy", "reconcile"): "record_discrepancy",
-    ("correction_receipt", "correct"): "correct_receipt",
-    ("receipt_search", "search"): "search_receipt",
-    ("receipt_search", "check"): "search_receipt",
-    ("receipt_search", "status"): "search_receipt",
-    ("receipt_print", "repeat_print"): "repeat_print",
-    ("cash_reports", "view_reports"): "view_cash_reports",
-    ("fiscal_document_control", "check"): "diagnose_fiscal_document",
-    ("fiscal_document_control", "diagnose"): "diagnose_fiscal_document",
-    ("marking", "check"): "check_marking_code",
-    ("marking", "diagnose"): "check_marking_code",
-    ("error_diagnosis", "diagnose"): "diagnose_error",
-    ("error_diagnosis", "check"): "diagnose_error",
-    ("receipt_transmission", "diagnose"): "check_transmission",
-    ("receipt_transmission", "check"): "check_transmission",
-    ("receipt_transmission", "status"): "check_transmission",
-    ("receipt_transmission", "transmit"): "check_transmission",
-    ("cash_list", "list"): "list_cash_registers",
-    ("bank_statement", "list"): "list_bank_statements",
-    ("integration", "connect"): "integration_connect",
-}
-_OPERATION_ALIASES = {
-    "reconcile_document": "record_discrepancy",
-    "configure_integration": "integration_connect",
-    "check_integration_compatibility": "integration_connect",
-    "connect": "integration_connect",
-    "edit_user": "change_permissions",
-}
-_QUERY_OPERATION_HINTS = {
-    "archive_cash_register": ("архивир", "архив кас"),
-    "connect_cash_register": ("подключ", "добавить касс"),
-    "activate_tariff": ("активир", "ключ для касс", "тариф"),
-    "print_x_report": ("x-отчет", "x отчет", "без гашения"),
-    "check_model_features": ("что умеет", "индикатор", "характеристик", "возможност"),
-    "inspect_fns_indicators": ("индикатор фнс", "запрет от фнс", "нарушен"),
-    "import_bank_statements_via_intermediary": ("посредник", "другого банка"),
-}
-
-
 def _query_operation_hints(query: str | None) -> set[str]:
-    context = (query or "").casefold().replace("ё", "е")
-    return {candidate for candidate, terms in _QUERY_OPERATION_HINTS.items()
-            if any(term in context for term in terms)}
+    return query_operation_hints(query)
 _TASK_BY_OPERATION = {
     "change_plan": "billing",
     "record_discrepancy": "document_discrepancy",
@@ -239,35 +167,6 @@ _TASK_ALIASES = {
     # transmission check.  The compatibility alias is retained only for the
     # explicitly named transmission operation below.
 }
-
-
-def normalize_operation(operation: str, task_category: str | None = None,
-                        context: str | None = None) -> str:
-    context_folded = (context or "").casefold().replace("ё", "е")
-    if task_category == "integration" and operation == "check" and any(
-            term in context_folded for term in ("тестовом режиме", "облачную кассу", "облачной касс")):
-        return "integration_connect"
-    if task_category == "error_diagnosis" and operation == "reconcile" and any(
-            term in context_folded for term in ("расхождени", "времени", "диагностик")):
-        return "diagnose_error"
-    if task_category == "bank_statement" and operation == "list":
-        if any(term in context_folded for term in ("через посредника", "посредник", "банк-посредник", "другого банка", "не подключен к прямому обмену")):
-            return "import_bank_statements_via_intermediary"
-        if "расписан" in context_folded:
-            return "schedule_bank_statement_import"
-        if "файл" in context_folded:
-            return "import_bank_statement_file"
-    if task_category == "billing" and context_folded:
-        if operation == "close" and "закрывающ" in context_folded:
-            return "get_closing_documents"
-        if operation == "check" and "акт свер" in context_folded:
-            return "get_reconciliation_act"
-        if operation == "search" and any(term in context_folded for term in ("счет на продлен", "счёт на продлен", "продлен")):
-            return "get_renewal_invoice"
-        if operation == "change_permissions" and any(term in context_folded for term in ("задолж", "долг", "оплат")):
-            return "pay_debt"
-    contextual = _CONTEXTUAL_OPERATIONS.get((task_category, operation))
-    return contextual or _OPERATION_ALIASES.get(operation, operation)
 
 
 def normalize_task_category(task_category: str | None, operations=()) -> str | None:
@@ -431,6 +330,10 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     # Resolve the task family from positive subject/context evidence before
     # falling back to the coarse DialogueState intent.  These are semantic
     # families, not expected-document lookups.
+    if (state.intent == "network"
+            and re.search(r"\b(?:офд|оператор\w*)\b", task_folded)
+            and re.search(r"подключ\w*|соедин\w*|определ\w*|узна\w*", task_folded)):
+        return "ofd_connection"
     if state.intent == "bank_statement" or any(term in query_folded for term in _TASK_TERMS["bank_statement"]):
         return "bank_statement"
     if any(term in task_folded for term in _TASK_TERMS["shift_management"]):
@@ -697,20 +600,11 @@ def _procedure_matches(state: DialogueState, metadata: dict) -> bool:
 
 def _operation_matches(operation: str, metadata: dict, hit: SearchResult,
                         query: str | None = None) -> bool:
-    task_category = metadata.get("task_category")
-    supported = {normalize_operation(item, task_category)
-                 for item in metadata.get("operations") or ()}
-    if operation in {"explain", "unknown"}:
-        # An unspecified verb is not a license to mix every article in the
-        # same family. If the request contains a recognizable action, use it
-        # to compare explicit candidate operations; otherwise keep the old
-        # permissive behavior and let relevance/evidence decide.
-        context = (query or "").casefold().replace("ё", "е")
-        hinted = _query_operation_hints(context)
-        return not hinted or not metadata.get("_operations_explicit") or bool(supported & hinted)
-    expected = normalize_operation(operation, task_category, query)
-    if expected in supported:
+    compatibility = operation_compatibility(operation, metadata, query)
+    if compatibility != "mismatch":
         return True
+    supported = {normalize_operation(item, metadata.get("task_category"))
+                 for item in metadata.get("operations") or ()}
     if metadata.get("_operations_explicit"):
         # Opening an existing record / configuring a role is useful partial
         # evidence for changing permissions, not proof of a complete workflow.
@@ -731,16 +625,10 @@ def _operation_matches(operation: str, metadata: dict, hit: SearchResult,
     return False
 
 
-_UNRESOLVED_GENERIC_OPERATIONS = {
-    "unknown", "explain", "change", "check", "connect", "configure",
-    "list", "search", "status",
-}
-
-
 def _unresolved_task_fallback(state: DialogueState, query: str, hit: SearchResult,
                               metadata: dict, *, service_match: bool,
                               manufacturer_match: bool, model_match: bool,
-                              software_match: bool, operation_match: bool) -> bool:
+                              software_match: bool, operation_status: str) -> bool:
     """Allow a well-supported approved article when task classification is absent.
 
     This is deliberately narrower than ordinary task matching.  It requires a
@@ -760,7 +648,7 @@ def _unresolved_task_fallback(state: DialogueState, query: str, hit: SearchResul
             equipment and not model_match,
             software and not software_match)):
         return False
-    if not operation_match and state.operation not in _UNRESOLVED_GENERIC_OPERATIONS:
+    if operation_status == "mismatch":
         return False
 
     request = state.task.value if state.task else query
@@ -869,9 +757,8 @@ def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str
                 and not _related_task_for_query(state, expected_task, meta.get("task_category"), query)):
             continue
         if (state.operation != "explain"
-                and not _operation_matches(state.operation, meta, document, query)
-                and not (expected_task is None
-                         and state.operation in _UNRESOLVED_GENERIC_OPERATIONS)):
+                and operation_compatibility(state.operation, meta, query,
+                                            task_category=expected_task) == "mismatch"):
             continue
         key = str(meta.get("document_id") or meta.get("source") or document.source)
         if primary_key is None:
@@ -930,7 +817,12 @@ class RetrievalPipeline:
             equipment_fact = state.entity("equipment") or state.task_entity("equipment")
             manufacturer_match = _matches_entity(manufacturer_fact, meta.get("manufacturer"))
             model_match = _matches_entity(equipment_fact, meta.get("model"))
-            technical = state.intent in {'device', 'fiscal_drive', 'network'} and expected_task != 'cash_list'
+            technical = (state.intent in {'device', 'fiscal_drive', 'network'}
+                        and expected_task in {
+                            'device', 'fiscal_drive', 'network_diagnostics', 'ofd_connection',
+                            'error_diagnosis', 'receipt_transmission',
+                            'fiscal_document_control', 'fiscal_format', 'marking',
+                        })
             ofd = state.entity("ofd") if technical else None
             ofd_match = _matches_entity(ofd, " ".join(str(meta.get(k) or "") for k in ("ofd", "operator", "title", "source", "text")))
             actual_task = meta.get("task_category")
@@ -947,7 +839,9 @@ class RetrievalPipeline:
                     operation_metadata = normalize_metadata({**meta, "text": article_text})
                     if not meta.get("_operations_explicit"):
                         operation_metadata["operations"] = _derive_operations(article_text.casefold(), actual_task)
-            operation_match = _operation_matches(state.operation, operation_metadata, hit, query)
+            operation_status = operation_compatibility(
+                state.operation, operation_metadata, query, task_category=expected_task)
+            operation_match = operation_status == "match"
             unscoped_match = (expected_task is None and state.intent != "unknown"
                               and lexical_overlap >= 0.50)
             unresolved_fallback = False
@@ -958,7 +852,7 @@ class RetrievalPipeline:
                     manufacturer_match=manufacturer_match,
                     model_match=model_match,
                     software_match=software_match,
-                    operation_match=operation_match,
+                    operation_status=operation_status,
                 )
                 unscoped_match = unscoped_match or unresolved_fallback
             task_match = (actual_task == expected_task if expected_task else unscoped_match) or related_search_task
@@ -968,24 +862,26 @@ class RetrievalPipeline:
             if not _procedure_matches(state, meta):
                 reasons.append(f"procedure_service_mismatch:{procedure_service}")
             model_bound = technical or expected_task in {"model_features", "integration"}
-            if model_bound and state.entity("manufacturer") and not manufacturer_match:
+            if model_bound and manufacturer_fact and not manufacturer_match:
                 reasons.append("manufacturer_mismatch_or_unlabeled")
-            if model_bound and state.entity("equipment") and not model_match:
+            if model_bound and equipment_fact and not model_match:
                 reasons.append("equipment_mismatch_or_unlabeled")
             if ofd and not ofd_match:
                 reasons.append("ofd_mismatch_or_unlabeled")
+            missing_scope = document_applicability(state, meta, technical=technical)
+            if missing_scope:
+                reasons.extend(f"applicability_{slot}_unconfirmed" for slot in missing_scope)
             if expected_task and actual_task and actual_task != expected_task and not related_search_task:
                 reasons.append(f"task_mismatch:{actual_task}!={expected_task}")
             strong_unlabeled_match = (expected_task and actual_task is None
                                       and service_match and lexical_overlap >= 0.60)
-            if (expected_task and actual_task == expected_task and state.operation != "unknown"
-                    and meta.get("_operations_explicit") and meta.get("operations") and not operation_match):
-                reasons.append(f"operation_mismatch:{state.operation}")
-            elif (expected_task and actual_task == expected_task
-                  and state.operation in {"unknown", "explain"}
-                  and meta.get("_operations_explicit") and meta.get("operations")
-                  and not operation_match):
+            if (expected_task and actual_task == expected_task and operation_status == "mismatch"
+                    and meta.get("_operations_explicit") and meta.get("operations")
+                    and state.operation in {"unknown", "explain"}):
                 reasons.append("operation_mismatch:query_action")
+            elif (expected_task and actual_task == expected_task and operation_status == "mismatch"
+                  and meta.get("_operations_explicit") and meta.get("operations")):
+                reasons.append(f"operation_mismatch:{state.operation}")
             elif (expected_task and actual_task == expected_task and state.operation != "unknown"
                   and not meta.get("_operations_explicit") and not operation_match
                   and lexical_overlap < 0.30):
@@ -1008,6 +904,7 @@ class RetrievalPipeline:
             relevance_reasons = [f"task_category={actual_task or 'unknown'}",
                                  f"lexical_overlap={lexical_overlap:.3f}",
                                  f"operation_match={operation_match}",
+                                 f"operation_compatibility={operation_status}",
                                  f"related_search_task={related_search_task}",
                                  f"procedure_service={procedure_service or 'unreviewed'}"]
             if unresolved_fallback:
@@ -1089,7 +986,11 @@ class RetrievalPipeline:
             item.selected = item.source in used_sources
         context = _format_context(docs, self.max_context_chars)
         sufficient = bool(docs) and any(item.relevance.task == "match" and item.relevance.score >= 0.62 for _, item in selected)
+        applicability_missing = any(
+            reason.startswith("applicability_") and reason.endswith("_unconfirmed")
+            for item in rejected for reason in item.reasons)
         reason = ("unresolved_task_ambiguous" if unresolved_ambiguity
+                  else "applicability_context_missing" if applicability_missing
                   else None if sufficient
                   else "no_task_matched_candidates" if raw else "no_candidates")
         # The new source-coverage contract is scoped to access workflows.
