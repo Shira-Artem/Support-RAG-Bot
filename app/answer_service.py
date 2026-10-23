@@ -498,7 +498,11 @@ class AnswerService:
             )
         service = state.routing_service
         try:
+            # Retrieval receives the enriched query; the compact request kept
+            # in Answer diagnostics remains backward-compatible for clients
+            # that display the normalized action/object summary.
             active_request = build_rag_query(state)
+            display_request = build_rag_query(state, include_client_facts=False)
         except QueryNeedsClarification:
             reason = 'message_ambiguous' if state.analysis_required else 'query_budget_exceeded'
             diagnostics.update(active_request=None, confirmed_service=service)
@@ -507,7 +511,7 @@ class AnswerService:
                           generation_status='clarification', scenario='clarify', scenario_reason=reason,
                           generation_reason=reason, model=model, provider=self.settings.llm_provider,
                           rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
-        diagnostics.update(active_request=active_request, confirmed_service=service)
+        diagnostics.update(active_request=display_request, confirmed_service=service)
         clarification = _pre_retrieval_clarification(state)
         if clarification:
             text, reason = clarification

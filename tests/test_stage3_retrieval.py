@@ -5,6 +5,7 @@ from app.compat import RetrieverRAGAdapter
 from app.dialogue_state import DialogueManager, DialogueState
 from app.knowledge import Chunker, DocumentLoader
 from app.rag import SearchResult
+from app.rag_query import build_rag_query
 from app.retrieval_pipeline import (RetrievalPipeline, normalize_metadata,
                                     normalize_operation, _matches_entity)
 
@@ -104,6 +105,26 @@ def test_task_aware_operation_normalization_is_shared_by_state_and_documents():
     assert not _matches_entity("aQsi Online", "aQsi")
     assert not _matches_entity("АТОЛ Онлайн", "АТОЛ")
     assert _matches_entity("1С", "1С:Бухгалтерия 8")
+
+
+def test_generic_operations_use_task_context_and_do_not_become_global_aliases():
+    assert normalize_operation("check", "integration") == "integration_connect"
+    assert normalize_operation("check", "error_diagnosis") == "diagnose_error"
+    assert normalize_operation("check", "receipt_search") == "search_receipt"
+    assert normalize_operation("check") == "check"
+    assert normalize_operation("change_permissions", "billing", "как оплатить долг") == "pay_debt"
+    assert normalize_operation("change_permissions", "access", "как оплатить долг") == "change_permissions"
+
+
+def test_query_keeps_current_request_details_but_drops_superseded_incident_values():
+    manager = DialogueManager()
+    state = manager.advance(DialogueState(), "Эвотор ФН 235: почему не передаёт чеки в ОФД?", 1)
+    first = build_rag_query(state)
+    assert all(term in first for term in ("Эвотор", "235", "ОФД", "переда"))
+
+    updated = manager.advance(state, "Теперь код ошибки ФН 3979.", 2)
+    second = build_rag_query(updated)
+    assert "3979" in second and "235" not in second
 
 
 def test_receipt_journal_check_does_not_mix_ofd_transmission_operation():

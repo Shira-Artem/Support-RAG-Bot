@@ -91,19 +91,32 @@ class RetrievalResult:
 # one runtime vocabulary. This is a derived view: it does not mutate files/index.
 _TASK_TERMS = {
     "bank_statement": ("директбанк", "банковская выписка", "банковских выписок", "список выписок"),
-    "integration": ("интеграция с 1с", "подключить к 1с", "1с:унф", "1с:розница", "1с:бухгалтерия"),
+    "integration": ("интеграция с 1с", "подключить к 1с", "1с:унф", "1с:розница", "1с:бухгалтерия", "совместим", "поддерживается", "версия 1с", "cms"),
+    "settings": ("интернет-магазин", "интернет магазин", "облачная касса", "облачную кассу", "облачной касс", "дополнительный адрес", "адрес магазина", "тестовом режиме"),
+    "product_catalog": ("каталог товаров", "карточка товара", "добавить товар", "загрузить товары", "товары в excel"),
+    "period_close": ("закрыть месяц", "закрытие месяца", "закрытии месяца", "месяц в 1с", "завершить месяц"),
+    "reconciliation": ("акт сверки", "сверить контрагента", "сверка с контрагентом", "взаиморасчет"),
+    "goods_receipt": ("не доставили", "получить товар", "приемка товара", "фактически получил", "фактическое количество", "товар пришел", "товар пришёл", "на два склада"),
+    "vat_usn": ("усн", "ндс", "налогообложение", "освобождение от ндс", "лимит доходов"),
+    "refund": ("вернуть деньги", "возврат денег", "возврат покупателю"),
+    "sales": ("проданный товар", "продажу товара", "отложенный заказ"),
+    "cash_operations": ("открыть смену", "закрыть смену", "смена на кассе", "управление сменой"),
+    "fiscal_format": ("формат фискальных документов", "формат фд", "ффд"),
+    "model_features": ("характеристики модели", "возможности модели", "модель поддерживает", "особенности модели", "особенности", "красный индикатор"),
     "receipt_print": ("копия чека", "копию чека", "печать документа по номеру", "повторная печать"),
-    "cash_list": ("список касс", "мониторинг касс", "раздел кассы"),
+    "cash_list": ("список касс", "мониторинг касс", "мониторинг", "раздел кассы", "какие кассы", "все мои кассы", "все кассы", "кассах", "не вижу кассу", "ресурсом фн", "остаток ресурса", "ресурса фн", "заканчивающимся ресурсом"),
+    "cash_search": ("заводскому номеру", "номер фн"),
     "access": ("сотрудник", "пользователь", "учетная запись", "доступ", "права", "роль", "account", "user"),
     "receipt_search": ("поиск чека", "найти чек", "чек по", "receipt search", "receipts/search"),
     "correction_receipt": ("исправить чек", "исправление чека", "чек коррекции", "коррекция чека"),
-    "receipt_transmission": ("передача чеков", "передача документов", "отправка чеков", "не отправляются", "не передаются", "ofd transmission"),
+    "receipt_transmission": ("передача чеков", "передача документов", "отправка чеков", "не отправляются", "не передаются", "не может передать", "не передает", "передается", "передаётся", "не поступает", "связаться с офд", "ofd transmission"),
     "fiscal_document_control": ("код флк", "флк", "контроль фискального документа"),
-    "marking": ("маркировка", "код маркировки", "честный знак", "разрешительный режим", "gtin"),
-    "billing": ("сменить тариф", "изменение тарифа", "тариф", "лицензия", "продление"),
+    "marking": ("маркиров", "код маркировки", "честный знак", "разрешительный режим", "gtin", "марка не была проверена"),
+    "billing": ("сменить тариф", "изменение тарифа", "тариф", "лицензия", "продление", "баланс", "задолж", "долг", "оплат", "закрывающие документы", "акт сверки", "приостановить обслуживание", "заморозить", "без платежей"),
+    "network_diagnostics": ("мобильный интернет", "мобильному интернету", "связь кассы", "проверить соединение", "нет связи"),
     "document_discrepancy": ("упд", "накладная", "расхождение", "недостача", "фактическое количество"),
-    "error_diagnosis": ("код ошибки", "ошибка фн", "ошибка ккт", "диагностика ошибки", "error code"),
-    "edo": ("эдо", "электронный документооборот", "приглашени", "контрагент", "диадок"),
+    "error_diagnosis": ("код ошибки", "ошибка фн", "ошибка ккт", "диагностика ошибки", "error code", "не печатает", "не записан в фн", "не совпадает время", "расхождение времени", "исчезли с кассы"),
+    "edo": ("эдо", "электронный документооборот", "электронные документы", "приглашени", "диадок"),
     "equipment_setup": ("подключение", "настройка", "конфигурация", "установка", "активация", "configure", "setup"),
 }
 _TASK_EVIDENCE = {
@@ -132,6 +145,30 @@ _SAFETY_SECTION = re.compile(r"важно|огранич|предупреж|бе
 # from matching unrelated changes in the same service.
 _CONTEXTUAL_OPERATIONS = {
     ("billing", "change"): "change_plan",
+    ("billing", "close"): "get_closing_documents",
+    ("billing", "check"): "get_reconciliation_act",
+    ("billing", "search"): "get_renewal_invoice",
+    ("billing", "return"): "request_refund",
+    ("billing", "change_permissions"): "pay_debt",
+    ("settings", "add"): "configure_settings",
+    ("integration", "check"): "integration_connect",
+    ("integration", "configure"): "integration_connect",
+    ("edo", "connect"): "exchange_edo_documents",
+    ("product_catalog", "add"): "manage_product_catalog",
+    ("period_close", "close"): "close_period",
+    ("reconciliation", "reconcile"): "reconcile_counterparty",
+    ("edo", "transmit"): "exchange_edo_documents",
+    ("cash_list", "check"): "list_cash_registers",
+    ("cash_list", "search"): "list_cash_registers",
+    ("network_diagnostics", "check"): "diagnose_network",
+    ("vat_usn", "check"): "check_vat_rules",
+    ("cash_operations", "change"): "manage_shift",
+    ("fiscal_format", "check"): "check_ffd",
+    ("fiscal_drive", "replace"): "inspect_fiscal_drive",
+    ("sales", "return"): "issue_refund",
+    ("refund", "return"): "issue_refund",
+    ("cash_search", "search"): "search_cash_register",
+    ("access", "assign"): "assign_role",
     ("document_discrepancy", "reconcile"): "record_discrepancy",
     ("correction_receipt", "correct"): "correct_receipt",
     ("receipt_search", "search"): "search_receipt",
@@ -144,6 +181,7 @@ _CONTEXTUAL_OPERATIONS = {
     ("marking", "check"): "check_marking_code",
     ("marking", "diagnose"): "check_marking_code",
     ("error_diagnosis", "diagnose"): "diagnose_error",
+    ("error_diagnosis", "check"): "diagnose_error",
     ("receipt_transmission", "diagnose"): "check_transmission",
     ("receipt_transmission", "check"): "check_transmission",
     ("receipt_transmission", "status"): "check_transmission",
@@ -171,7 +209,29 @@ _TASK_ALIASES = {
 }
 
 
-def normalize_operation(operation: str, task_category: str | None = None) -> str:
+def normalize_operation(operation: str, task_category: str | None = None,
+                        context: str | None = None) -> str:
+    context_folded = (context or "").casefold().replace("ё", "е")
+    if task_category == "integration" and operation == "check" and any(
+            term in context_folded for term in ("тестовом режиме", "облачную кассу", "облачной касс")):
+        return "integration_connect"
+    if task_category == "error_diagnosis" and operation == "reconcile" and any(
+            term in context_folded for term in ("расхождени", "времени", "диагностик")):
+        return "diagnose_error"
+    if task_category == "bank_statement" and operation == "list":
+        if "расписан" in context_folded:
+            return "schedule_bank_statement_import"
+        if "файл" in context_folded:
+            return "import_bank_statement_file"
+    if task_category == "billing" and context_folded:
+        if operation == "close" and "закрывающ" in context_folded:
+            return "get_closing_documents"
+        if operation == "check" and "акт свер" in context_folded:
+            return "get_reconciliation_act"
+        if operation == "search" and any(term in context_folded for term in ("счет на продлен", "счёт на продлен", "продлен")):
+            return "get_renewal_invoice"
+        if operation == "change_permissions" and any(term in context_folded for term in ("задолж", "долг", "оплат")):
+            return "pay_debt"
     contextual = _CONTEXTUAL_OPERATIONS.get((task_category, operation))
     return contextual or _OPERATION_ALIASES.get(operation, operation)
 
@@ -324,12 +384,131 @@ def _terms(text: str) -> set[str]:
 
 def _state_task_category(state: DialogueState, query: str) -> str | None:
     query_folded = query.casefold().replace("ё", "е")
-    task_folded = ((state.task.value if state.task else "") + " " + query).casefold().replace("ё", "е")
+    task_facts = [*([state.task] if state.task else []), *state.goals,
+                  *state.constraints, *state.details, *state.parameters]
+    task_folded = " ".join(f.value for f in task_facts).casefold().replace("ё", "е")
+    # Resolve the task family from positive subject/context evidence before
+    # falling back to the coarse DialogueState intent.  These are semantic
+    # families, not expected-document lookups.
     if state.intent == "bank_statement" or any(term in query_folded for term in _TASK_TERMS["bank_statement"]):
         return "bank_statement"
-    if (state.routing_service and state.task_entities.get("software")
-            and any(term in query_folded for term in _TASK_TERMS["integration"])):
+    # Receipt wording has several intentionally strict subfamilies. Resolve
+    # these before broad words such as «ФФД», «возврат» or «передача» can
+    # pull the request into an unrelated technical family.
+    if state.intent == "receipt":
+        if (state.operation == "return"
+                or any(term in task_folded for term in _TASK_TERMS["refund"])
+                or "оплаченных товаров" in task_folded):
+            return "refund"
+        if (state.operation == "correct"
+                or any(term in task_folded for term in ("коррекц", "неверная цена", "ффд"))):
+            return "correction_receipt"
+        if "флк" in task_folded:
+            return "fiscal_document_control"
+        if (state.operation == "repeat_print"):
+            return "receipt_print"
+        if any(term in task_folded for term in _TASK_TERMS["receipt_print"]):
+            return "receipt_print"
+        if (state.operation == "diagnose"
+                and any(term in task_folded for term in ("не печат", "не записан", "ошибк", "бумаг"))):
+            return "error_diagnosis"
+        if ("api" in task_folded or "тестовой отправ" in task_folded) and "ошиб" in task_folded:
+            return "integration"
+        search_request = (state.operation == "search"
+                          or any(term in task_folded for term in (
+                              "журнал чек", "выгруз", "экспорт", "конкретн", "найти чек", "поиск чек",
+                          ))
+                          or bool(re.search(r"журнал.{0,50}чек|чек.{0,50}журнал", task_folded))
+                          or (state.operation == "status"
+                              and not any(term in task_folded for term in (
+                                  "не отправ", "не переда", "очеред", "нет связи",
+                              ))))
+        if search_request:
+            return "receipt_search"
+        if state.operation in {"diagnose", "status", "check", "transmit"}:
+            return "receipt_transmission"
+        if any(term in task_folded for term in _TASK_TERMS["receipt_transmission"]):
+            return "receipt_transmission"
+        return None
+    explicit_error_code = bool(re.search(r"\b(?:фн|код)\s*-?\d{2,}", task_folded))
+    if ((explicit_error_code or ("ошибк" in task_folded and re.search(r"\b\d{2,}\b", task_folded)))
+            and state.intent != "receipt"):
+        return "error_diagnosis"
+    if (state.intent == "fiscal_drive" and re.search(r"\bфн\b", task_folded)
+            and (("кабинет" in task_folded and state.operation in {"check", "search"})
+                 or "остаток ресурса" in task_folded or "состояние фн" in task_folded)):
+        return "cash_list"
+    if (state.intent == "fiscal_drive" and state.operation in {"replace", "check"}
+            and re.search(r"\bфн\b", task_folded)):
+        return "fiscal_drive"
+    if "неоплачен" in task_folded and "счете" in task_folded and "касса" in task_folded:
+        # The reviewed metadata calls this OFD-connection family; the runtime
+        # projection intentionally uses its canonical transmission alias.
+        return "receipt_transmission"
+    if (state.operation == "search" and "касс" in task_folded
+            and any(term in task_folded for term in _TASK_TERMS["cash_search"])):
+        return "cash_search"
+    if ("тестовом режиме" in task_folded and "облач" in task_folded):
         return "integration"
+    if (any(term in task_folded for term in _TASK_TERMS["reconciliation"])
+            and ("контрагент" in task_folded or state.task_entities.get("software")
+                 or "1с" in task_folded)):
+        return "reconciliation"
+    if any(term in task_folded for term in _TASK_TERMS["edo"]):
+        return "edo"
+    if any(term in task_folded for term in _TASK_TERMS["period_close"]):
+        return "period_close"
+    if state.operation == "close" and "месяц" in task_folded:
+        return "period_close"
+    if any(term in task_folded for term in _TASK_TERMS["vat_usn"]):
+        return "vat_usn"
+    if any(term in task_folded for term in _TASK_TERMS["cash_operations"]):
+        return "cash_operations"
+    if (state.operation == "search" and "касс" in task_folded
+            and any(term in task_folded for term in ("заводскому номеру", "номер фн"))):
+        return "cash_search"
+    if any(term in task_folded for term in _TASK_TERMS["fiscal_format"]):
+        return "fiscal_format"
+    if any(term in task_folded for term in _TASK_TERMS["model_features"]):
+        return "model_features"
+    if any(term in task_folded for term in _TASK_TERMS["product_catalog"]):
+        return "product_catalog"
+    if ("замороз" in task_folded or "без платеж" in task_folded):
+        return "billing"
+    if any(term in task_folded for term in _TASK_TERMS["settings"]):
+        return "settings"
+    if any(term in task_folded for term in _TASK_TERMS["goods_receipt"]):
+        return "goods_receipt"
+    if (state.task_entities.get("software") and "эквайр" in task_folded
+            and "банк" in task_folded):
+        # Keep the known metadata ambiguity unresolved; do not turn an
+        # acquiring-return accounting question into a receipt refund route.
+        return None
+    if any(term in task_folded for term in _TASK_TERMS["sales"]):
+        return "sales"
+    if (any(term in task_folded for term in _TASK_TERMS["refund"])
+            and not ("эквайр" in task_folded and "банк" in task_folded
+                     and state.task_entities.get("software"))):
+        return "refund"
+    if any(term in task_folded for term in _TASK_TERMS["billing"]):
+        return "billing"
+    if any(term in task_folded for term in _TASK_TERMS["cash_list"]):
+        return "cash_list"
+    if any(term in task_folded for term in _TASK_TERMS["network_diagnostics"]):
+        return "network_diagnostics"
+    if any(term in task_folded for term in _TASK_TERMS["error_diagnosis"]):
+        return "error_diagnosis"
+    if any(term in task_folded for term in _TASK_TERMS["marking"]):
+        return "marking"
+    if any(term in task_folded for term in _TASK_TERMS["receipt_transmission"]):
+        return "receipt_transmission"
+    if ((state.routing_service or state.task_entities.get("software"))
+            and (any(term in task_folded for term in _TASK_TERMS["integration"])
+                 or "интеграц" in task_folded)):
+        return "integration"
+    if (state.operation in {"add", "assign", "add_employee", "assign_role"}
+            and any(term in task_folded for term in ("роль", "сотрудник", "бухгалтер"))):
+        return "access"
     if state.intent == "receipt" and state.operation == "repeat_print":
         return "receipt_print"
     if state.intent == "receipt" and state.operation == "correct":
@@ -357,23 +536,6 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     if (state.operation == "diagnose" and state.task_entity("manufacturer")
             and any(term in task_folded for term in ("не печат", "печать", "индикатор", "ошибка"))):
         return "error_diagnosis"
-    if state.intent == "receipt":
-        search_request = (state.operation == "search"
-                          or any(term in task_folded for term in (
-                              "журнал чек", "выгруз", "экспорт", "конкретн", "найти чек", "поиск чек",
-                          ))
-                          or bool(re.search(r"журнал.{0,50}чек|чек.{0,50}журнал", task_folded))
-                          or (state.operation == "status"
-                              and not any(term in task_folded for term in (
-                                  "не отправ", "не переда", "очеред", "нет связи",
-                              ))))
-        if search_request:
-            return "receipt_search"
-        if state.operation in {"diagnose", "status", "check", "transmit"}:
-            return "receipt_transmission"
-        query_folded = query.casefold()
-        if any(x in query_folded for x in ("переда", "отправ", "не поступают")):
-            return "receipt_transmission"
     if state.intent in {"device", "fiscal_drive", "network"} and (state.error or state.operation == "diagnose"):
         return "error_diagnosis"
     query_terms = _terms(query)
@@ -445,11 +607,12 @@ def _procedure_matches(state: DialogueState, metadata: dict) -> bool:
                for value in values)
 
 
-def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> bool:
+def _operation_matches(operation: str, metadata: dict, hit: SearchResult,
+                        query: str | None = None) -> bool:
     if operation in {"explain", "unknown"}:
         return True
     task_category = metadata.get("task_category")
-    expected = normalize_operation(operation, task_category)
+    expected = normalize_operation(operation, task_category, query)
     supported = {normalize_operation(item, task_category)
                  for item in metadata.get("operations") or ()}
     if expected in supported:
@@ -457,7 +620,12 @@ def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> boo
     if metadata.get("_operations_explicit"):
         # Opening an existing record / configuring a role is useful partial
         # evidence for changing permissions, not proof of a complete workflow.
-        return operation == "change_permissions" and bool(supported & {"edit_user", "configure_role"})
+        if operation == "change_permissions" and bool(supported & {"edit_user", "configure_role"}):
+            return True
+        if (operation == "change_permissions" and bool(supported & {"add_employee", "assign_role"})
+                and query and any(term in query.casefold() for term in ("уже завед", "уже создан", "отредакт"))):
+            return True
+        return False
     text = " ".join((hit.text, str(metadata.get("title") or ""), str(metadata.get("source") or ""))).casefold()
     if operation == "assign_role":
         return bool(re.search(r"\b(?:роль|роли|ролей|ролям|ролями|ролях)\b", text)) and any(x in text for x in ("назнач", "присва", "выда", "присво"))
@@ -586,7 +754,9 @@ class RetrievalPipeline:
             # Session facts persist across tasks. Only the cabinet bound to the
             # current task is a hard service constraint; hardware is required
             # separately for technical tasks, not for an OFD receipt filter.
-            routing = state.routing_service
+            # An OFD is a current routing fact even when the reducer keeps it
+            # outside the active service slot for fiscal-drive questions.
+            routing = state.routing_service or state.task_entity("ofd")
             routing_metadata = meta.get('service')
             if state.routing_slot == 'manufacturer':
                 routing_metadata = meta.get('manufacturer')
@@ -622,7 +792,7 @@ class RetrievalPipeline:
                     operation_metadata = normalize_metadata({**meta, "text": article_text})
                     if not meta.get("_operations_explicit"):
                         operation_metadata["operations"] = _derive_operations(article_text.casefold(), actual_task)
-            operation_match = _operation_matches(state.operation, operation_metadata, hit)
+            operation_match = _operation_matches(state.operation, operation_metadata, hit, query)
             if routing and not service_match:
                 reasons.append("service_mismatch_or_unlabeled")
             procedure_service = meta.get("procedure_service")

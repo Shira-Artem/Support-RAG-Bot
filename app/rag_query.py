@@ -23,7 +23,8 @@ class QueryNeedsClarification(ValueError):
     pass
 
 
-def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
+def build_rag_query(state: DialogueState, max_chars: int = 500,
+                    *, include_client_facts: bool = True) -> str:
     if state.analysis_required:
         raise QueryNeedsClarification("Message relationship is unresolved")
     if state.intent == "receipt" and state.operation == "search":
@@ -51,14 +52,19 @@ def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
     # Never cut the middle of a fact or drop an exclusion to satisfy the search
     # API limit. Oversized states need a targeted clarification/compression step.
     parts = [*required]
-    report_request = state.operation_evidence or state.task
-    if state.intent == 'report' and report_request:
-        # Preserve the requested report kind and conditions from the client;
-        # compressing to «проверка ФН» loses the object and changes the task.
-        parts.append("запрос клиента: " + report_request.value)
-    elif state.intent == 'receipt' and state.operation == 'correct' and state.task:
-        # The kind of receipt error and FFD version select different correction
-        # procedures, so a generic «исправление чека» query is not sufficient.
+    # Keep the complete fact from the current task.  The typed operation and
+    # object are useful routing hints, but they are not a substitute for the
+    # client's parameters, conditions, numbers, or product/service names.
+    # On the first turn this is the complete current request.  On later turns
+    # the original text may contain a superseded service/model/code, so the
+    # reducer-owned current facts below are the only safe source of additions.
+    low_information_status = (state.intent == "receipt" and state.operation == "status"
+                              and not state.parameters and not state.details
+                              and not state.constraints and not state.goals
+                              and not state.error)
+    unresolved_access_task = state.intent == "access" and state.operation == "unknown"
+    if (include_client_facts and state.task and state.revision <= 1
+            and not low_information_status and not unresolved_access_task):
         parts.append("запрос клиента: " + state.task.value)
     if state.goals:
         parts.append("цель: " + "; ".join(f.value for f in state.goals))

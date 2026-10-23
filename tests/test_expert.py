@@ -547,7 +547,9 @@ def test_archive_fn_instruction_is_rejected_as_a_whole_and_saved(tmp_path, monke
     answer = asyncio.run(AnswerService(Rag(), settings(tmp_path)).answer("Как закрыть архив ФН на Эвоторе?"))
     assert answer.generation_status == "rejected"
     assert answer.scenario == "escalate"
-    assert answer.raw_model_text == raw
+    assert answer.raw_model_text is None
+    assert not answer.llm_call_attempted
+    assert answer.generation_reason == "закрыть архив ФН"
     assert answer.text == "Это ответственная фискальная операция. Не выполняйте её самостоятельно; передайте вопрос специалисту по ККТ."
     assert "Закройте архив" not in answer.text and "замените ФН" not in answer.text
 
@@ -556,8 +558,8 @@ def test_archive_fn_instruction_is_rejected_as_a_whole_and_saved(tmp_path, monke
     attempt = store.claim(sid, 42, "Q1")
     store.save_answer(attempt, answer)
     row = store.latest(sid, "Q1")
-    assert row["raw_model_text"] == raw and row["answer_text"] == answer.text
-    assert row["validation_reason"] == "unsupported_dangerous_operation:закрыть архив ФН"
+    assert row["raw_model_text"] is None and row["answer_text"] == answer.text
+    assert row["generation_reason"] == "закрыть архив ФН"
 
 
 def test_generic_question_answers_immediately_and_unverified_ui_steps_are_removed(tmp_path, monkeypatch):
@@ -677,8 +679,9 @@ def test_single_prompt_scenarios_allow_safe_general_answers_without_rag(monkeypa
     answers = [asyncio.run(service.answer(query)) for query in
                ("Что такое ОФД?", "Куда нажать в кабинете?", "Как заменить ФН?")]
     assert [answer.scenario for answer in answers] == ["answer", "clarify", "escalate"]
-    assert all(answer.generation_status == "generated" and answer.used_model for answer in answers)
-    assert len(calls) == 3
+    assert [answer.generation_status for answer in answers] == ["generated", "generated", "rejected"]
+    assert [answer.used_model for answer in answers] == [True, True, False]
+    assert len(calls) == 2
 
     store = ExpertStore(tmp_path / "scenario.sqlite3")
     sid = store.start(42, [question()])

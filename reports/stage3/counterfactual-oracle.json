@@ -1,0 +1,1940 @@
+{
+  "experiment": "offline_task_category_oracle",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "questions": 83,
+  "routing_cases": 35,
+  "llm_calls": 0,
+  "production_code_changed": false,
+  "qdrant_changed": false,
+  "metrics": {
+    "task_unresolved": {
+      "cases": 31,
+      "baseline_metadata_passed": 0,
+      "oracle_metadata_passed": 10,
+      "baseline_pipeline_selected": 0,
+      "oracle_pipeline_selected": 10,
+      "recovered_pipeline_selected": 10,
+      "baseline_final_context": 0,
+      "oracle_final_context": 10,
+      "recovered_final_context": 10,
+      "baseline_extra_selected_documents": 25,
+      "oracle_extra_selected_documents": 12,
+      "new_extra_documents": 12,
+      "baseline_service_mixing_cases": 0,
+      "oracle_service_mixing_cases": 0,
+      "baseline_category_mixing_cases": 7,
+      "oracle_category_mixing_cases": 0,
+      "baseline_operation_mixing_cases": 0,
+      "oracle_operation_mixing_cases": 0
+    },
+    "task_mismatch": {
+      "cases": 4,
+      "baseline_metadata_passed": 0,
+      "oracle_metadata_passed": 1,
+      "baseline_pipeline_selected": 0,
+      "oracle_pipeline_selected": 1,
+      "recovered_pipeline_selected": 1,
+      "baseline_final_context": 0,
+      "oracle_final_context": 1,
+      "recovered_final_context": 1,
+      "baseline_extra_selected_documents": 1,
+      "oracle_extra_selected_documents": 0,
+      "new_extra_documents": 0,
+      "baseline_service_mixing_cases": 0,
+      "oracle_service_mixing_cases": 0,
+      "baseline_category_mixing_cases": 1,
+      "oracle_category_mixing_cases": 0,
+      "baseline_operation_mixing_cases": 0,
+      "oracle_operation_mixing_cases": 0
+    },
+    "all_routing_cases": {
+      "cases": 35,
+      "baseline_metadata_passed": 0,
+      "oracle_metadata_passed": 11,
+      "baseline_pipeline_selected": 0,
+      "oracle_pipeline_selected": 11,
+      "recovered_pipeline_selected": 11,
+      "baseline_final_context": 0,
+      "oracle_final_context": 11,
+      "recovered_final_context": 11,
+      "baseline_extra_selected_documents": 26,
+      "oracle_extra_selected_documents": 12,
+      "new_extra_documents": 12,
+      "baseline_service_mixing_cases": 0,
+      "oracle_service_mixing_cases": 0,
+      "baseline_category_mixing_cases": 8,
+      "oracle_category_mixing_cases": 0,
+      "baseline_operation_mixing_cases": 0,
+      "oracle_operation_mixing_cases": 0
+    },
+    "baseline_consistency_with_diagnostic": {
+      "pipeline_selected": 35,
+      "final_context": 35
+    }
+  },
+  "rows": [
+    {
+      "id": "Q002",
+      "query": "Как добавить второй интернет-магазин к нашей облачной кассе?",
+      "expected_source": "atol_online/settings/add-more-shop-urls.md",
+      "expected_document_id": "atol-online-11238-add-more-shop-urls",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "settings",
+      "determined_before_oracle": {
+        "intent": "network",
+        "operation": "add",
+        "task_category": null,
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "aqsi-online-setup-add-store",
+          "atol-online-12148-company-registration",
+          "aqsi-online-account-add-user",
+          "atol-online-21944-fns-preparation"
+        ],
+        "extra_selected_documents": [
+          "aqsi-online-setup-add-store",
+          "atol-online-12148-company-registration",
+          "aqsi-online-account-add-user",
+          "atol-online-21944-fns-preparation"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "aqsi-online-setup-add-store",
+          "atol-online-12148-company-registration",
+          "aqsi-online-account-add-user",
+          "atol-online-21944-fns-preparation"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:add"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q003",
+      "query": "Как проверить, поддерживается ли наша версия 1С для АТОЛ Онлайн?",
+      "expected_source": "atol_online/integration/integration-1c-versions.md",
+      "expected_document_id": "atol-online-12790-integration-1c-versions",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "integration",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q008",
+      "query": "Как добавить новый товар в каталог кассы aQsi?",
+      "expected_source": "aqsi_devices/catalog/create-product.md",
+      "expected_document_id": "aqsi-device-create-product",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "product_catalog",
+      "determined_before_oracle": {
+        "intent": "device",
+        "operation": "add",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "aQsi"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "aqsi-device-marking-178",
+          "aqsi-online-setup-add-store",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-permission-setup"
+        ],
+        "extra_selected_documents": [
+          "aqsi-device-marking-178",
+          "aqsi-online-setup-add-store",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-permission-setup"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "aqsi-device-marking-178",
+          "aqsi-online-setup-add-store",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-permission-setup"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:add"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q013",
+      "query": "Как запустить закрытие месяца по расписанию в 1С?",
+      "expected_source": "1c/closing/monthly-schedule.md",
+      "expected_document_id": "batch-20261013-closing-monthly-schedule",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "period_close",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "close",
+        "task_category": null,
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:close"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q018",
+      "query": "Где посмотреть срок действия и заполненность ФН в кабинете?",
+      "expected_source": "atol_online/fn/monitoring.md",
+      "expected_document_id": "atol-online-18126-monitoring",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "cash_list",
+      "determined_before_oracle": {
+        "intent": "fiscal_drive",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "aqsi-kkt-error-115",
+          "evotor-fn-210-360004715693",
+          "atol-online-16568-step7-fn-activation",
+          "evotor-fn-231-360005098974"
+        ],
+        "extra_selected_documents": [
+          "aqsi-kkt-error-115",
+          "evotor-fn-210-360004715693",
+          "atol-online-16568-step7-fn-activation",
+          "evotor-fn-231-360005098974"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "aqsi-kkt-error-115",
+          "evotor-fn-210-360004715693",
+          "atol-online-16568-step7-fn-activation",
+          "evotor-fn-231-360005098974"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q020",
+      "query": "На кассе aQsi сообщение, что документ не записан в ФН. Как действовать?",
+      "expected_source": "aqsi_devices/errors/fn161-document-not-saved.md",
+      "expected_document_id": "aqsi-device-fn161-document-not-saved",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "error_diagnosis",
+      "determined_before_oracle": {
+        "intent": "fiscal_drive",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "aQsi"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "aqsi-device-fn161-document-not-saved",
+          "aqsi-device-paper-print-retry",
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126"
+        ],
+        "extra_selected_documents": [
+          "aqsi-device-paper-print-retry",
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-device-paper-print-retry",
+          "aqsi-kkt-error-126"
+        ]
+      }
+    },
+    {
+      "id": "Q022",
+      "query": "На Эвоторе не работает мобильный интернет, касса не выходит в сеть. Что проверить?",
+      "expected_source": "evotor/network/mobile-internet-first-checks.md",
+      "expected_document_id": "evotor-mobile-network-check-20261019",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "network_diagnostics",
+      "determined_before_oracle": {
+        "intent": "network",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "evotor-model-6-lite-1d8e8869",
+          "evotor-6-ofd-connection-360014099534",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-210-360004715693"
+        ],
+        "extra_selected_documents": [
+          "evotor-model-6-lite-1d8e8869",
+          "evotor-6-ofd-connection-360014099534",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-210-360004715693"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "evotor-model-6-lite-1d8e8869",
+          "evotor-6-ofd-connection-360014099534",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-210-360004715693"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q023",
+      "query": "Эвотор 7.3 пишет, что не может связаться с ОФД. С чего начать?",
+      "expected_source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+      "expected_document_id": "evotor-7-3-ofd-connection-360014099534",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "receipt_transmission",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q033",
+      "query": "Какую роль в aQsi Online дать бухгалтеру, чтобы он видел отчёты, но не менял настройки?",
+      "expected_source": "aqsi_online/account/add-user.md",
+      "expected_document_id": "aqsi-online-account-add-user",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "access",
+      "determined_before_oracle": {
+        "intent": "report",
+        "operation": "assign",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "aQsi Online"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:assign"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q036",
+      "query": "В Платформе ОФД деньги на счёте есть, а касса числится неоплаченной. Почему?",
+      "expected_source": "platformaofd/ofd/tariff-activation.md",
+      "expected_document_id": "platformaofd-tariff-activation",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "ofd_connection",
+      "determined_before_oracle": {
+        "intent": "device",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "ofd",
+        "routing_service": "Платформа ОФД"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_mismatch:receipt_transmission!=ofd_connection"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q038",
+      "query": "Как в Платформе ОФД быстро найти кассы с заканчивающимся ресурсом ФН?",
+      "expected_source": "platformaofd/ofd/lkk-cash-monitoring.md",
+      "expected_document_id": "platformaofd-lkk-cash-monitoring",
+      "routing_reason": "task_mismatch",
+      "oracle_task_category": "cash_list",
+      "determined_before_oracle": {
+        "intent": "fiscal_drive",
+        "operation": "search",
+        "task_category": "fiscal_drive_search",
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_mismatch:cash_list!=fiscal_drive_search"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "platformaofd-lkk-receipt-search"
+        ],
+        "extra_selected_documents": [
+          "platformaofd-lkk-receipt-search"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "platformaofd-lkk-receipt-search"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:search"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q039",
+      "query": "Жёлтый индикатор ЦРПТ в Платформе ОФД означает, что у нас точно нарушение?",
+      "expected_source": "platformaofd/marking/crpt-indicators.md",
+      "expected_document_id": "platformaofd-crpt-indicators",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "marking",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "ofd",
+        "routing_service": "Платформа ОФД"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "platformaofd-crpt-indicators"
+        ],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q044",
+      "query": "Эвотор пишет про расхождение времени планшета и кассы. Что вам прислать для диагностики?",
+      "expected_source": "evotor/settings/time-mismatch-first-checks.md",
+      "expected_document_id": "evotor-time-mismatch-check-20261019",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "error_diagnosis",
+      "determined_before_oracle": {
+        "intent": "device",
+        "operation": "reconcile",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "evotor-6-shift-360006708093"
+        ],
+        "extra_selected_documents": [
+          "evotor-6-shift-360006708093"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "evotor-6-shift-360006708093"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:reconcile"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q051",
+      "query": "В aQsi Online не вижу кассу, которая раньше была. С чего проверить?",
+      "expected_source": "aqsi_online/account/my-cash-registers.md",
+      "expected_document_id": "aqsi-online-account-my-cash-registers",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "cash_list",
+      "determined_before_oracle": {
+        "intent": "device",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "aQsi Online"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "aqsi-online-fns-finish-reg",
+          "aqsi-online-fns-register-ooo",
+          "aqsi-online-setup-order-cash-register",
+          "aqsi-online-fns-register-ip"
+        ],
+        "extra_selected_documents": [
+          "aqsi-online-fns-finish-reg",
+          "aqsi-online-fns-register-ooo",
+          "aqsi-online-setup-order-cash-register",
+          "aqsi-online-fns-register-ip"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "aqsi-online-fns-finish-reg",
+          "aqsi-online-fns-register-ooo",
+          "aqsi-online-setup-order-cash-register",
+          "aqsi-online-fns-register-ip"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q055",
+      "query": "Банк списал деньги за возврат покупателю по эквайрингу. Какую операцию искать в 1С?",
+      "expected_source": "1c/bank/acquiring-returns.md",
+      "expected_document_id": "batch-20261013-bank-acquiring-returns",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "bank_statement",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "search",
+        "task_category": null,
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:search"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q058",
+      "query": "При закрытии месяца пишет, что не закрыт счёт затрат. Какие данные вам нужны?",
+      "expected_source": "1c/closing/error-first-diagnostics.md",
+      "expected_document_id": "batch-20261013-closing-error-first-diagnostics",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "period_close",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "close",
+        "task_category": null,
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:close"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q059",
+      "query": "Хотим сверить взаиморасчёты с поставщиком в 1С. Что уточнить перед актом?",
+      "expected_source": "1c/counterparty/reconciliation-act.md",
+      "expected_document_id": "batch-20261013-counterparty-reconciliation-act",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "reconciliation",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "reconcile",
+        "task_category": null,
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:reconcile"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q060",
+      "query": "В 1С-ЭПД ошибка «контрагент в хранилище не найден». Надо отправить приглашение?",
+      "expected_source": "1c/edo/epd-vs-edo.md",
+      "expected_document_id": "batch-20261013-edo-epd-vs-edo",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "edo",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "transmit",
+        "task_category": null,
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:transmit"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q061",
+      "query": "Один УПД от поставщика, а товар пришёл на два склада. Можно оформить это в 1С?",
+      "expected_source": "1c/goods/single-upd-many-warehouses.md",
+      "expected_document_id": "batch-20261013-goods-single-upd-many-warehouses",
+      "routing_reason": "task_mismatch",
+      "oracle_task_category": "goods_receipt",
+      "determined_before_oracle": {
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "task_category": "document_discrepancy",
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_mismatch:goods_receipt!=document_discrepancy"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "batch-20261013-goods-single-upd-many-warehouses"
+        ],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q063",
+      "query": "ИП на УСН заработал за 2025 год 18 млн рублей. Что проверить по НДС в 2026 году?",
+      "expected_source": "accounting/usn/usn-nds-exemption-2026.md",
+      "expected_document_id": "acc-usn-nds-exemption-2026",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "vat_usn",
+      "determined_before_oracle": {
+        "intent": "tax",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [
+          "batch-20261013-taxes-ens-menu-2026",
+          "atol-online-11243-correct-ffd12",
+          "aqsi-kkt-error-115",
+          "aqsi-online-receipts-enable-manual-receipt"
+        ],
+        "extra_selected_documents": [
+          "batch-20261013-taxes-ens-menu-2026",
+          "atol-online-11243-correct-ffd12",
+          "aqsi-kkt-error-115",
+          "aqsi-online-receipts-enable-manual-receipt"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [
+          "batch-20261013-taxes-ens-menu-2026",
+          "atol-online-11243-correct-ffd12",
+          "aqsi-kkt-error-115",
+          "aqsi-online-receipts-enable-manual-receipt"
+        ],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q065",
+      "query": "Как загрузить каталог товаров в aQsi из Excel?",
+      "expected_source": "aqsi_devices/catalog/excel-import.md",
+      "expected_document_id": "aqsi-device-excel-import",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "product_catalog",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "aQsi"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "aqsi-device-excel-import",
+          "aqsi-device-shop-assignment",
+          "aqsi-device-create-product"
+        ],
+        "extra_selected_documents": [
+          "aqsi-device-shop-assignment",
+          "aqsi-device-create-product"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": [
+          "aqsi-device-create-product",
+          "aqsi-device-shop-assignment"
+        ]
+      }
+    },
+    {
+      "id": "Q071",
+      "query": "Можно сделать возврат прихода через отложенный заказ aQsi?",
+      "expected_source": "aqsi_devices/sales/deferred-order-refund.md",
+      "expected_document_id": "aqsi-device-deferred-order-refund",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "sales",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "return",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "aQsi"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:return"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q075",
+      "query": "Есть сайт без готового модуля CMS. Как начать интеграцию с aQsi Online?",
+      "expected_source": "aqsi_online/integration/direct-api.md",
+      "expected_document_id": "aqsi-online-integration-direct-api",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "integration",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "aQsi Online"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "aqsi-online-integration-direct-api"
+        ],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q079",
+      "query": "В АТОЛ Онлайн часть денег в поле «Заблокировано под услуги». Это долг?",
+      "expected_source": "atol_online/billing/balance-operations.md",
+      "expected_document_id": "atol-online-11053-balance-operations",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "atol-online-11053-balance-operations",
+          "atol-online-14133-debt-payment",
+          "atol-online-11077-service-blocked",
+          "atol-online-17627-invoice-composition"
+        ],
+        "extra_selected_documents": [
+          "atol-online-14133-debt-payment",
+          "atol-online-11077-service-blocked",
+          "atol-online-17627-invoice-composition"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": [
+          "atol-online-11077-service-blocked",
+          "atol-online-14133-debt-payment",
+          "atol-online-17627-invoice-composition"
+        ]
+      }
+    },
+    {
+      "id": "Q080",
+      "query": "Где получить закрывающие документы АТОЛ Онлайн, если УПД не пришёл?",
+      "expected_source": "atol_online/billing/closing-docs.md",
+      "expected_document_id": "atol-online-14145-closing-docs",
+      "routing_reason": "task_mismatch",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "delivery_document",
+        "operation": "close",
+        "task_category": "document_discrepancy",
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_mismatch:billing!=document_discrepancy"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:close"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q081",
+      "query": "Доступ к АТОЛ Онлайн ограничен из-за задолженности. Где взять счёт?",
+      "expected_source": "atol_online/billing/debt-payment.md",
+      "expected_document_id": "atol-online-14133-debt-payment",
+      "routing_reason": "task_mismatch",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "access",
+        "operation": "change_permissions",
+        "task_category": "access",
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_mismatch:billing!=access"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:change_permissions"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q082",
+      "query": "Можно заморозить облачную кассу АТОЛ Онлайн на три месяца без платежей?",
+      "expected_source": "atol_online/billing/freeze-service.md",
+      "expected_document_id": "atol-online-16576-freeze-service",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "device",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "atol-online-16576-freeze-service",
+          "atol-online-11078-change-plan",
+          "atol-online-11075-fn-invoice",
+          "atol-online-11073-renewal-invoice"
+        ],
+        "extra_selected_documents": [
+          "atol-online-11078-change-plan",
+          "atol-online-11075-fn-invoice",
+          "atol-online-11073-renewal-invoice"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": [
+          "atol-online-11073-renewal-invoice",
+          "atol-online-11075-fn-invoice",
+          "atol-online-11078-change-plan"
+        ]
+      }
+    },
+    {
+      "id": "Q083",
+      "query": "Акт сверки АТОЛ Онлайн за квартал не пришёл. Что проверить?",
+      "expected_source": "atol_online/billing/reconciliation-acts.md",
+      "expected_document_id": "atol-online-11052-reconciliation-acts",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q084",
+      "query": "Не пришёл счёт на продление АТОЛ Онлайн. Где искать копию?",
+      "expected_source": "atol_online/billing/renewal-invoice.md",
+      "expected_document_id": "atol-online-11073-renewal-invoice",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "search",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:search"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q085",
+      "query": "Ошибочно пополнили баланс АТОЛ Онлайн. Как запросить возврат?",
+      "expected_source": "atol_online/billing/refund-unused-funds.md",
+      "expected_document_id": "atol-online-11058-refund-unused-funds",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "billing",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "return",
+        "task_category": null,
+        "routing_slot": "service",
+        "routing_service": "АТОЛ Онлайн"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:return"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q087",
+      "query": "В АТОЛ Pay вернули только часть оплаченных товаров. Какой чек нужен?",
+      "expected_source": "atol_online/atol_pay/refund-full-partial.md",
+      "expected_document_id": "atol-online-22853-refund-full-partial",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "refund",
+      "determined_before_oracle": {
+        "intent": "receipt",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "АТОЛ"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "atol-online-22853-refund-full-partial"
+        ],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q088",
+      "query": "Где на Эвоторе 6 открыть новую смену вручную?",
+      "expected_source": "evotor/cash/evotor-6-shift.md",
+      "expected_document_id": "evotor-6-shift-360006708093",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "cash_operations",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "change",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:change"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q089",
+      "query": "Как узнать фактическую версию ФФД на Эвоторе?",
+      "expected_source": "evotor/ffd/how-to-check-ffd.md",
+      "expected_document_id": "evotor-ffd-version-check-20261019",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "fiscal_format",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "operation_mismatch:check"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "delta": {
+        "metadata_recovered": false,
+        "pipeline_recovered": false,
+        "context_recovered": false,
+        "new_extra_documents": []
+      }
+    },
+    {
+      "id": "Q091",
+      "query": "Эвотор пишет «Марка не была проверена». Что нужно сообщить для диагностики?",
+      "expected_source": "evotor/marking/code-check-error-first-steps.md",
+      "expected_document_id": "evotor-mark-check-error-20261019",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "marking",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "check",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "extra_selected_documents": [
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": [
+          "evotor-marked-goods-upd-20261019"
+        ]
+      }
+    },
+    {
+      "id": "Q092",
+      "query": "На Эвоторе 7.3 горит красный индикатор. Это точно поломка?",
+      "expected_source": "evotor/models/evotor-7-3.md",
+      "expected_document_id": "evotor-model-7-3-360002760513",
+      "routing_reason": "task_unresolved",
+      "oracle_task_category": "model_features",
+      "determined_before_oracle": {
+        "intent": "unknown",
+        "operation": "unknown",
+        "task_category": null,
+        "routing_slot": "manufacturer",
+        "routing_service": "Эвотор"
+      },
+      "baseline": {
+        "metadata_passed": false,
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "pipeline_selected": false,
+        "final_context": false,
+        "selected_documents": [],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": null
+      },
+      "oracle": {
+        "metadata_passed": true,
+        "rejection_reasons": [],
+        "pipeline_selected": true,
+        "final_context": true,
+        "selected_documents": [
+          "evotor-model-7-3-360002760513"
+        ],
+        "extra_selected_documents": [],
+        "selected_service_errors": [],
+        "selected_category_mixing": [],
+        "selected_operation_mixing": [],
+        "candidate_rank_after_gates": 1
+      },
+      "delta": {
+        "metadata_recovered": true,
+        "pipeline_recovered": true,
+        "context_recovered": true,
+        "new_extra_documents": []
+      }
+    }
+  ]
+}
