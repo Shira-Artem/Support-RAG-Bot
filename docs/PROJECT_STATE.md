@@ -17,7 +17,7 @@
 
 - Ветка: `main`.
 - Предыдущий подтверждённый commit: `a026dd2de40f192329049aec2b26ba5940f7d664` (`Add safe procedural evidence applicability checks`); локальная `main` и `origin/main` были синхронизированы перед текущей публикацией.
-- DialogueState v2.1 и изолированный A/B стенд включены в текущую публикацию на `main` по явному запросу пользователя от 2026-10-23. Финальный commit SHA будет внесён в журнал после создания commit.
+- Последний commit: `1b8fe9cad605579d06217434cb9306b7b10fae82` (`feat: add dialogue lifecycle v2.1 and analyzer A/B bench`); включает DialogueState v2.1, A/B CLI, sanitized artifact и тесты. Изменения опубликованы по явному запросу пользователя от 2026-10-23.
 
 ### Конфигурация (подтверждённые defaults/receipt, секреты опущены)
 
