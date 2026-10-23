@@ -130,6 +130,39 @@ def normalize_operation(operation: str, task_category: str | None = None,
 
 
 _COARSE_OPERATIONS = {"change", "check", "connect", "configure", "list", "search", "status"}
+_BANK_STATEMENT_OPERATIONS = {
+    "load_bank_statements", "list_bank_statements", "import_bank_statement_file",
+    "import_bank_statements_via_intermediary", "schedule_bank_statement_import",
+}
+
+
+def reviewed_safe_diagnostic_section(metadata: dict,
+                                     task_category: str | None = None) -> bool:
+    """Recognize an approved, explicitly reviewed bank diagnostic fragment.
+
+    This grants evidence from this section only; it does not turn diagnose
+    into the article's loading/import operation.
+    """
+    operations = metadata.get("operations") or ()
+    supported = {normalize_operation(str(item), "bank_statement") for item in operations}
+    section = re.sub(r"\s+", " ", str(metadata.get("section") or "").casefold().replace("ё", "е")).strip()
+    return (metadata.get("status") == "approved"
+            and (task_category or metadata.get("task_category")) == "bank_statement"
+            and metadata.get("task_category") == "bank_statement"
+            and section == "безопасная диагностика"
+            and bool(metadata.get("_operations_explicit", bool(operations)))
+            and bool(supported) and supported <= _BANK_STATEMENT_OPERATIONS)
+
+
+def diagnostic_version_compatible(query: str | None, metadata: dict) -> bool:
+    """A stated client release must meet the reviewed feature's first release."""
+    source = re.fullmatch(r"\d+(?:\.\d+){2,}", str(metadata.get("version") or ""))
+    if not source:
+        return True
+    mentioned = re.findall(r"(?<!\d)\d+(?:\.\d+){2,}(?!\d)", query or "")
+    minimum = tuple(int(part) for part in source.group().split("."))
+    return all(tuple(int(part) for part in release.split(".")) >= minimum
+               for release in mentioned)
 
 
 def operation_compatibility(operation: str, metadata: dict,
@@ -166,6 +199,9 @@ def operation_compatibility(operation: str, metadata: dict,
     expected = normalize_operation(operation, task_category or category, query)
     if expected in supported:
         return "match"
+    if (operation == "diagnose"
+            and reviewed_safe_diagnostic_section(metadata, task_category)):
+        return "match" if diagnostic_version_compatible(query, metadata) else "mismatch"
     if (operation == "change_permissions" and query
             and re.search(r"уже\s+(?:за|созд|добавл)|существующ|отредактир", query, re.I)
             and supported & {"add_employee", "assign_role", "create_role", "configure_role"}):

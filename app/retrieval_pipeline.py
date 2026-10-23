@@ -11,7 +11,9 @@ from typing import Protocol
 
 from app.dialogue_state import DialogueState
 from app.procedure_policy import (document_applicability, normalize_operation,
-                                  operation_compatibility, query_operation_hints)
+                                  operation_compatibility, query_operation_hints,
+                                  reviewed_safe_diagnostic_section,
+                                  diagnostic_version_compatible)
 from app.rag import SearchResult
 from app.response_grounding import (claim_supported, evidence_statements, has_action,
                                     has_named_role, normalize, permission_clauses, statements,
@@ -849,6 +851,10 @@ class RetrievalPipeline:
                         operation_metadata["operations"] = _derive_operations(article_text.casefold(), actual_task)
             operation_status = operation_compatibility(
                 state.operation, operation_metadata, query, task_category=expected_task)
+            if (state.operation == "diagnose"
+                    and reviewed_safe_diagnostic_section(meta, expected_task)
+                    and not diagnostic_version_compatible(query, meta)):
+                reasons.append("version_below_reviewed_minimum")
             operation_match = operation_status == "match"
             unscoped_match = (expected_task is None and state.intent != "unknown"
                               and lexical_overlap >= 0.50)
@@ -1089,6 +1095,11 @@ class RetrievalPipeline:
                             related.sort(key=lambda item: (item.metadata or {})["chunk_index"])
             for fragment in related:
                 meta = normalize_metadata({**(fragment.metadata or {}), "text": fragment.text})
+                if (state.operation == "diagnose" and expected_task == "bank_statement"
+                        and not reviewed_safe_diagnostic_section(meta, expected_task)):
+                    # The article's load/list/import sections must not become
+                    # diagnostic evidence merely because a safe section passed.
+                    continue
                 if not _procedure_matches(state, meta):
                     continue
                 fragment_task = meta.get("task_category")

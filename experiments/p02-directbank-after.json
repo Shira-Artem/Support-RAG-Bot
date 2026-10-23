@@ -1,0 +1,349 @@
+{
+  "head": "ce4231906368c4c6c872ec175c6eabca55026040",
+  "sha256": {
+    "app/procedure_policy.py": "9ee623142d4eb88cc300f3d162a388eb80f768cf385fd67f2124b5c0263622bf",
+    "app/retrieval_pipeline.py": "ab7efcb14d892bce80b74d5e5d1e639a46fe8bdfc96c6613fd26aed0b229cae1",
+    "data/knowledge/1c/bank/directbank-all-accounts.md": "c020b78a39ba7dcfa8d5bc51660fe3f48f91db165d57ff2b6d427504384eda72",
+    "data/knowledge/1c/bank/directbank-other-banks.md": "86662632ee5f3fa64b5dcb92c26de082e667d54a6092e36cfce6ebb6c148e2a8",
+    "data/knowledge/1c/bank/import-file-directbank.md": "36cdaf9619757fa1fe19892151c32b398093038e0d419e4cff74c594cee74dc9"
+  },
+  "llm_calls": 0,
+  "qdrant_calls": 0,
+  "cases": [
+    {
+      "id": "original",
+      "question": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С перестали загружаться банковские выписки. Как разобраться?",
+      "state": {
+        "intent": "bank_statement",
+        "operation": "diagnose",
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "candidate_document_ids": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        }
+      ],
+      "context_document_ids": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "context_sections": [
+        "Безопасная диагностика"
+      ],
+      "context": "[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved; раздел=Безопасная диагностика; оценка фрагмента=0.95000]\nБезопасная диагностика\n1. Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.\n2. Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк».\n3. Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.\n4. При отсутствии функции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.",
+      "supported_steps": [
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "procedure",
+          "text": "Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка."
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "interface",
+          "text": "Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк»."
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "interface",
+          "text": "Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все."
+        }
+      ],
+      "evidence_status": "partial",
+      "evidence_level": "partial",
+      "insufficiency_reason": "evidence_coverage_incomplete"
+    },
+    {
+      "id": "paraphrase_missing",
+      "question": "В 1С банковские выписки больше не загружаются. Как разобраться?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С банковские выписки больше не загружаются. Как разобраться?",
+      "state": {
+        "intent": "bank_statement",
+        "operation": "diagnose",
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "candidate_document_ids": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        }
+      ],
+      "context_document_ids": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "context_sections": [
+        "Безопасная диагностика"
+      ],
+      "context": "[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved; раздел=Безопасная диагностика; оценка фрагмента=0.95000]\nБезопасная диагностика\n1. Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.\n2. Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк».\n3. Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.\n4. При отсутствии функции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.",
+      "supported_steps": [
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "procedure",
+          "text": "Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка."
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "interface",
+          "text": "Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк»."
+        }
+      ],
+      "evidence_status": "partial",
+      "evidence_level": "partial",
+      "insufficiency_reason": "evidence_coverage_incomplete"
+    },
+    {
+      "id": "paraphrase_stale",
+      "question": "Перестала обновляться банковская выписка в 1С. Как выяснить причину?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: Перестала обновляться банковская выписка в 1С. Как выяснить причину?",
+      "state": {
+        "intent": "bank_statement",
+        "operation": "diagnose",
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "candidate_document_ids": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        }
+      ],
+      "context_document_ids": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "context_sections": [
+        "Безопасная диагностика"
+      ],
+      "context": "[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved; раздел=Безопасная диагностика; оценка фрагмента=0.95000]\nБезопасная диагностика\n1. Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.\n2. Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк».\n3. Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.\n4. При отсутствии функции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.",
+      "supported_steps": [
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "procedure",
+          "text": "Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка."
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "interface",
+          "text": "Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк»."
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "kind": "interface",
+          "text": "Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все."
+        }
+      ],
+      "evidence_status": "partial",
+      "evidence_level": "partial",
+      "insufficiency_reason": "evidence_coverage_incomplete"
+    },
+    {
+      "id": "foreign_service",
+      "question": "В aQsi Online перестали загружаться банковские выписки. Как разобраться?",
+      "rag_query": "сервис: aQsi Online — диагностика ошибки банковская выписка — запрос клиента: В aQsi Online перестали загружаться банковские выписки. Как разобраться?",
+      "state": {
+        "intent": "bank_statement",
+        "operation": "diagnose",
+        "routing_slot": "service",
+        "routing_service": "aQsi Online"
+      },
+      "candidate_document_ids": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "service_mismatch_or_unlabeled"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "operation_mismatch:diagnose"
+          ]
+        }
+      ],
+      "context_document_ids": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_status": "none",
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "older_version",
+      "question": "В 1С:Бухгалтерии 3.0.147 перестали загружаться банковские выписки. Как разобраться?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С:Бухгалтерии 3.0.147 перестали загружаться банковские выписки. Как разобраться?",
+      "state": {
+        "intent": "bank_statement",
+        "operation": "diagnose",
+        "routing_slot": "software",
+        "routing_service": "1С"
+      },
+      "candidate_document_ids": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "version_below_reviewed_minimum",
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        }
+      ],
+      "context_document_ids": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_status": "none",
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "fn_change",
+      "question": "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+      "rag_query": "изменение ФН — запрос клиента: Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+      "state": {
+        "intent": "fiscal_drive",
+        "operation": "change",
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "candidate_document_ids": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "task_unresolved"
+          ]
+        }
+      ],
+      "context_document_ids": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_status": "none",
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "kkt_reregistration",
+      "question": "Нужно перерегистрировать ККТ после замены ФН. Что делать?",
+      "rag_query": "Нужно перерегистрировать ККТ после замены ФН. Что делать? — запрос клиента: Нужно перерегистрировать ККТ после замены ФН. Что делать?",
+      "state": {
+        "intent": "device",
+        "operation": "unknown",
+        "routing_slot": null,
+        "routing_service": null
+      },
+      "candidate_document_ids": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "task_unresolved"
+          ]
+        }
+      ],
+      "context_document_ids": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_status": "unsafe",
+      "evidence_level": "unsafe",
+      "insufficiency_reason": "unsafe_operation:перерегистрировать ККТ"
+    }
+  ]
+}

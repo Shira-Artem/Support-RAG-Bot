@@ -1,0 +1,1821 @@
+{
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "points": 934,
+  "approved_points": 672,
+  "llm_calls": 0,
+  "writes": 0,
+  "cases": [
+    {
+      "id": "original",
+      "question": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С перестали загружаться банковские выписки. Как разобраться?",
+      "intent": "bank_statement",
+      "operation": "diagnose",
+      "candidate_documents": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-returns",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-auto-schedule",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-error-first-diagnostics",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-epd-vs-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-monthly-schedule",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-electronic-upd-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-operations-name",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-menu-2026",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-goods-single-upd-many-warehouses",
+          "reasons": [
+            "task_mismatch:goods_receipt!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-close-several-months",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-accounting-settings",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-patent-tax",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-connect-1c-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "atol-online-12790-integration-1c-versions",
+          "reasons": [
+            "procedure_service_mismatch:АТОЛ Онлайн",
+            "task_mismatch:integration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-automatic-data",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-vat-usn-settings",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-act",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advances-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-to-osno-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-invoice-forms-april",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-cashflow-article",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-add-store",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advance-invoice",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:vat_usn!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        }
+      ],
+      "context_documents": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "paraphrase_missing",
+      "question": "В 1С банковские выписки больше не загружаются. Как разобраться?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С банковские выписки больше не загружаются. Как разобраться?",
+      "intent": "bank_statement",
+      "operation": "diagnose",
+      "candidate_documents": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-returns",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-auto-schedule",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-error-first-diagnostics",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-epd-vs-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-monthly-schedule",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-electronic-upd-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-operations-name",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-menu-2026",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-goods-single-upd-many-warehouses",
+          "reasons": [
+            "task_mismatch:goods_receipt!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-close-several-months",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-accounting-settings",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-patent-tax",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-connect-1c-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "atol-online-12790-integration-1c-versions",
+          "reasons": [
+            "procedure_service_mismatch:АТОЛ Онлайн",
+            "task_mismatch:integration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-automatic-data",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-vat-usn-settings",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-act",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advances-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-to-osno-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-invoice-forms-april",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-cashflow-article",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-add-store",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advance-invoice",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:vat_usn!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        }
+      ],
+      "context_documents": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "paraphrase_stale",
+      "question": "Перестала обновляться банковская выписка в 1С. Как выяснить причину?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: Перестала обновляться банковская выписка в 1С. Как выяснить причину?",
+      "intent": "bank_statement",
+      "operation": "diagnose",
+      "candidate_documents": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-auto-schedule",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-returns",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-error-first-diagnostics",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-epd-vs-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-operations-name",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-monthly-schedule",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-electronic-upd-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-goods-single-upd-many-warehouses",
+          "reasons": [
+            "task_mismatch:goods_receipt!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-close-several-months",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-patent-tax",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-accounting-settings",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-invoice-forms-april",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-connect-1c-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "atol-online-12790-integration-1c-versions",
+          "reasons": [
+            "procedure_service_mismatch:АТОЛ Онлайн",
+            "task_mismatch:integration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-automatic-data",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-menu-2026",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-vat-usn-settings",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-act",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advances-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-to-osno-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-cashflow-article",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-add-store",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advance-invoice",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:vat_usn!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        }
+      ],
+      "context_documents": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "foreign_service",
+      "question": "В aQsi Online перестали загружаться банковские выписки. Как разобраться?",
+      "rag_query": "сервис: aQsi Online — диагностика ошибки банковская выписка — запрос клиента: В aQsi Online перестали загружаться банковские выписки. Как разобраться?",
+      "intent": "bank_statement",
+      "operation": "diagnose",
+      "candidate_documents": [],
+      "rejected": [
+        {
+          "document_id": "aqsi-online-setup-company-details",
+          "reasons": [
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-fns-finish-reg",
+          "reasons": [
+            "task_mismatch:fns_registration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-receipts-enable-manual-receipt",
+          "reasons": [
+            "task_mismatch:receipt_issue!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-account-register-account",
+          "reasons": [
+            "task_mismatch:access!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-account-contact-support",
+          "reasons": [
+            "task_mismatch:support!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-sign-contract",
+          "reasons": [
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-receipts-full-refund",
+          "reasons": [
+            "task_mismatch:refund!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-deferred-order-refund",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:sales!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-account-reset-password",
+          "reasons": [
+            "task_mismatch:access!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-fns-register-ip",
+          "reasons": [
+            "task_mismatch:fns_registration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn161-document-not-saved",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-standard-refund",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:sales!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-fiscalize",
+          "reasons": [
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-receipts-partial-refund",
+          "reasons": [
+            "task_mismatch:refund!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-order-cash-register",
+          "reasons": [
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn7-date",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-receipts-incorrect-105",
+          "reasons": [
+            "task_mismatch:correction_receipt!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-red-blinking-battery",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-add-store",
+          "reasons": [
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-ofd-taxcom-account",
+          "reasons": [
+            "task_mismatch:ofd_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-excel-import",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:product_catalog!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-integration-direct-api",
+          "reasons": [
+            "task_mismatch:integration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-fns-register-ooo",
+          "reasons": [
+            "task_mismatch:fns_registration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn18-expired",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-marking-178",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-first-start-internet",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:equipment_setup!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-opening-closing",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:shift_management!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fiscal-status-report",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:shift_management!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-scanner",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:peripheral_setup!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn-close-safety",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:fiscal_drive!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-account-my-cash-registers",
+          "reasons": [
+            "task_mismatch:cash_list!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-scanner-hub-power",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:peripheral_setup!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-kkt-error-115",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:error_diagnosis!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-x-report",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:shift_management!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-create-product",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:product_catalog!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-permission-setup",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:marking!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-ofd-oism-current-credentials",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:ofd_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-scales",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:peripheral_setup!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-marked-beer",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:sales!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-connection-fields",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:ofd_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-unbox-hardware",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:equipment_setup!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-permission-diagnostics",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:marking!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-android-clock",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:settings!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-cash-in-out",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:shift_management!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-marked-product",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:sales!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-shop-assignment",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:product_catalog!=bank_statement"
+          ]
+        }
+      ],
+      "context_documents": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "older_version",
+      "question": "В 1С:Бухгалтерии 3.0.147 перестали загружаться банковские выписки. Как разобраться?",
+      "rag_query": "ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С:Бухгалтерии 3.0.147 перестали загружаться банковские выписки. Как разобраться?",
+      "intent": "bank_statement",
+      "operation": "diagnose",
+      "candidate_documents": [],
+      "rejected": [
+        {
+          "document_id": "batch-20261013-bank-import-file-directbank",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-other-banks",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-auto-schedule",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-returns",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-monthly-schedule",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-error-first-diagnostics",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-epd-vs-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-close-several-months",
+          "reasons": [
+            "task_mismatch:period_close!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-menu-2026",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-operations-name",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-invoice-forms-april",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-electronic-upd-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-accounting-settings",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "atol-online-12790-integration-1c-versions",
+          "reasons": [
+            "procedure_service_mismatch:АТОЛ Онлайн",
+            "task_mismatch:integration!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-bank-acquiring-patent-tax",
+          "reasons": [
+            "operation_mismatch:diagnose"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-goods-single-upd-many-warehouses",
+          "reasons": [
+            "task_mismatch:goods_receipt!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-act",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-vat-usn-settings",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+          "reasons": [
+            "task_mismatch:reconciliation!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-automatic-data",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-to-osno-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advances-2026",
+          "reasons": [
+            "task_mismatch:vat_accounting!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-edo-connect-1c-edo",
+          "reasons": [
+            "task_mismatch:edo!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-cashflow-article",
+          "reasons": [
+            "task_mismatch:ens!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-add-store",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:service_connection!=bank_statement"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advance-invoice",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_mismatch:vat_usn!=bank_statement"
+          ]
+        }
+      ],
+      "context_documents": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_level": "none",
+      "insufficiency_reason": "no_task_matched_candidates"
+    },
+    {
+      "id": "fn_change",
+      "question": "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+      "rag_query": "изменение ФН — запрос клиента: Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+      "intent": "fiscal_drive",
+      "operation": "change",
+      "candidate_documents": [
+        "platformaofd-reregistration-kkt",
+        "atol-online-11075-fn-invoice",
+        "atol-online-22060-change-parameters",
+        "aqsi-device-fn-close-safety",
+        "atol-online-11253-fn-basics",
+        "atol-online-11251-replacement-reasons",
+        "atol-online-12789-bring-own-fn",
+        "atol-online-20691-receive-old-fn",
+        "batch-20261013-vat-vat-usn-settings",
+        "platformaofd-fn-number-in-lkk",
+        "batch-20261013-taxes-ens-accounting-settings",
+        "aqsi-device-connection-fields",
+        "batch-20261013-taxes-ens-automatic-data",
+        "evotor-fn-231-360005098974",
+        "evotor-fn-234-360005580254",
+        "aqsi-device-fn18-expired",
+        "evotor-correction-receipt-scope-20261019",
+        "aqsi-online-receipts-incorrect-105",
+        "evotor-6-receipt-copy-360005002514",
+        "aqsi-online-fns-finish-reg",
+        "aqsi-kkt-error-115",
+        "evotor-ffd-version-check-20261019",
+        "atol-online-11256-what-is-ofd",
+        "aqsi-device-create-product"
+      ],
+      "rejected": [
+        {
+          "document_id": "platformaofd-registration-status",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-company-details",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-20054-replacement-process",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advances-2026",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-fiscalize",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11239-change-provider",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-fns-indicators",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-24147-replace-kaznachey",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-mark-check-error-20261019",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-account-edit-user",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-android-clock",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn7-date",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18126-monitoring",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-scanner",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-lkk-cash-monitoring",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-error-first-diagnostics",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-ofd-oism-current-credentials",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-time-mismatch-check-20261019",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn161-document-not-saved",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18220-blocked",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-235-360004715213",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22559-agent-status",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-unbox-hardware",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11069-fns-after-fn-swap",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-atol-transmission-checks",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-sign-contract",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11078-change-plan",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22553-choose-fn-with-excise",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-21944-fns-preparation",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-217-89e20cf4",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11243-correct-ffd12",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11052-reconciliation-acts",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "acc-usn-nds-invoice-2026",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-212-360016100393",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "acc-usn-psn-income-2026",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-account-cash-reports",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11248-bso-feature",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11073-renewal-invoice",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-advance-invoice",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18227-removed-from-register",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-ofd-settings-reference-20261019",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "acc-usn-nds-exemption-2026",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22555-switch-ffd12",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-26774-advance-closing",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11071-disable-one-cashier",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-fns-registration",
+          "reasons": [
+            "task_unresolved"
+          ]
+        }
+      ],
+      "context_documents": [
+        "platformaofd-reregistration-kkt"
+      ],
+      "context_sections": [
+        "Что сверить до отправки заявки",
+        "Подтверждение результата"
+      ],
+      "context": "[Источник: platformaofd/fn/reregistration-kkt.md; документ=platformaofd-reregistration-kkt; статус=approved; раздел=Что сверить до отправки заявки; оценка фрагмента=0.04946]\nЧто сверить до отправки заявки\nВ кабинете используется действие «+ Перерегистрация». Нужно выбрать точную ККТ, проверить её текущие сведения и указать действительную причину изменения. При замене ФН данные нового накопителя сопоставляют с отчётами, сформированными самой кассой. Для кассы, отсутствующей в кабинете, статья предусматривает ручной ввод данных.\n\n---\n\n[Источник: platformaofd/fn/reregistration-kkt.md; документ=platformaofd-reregistration-kkt; статус=approved; раздел=Подтверждение результата; оценка фрагмента=0.00000]\nПодтверждение результата\nЗаявка подписывается КЭП организации. После отправки проверяют её статус: подтверждение ФНС и доступная карточка перерегистрации означают завершение процесса; при отказе причина показана в заявке. Этот конспект не заменяет полную инструкцию и проверку регистрационных реквизитов специалистом.",
+      "supported_steps": [
+        {
+          "source": "platformaofd/fn/reregistration-kkt.md",
+          "document_id": "platformaofd-reregistration-kkt",
+          "section": "Что сверить до отправки заявки",
+          "kind": "procedure",
+          "text": "Нужно выбрать точную ККТ, проверить её текущие сведения и указать действительную причину изменения."
+        },
+        {
+          "source": "platformaofd/fn/reregistration-kkt.md",
+          "document_id": "platformaofd-reregistration-kkt",
+          "section": "Что сверить до отправки заявки",
+          "kind": "fact",
+          "text": "При замене ФН данные нового накопителя сопоставляют с отчётами, сформированными самой кассой."
+        }
+      ],
+      "evidence_level": "partial",
+      "insufficiency_reason": "evidence_coverage_incomplete"
+    },
+    {
+      "id": "kkt_reregistration",
+      "question": "Нужно перерегистрировать ККТ после замены ФН. Что делать?",
+      "rag_query": "Нужно перерегистрировать ККТ после замены ФН. Что делать? — запрос клиента: Нужно перерегистрировать ККТ после замены ФН. Что делать?",
+      "intent": "device",
+      "operation": "unknown",
+      "candidate_documents": [],
+      "rejected": [
+        {
+          "document_id": "platformaofd-reregistration-kkt",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11069-fns-after-fn-swap",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-24147-replace-kaznachey",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-20054-replacement-process",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-fn-number-in-lkk",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-registration-status",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11251-replacement-reasons",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22060-change-parameters",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-20691-receive-old-fn",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn-close-safety",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-231-360005098974",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-lkk-cash-monitoring",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18251-deregister-kkt",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-21944-fns-preparation",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18227-removed-from-register",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-account-cash-reports",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn18-expired",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-mark-check-error-20261019",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11075-fn-invoice",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18220-blocked",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11253-fn-basics",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-234-360005580254",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11072-terminate-contract",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-16568-step7-fn-activation",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-receipts-incorrect-105",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11238-add-more-shop-urls",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-ffd-version-check-20261019",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-setup-fiscalize",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn161-document-not-saved",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-kkt-error-115",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-21114-mass-correction",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-lkk-cash-search",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-shtrih-connection-checks",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-ofd-subscription-8865646794770",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-fn7-date",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-standard-refund",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-fns-registration",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-ofd-taxcom-account",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-red-blinking-battery",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-fns-register-ip",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-atol-transmission-checks",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22555-switch-ffd12",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "acc-usn-psn-income-2026",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11071-disable-one-cashier",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-fns-finish-reg",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11053-balance-operations",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-online-account-my-cash-registers",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22553-choose-fn-with-excise",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11256-what-is-ofd",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-212-360016100393",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-23415-activate-taxcom",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-18126-monitoring",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-12789-bring-own-fn",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-12385-step5-fns-data",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-fn-235-360004715213",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-12161-ffd-choice-step3",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11254-test-cashier",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-6-receipt-copy-360005002514",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "aqsi-device-shop-assignment",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "acc-usn-nds-exemption-2026",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-lkk-receipt-search",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "platformaofd-archive-kkt",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11236-ffd-accept-disabled",
+          "reasons": [
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11239-change-provider",
+          "reasons": [
+            "task_unresolved"
+          ]
+        }
+      ],
+      "context_documents": [],
+      "context_sections": [],
+      "context": "",
+      "supported_steps": [],
+      "evidence_level": "unsafe",
+      "insufficiency_reason": "unsafe_operation:перерегистрировать ККТ"
+    }
+  ]
+}

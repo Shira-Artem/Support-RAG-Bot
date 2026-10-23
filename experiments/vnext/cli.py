@@ -25,9 +25,9 @@ import httpx
 from dotenv import dotenv_values
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
-from qdrant_client import QdrantClient, models
 
-from app.embeddings import SentenceTransformerEmbedding
+from experiments.vnext.stage3_retrieval import ReadOnlyStage3
+from experiments.vnext.compare_retrieval import receipt as source_receipt
 from app.response_grounding import claim_supported, instruction_issue, unsafe_operation_issue
 
 COLLECTION = "knowledge_stage3_retrieval_20261022"
@@ -37,6 +37,10 @@ EFFORT = "medium"
 
 class State(TypedDict, total=False):
     messages: Annotated[list[dict], operator.add]
+    scenario_id: str
+    task_id: str
+    task_sequence: int
+    new_topic: bool
     user_text: str
     task_messages: list[str]
     confirmed_quotes: list[str]
@@ -54,6 +58,8 @@ class State(TypedDict, total=False):
     retrieval_ms: int
     llm_ms: int
     grounding_rejections: list[str]
+    retrieval_trace: dict
+    response_trace: dict
 
 
 class Groq:
@@ -98,63 +104,6 @@ class Groq:
         return parsed, tokens, round((time.perf_counter()-start)*1000)
 
 
-class ReadOnlyStage3:
-    def __init__(self, url: str, embedding_name: str):
-        self.client = QdrantClient(url=url, timeout=15)
-        info = self.client.get_collection(COLLECTION)  # never create a collection
-        if info.points_count != 934 or info.config.params.vectors.size != 384:
-            raise RuntimeError("Stage3 inventory differs from verified receipt")
-        self.embedding = SentenceTransformerEmbedding(embedding_name)
-        if self.embedding.dimension != 384:
-            raise RuntimeError("Embedding dimension mismatch")
-        approved_filter = models.Filter(must=[models.FieldCondition(
-            key="status", match=models.MatchValue(value="approved"))])
-        approved = self.client.count(COLLECTION, count_filter=approved_filter, exact=True).count
-        if approved != 672:
-            raise RuntimeError("Approved inventory differs from verified receipt")
-        self.approved_filter = approved_filter
-        self.receipt = {"collection": COLLECTION, "points": info.points_count,
-                        "approved_points": approved, "embedding": embedding_name,
-                        "model": MODEL, "reasoning_effort": EFFORT}
-
-    def search(self, query: str) -> list[dict]:
-        vector = self.embedding.embed([query[:500]])[0]
-        points = self.client.query_points(COLLECTION, query=vector, limit=40,
-                                          query_filter=self.approved_filter,
-                                          with_payload=True).points
-        # Dense search identifies documents; read their sibling chunks so a
-        # highly similar "Question" heading cannot hide the actual procedure.
-        top_docs: dict[str, float] = {}
-        for point in points:
-            x = point.payload or {}
-            doc_id = str(x.get("document_id") or "")
-            if x.get("status") == "approved" and doc_id and doc_id not in top_docs:
-                top_docs[doc_id] = float(point.score)
-            if len(top_docs) == 6:
-                break
-        result = []
-        for doc_id, score in top_docs.items():
-            doc_filter = models.Filter(must=[
-                models.FieldCondition(key="status", match=models.MatchValue(value="approved")),
-                models.FieldCondition(key="document_id", match=models.MatchValue(value=doc_id))])
-            chunks, _ = self.client.scroll(COLLECTION, limit=64, scroll_filter=doc_filter,
-                                           with_payload=True, with_vectors=False)
-            chunks.sort(key=lambda p: (p.payload.get("chunk_index")
-                                      if isinstance(p.payload.get("chunk_index"), int) else 999,
-                                      str(p.id)))
-            useful = [p for p in chunks if _norm(str(p.payload.get("section") or ""))
-                      not in {"вопрос", "вопрос клиента", "вопрос пользователя", "симптомы"}]
-            for point in useful[:3]:
-                x = point.payload or {}
-                result.append({"id": str(point.id), "document_id": doc_id,
-                               "title": x.get("title"), "section": x.get("section"),
-                               "service": x.get("service"), "model": x.get("model"),
-                               "operations": x.get("operations"), "status": x.get("status"),
-                               "text": str(x.get("text") or "")[:1400],
-                               "score": round(score, 4)})
-        return result
-
-
 def _norm(value: str) -> str:
     return re.sub(r"\s+", " ", value.casefold().replace("ё", "е")).strip()
 
@@ -168,35 +117,6 @@ def _question_repeated(question: str, asked: list[str]) -> bool:
         if SequenceMatcher(None, _norm(question), _norm(old)).ratio() >= .8:
             return True
     return False
-
-
-def _scope_compatible(candidate: dict, task: list[str]) -> tuple[bool, str]:
-    """Conservative service/model incompatibility guard after broad retrieval."""
-    context = _norm(" ".join(task))
-    service = _norm(str(candidate.get("service") or ""))
-    model = _norm(str(candidate.get("model") or ""))
-    # This is an after-retrieval incompatibility check, not an intent router.
-    named_services = (
-        ("платформа офд", ("платформа офд",)),
-        ("aqsi online", ("aqsi online", "акси онлайн")),
-        ("aqsi", ("aqsi", "акси")),
-        ("атол онлайн", ("атол онлайн",)),
-        ("атол", ("атол",)),
-        ("эвотор", ("эвотор",)),
-        ("первый офд", ("первый офд",)),
-        ("штрих", ("штрих",)),
-        ("1с", ("1с",)),
-    )
-    for name, aliases in named_services:
-        if name in service and not any(alias in context for alias in aliases):
-            return False, "service_unconfirmed_or_other"
-        if name in service:
-            break
-    if model and any(ch.isdigit() for ch in model) and not ("1с" in model and "1с" in context):
-        digits = re.findall(r"\b\d+(?:\.\d+)?\b", model)
-        if digits and not any(d in context for d in digits):
-            return False, "equipment_model_unconfirmed"
-    return True, "scope_compatible"
 
 
 def build_graph(store: ReadOnlyStage3, groq: Groq):
@@ -223,6 +143,8 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
                                   "fact_quotes": ["exact current-message substring"], "reason": "short string"}}
         result, tokens, ms = groq.json(prompt)
         new_topic = result.get("new_topic") is True or not prior_task
+        task_sequence = state.get("task_sequence", 0) + int(new_topic)
+        task_id = f"{state.get('scenario_id', 'interactive')}:{task_sequence}"
         task = [current] if new_topic else prior_task + [current]
         raw_quotes = result.get("fact_quotes") or []
         quotes = [] if new_topic else list(state.get("confirmed_quotes", []))
@@ -230,20 +152,21 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
             quotes.extend(q for q in raw_quotes if isinstance(q, str) and q and q in current)
         route = result.get("route") if result.get("route") in {"search", "clarify"} else "search"
         query = str(result.get("search_query") or " ".join(task))[:500]
-        if new_topic and current not in query:
-            query = current[:500]
         question = str(result.get("question") or "").strip()
         asked = [] if new_topic else list(state.get("asked_questions", []))
         if route == "clarify" and _question_repeated(question, asked):
             route = "search"  # never loop on the same clarification
         updates: dict = {"task_messages": task, "original_problem": task[0],
+                         "task_id": task_id, "task_sequence": task_sequence,
+                         "new_topic": new_topic,
                          "confirmed_quotes": list(dict.fromkeys(quotes)),
                          "route": route, "search_query": query,
                          "proposed_question": question, "asked_questions": asked,
                          "decision_reason": str(result.get("reason") or "semantic_decision"),
                          "llm_calls": 1, "usage_tokens": tokens, "llm_ms": ms,
                          "retrieval_ms": 0, "candidates": [], "applicability": [],
-                         "grounding_rejections": []}
+                         "grounding_rejections": [], "retrieval_trace": {},
+                         "response_trace": {}}
         if route == "clarify":
             if not question.endswith("?"):
                 question = "Какое именно действие с ФН вы хотите выполнить и какая модель кассы?" if "фн" in _norm(current) else "Что именно требуется уточнить?"
@@ -253,18 +176,17 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
 
     def retrieve(state: State) -> dict:
         start = time.perf_counter()
-        candidates = store.search(state["search_query"])
-        return {"candidates": candidates, "retrieval_ms": round((time.perf_counter()-start)*1000)}
+        candidates, trace = store.search_with_trace(
+            state["search_query"], state["task_messages"], query_origin="llm_generated")
+        trace["task_id"] = state["task_id"]
+        trace["scenario_id"] = state.get("scenario_id")
+        return {"candidates": candidates, "retrieval_trace": trace,
+                "retrieval_ms": trace["retrieval_ms"]}
 
     def respond(state: State) -> dict:
         candidates = state.get("candidates", [])
-        scoped = []
-        scope_notes = []
-        for c in candidates:
-            okay, reason = _scope_compatible(c, state["task_messages"])
-            scope_notes.append({"document_id": c["document_id"], "scope": reason})
-            if okay:
-                scoped.append(c)
+        scoped = candidates  # already approved, scope checked and context capped by retrieval
+        scope_notes = state.get("retrieval_trace", {}).get("candidates", [])
         if not scoped:
             question = "Какой ОФД или кассовый сервис вы используете?"
             if _question_repeated(question, state.get("asked_questions", [])):
@@ -272,7 +194,8 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
             suffix = (" " + question) if question else ""
             return {"answer": "В найденных approved-материалах нет применимой инструкции для этой задачи." + suffix,
                     "asked_questions": state.get("asked_questions", []) + ([question] if question else []),
-                    "applicability": [{**x, "status": "incompatible"} for x in scope_notes],
+                    "applicability": [{"document_id": x["document_id"], "status": "incompatible",
+                                       "reason": x["reason"]} for x in scope_notes],
                     "decision_reason": "no_scope_compatible_approved_source"}
         prompt = {"role": "Russian support RAG answer with applicability assessment; return JSON only",
                   "original_problem": state["original_problem"],
@@ -298,7 +221,7 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
         decisions = {str(a.get("id")): a for a in result.get("applicability", []) if isinstance(a, dict)}
         applicability = []
         for c in candidates:
-            local_scope = next((x["scope"] for x in scope_notes if x["document_id"] == c["document_id"]), "unknown")
+            local_scope = "scope_compatible"
             a = decisions.get(c["id"], {})
             status = a.get("status") if local_scope == "scope_compatible" else "incompatible"
             if status not in {"usable", "partial", "incompatible"}:
@@ -306,6 +229,7 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
             applicability.append({"id": c["id"], "document_id": c["document_id"],
                                   "status": status, "reason": a.get("reason") or local_scope})
         valid, rejected = [], []
+        claim_trace = []
         for claim in result.get("claims", []):
             if not isinstance(claim, dict):
                 continue
@@ -315,14 +239,18 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
             quote = str(claim.get("quote") or "").strip()
             if not c or a.get("status") != "usable" or not sentence or not quote or quote not in c["text"]:
                 rejected.append("missing_usable_exact_evidence")
+                claim_trace.append({"claim": claim, "accepted": False, "reason": rejected[-1]})
                 continue
             if unsafe_operation_issue(sentence) or instruction_issue(sentence, quote):
                 rejected.append("unsafe_or_unsupported_action")
+                claim_trace.append({"claim": claim, "accepted": False, "reason": rejected[-1]})
                 continue
             if not claim_supported(sentence, quote):
                 rejected.append("claim_not_grounded")
+                claim_trace.append({"claim": claim, "accepted": False, "reason": rejected[-1]})
                 continue
             valid.append(sentence)
+            claim_trace.append({"claim": claim, "accepted": True, "reason": "grounded"})
         limitation = str(result.get("limitation") or "").strip()
         question = str(result.get("question") or "").strip()
         if valid:
@@ -344,6 +272,9 @@ def build_graph(store: ReadOnlyStage3, groq: Groq):
             mode = "safety_limitation"
         return {"answer": answer, "asked_questions": asked,
                 "applicability": applicability, "grounding_rejections": rejected,
+                "response_trace": {"model_applicability": result.get("applicability", []),
+                                   "claims": claim_trace, "limitation": limitation,
+                                   "question": question, "final_answer": answer},
                 "decision_reason": mode + ": " + str(result.get("reason") or "model_assessment"),
                 "llm_calls": state.get("llm_calls", 0) + 1,
                 "usage_tokens": state.get("usage_tokens", 0) + tokens,
@@ -372,14 +303,18 @@ def run() -> None:
     url = os.getenv("QDRANT_URL") or env.get("QDRANT_URL") or "http://127.0.0.1:6333"
     embedding = os.getenv("EMBEDDING_MODEL") or env.get("EMBEDDING_MODEL") or "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     store = ReadOnlyStage3(url, embedding)
-    print(json.dumps(store.receipt, ensure_ascii=False), flush=True)
+    run_receipt = {**source_receipt(), **store.receipt,
+                   "model": MODEL, "reasoning_effort": EFFORT,
+                   "query_origin": "llm_generated_if_search",
+                   "groq_call_cap": args.max_groq_calls}
+    print(json.dumps(run_receipt, ensure_ascii=False), flush=True)
     if args.preflight:
         return
     assert (os.getenv("GROQ_MODEL") or env.get("GROQ_MODEL")) == MODEL
     assert (os.getenv("GROQ_REASONING_EFFORT") or env.get("GROQ_REASONING_EFFORT")) == EFFORT
     groq = Groq(os.getenv("GROQ_API_KEY") or env.get("GROQ_API_KEY") or "", args.max_groq_calls)
     graph = build_graph(store, groq)
-    results = {"config": store.receipt, "scenarios": []}
+    results = {"config": run_receipt, "scenarios": []}
     scenarios = json.loads(args.scenarios.read_text(encoding="utf-8"))
     if args.interactive:
         scenarios = [{"id": "cli", "name": "CLI", "turns": []}]
@@ -391,14 +326,21 @@ def run() -> None:
             inputs = scenario["turns"] if not args.interactive else iter(lambda: input("Вы> "), "/quit")
             for message in inputs:
                 start = time.perf_counter()
-                state = graph.invoke({"user_text": message,
+                state = graph.invoke({"scenario_id": scenario["id"], "user_text": message,
                                       "messages": [{"role": "user", "content": message}]}, config)
                 # Add assistant message to the same checkpoint without re-running nodes.
                 graph.update_state(config, {"messages": [{"role": "assistant", "content": state["answer"]}]})
-                selected = [{"document_id": c["document_id"], "section": c["section"],
-                             "status": c["status"], "score": c["score"]} for c in state.get("candidates", [])]
+                selected = [{"id": c["id"], "document_id": c["document_id"],
+                             "section": c["section"], "status": c["status"],
+                             "score": c["score"]} for c in state.get("candidates", [])]
                 turn = {"user": message, "answer": state["answer"], "documents": selected,
+                        "task_id": state.get("task_id"), "new_topic": state.get("new_topic"),
+                        "route": state.get("route"), "proposed_question": state.get("proposed_question"),
                         "applicability": state.get("applicability", []),
+                        "search_query": state.get("search_query"),
+                        "query_origin": "llm_generated" if state.get("route") == "search" else None,
+                        "retrieval_trace": state.get("retrieval_trace", {}),
+                        "response_trace": state.get("response_trace", {}),
                         "llm_calls": state.get("llm_calls", 0), "tokens": state.get("usage_tokens", 0),
                         "llm_used": state.get("llm_calls", 0) > 0,
                         "decision": state.get("decision_reason"),

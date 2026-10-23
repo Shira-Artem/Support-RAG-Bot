@@ -1,0 +1,104 @@
+{
+  "source": "read-only Stage3; no Groq or indexing",
+  "positive_cases": [
+    "original",
+    "paraphrase_missing",
+    "paraphrase_stale"
+  ],
+  "negative_cases": [
+    "fn_change",
+    "foreign_service",
+    "kkt_reregistration",
+    "older_version"
+  ],
+  "replay": [
+    {
+      "id": "fn_change",
+      "before_documents": [
+        "platformaofd-reregistration-kkt"
+      ],
+      "after_documents": [
+        "platformaofd-reregistration-kkt"
+      ],
+      "before_evidence": "partial",
+      "after_evidence": "partial",
+      "before_steps": 2,
+      "after_steps": 2
+    },
+    {
+      "id": "foreign_service",
+      "before_documents": [],
+      "after_documents": [],
+      "before_evidence": "none",
+      "after_evidence": "none",
+      "before_steps": 0,
+      "after_steps": 0
+    },
+    {
+      "id": "kkt_reregistration",
+      "before_documents": [],
+      "after_documents": [],
+      "before_evidence": "unsafe",
+      "after_evidence": "unsafe",
+      "before_steps": 0,
+      "after_steps": 0
+    },
+    {
+      "id": "older_version",
+      "before_documents": [],
+      "after_documents": [],
+      "before_evidence": "none",
+      "after_evidence": "none",
+      "before_steps": 0,
+      "after_steps": 0
+    },
+    {
+      "id": "original",
+      "before_documents": [],
+      "after_documents": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "before_evidence": "none",
+      "after_evidence": "partial",
+      "before_steps": 0,
+      "after_steps": 3
+    },
+    {
+      "id": "paraphrase_missing",
+      "before_documents": [],
+      "after_documents": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "before_evidence": "none",
+      "after_evidence": "partial",
+      "before_steps": 0,
+      "after_steps": 2
+    },
+    {
+      "id": "paraphrase_stale",
+      "before_documents": [],
+      "after_documents": [
+        "batch-20261013-bank-directbank-all-accounts"
+      ],
+      "before_evidence": "none",
+      "after_evidence": "partial",
+      "before_steps": 0,
+      "after_steps": 3
+    }
+  ],
+  "benchmark_questions": 100,
+  "benchmark_approved": 83,
+  "benchmark_expected_in_context": 81,
+  "benchmark_changed_rows": {
+    "context_document_ids": [],
+    "selected_documents": [],
+    "expected_rejected_reasons": [],
+    "expected_in_llm_context": [],
+    "evidence_status": [],
+    "insufficiency_reason": []
+  },
+  "benchmark_metrics_equal": true,
+  "baseline_false_rejections": 2,
+  "new_false_accepts": 0,
+  "new_false_rejections": 0
+}

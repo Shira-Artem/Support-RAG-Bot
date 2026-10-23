@@ -1,0 +1,39 @@
+{
+  "note": "Frozen before any new Groq replay. These are client-outcome expectations, not claims that P0.1 alone satisfies them.",
+  "scenarios": {
+    "ofd_paid_period": [
+      "Identify the OFD/service before provider-specific steps; do not assert a contract end date.",
+      "Preserve the paid-period problem; give only approved checks or a precise evidence gap."
+    ],
+    "directbank_outage": [
+      "Retain bank-statement diagnosis and give a source-backed safe diagnostic check, without claiming the outage cause.",
+      "Treat DirectBank and 1C configuration as clarification of the same task; avoid ungrounded reconnect/import steps."
+    ],
+    "fiscal_change": [
+      "Clarify the exact FN action and equipment; no replacement, closure or registration procedure.",
+      "Do not repeat the same question verbatim; do not invent a risky FN procedure."
+    ],
+    "topic_switch_access": [
+      "Answer OFD identification only with an applicable source, or state the missing service.",
+      "Start a new employee-access task without carrying the earlier OFD operation.",
+      "Do not invent aQsi or other service role permissions without an approved rights matrix."
+    ],
+    "platforma_contract": [
+      "Identify the provider before provider-specific contract advice.",
+      "Keep contract-term checking separate from tariff activation and fiscal-document status; state the approved-knowledge gap."
+    ],
+    "positive_platforma_receipt": [
+      "Use the approved Platforma receipt-search article; support FD and period search without the false FD limitation.",
+      "Preserve the receipt-search task and ground the period-setting answer in the same approved article."
+    ],
+    "positive_aqsi_user": [
+      "Use the approved aQsi add-user article for creation steps, without inventing role rights.",
+      "Preserve the access task; state the missing rights matrix rather than promise a read-only role."
+    ],
+    "ofd_live_history": [
+      "Treat multi-account DirectBank statement loading as the bank task; use relevant approved evidence.",
+      "Keep the bank-statement task while answering where its list is opened.",
+      "Treat the explicit OFD issue as a new task and drop bank facts from active evidence."
+    ]
+  }
+}
