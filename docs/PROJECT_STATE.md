@@ -4,7 +4,7 @@
 
 ## 1. Текущее состояние проекта
 
-- **P0.2 завершён локально:** `bank_statement/diagnose` теперь допускает только approved-раздел «Безопасная диагностика» DirectBank как частичное evidence; в read-only Stage3 исходный запрос и две независимые переформулировки перешли с 0 документов к нужной статье и 2–3 безопасным проверкам. Чужой сервис, старая версия и опасные операции не получили новых допусков. [Отчёт P0.2](../experiments/p02-report.md) · [парное сравнение](../experiments/p02-comparison.json). P0.3 не начат; Groq и worker не запускались.
+- **P0.2 завершён и опубликован:** `bank_statement/diagnose` теперь допускает только approved-раздел «Безопасная диагностика» DirectBank как частичное evidence; в read-only Stage3 исходный запрос и две независимые переформулировки перешли с 0 документов к нужной статье и 2–3 безопасным проверкам. Чужой сервис, старая версия и опасные операции не получили новых допусков. [Отчёт P0.2](../experiments/p02-report.md) · [парное сравнение](../experiments/p02-comparison.json). P0.3 не начат; Groq и worker не запускались.
 - **P0.0 + P0.1 выполнены только в изолированном vNext:** raw-question no-Groq replay дал попадание контрольных approved-документов в модельный контекст 3/3 у hybrid против 1/3 у dense top-six. Подробные ранги, отказы, контекст и задержки: [экспериментальный отчёт](../experiments/vnext/report.md) и [trace JSON](../experiments/vnext/p0-raw-retrieval-results.json). Реальные LLM-generated `search_query` и полезность ответов ещё не проверены.
 - Причинный аудит семи сценариев: [RAG_ROOT_CAUSE_AUDIT.md](RAG_ROOT_CAUSE_AUDIT.md). Последовательный план с P0/P1/P2 и условиями отката: [RAG_RECOVERY_PLAN.md](RAG_RECOVERY_PLAN.md). Оба документа основаны на локальном коде, Stage3 offline A/B, read-only baseline SQLite и новых проверках без Groq; подробные пределы доказательства указаны в аудите.
 - Дорожная карта отдельного RAG vNext: [RAG_VNEXT_PLAN.md](RAG_VNEXT_PLAN.md). Датированная сверка этапа A и решение о дальнейшем ходе записаны в конце журнала; план не заменяет фактические результаты эксперимента.
@@ -21,8 +21,8 @@
 ### Ветка и версия
 
 - Ветка: `main`.
-- Предыдущий подтверждённый commit: `a026dd2de40f192329049aec2b26ba5940f7d664` (`Add safe procedural evidence applicability checks`); локальная `main` и `origin/main` были синхронизированы перед текущей публикацией.
-- Последний commit: `1b8fe9cad605579d06217434cb9306b7b10fae82` (`feat: add dialogue lifecycle v2.1 and analyzer A/B bench`); включает DialogueState v2.1, A/B CLI, sanitized artifact и тесты. Изменения опубликованы по явному запросу пользователя от 2026-10-23.
+- Пакет P0.0/P0.1/P0.2 с кодом, тестами, трассами и отчётами опубликован в `main` по явному запросу пользователя от 2026-10-23: `88d6935030f07febd90a8fe1fcf48ee7a758a6aa` (`feat: restore approved RAG diagnostics and record retrieval experiments`).
+- Предшествующий документирующий commit: `ce4231906368c4c6c872ec175c6eabca55026040` (`docs: record RAG vNext experiment and root-cause audit`).
 
 ### Конфигурация (подтверждённые defaults/receipt, секреты опущены)
 
