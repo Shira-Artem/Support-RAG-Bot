@@ -4,7 +4,7 @@ title: 'aQsi: где находятся параметры подключени�
 category: ofd
 service: "aQsi"
 task_category: ofd_connection
-operations: [check_transmission]
+operations: [configure_ofd_connection]
 manufacturer: aQsi
 model: aQsi (физическая ККТ)
 version: null

@@ -14,6 +14,7 @@ OPERATIONS = {
     "check": "проверка", "status": "проверка статуса", "diagnose": "диагностика ошибки",
     "connect": "подключение", "configure": "настройка", "close": "закрытие",
     "replace": "замена", "return": "возврат", "add": "добавление", "change": "изменение", "assign": "назначение",
+    "correct": "исправление", "reconcile": "сверка расхождений",
     "transmit": "проверка передачи чеков и документов в ОФД",
 }
 
@@ -55,6 +56,10 @@ def build_rag_query(state: DialogueState, max_chars: int = 500) -> str:
         # Preserve the requested report kind and conditions from the client;
         # compressing to «проверка ФН» loses the object and changes the task.
         parts.append("запрос клиента: " + report_request.value)
+    elif state.intent == 'receipt' and state.operation == 'correct' and state.task:
+        # The kind of receipt error and FFD version select different correction
+        # procedures, so a generic «исправление чека» query is not sufficient.
+        parts.append("запрос клиента: " + state.task.value)
     if state.goals:
         parts.append("цель: " + "; ".join(f.value for f in state.goals))
     if state.constraints:

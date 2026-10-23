@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from app.answer_service import AnswerService, _validation_issue
 from app.dialogue_state import DialogueManager, DialogueState
 from app.knowledge import DocumentLoader
+from app.llm_client import Generation
 from app.rag import SearchResult
 from app.response_grounding import claim_supported, evidence_statements
 from app.retrieval_pipeline import RetrievalPipeline, RetrievalResult
@@ -58,7 +59,7 @@ def test_full_receipt_search_evidence_uses_confirmed_fields_across_an_ofd_servic
     assert any(step['source'] == hit.source for step in retrieval.supported_steps)
 
 
-def test_partial_evidence_from_a_new_evotor_card_is_rendered_without_generation(monkeypatch, tmp_path):
+def test_partial_evidence_from_a_new_evotor_card_uses_grounded_generation(monkeypatch, tmp_path):
     text = 'В истории кассы найдите нужный фискальный документ. Копию документа можно распечатать повторно из карточки операции.'
     hit = result(text, 'Эвотор', 'receipt_print', 'repeat_print', source='evotor/receipt/copy.md',
                  evidence_coverage={'repeat_print': 'partial'})
@@ -66,16 +67,18 @@ def test_partial_evidence_from_a_new_evotor_card_is_rendered_without_generation(
     retrieval = RetrievalPipeline(Source([hit])).search(state_, 'Эвотор повторная печать фискального документа')
     assert retrieval.evidence_level == 'partial', [(x.source, x.reasons) for x in retrieval.rejected]
 
-    async def no_generation(*args, **kwargs):
-        raise AssertionError('A partial answer must not fill missing steps with model knowledge')
-    monkeypatch.setattr('app.answer_service.generate', no_generation)
+    calls = []
+    async def fake_generate(messages, config):
+        calls.append(messages)
+        return Generation(json.dumps({'scenario': 'answer', 'response':
+            'Копию документа можно распечатать повторно из карточки операции.'},
+            ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_generate)
     rag = SimpleNamespace(search_for_state=lambda *args: retrieval)
     answer = asyncio.run(AnswerService(rag, settings(tmp_path)).answer('Распечатать документ повторно', state=state_))
-    assert answer.generation_status == 'partial'
+    assert answer.generation_status == 'generated' and answer.llm_call_attempted and calls
     assert 'Копию документа можно распечатать повторно' in answer.text
-    evidence = answer.response_repair['evidence']
-    assert evidence and evidence[0]['source'] == hit.source
-    assert evidence[0]['document_id'] == 'synthetic-guide'
+    assert hit.text in calls[0][1]['content']
 
 
 def test_no_evidence_and_risky_operation_have_distinct_states(monkeypatch, tmp_path):
@@ -260,13 +263,17 @@ def test_replay_historical_ofd_paraphrase_from_fixed_raw_answer(monkeypatch, tmp
     assert any(item.startswith('search_parameter_unconfirmed:')
                for item in fn_retrieval.missing_evidence)
 
-    async def no_generation(*args, **kwargs):
-        raise AssertionError('Unconfirmed search fields must not be completed from model knowledge')
-    monkeypatch.setattr('app.answer_service.generate', no_generation)
+    calls = []
+    async def fake_generation(messages, config):
+        calls.append(messages)
+        return Generation(json.dumps({'scenario': 'answer', 'response':
+            'Найдите чек по номеру ФН.'}, ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_generation)
     fn_answer = asyncio.run(AnswerService(
         SimpleNamespace(search_for_state=lambda *args: fn_retrieval), settings(tmp_path)
     ).answer('Можно ли найти чек по номеру ФН?', state=fn_state))
-    assert fn_answer.generation_status == 'partial'
+    assert fn_answer.generation_status == 'generated'
+    assert fn_answer.llm_call_attempted and calls
     requested_field = fn_retrieval.missing_evidence[0].split(':', 1)[1]
     assert requested_field in fn_answer.text
     assert 'не подтверждён' in fn_answer.text

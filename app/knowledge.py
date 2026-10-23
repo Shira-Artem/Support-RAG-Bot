@@ -187,6 +187,7 @@ class Chunker:
 
     def split(self, document: Document) -> list[KnowledgeChunk]:
         chunks: list[KnowledgeChunk] = []
+        section_index = 0
         for page, body in document.pages:
             sections: list[tuple[str | None, list[str]]] = []
             heading: str | None = None
@@ -207,28 +208,90 @@ class Chunker:
             if paragraphs:
                 sections.append((heading, paragraphs))
             for section, parts in sections:
+                current_section_index = section_index
+                section_index += 1
+                section_chunk_index = 0
                 current = ""
                 prefix = (f"{section}\n" if section else "")[: self.max_chars // 3]
                 for part in parts:
                     if re.match(r"^(?:Ошибка|Код)\s+(?:(?:ФН|ККТ)\s+)?\d", part, re.IGNORECASE) and current:
-                        chunks.append(self._make(document, section, page, current, len(chunks)))
+                        chunks.append(self._make(
+                            document, section, page, current, len(chunks),
+                            current_section_index, section_chunk_index,
+                        ))
+                        section_chunk_index += 1
                         current = ""
                     # Keep short instruction steps together; split only oversized paragraphs.
                     pieces = [part[i:i + self.max_chars - len(prefix)] for i in range(0, len(part), self.max_chars - len(prefix))]
                     for piece in pieces:
                         candidate = (current + "\n\n" + piece).strip() if current else prefix + piece
                         if len(candidate) > self.max_chars and current:
-                            chunks.append(self._make(document, section, page, current, len(chunks)))
+                            chunks.append(self._make(
+                                document, section, page, current, len(chunks),
+                                current_section_index, section_chunk_index,
+                            ))
+                            section_chunk_index += 1
                             current = prefix + piece
                         else:
                             current = candidate
                 if current:
-                    chunks.append(self._make(document, section, page, current, len(chunks)))
+                    chunks.append(self._make(
+                        document, section, page, current, len(chunks),
+                        current_section_index, section_chunk_index,
+                    ))
+        for index, chunk in enumerate(chunks):
+            previous = chunks[index - 1] if index else None
+            following = chunks[index + 1] if index + 1 < len(chunks) else None
+            chunk.metadata.update({
+                "previous_chunk_id": previous.id if previous else None,
+                "next_chunk_id": following.id if following else None,
+                "relation_to_previous": self._relation(
+                    previous.metadata.get("chunk_role") if previous else None,
+                    chunk.metadata.get("chunk_role"),
+                ),
+            })
         return chunks
 
     @staticmethod
-    def _make(document: Document, section: str | None, page: int | None, text: str, ordinal: int) -> KnowledgeChunk:
+    def _make(document: Document, section: str | None, page: int | None, text: str,
+              ordinal: int, section_index: int, section_chunk_index: int) -> KnowledgeChunk:
         chunk_id = str(uuid5(NAMESPACE, f"{document.document_id}:{ordinal}"))
         metadata = {k: v for k, v in asdict(document).items() if k != "pages"}
-        metadata.update({"section": section, "page": page, "chunk_id": chunk_id})
+        metadata.update({
+            "section": section,
+            "page": page,
+            "chunk_id": chunk_id,
+            "chunk_index": ordinal,
+            "section_index": section_index,
+            "section_chunk_index": section_chunk_index,
+            "chunk_role": Chunker._role(section, text),
+        })
         return KnowledgeChunk(chunk_id, text, section, page, metadata)
+
+    @staticmethod
+    def _role(section: str | None, text: str) -> str:
+        label = (section or "").casefold().replace("ё", "е")
+        if re.search(r"\bвопрос\b|симптом", label):
+            return "question"
+        if re.search(r"важн|огранич|предупреж|безопас|передать специалист", label):
+            return "warning"
+        if re.search(r"услови|перед началом|когда примен", label):
+            return "condition"
+        if (re.search(r"инструкц|порядок|процедур|диагност|что проверено|действ", label)
+                or re.search(r"(?:^|\n)\s*(?:\d+[.)]|шаг\s+\d+)", text, re.I)):
+            return "procedure"
+        return "detail"
+
+    @staticmethod
+    def _relation(previous_role: str | None, current_role: str) -> str | None:
+        if previous_role is None:
+            return None
+        if previous_role == "question":
+            return "answers_question"
+        if previous_role == "condition" and current_role == "procedure":
+            return "procedure_for_condition"
+        if previous_role == "procedure" and current_role == "warning":
+            return "warning_for_procedure"
+        if previous_role == "procedure":
+            return "clarifies_procedure"
+        return "follows"

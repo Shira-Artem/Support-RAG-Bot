@@ -12,7 +12,7 @@ from typing import Protocol
 from app.dialogue_state import DialogueState
 from app.rag import SearchResult
 from app.response_grounding import (claim_supported, evidence_statements, has_action,
-                                    has_named_role, normalize, statements,
+                                    has_named_role, normalize, permission_clauses, statements,
                                     unsafe_operation_issue)
 
 
@@ -96,7 +96,12 @@ _TASK_TERMS = {
     "cash_list": ("список касс", "мониторинг касс", "раздел кассы"),
     "access": ("сотрудник", "пользователь", "учетная запись", "доступ", "права", "роль", "account", "user"),
     "receipt_search": ("поиск чека", "найти чек", "чек по", "receipt search", "receipts/search"),
+    "correction_receipt": ("исправить чек", "исправление чека", "чек коррекции", "коррекция чека"),
     "receipt_transmission": ("передача чеков", "передача документов", "отправка чеков", "не отправляются", "не передаются", "ofd transmission"),
+    "fiscal_document_control": ("код флк", "флк", "контроль фискального документа"),
+    "marking": ("маркировка", "код маркировки", "честный знак", "разрешительный режим", "gtin"),
+    "billing": ("сменить тариф", "изменение тарифа", "тариф", "лицензия", "продление"),
+    "document_discrepancy": ("упд", "накладная", "расхождение", "недостача", "фактическое количество"),
     "error_diagnosis": ("код ошибки", "ошибка фн", "ошибка ккт", "диагностика ошибки", "error code"),
     "edo": ("эдо", "электронный документооборот", "приглашени", "контрагент", "диадок"),
     "equipment_setup": ("подключение", "настройка", "конфигурация", "установка", "активация", "configure", "setup"),
@@ -109,12 +114,76 @@ _TASK_EVIDENCE = {
     "access": ("сотрудник", "пользователь", "учетн", "доступ", "прав", "рол"),
     "cash_reports": ("отчет", "отчёт"),
     "receipt_search": ("чек", "найт", "поиск", "журнал", "квитанц"),
+    "correction_receipt": ("чек", "исправ", "коррекц", "ошиб"),
     "receipt_transmission": ("передач", "отправ", "неотправ", "очеред", "офд"),
+    "fiscal_document_control": ("флк", "итог чек", "сумм оплат", "фискальн документ"),
+    "marking": ("маркиров", "честн знак", "gtin", "разрешительн", "код товар"),
+    "billing": ("тариф", "лиценз", "прайс", "переход", "продлен"),
+    "document_discrepancy": ("упд", "накладн", "расхожд", "недостач", "количеств"),
     "error_diagnosis": ("ошиб", "код", "диагност", "фн", "ккт"),
     "edo": ("эдо", "приглашен", "контрагент", "диадок"),
     "equipment_setup": ("настрой", "подключ", "параметр", "конфигурац", "установ"),
 }
 _SAFETY_SECTION = re.compile(r"важно|огранич|предупреж|безопас|специалист|перед выполн|услови|применим", re.I)
+
+# DialogueState uses client-facing verbs while reviewed documents use precise
+# operation names.  Both sides are projected into one operation vocabulary
+# before comparison; task context prevents a generic verb such as ``change``
+# from matching unrelated changes in the same service.
+_CONTEXTUAL_OPERATIONS = {
+    ("billing", "change"): "change_plan",
+    ("document_discrepancy", "reconcile"): "record_discrepancy",
+    ("correction_receipt", "correct"): "correct_receipt",
+    ("receipt_search", "search"): "search_receipt",
+    ("receipt_search", "check"): "search_receipt",
+    ("receipt_search", "status"): "search_receipt",
+    ("receipt_print", "repeat_print"): "repeat_print",
+    ("cash_reports", "view_reports"): "view_cash_reports",
+    ("fiscal_document_control", "check"): "diagnose_fiscal_document",
+    ("fiscal_document_control", "diagnose"): "diagnose_fiscal_document",
+    ("marking", "check"): "check_marking_code",
+    ("marking", "diagnose"): "check_marking_code",
+    ("error_diagnosis", "diagnose"): "diagnose_error",
+    ("receipt_transmission", "diagnose"): "check_transmission",
+    ("receipt_transmission", "check"): "check_transmission",
+    ("receipt_transmission", "status"): "check_transmission",
+    ("receipt_transmission", "transmit"): "check_transmission",
+    ("cash_list", "list"): "list_cash_registers",
+    ("bank_statement", "list"): "list_bank_statements",
+    ("integration", "connect"): "integration_connect",
+}
+_OPERATION_ALIASES = {
+    "reconcile_document": "record_discrepancy",
+    "configure_integration": "integration_connect",
+    "check_integration_compatibility": "integration_connect",
+    "connect": "integration_connect",
+    "edit_user": "change_permissions",
+}
+_TASK_BY_OPERATION = {
+    "change_plan": "billing",
+    "record_discrepancy": "document_discrepancy",
+    "correct_receipt": "correction_receipt",
+    "search_receipt": "receipt_search",
+    "repeat_print": "receipt_print",
+}
+_TASK_ALIASES = {
+    "ofd_connection": "receipt_transmission",
+}
+
+
+def normalize_operation(operation: str, task_category: str | None = None) -> str:
+    contextual = _CONTEXTUAL_OPERATIONS.get((task_category, operation))
+    return contextual or _OPERATION_ALIASES.get(operation, operation)
+
+
+def normalize_task_category(task_category: str | None, operations=()) -> str | None:
+    normalized_operations = {normalize_operation(str(operation), task_category)
+                             for operation in operations}
+    implied = {_TASK_BY_OPERATION[operation] for operation in normalized_operations
+               if operation in _TASK_BY_OPERATION}
+    if len(implied) == 1:
+        return implied.pop()
+    return _TASK_ALIASES.get(str(task_category), task_category) if task_category else None
 
 
 def normalize_metadata(metadata: dict) -> dict:
@@ -138,17 +207,21 @@ def normalize_metadata(metadata: dict) -> dict:
     software = raw.get("software")
     if not software and parts and parts[0] == "1c":
         software = "1С"
-    task_category = raw.get("task_category") or raw.get("operation")
-    if not task_category:
-        task_category = _derive_task_category(searchable, category, parts, title)
+    raw_task_category = raw.get("task_category") or raw.get("operation")
+    if not raw_task_category:
+        raw_task_category = _derive_task_category(searchable, category, parts, title)
     explicit_operations = raw.get("_operations_explicit", bool(raw.get("operations")))
-    operations = raw.get("operations") or _derive_operations(searchable, task_category)
+    operations = raw.get("operations") or _derive_operations(searchable, raw_task_category)
+    task_category = normalize_task_category(
+        str(raw_task_category) if raw_task_category else None, operations,
+    )
     operation = raw.get("operation") or (operations[0] if operations else None)
     return {
         **raw,
         "service": service,
         "software": str(software).strip() if software else None,
         "task_category": str(task_category) if task_category else None,
+        "_raw_task_category": str(raw_task_category) if raw_task_category else None,
         "operation": str(operation) if operation else None,
         "operations": list(operations),
         "_operations_explicit": explicit_operations,
@@ -175,6 +248,12 @@ def _derive_task_category(searchable: str, category: str, parts: list[str], titl
         return "equipment_setup"
     if any(term in searchable for term in _TASK_TERMS['cash_list']):
         return 'cash_list'
+    if "billing" in path and any(term in searchable for term in _TASK_TERMS["billing"]):
+        return "billing"
+    if any(term in searchable for term in _TASK_TERMS["correction_receipt"]):
+        return "correction_receipt"
+    if any(term in searchable for term in _TASK_TERMS["document_discrepancy"]):
+        return "document_discrepancy"
     if "account" in path or "users" in path or "access" in path or category in {"account", "users", "access"}:
         return "access"
     if "receipts" in path or category == "receipts":
@@ -219,6 +298,12 @@ def _derive_operations(searchable: str, task_category: str | None) -> list[str]:
             operations.append("reset_password")
     if task_category == "receipt_search":
         operations.append("search_receipt")
+    if task_category == "correction_receipt":
+        operations.append("correct_receipt")
+    if task_category == "billing" and any(x in searchable for x in ("сменить тариф", "изменение тарифа", "change-plan")):
+        operations.append("change_plan")
+    if task_category == "document_discrepancy":
+        operations.append("record_discrepancy")
     if task_category == "receipt_transmission":
         if any(x in searchable for x in (
             "проверить статус передачи", "проверьте статус передачи", "очередь передачи",
@@ -239,6 +324,7 @@ def _terms(text: str) -> set[str]:
 
 def _state_task_category(state: DialogueState, query: str) -> str | None:
     query_folded = query.casefold().replace("ё", "е")
+    task_folded = ((state.task.value if state.task else "") + " " + query).casefold().replace("ё", "е")
     if state.intent == "bank_statement" or any(term in query_folded for term in _TASK_TERMS["bank_statement"]):
         return "bank_statement"
     if (state.routing_service and state.task_entities.get("software")
@@ -246,6 +332,8 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
         return "integration"
     if state.intent == "receipt" and state.operation == "repeat_print":
         return "receipt_print"
+    if state.intent == "receipt" and state.operation == "correct":
+        return "correction_receipt"
     if state.intent == "receipt" and any(term in query_folded for term in _TASK_TERMS["receipt_print"]):
         return "receipt_print"
     if state.intent == 'report' and state.operation == 'view_reports':
@@ -256,8 +344,30 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
         return 'fiscal_drive_search'
     if state.intent in {"access", "credentials"}:
         return "access"
+    if state.intent == "billing":
+        return "billing"
+    if state.intent == "delivery_document":
+        return "document_discrepancy"
+    if state.error and state.task_entity("manufacturer"):
+        return "error_diagnosis"
+    if state.intent == "marking":
+        return "marking"
+    if "флк" in task_folded:
+        return "fiscal_document_control"
+    if (state.operation == "diagnose" and state.task_entity("manufacturer")
+            and any(term in task_folded for term in ("не печат", "печать", "индикатор", "ошибка"))):
+        return "error_diagnosis"
     if state.intent == "receipt":
-        if state.operation == "search":
+        search_request = (state.operation == "search"
+                          or any(term in task_folded for term in (
+                              "журнал чек", "выгруз", "экспорт", "конкретн", "найти чек", "поиск чек",
+                          ))
+                          or bool(re.search(r"журнал.{0,50}чек|чек.{0,50}журнал", task_folded))
+                          or (state.operation == "status"
+                              and not any(term in task_folded for term in (
+                                  "не отправ", "не переда", "очеред", "нет связи",
+                              ))))
+        if search_request:
             return "receipt_search"
         if state.operation in {"diagnose", "status", "check", "transmit"}:
             return "receipt_transmission"
@@ -312,7 +422,16 @@ def _matches_entity(expected: str | None, actual: str | None) -> bool:
         return True
     if not actual:
         return False
-    return _terms(expected) <= _terms(actual) or _terms(actual) <= _terms(expected)
+    expected_terms, actual_terms = _terms(expected), _terms(actual)
+    # Product families with and without an Online cabinet are independent
+    # routes.  Token-subset matching must not turn aQsi into aQsi Online (or
+    # АТОЛ into АТОЛ Онлайн) merely because they share the vendor name.
+    online = {"online", "онлайн"}
+    vendor_roots = {"aqsi", "акси", "атол"}
+    if ((expected_terms | actual_terms) & vendor_roots
+            and bool(expected_terms & online) != bool(actual_terms & online)):
+        return False
+    return expected_terms <= actual_terms or actual_terms <= expected_terms
 
 
 def _procedure_matches(state: DialogueState, metadata: dict) -> bool:
@@ -329,24 +448,11 @@ def _procedure_matches(state: DialogueState, metadata: dict) -> bool:
 def _operation_matches(operation: str, metadata: dict, hit: SearchResult) -> bool:
     if operation in {"explain", "unknown"}:
         return True
-    aliases = {
-        "add_employee": {"add_employee"},
-        "assign_role": {"assign_role"},
-        "create_role": {"create_role"},
-        "view_reports": {"view_cash_reports"},
-        "change_permissions": {"change_permissions"},
-        "reset_password": {"reset_password"},
-        "search": {"search_receipt"},
-        "diagnose": {"diagnose_error", "check_transmission"},
-        "status": {"check_transmission"},
-        "check": {"check_transmission"},
-        "transmit": {"check_transmission"},
-        "repeat_print": {"repeat_print"},
-        "connect": {"configure_integration", "check_integration_compatibility", "connect"},
-        "list": {"list_cash_registers", "list_bank_statements"},
-    }
-    supported = set(metadata.get("operations") or ())
-    if supported & aliases.get(operation, {operation}):
+    task_category = metadata.get("task_category")
+    expected = normalize_operation(operation, task_category)
+    supported = {normalize_operation(item, task_category)
+                 for item in metadata.get("operations") or ()}
+    if expected in supported:
         return True
     if metadata.get("_operations_explicit"):
         # Opening an existing record / configuring a role is useful partial
@@ -371,7 +477,8 @@ def _access_evidence(state, documents, context):
     Only complete statements actually sent in context can become useful steps.
     """
     steps, seen = [], set()
-    families = {"change_permissions": ("edit", "search"), "assign_role": ("assign",),
+    families = {"change_permissions": ("edit", "search", "configure", "choose"),
+                "assign_role": ("assign", "input", "configure", "choose"),
                 "create_role": ("create", "input", "configure", "edit"),
                 "add_employee": ("create", "input", "assign", "save"),
                 "reset_password": ("reset",)}.get(state.operation, ())
@@ -384,22 +491,23 @@ def _access_evidence(state, documents, context):
                 and not set(meta.get("operations") or ()) & {"change_permissions", "edit_user"}):
             continue
         section = str(meta.get("section") or "")
-        if _SAFETY_SECTION.search(section) or re.search(r"границ|вопрос|полномочия", section, re.I):
-            continue
         coverage = meta.get("evidence_coverage") or {}
         # A declaration counts only if that article contributes an actual step.
         contributes = False
         for sentence in statements(doc.text):
             key = normalize(sentence)
+            action_evidence = any(has_action(sentence, family) for family in families)
+            permission_evidence = (state.operation in {"assign_role", "create_role", "change_permissions"}
+                                   and (any(permission_clauses(sentence))
+                                        or bool(re.search(
+                                            r"\b(?:рол[ьи]|прав[ао]?|доступ\w*|разреш\w*|полномоч\w*)\b",
+                                            sentence, re.I))))
             if (sentence == section or sentence.startswith(("#", "Источник:", "http"))
                     or sentence.endswith("?") or len(sentence.split()) < 4
-                    or re.search(r"\bне\b|неподтверж", sentence, re.I)
                     or key not in normalize(context)
-                    or not any(has_action(sentence, family) for family in families)):
+                    or not (action_evidence or permission_evidence)):
                 continue
-            if state.operation == "assign_role" and has_action(sentence, "create"):
-                continue
-            contributes = True
+            contributes = contributes or action_evidence
             if key not in seen:
                 steps.append(dict(source=doc.source, document_id=meta.get("document_id"),
                                   section=section, text=sentence))
@@ -413,15 +521,45 @@ def _access_evidence(state, documents, context):
                         "create_role": "role_creation_workflow_unverified"}.get(state.operation, "access_workflow_unverified"))
     request = " ".join(f.value for f in [*state.goals, *state.constraints, *state.details,
                                         *([state.task] if state.task else [])])
-    if state.goals or state.constraints or has_named_role(request):
+    if (state.goals or state.constraints or has_named_role(request)
+            or state.operation == "change_permissions"):
         missing.append("requested_role_or_permissions_unverified")
     status = "full" if steps and not missing else "partial" if steps else "none"
-    return status, missing, steps[:4]
+    return status, missing, steps[:12]
+
+
+def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str | None,
+                               state: DialogueState) -> list[SearchResult]:
+    """Keep evidence from one coherent article for the current operation.
+
+    Retrieval may legitimately return neighboring articles for recall, but a
+    partial answer cannot splice their independent procedures together. The
+    first article that passes task and operation gates becomes the sole source
+    of extractive partial evidence; its sibling chunks remain available.
+    """
+    matching: list[SearchResult] = []
+    primary_key: str | None = None
+    for document in documents:
+        meta = normalize_metadata({**(document.metadata or {}), "text": document.text})
+        if meta.get("status") != "approved":
+            continue
+        if expected_task and meta.get("task_category") != expected_task:
+            continue
+        if state.operation == "unknown":
+            continue
+        if state.operation != "explain" and not _operation_matches(state.operation, meta, document):
+            continue
+        key = str(meta.get("document_id") or meta.get("source") or document.source)
+        if primary_key is None:
+            primary_key = key
+        if key == primary_key:
+            matching.append(document)
+    return matching
 
 
 class RetrievalPipeline:
     def __init__(self, source: CandidateSource, *, candidate_k: int = 100,
-                 max_documents: int = 5, max_context_chars: int = 7000,
+                 max_documents: int = 4, max_context_chars: int = 7000,
                  expand_chunks: bool = True):
         self.source = source
         self.candidate_k = candidate_k
@@ -433,18 +571,12 @@ class RetrievalPipeline:
         unsafe = unsafe_operation_issue(query)
         raw = self.source.search(query, top_k=self.candidate_k)
         expected_task = _state_task_category(state, query)
-        selected: list[tuple[SearchResult, EvaluatedDocument]] = []
-        rejected: list[EvaluatedDocument] = []
-        candidates: list[EvaluatedDocument] = []
-        seen_docs: set[str] = set()
+        evaluated_hits: list[tuple[str, SearchResult, EvaluatedDocument, bool]] = []
         for hit in raw:
             meta = normalize_metadata({**(hit.metadata or {}), "source": (hit.metadata or {}).get("source") or hit.source,
                                        "text": hit.text})
-            doc_key = str(meta.get("document_id") or meta.get("source") or "")
-            if doc_key and doc_key in seen_docs:
-                continue
-            if doc_key:
-                seen_docs.add(doc_key)
+            doc_key = str(meta.get("document_id") or meta.get("source")
+                          or meta.get("chunk_id") or id(hit))
             reasons: list[str] = []
             # The pipeline is a second safety boundary: drafts and unlabeled
             # snapshots never become answer context, even if a source adapter
@@ -474,8 +606,13 @@ class RetrievalPipeline:
             ofd = state.entity("ofd") if technical else None
             ofd_match = _matches_entity(ofd, " ".join(str(meta.get(k) or "") for k in ("ofd", "operator", "title", "source", "text")))
             actual_task = meta.get("task_category")
+            query_terms = _terms(query)
+            body_terms = _terms(hit.text + " " + str(meta.get("title") or ""))
+            lexical_overlap = len(query_terms & body_terms) / max(1, len(query_terms))
             related_search_task = _related_search_task(state, expected_task, actual_task)
-            task_match = expected_task is None or actual_task == expected_task or related_search_task
+            unscoped_match = (expected_task is None and state.intent != "unknown"
+                              and lexical_overlap >= 0.50)
+            task_match = (actual_task == expected_task if expected_task else unscoped_match) or related_search_task
             operation_metadata = meta
             if expected_task and actual_task == expected_task and meta.get("document_id"):
                 article_getter = getattr(self.source, "article", None)
@@ -499,9 +636,6 @@ class RetrievalPipeline:
                 reasons.append("ofd_mismatch_or_unlabeled")
             if expected_task and actual_task and actual_task != expected_task and not related_search_task:
                 reasons.append(f"task_mismatch:{actual_task}!={expected_task}")
-            query_terms = _terms(query)
-            body_terms = _terms(hit.text + " " + str(meta.get("title") or ""))
-            lexical_overlap = len(query_terms & body_terms) / max(1, len(query_terms))
             strong_unlabeled_match = (expected_task and actual_task is None
                                       and service_match and lexical_overlap >= 0.60)
             if (expected_task and actual_task == expected_task and state.operation != "unknown"
@@ -517,8 +651,12 @@ class RetrievalPipeline:
             # remain hard rejects.
             if expected_task and actual_task is None and not strong_unlabeled_match:
                 reasons.append("task_unconfirmed")
+            if expected_task is None and not unscoped_match:
+                reasons.append("task_unresolved")
             task_match = (expected_task is None or actual_task == expected_task
                           or related_search_task or bool(strong_unlabeled_match))
+            if expected_task is None:
+                task_match = unscoped_match
             service_score = 1.0 if not state.entity("service") or service_match else 0.0
             task_score = 1.0 if task_match else (0.0 if actual_task else lexical_overlap)
             score = 0.55 * task_score + 0.3 * service_score + 0.15 * min(1.0, lexical_overlap * 2)
@@ -528,12 +666,28 @@ class RetrievalPipeline:
                                  "procedure_service", "evidence_coverage"}
             diagnostic_metadata = {k: v for k, v in meta.items() if k in diagnostic_fields and v is not None}
             evaluated = EvaluatedDocument(str(meta.get("source") or "unknown"), meta.get("document_id"), meta.get("status"), diagnostic_metadata, {"rrf": hit.score, "dense": hit.semantic_score, "bm25": hit.lexical_score}, relevance, reasons)
-            if reasons:
-                rejected.append(evaluated)
-            else:
-                evaluated.selected = True
-                candidates.append(evaluated)
-                selected.append((hit, evaluated))
+            evaluated_hits.append((doc_key, hit, evaluated, not reasons))
+
+        # Evaluate every retrieved chunk before collapsing by document.  The
+        # former early ``seen_docs`` check made the first lexical hit decide the
+        # fate of the entire article, even when a later chunk matched the task
+        # and operation better.
+        accepted_by_document: dict[str, tuple[SearchResult, EvaluatedDocument]] = {}
+        rejected_by_document: dict[str, tuple[SearchResult, EvaluatedDocument]] = {}
+        for doc_key, hit, evaluated, accepted in evaluated_hits:
+            target = accepted_by_document if accepted else rejected_by_document
+            current = target.get(doc_key)
+            rank = (evaluated.relevance.score, hit.score, -len(evaluated.reasons))
+            current_rank = ((current[1].relevance.score, current[0].score,
+                             -len(current[1].reasons)) if current else None)
+            if current is None or rank > current_rank:
+                target[doc_key] = (hit, evaluated)
+        selected = list(accepted_by_document.values())
+        candidates = [evaluated for _, evaluated in selected]
+        rejected = [evaluated for key, (_, evaluated) in rejected_by_document.items()
+                    if key not in accepted_by_document]
+        for evaluated in candidates:
+            evaluated.selected = True
 
         selected.sort(key=lambda pair: (pair[1].relevance.score, pair[0].score), reverse=True)
         # Related chunks are fetched only after article-level gates have passed;
@@ -563,7 +717,8 @@ class RetrievalPipeline:
             sufficient = sufficient and evidence_status == "full"
             reason = None if sufficient else "access_evidence_incomplete"
         elif docs:
-            steps = evidence_statements(docs, context)
+            evidence_docs = _scoped_evidence_documents(docs, expected_task, state)
+            steps = evidence_statements(evidence_docs, context, limit=4, request=query)
             unconfirmed_fields = _unconfirmed_search_parameters(state, context)
             coverage_keys = {
                 "search": ("search", "search_receipt"),
@@ -572,7 +727,7 @@ class RetrievalPipeline:
                 "connect": ("connect", "configure_integration", "check_integration_compatibility"),
             }.get(state.operation, (state.operation,))
             full_coverage = False
-            for doc in docs:
+            for doc in evidence_docs:
                 meta = doc.metadata or {}
                 coverage = meta.get("evidence_coverage") or {}
                 if (any(coverage.get(key) == "full" for key in coverage_keys) and meta.get("source_url")
@@ -604,7 +759,24 @@ class RetrievalPipeline:
             related = [hit]
             getter = getattr(self.source, "article", None)
             if self.expand_chunks and callable(getter) and evaluated.document_id:
-                related += getter(evaluated.document_id)
+                article = getter(evaluated.document_id)
+                if article:
+                    hit_id = (hit.metadata or {}).get("chunk_id")
+                    replaced = False
+                    related = []
+                    for fragment in article:
+                        fragment_id = (fragment.metadata or {}).get("chunk_id")
+                        if ((hit_id and fragment_id == hit_id)
+                                or (not hit_id and fragment.text == hit.text)):
+                            related.append(hit)
+                            replaced = True
+                        else:
+                            related.append(fragment)
+                    if not replaced:
+                        related.append(hit)
+                        if all(isinstance((item.metadata or {}).get("chunk_index"), int)
+                               for item in related):
+                            related.sort(key=lambda item: (item.metadata or {})["chunk_index"])
             for fragment in related:
                 meta = normalize_metadata({**(fragment.metadata or {}), "text": fragment.text})
                 if not _procedure_matches(state, meta):

@@ -4,7 +4,7 @@ title: "Платформа ОФД: архивирование кассы в ка
 category: ofd
 service: "Платформа ОФД"
 task_category: ofd_connection
-operations: [check_transmission]
+operations: [archive_cash_register]
 manufacturer:
 model:
 version:

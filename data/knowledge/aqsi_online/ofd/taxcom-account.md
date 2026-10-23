@@ -4,7 +4,7 @@ title: 'aQsi Online: подключение к ОФД Такском'
 category: ofd
 service: "aQsi Online"
 task_category: ofd_connection
-operations: [check_transmission]
+operations: [open_ofd_account]
 manufacturer: aQsi
 model: aQsi Online (облачная касса)
 version: ''

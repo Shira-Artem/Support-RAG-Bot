@@ -226,6 +226,13 @@ def _role_issue(answer: str, context: str) -> str | None:
     for sentence in statements(answer):
         if re.search(r'не (?:подтверж|описан|указан)|не могу|проверьте|уточните|попросите', sentence, re.I) and not re.search(r'назначьте|выдайте|сможет|позволяет', sentence, re.I):
             continue
+        # Verbs such as «позволяет выбрать изменение записи» describe UI
+        # navigation, not necessarily a role entitlement. Apply the role matrix
+        # check only when the sentence itself names access or a permission area.
+        if not re.search(ROLE_WORD + r'|\bправа\b|доступ\w*|сотрудник\w*|пользовател\w*|'
+                         r'настро\w*|отч[её]т\w*|касс\w*|чек\w*|просмотр\w*|редактир\w*',
+                         sentence, re.I):
+            continue
         entitlement = has_named_role(sentence) or re.search(r'позвол\w*|предостав\w*|да[её]т доступ|сможет|\bможет\b|разреш\w*|имеет (?:право|доступ)', sentence, re.I)
         role_selection = re.search(r'рол[ьи]|\bправа\b', sentence, re.I) and re.search(r'назнач\w*|выбер\w*|выда\w*|\bдля\b|только|без', sentence, re.I)
         if not (entitlement or role_selection):
@@ -248,6 +255,76 @@ def _evidence_level(retrieval) -> str:
     if status == 'partial' and getattr(retrieval, 'supported_steps', None):
         return 'partial'
     return 'full' if getattr(retrieval, 'sufficient', False) else 'none'
+
+
+def _pre_retrieval_clarification(state: DialogueState) -> tuple[str, str] | None:
+    """Identify a missing decision fact before retrieval can guess a workflow."""
+    receipt_context = " ".join([
+        state.task.value if state.task else "",
+        *(fact.value for fact in state.details),
+    ])
+    correction_detail = re.search(
+        r"\b(?:сумм\w*|позиц\w*|товар\w*|цен\w*|количеств\w*|ставк\w*|дат\w*|"
+        r"врем\w*|адрес\w*|кассир\w*|реквизит\w*|признак\w*\s+расч[её]т\w*|"
+        r"ндс|сно|инн|email|телефон\w*|форм\w*\s+оплат\w*)",
+        receipt_context,
+        re.I,
+    )
+    if (state.intent == "receipt" and state.operation == "correct"
+            and not correction_detail):
+        return ("Что именно неверно в уже сформированном чеке: сумма или позиция, "
+                "реквизит либо признак расчёта?", "receipt_correction_details_missing")
+    if (state.intent == "delivery_document" and state.operation == "reconcile"
+            and not state.details):
+        return ("Товар уже приняли по фактическому количеству или приёмка ещё не завершена?",
+                "document_discrepancy_stage_missing")
+    return None
+
+
+def _single_document_steps(steps: list[dict], missing_evidence=()) -> list[dict]:
+    """Prevent a partial response from joining independent articles."""
+    if not steps:
+        return []
+    first = steps[0]
+    key = first.get("document_id") or first.get("source")
+    scoped = [step for step in steps
+              if (step.get("document_id") or step.get("source")) == key]
+    requested_terms = {
+        token for gap in missing_evidence if gap.startswith('search_parameter_unconfirmed:')
+        for token in re.findall(r'[a-zа-яё0-9]+', gap.split(':', 1)[1].casefold())
+        if len(token) > 2 or token in {'фн', 'фд', 'фп'}
+    }
+    preferred = [step for step in scoped
+                 if requested_terms & set(re.findall(
+                     r'[a-zа-яё0-9]+', step.get('text', '').casefold()))]
+    selected = [*preferred[:1], *[step for step in scoped if step not in preferred][:2]]
+    chosen = {id(step) for step in selected}
+    return [step for step in scoped if id(step) in chosen]
+
+
+def _client_evidence_text(text: str) -> str:
+    """Remove documentation framing while preserving the sourced claim."""
+    cleaned = re.sub(r"^(?:в статье|в инструкции) указано, что\s+", "", text.strip(), flags=re.I)
+    return cleaned[:1].upper() + cleaned[1:] if cleaned else cleaned
+
+
+def _evidence_gap_messages(missing_evidence) -> list[str]:
+    """Translate retrieval coverage gaps into safe, customer-facing limits."""
+    gaps = {
+        'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
+        'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
+        'role_creation_workflow_unverified': 'Полная процедура создания роли в источнике не подтверждена; завершение и сохранение нужно проверить в актуальном кабинете.',
+        'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
+        'procedure_completeness_unverified': 'Полная последовательность действий здесь не подтверждена.',
+    }
+    messages = [gaps[gap] for gap in missing_evidence if gap in gaps]
+    messages.extend(
+        f"По запросу {gap.split(':', 1)[1]} поиск в найденной инструкции не подтверждён. "
+        "Это не доказывает, что функция недоступна в сервисе."
+        for gap in missing_evidence
+        if gap.startswith('search_parameter_unconfirmed:')
+    )
+    return list(dict.fromkeys(messages))
 
 
 def _validation_issue(answer: str, context: str, request: str = "", service: str | None = None) -> str | None:
@@ -287,6 +364,11 @@ def _validation_issue(answer: str, context: str, request: str = "", service: str
         issue = instruction_issue(sentence, context)
         if issue:
             return issue
+        # Explicit negative coverage statements do not assert a capability.
+        # Keep them while continuing to validate every positive instruction.
+        if re.search(r'не (?:подтвержд\w*|описан\w*|указан\w*|найден\w*)|'
+                     r'нельзя (?:выбрать|подтвердить|обещать)', sentence, re.I):
+            continue
         if context and re.search(
                 r"\b(?:можно|нужно|следует|позвол\w*|поддерж\w*|содерж\w*|включ\w*|"
                 r"направля\w*|отправля\w*|показыва\w*|наход\w*|доступ\w*|"
@@ -426,8 +508,18 @@ class AnswerService:
                           generation_reason=reason, model=model, provider=self.settings.llm_provider,
                           rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))
         diagnostics.update(active_request=active_request, confirmed_service=service)
+        clarification = _pre_retrieval_clarification(state)
+        if clarification:
+            text, reason = clarification
+            return Answer(
+                text=text, used_model=False, generation_status="clarification",
+                scenario="clarify", scenario_reason=reason, generation_reason=reason,
+                clarification_slot="details", model=model,
+                provider=self.settings.llm_provider, rag_chunks=0, context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000),
+            )
         needs_service = ((state.intent in {'access', 'credentials', 'report'} and state.operation != 'explain')
-                         or (state.intent == 'receipt' and state.operation in {'search', 'check', 'status', 'transmit'})
+                         or (state.intent == 'receipt' and state.operation in {'search', 'check', 'status', 'transmit', 'correct'})
                          or _needs_service_context(active_request))
         pending_service_question = bool(state.expected and state.expected.slot == 'service')
         if needs_service and not service:
@@ -495,52 +587,12 @@ class AnswerService:
                 duration_ms=round((perf_counter() - started) * 1000),
                 response_repair={"mode": "fiscal_escalation", "evidence": []})
 
-        # Any task can return useful source facts without proving a complete
-        # procedure. Render those statements directly and identify the gap;
-        # do not ask the model to fill missing steps from general knowledge.
-        if (retrieval is not None and _evidence_level(retrieval) == "partial"
-                and (getattr(retrieval, 'supported_steps', None) or results)):
-            steps = [step for step in (getattr(retrieval, 'supported_steps', None)
-                                       or evidence_statements(results, getattr(retrieval, 'context', '')))
-                     if not unsafe_operation_issue(step.get("text", ""))]
-            if steps:
-                gaps = {
-                    'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
-                    'access_workflow_unverified': 'Полная последовательность действий по этой операции в источнике не подтверждена.',
-                    'role_creation_workflow_unverified': 'Полная процедура создания роли в источнике не подтверждена; завершение и сохранение нужно проверить в актуальном кабинете.',
-                    'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
-                    'procedure_completeness_unverified': 'Эти сведения подтверждены источником, но полный порядок операции в нём не подтверждён.',
-                }
-                lines, previous_section = [], None
-                for step in steps:
-                    section = step.get('section')
-                    if section and section != previous_section:
-                        lines.append(f"{section}:")
-                    lines.append(step['text'])
-                    previous_section = section
-                limitations = [gaps[gap] for gap in retrieval.missing_evidence if gap in gaps]
-                limitations.extend(
-                    f"По запросу {gap.split(':', 1)[1]} поиск в найденной инструкции не подтверждён. "
-                    "Это не доказывает, что функция недоступна в сервисе."
-                    for gap in retrieval.missing_evidence
-                    if gap.startswith('search_parameter_unconfirmed:')
-                )
-                text = '\n'.join(lines)
-                if limitations:
-                    text += '\n\n' + ' '.join(dict.fromkeys(limitations))
-                elif _evidence_level(retrieval) == 'partial':
-                    text += '\n\nЭти сведения подтверждены найденным текстом, но полнота ответа по всей операции не подтверждена.'
-                diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
-                return Answer(text=text, results=results, generation_status='partial', scenario='answer',
-                              scenario_reason='supported_partial_answer',
-                              generation_reason='evidence_coverage_incomplete', model=model,
-                              provider=self.settings.llm_provider, rag_chunks=len(results),
-                              context_chars=len(retrieval.context),
-                              duration_ms=round((perf_counter() - started) * 1000),
-                              response_repair={'mode': 'partial_answer', 'removed': [],
-                                               'retained': [item['text'] for item in steps],
-                                               'evidence': steps,
-                                               'missing_evidence': retrieval.missing_evidence})
+        # Safe partial evidence continues through the normal generation and
+        # grounding path. Coverage gaps are supplied to the model and appended
+        # deterministically below; the model still cannot invent missing steps.
+        partial_limitations = (_evidence_gap_messages(retrieval.missing_evidence)
+                               if retrieval is not None and _evidence_level(retrieval) == 'partial'
+                               else [])
 
         if retrieval is not None and _evidence_level(retrieval) == 'unsafe':
             diagnostics['retrieval_diagnostics'] = retrieval.diagnostics()
@@ -553,6 +605,16 @@ class AnswerService:
 
         if (retrieval is not None and _evidence_level(retrieval) == 'none'
                 and state.operation not in {'unknown', 'explain'}):
+            if state.intent == 'delivery_document':
+                return Answer(
+                    text=("В каком сервисе ЭДО оформлен УПД и был ли он уже принят?"),
+                    results=results, generation_status='clarification', scenario='clarify',
+                    scenario_reason='document_discrepancy_context_missing',
+                    generation_reason=(retrieval.insufficiency_reason or 'no_source_evidence'),
+                    clarification_slot='details', model=model,
+                    provider=self.settings.llm_provider, rag_chunks=0, context_chars=0,
+                    duration_ms=round((perf_counter() - started) * 1000),
+                )
             return Answer(
                 text=(f"Для {service} не нашёл подтверждённых сведений по этому действию. " if service else
                       "Не нашёл подтверждённых сведений по этому действию.") +
@@ -562,6 +624,16 @@ class AnswerService:
                 generation_reason=(retrieval.insufficiency_reason or 'no_source_evidence'),
                 model=model, provider=self.settings.llm_provider, rag_chunks=0, context_chars=0,
                 duration_ms=round((perf_counter() - started) * 1000))
+
+        if retrieval is not None and _evidence_level(retrieval) == 'none' and state.operation == 'unknown':
+            return Answer(
+                text="Уточните, пожалуйста, какую именно операцию нужно выполнить и в каком сервисе.",
+                results=results, generation_status='clarification', scenario='clarify',
+                scenario_reason='task_not_specific', generation_reason='no_source_evidence',
+                clarification_slot='task', model=model, provider=self.settings.llm_provider,
+                rag_chunks=0, context_chars=0,
+                duration_ms=round((perf_counter() - started) * 1000),
+            )
 
         # Navigation questions need the matching task, not every document about
         # the service. Keep adjacent chunks from that task (e.g. search fields).
@@ -603,7 +675,14 @@ class AnswerService:
                                 + state.expected.question + '\n\n')
         if service:
             history_context += f'Сервис, подтверждённый клиентом: {service}. Повторно его не спрашивай.\n\n'
-        rag_context = (f"Фрагменты базы знаний:\n{context}" if context
+        coverage_context = ''
+        if partial_limitations:
+            coverage_context = (
+                "\n\nДоказательства покрывают задачу частично. Используй подтверждённые фрагменты, "
+                "не заполняй пробелы догадками и явно сообщи клиенту ограничения:\n- "
+                + "\n- ".join(partial_limitations)
+            )
+        rag_context = (f"Фрагменты базы знаний:\n{context}{coverage_context}" if context
                        else "Подходящие фрагменты базы знаний не найдены.")
         messages: list[dict] = [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -695,6 +774,15 @@ class AnswerService:
                 validation_status = 'modified'
                 validation_reason = 'search_parameter_not_confirmed'
                 scenario, scenario_reason = 'answer', 'supported_search_scope'
+            # A clarification is already the useful next action. Appending a
+            # generic coverage warning makes the question look like a failure
+            # and repeats the same limitation on every follow-up turn.
+            if partial_limitations and scenario not in {'escalate', 'clarify'}:
+                additions = [item for item in partial_limitations if normalize(item) not in normalize(text)]
+                if additions:
+                    text = text.rstrip() + '\n\n' + ' '.join(additions)
+                    response_repair.setdefault('mode', 'coverage_notice')
+                    response_repair['coverage_limitations_appended'] = additions
             return Answer(text=text, results=results, used_model=True,
                           clarification_slot=clarification_slot if scenario == 'clarify' else None,
                           generation_status="rejected" if scenario == 'escalate' and validation_reason else "generated", model=completion.model,

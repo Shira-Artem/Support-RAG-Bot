@@ -17,6 +17,12 @@ EXPANSIONS = {"пробивает": ["печать", "фискального", "
               "касса": ["ккт"], "ккт": ["касса"], "найти": ["поиск"],
               "сотрудника": ["пользователя"], "добавить": ["добавление", "создать"]}
 FILTER_FIELDS = {"category", "manufacturer", "model", "version", "source_type", "document_id"}
+_ERROR_CODE = re.compile(
+    r"\b(?:(?:ошибк\w*|код\w*)\s*(?:фн|флк|ккт)?|(?:фн|флк))"
+    r"\s*[:№#-]?\s*(-?\d{2,5})\b",
+    re.I,
+)
+_TECHNICAL_VERSION = re.compile(r"\b(?:ффд)\s*(\d+(?:[.,]\d+)?)\b", re.I)
 
 
 def tokens(text: str) -> list[str]:
@@ -29,6 +35,41 @@ def lexical_token(word: str) -> str:
     if re.fullmatch(r'чек[а-я]*', word):
         return 'чек'
     return word[:5] if len(word) > 5 and re.fullmatch(r'[а-я]+', word) else word
+
+
+def error_codes(text: str) -> set[str]:
+    codes = set()
+    for match in _ERROR_CODE.finditer(text):
+        # «номер ФН 123...» identifies a particular fiscal drive/document; it
+        # is not error code 123 and therefore is not an exact retrieval guard.
+        if re.search(r"номер\s+$", text[max(0, match.start() - 12):match.start()], re.I):
+            continue
+        codes.add(match.group(1).lstrip("-").replace(",", "."))
+    return codes
+
+
+def exact_identifiers(text: str) -> set[str]:
+    """Extract only identifiers whose mismatch changes the technical answer.
+
+    Plain numbers are intentionally excluded: quantities, money, dates and
+    document numbers improve lexical ranking but must not remove a relevant
+    procedure that does not repeat the client's values.
+    """
+    identifiers = error_codes(text)
+    identifiers.update(match.group(1).replace(",", ".")
+                       for match in _TECHNICAL_VERSION.finditer(text))
+    return identifiers
+
+
+def _normalize_model(value: str) -> str:
+    normalized = []
+    for token in tokens(value.replace("-", " ")):
+        if token.startswith("эвотор"):
+            token = "эвотор"
+        elif token.startswith("атол"):
+            token = "атол"
+        normalized.append(token)
+    return " ".join(normalized)
 
 
 @dataclass(frozen=True)
@@ -76,16 +117,23 @@ class Retriever:
         corpus = [Counter(lexical_token(word) for word in tokens(point.payload["text"] + ' ' + str(point.payload.get('title') or ''))) for point in points]
         df = Counter(token for counts in corpus for token in counts)
         avgdl = sum(sum(counts.values()) for counts in corpus) / len(corpus) or 1
-        codes = {token for token in query_tokens if any(char.isdigit() for char in token)}
-        explicit_code = re.search(r'(?:\bфн|ошибк\w*|код)\s*[:№#-]?\s*(-?\d{2,5})\b', lexical_query, re.I)
-        brands = set(query_tokens) & {"атол", "штрих", "эвотор"}
-        model_match = re.search(r"\bэвотор\s+\d+(?:[.,]\d+)?(?:\s+lite)?\b", query.lower())
-        requested_model = model_match.group().replace(",", ".") if model_match else None
+        required_identifiers = exact_identifiers(lexical_query)
+        required_error_codes = error_codes(lexical_query)
+        brands = set(_normalize_model(query).split()) & {
+            "атол", "штрих", "эвотор", "1с", "aqsi", "акси",
+        }
+        normalized_query = _normalize_model(query)
+        known_models = sorted({
+            _normalize_model(str(point.payload.get("model") or ""))
+            for point in points if point.payload.get("model")
+        }, key=len, reverse=True)
+        requested_model = next((model for model in known_models
+                                if re.search(rf"(?:^|\s){re.escape(model)}(?:$|\s)", normalized_query)), None)
         scored = []
         for point, counts in zip(points, corpus, strict=True):
             text = point.payload["text"]
-            point_model = str(point.payload.get("model") or "").lower().replace(",", ".")
-            if requested_model and point_model and point_model != requested_model:
+            point_model = _normalize_model(str(point.payload.get("model") or ""))
+            if requested_model and point_model != requested_model:
                 continue
             brand_text = " ".join((text, str(point.payload.get("title") or ""),
                                    str(point.payload.get("manufacturer") or ""), point_model))
@@ -99,10 +147,15 @@ class Retriever:
             title = str(point.payload.get('title') or '')
             # A section of a dedicated error article inherits its title's code.
             # A multi-code reference does not: it must match in this chunk.
-            title_codes = re.findall(r'(?:ФН|ошибка|код)\s*(-?\d{2,5})\b', title, re.I)
-            if explicit_code and len(set(title_codes)) == 1 and title_codes[0] == explicit_code.group(1):
+            title_codes = {
+                match.group(1).lstrip("-") for match in _ERROR_CODE.finditer(title)
+            }
+            if required_error_codes and len(title_codes) == 1 and title_codes <= required_error_codes:
                 code_text += ' ' + title
-            if codes and not codes.issubset(set(tokens(code_text + " " + str(point.payload.get("model") or "")))):
+            identifier_text = " ".join((code_text, str(point.payload.get("model") or ""),
+                                         str(point.payload.get("version") or "")))
+            if required_identifiers and not required_identifiers.issubset(
+                    {token.replace(",", ".") for token in tokens(identifier_text)}):
                 continue
             dl = sum(counts.values())
             bm25 = 0.0

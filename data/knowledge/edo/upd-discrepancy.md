@@ -3,8 +3,8 @@ document_id: edo-upd-discrepancy-2026
 title: "Несовпадение товара и УПД с кодами маркировки"
 category: edo
 service: "ЭДО"
-task_category: edo
-operations: [exchange_edo_documents]
+task_category: document_discrepancy
+operations: [record_discrepancy]
 manufacturer:
 model:
 version:

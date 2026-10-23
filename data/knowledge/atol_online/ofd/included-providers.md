@@ -4,7 +4,7 @@ title: Какие операторы ОФД входят в отдельные �
 category: atol_online
 service: "АТОЛ Онлайн"
 task_category: ofd_connection
-operations: [check_transmission]
+operations: [list_ofd_providers]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null

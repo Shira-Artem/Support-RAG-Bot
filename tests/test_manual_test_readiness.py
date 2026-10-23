@@ -1,4 +1,5 @@
 import asyncio
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -11,6 +12,7 @@ from app.retrieval_pipeline import RetrievalPipeline
 from test_expert import settings
 from test_retrieval_pipeline import Source
 from app.knowledge import DocumentLoader, Chunker
+from app.llm_client import Generation
 from app.rag import SearchResult
 from pathlib import Path
 
@@ -52,7 +54,7 @@ def test_report_query_uses_latest_explicit_request_after_switching_cabinet():
     assert 'АТОЛ' not in query
 
 
-def test_role_creation_uses_only_matching_card_and_keeps_partial_without_generation(monkeypatch, tmp_path):
+def test_role_creation_uses_only_matching_card_and_generates_from_partial_evidence(monkeypatch, tmp_path):
     root = Path(__file__).resolve().parents[1]/'data/knowledge'
     loader = DocumentLoader(root)
     docs = [loader.load(root/'aqsi_online/account'/name) for name in ['add-user.md', 'create-role.md']]
@@ -66,12 +68,82 @@ def test_role_creation_uses_only_matching_card_and_keeps_partial_without_generat
     assert {h.metadata['document_id'] for h in result.documents} == {'aqsi-online-account-create-role'}
     assert not result.sufficient and result.evidence_status == 'partial'
     assert 'role_creation_workflow_unverified' in result.missing_evidence
-    async def forbidden(*args):
-        raise AssertionError('No LLM call for partial source procedure')
-    monkeypatch.setattr('app.answer_service.generate', forbidden)
+    calls = []
+    async def fake_generate(messages, config):
+        calls.append(messages)
+        return Generation(json.dumps({'scenario': 'answer', 'response':
+            'Во вкладке «Роли» задайте название роли.'}, ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_generate)
     answer = asyncio.run(AnswerService(SimpleNamespace(search_for_state=lambda *a: result), settings(tmp_path)).answer('Создать роль', state=state))
     assert 'Полная процедура создания роли' in answer.text
-    assert 'задайте название роли' in answer.text and not answer.llm_call_attempted
+    assert 'задайте название роли' in answer.text and answer.llm_call_attempted and calls
+
+
+def test_manual_role_dialogue_uses_partial_evidence_in_grounded_generation(monkeypatch, tmp_path):
+    fixture = json.loads((Path(__file__).parent/'fixtures/dialogue_regressions_v2.json').read_text(encoding='utf-8'))
+    questions = fixture['scenarios']['H']['messages']
+    root = Path(__file__).resolve().parents[1]/'data/knowledge'
+    loader = DocumentLoader(root)
+    docs = [loader.load(root/'aqsi_online/account'/name) for name in ['add-user.md', 'create-role.md']]
+    hits = [SearchResult(doc.source, chunk.text, .04,
+                         metadata={**chunk.metadata, 'status': 'approved'})
+            for doc in docs for chunk in Chunker().split(doc)]
+    articles = {doc.document_id: [h for h in hits if h.metadata['document_id']==doc.document_id]
+                for doc in docs}
+    pipeline = RetrievalPipeline(Source(hits, articles))
+    prompts = []
+    responses = [
+        'Откройте «Пользователи» → «Добавить пользователя».',
+        ('Во вкладке «Роли» задайте название роли. Выберите доступные инструменты '
+         'и отметьте режим просмотра либо редактирования.'),
+        ('Во вкладке «Роли» задайте название роли. Выберите доступные инструменты '
+         'и отметьте режим просмотра либо редактирования. Развёрнутые разрешения '
+         'на рисунке скрыты.'),
+    ]
+    async def fake_generate(messages, config):
+        prompts.append(messages)
+        return Generation(json.dumps({'scenario': 'answer', 'response': responses[len(prompts)-1]},
+                                     ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_generate)
+    service = AnswerService(SimpleNamespace(search_for_state=pipeline.search), settings(tmp_path))
+    manager, state, answers = DialogueManager(), DialogueState(), []
+    for message_id, question in enumerate(questions, 1):
+        state = manager.advance(state, question, message_id)
+        answers.append(asyncio.run(service.answer(question, state=state)))
+
+    assert answers[1].llm_call_attempted and answers[2].llm_call_attempted
+    assert len(prompts) == 3
+    third_prompt = prompts[2][1]['content']
+    for evidence in ('задайте название роли', 'режим просмотра либо редактирования',
+                     'разделы мониторинга, магазинов, касс', 'Развёрнутые разрешения',
+                     'проверить доступ тестовой учётной записью'):
+        assert evidence in third_prompt
+    assert state.goals and state.constraints
+    assert 'Конкретная роль и её полномочия' in answers[2].text
+    assert not any(role in answers[2].text for role in ('Наблюдатель', 'Читатель', 'Администратор'))
+
+
+def test_partial_role_generation_still_removes_invented_role(monkeypatch, tmp_path):
+    root = Path(__file__).resolve().parents[1]/'data/knowledge'
+    loader = DocumentLoader(root)
+    document = loader.load(root/'aqsi_online/account/create-role.md')
+    hits = [SearchResult(document.source, chunk.text, .04,
+                         metadata={**chunk.metadata, 'status': 'approved'})
+            for chunk in Chunker().split(document)]
+    pipeline = RetrievalPipeline(Source(hits, {document.document_id: hits}))
+    manager, state = DialogueManager(), DialogueState()
+    state = manager.advance(state, 'Как назначить роль сотруднику в aQsi Online?', 1)
+    state = manager.advance(state, 'Он должен смотреть кассы, но не менять настройки.', 2)
+    async def fake_generate(*args):
+        return Generation(json.dumps({'scenario': 'answer', 'response':
+            'Назначьте роль «Наблюдатель»: она позволяет смотреть кассы без изменения настроек.'},
+            ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_generate)
+    answer = asyncio.run(AnswerService(SimpleNamespace(search_for_state=pipeline.search),
+                                       settings(tmp_path)).answer('Настройте доступ', state=state))
+    assert answer.llm_call_attempted
+    assert 'Наблюдатель' not in answer.text
+    assert answer.validation_reason == 'unsupported_role_or_permissions'
 
 
 def test_receipt_uses_actual_collection_instead_of_environment(monkeypatch, tmp_path):

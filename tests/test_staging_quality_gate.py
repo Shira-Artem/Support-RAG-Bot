@@ -1,9 +1,11 @@
 import asyncio
+import json
 from types import SimpleNamespace
 
 from app.answer_service import AnswerService
 from app.dialogue_state import DialogueManager, DialogueState, Fact
 from app.knowledge import DocumentLoader, Chunker
+from app.llm_client import Generation
 from app.rag import SearchResult
 from app.retrieval_pipeline import RetrievalPipeline, normalize_metadata, _procedure_matches
 from test_expert import settings
@@ -30,15 +32,21 @@ def test_partial_existing_user_instructions_survive_without_fabricated_permissio
     result = pipeline.search(state, 'aQsi Online изменение прав')
     assert result.documents and result.candidates and not result.rejected
     assert not result.sufficient and result.evidence_status == 'partial'
-    assert all('не подтверждает' not in step['text'] for step in result.supported_steps)
-    async def no_generation(*args):
-        raise AssertionError('Partial source instructions do not need a paid call')
-    monkeypatch.setattr('app.answer_service.generate', no_generation)
+    assert any('не подтверждает' in step['text'] for step in result.supported_steps)
+    assert any('существующую запись' in step['text'] for step in result.supported_steps)
+    calls = []
+    async def fake_generation(messages, config):
+        calls.append(messages)
+        return Generation(json.dumps({'scenario': 'answer', 'response':
+            'В списке «Пользователи» найдите существующую запись. '
+            'Меню с троеточием позволяет выбрать изменение записи.'},
+            ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_generation)
     rag = SimpleNamespace(search_for_state=lambda *args: result)
     answer = asyncio.run(AnswerService(rag, settings(tmp_path)).answer('Изменить права', state=state))
-    assert answer.scenario == 'answer' and answer.generation_status == 'partial'
+    assert answer.scenario == 'answer' and answer.generation_status == 'generated'
     assert 'троеточием' in answer.text and 'Полный порядок изменения прав' in answer.text
-    assert not answer.llm_call_attempted
+    assert answer.llm_call_attempted and calls
 
 
 def test_relevance_and_reviewed_generic_workflow_do_not_prove_specific_permissions():

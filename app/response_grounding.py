@@ -76,6 +76,28 @@ def has_action(text: str, family: str) -> bool:
     return bool(re.search(ACTION_FAMILIES[family], text, re.I))
 
 
+_ROLE_TARGET = re.compile(
+    r"\bрол\w*|\bпользовател\w*|\bсотрудник\w*|\bдоступ\w*|\bправ\w*",
+    re.I,
+)
+
+
+def _action_supported(claim: str, evidence: str, family: str) -> bool:
+    """Match ordinary paraphrases without merging unrelated procedures.
+
+    In access workflows, Russian speakers use «выбрать роль» and «назначить
+    роль» for the same documented operation.  That equivalence is deliberately
+    limited to role/user/access targets; «выбрать кассу» must not become proof
+    of an assignment action.
+    """
+    if has_action(evidence, family):
+        return True
+    if family not in {"choose", "assign"} or not _ROLE_TARGET.search(claim):
+        return False
+    alternate = "assign" if family == "choose" else "choose"
+    return bool(_ROLE_TARGET.search(evidence) and has_action(evidence, alternate))
+
+
 def has_named_role(text: str) -> bool:
     return bool(re.search(r'(?i:' + ROLE_WORD + r'\s+)(?:[«"“]|[А-ЯЁA-Z])', text))
 
@@ -86,6 +108,11 @@ _EVIDENCE_LIMIT_SECTION = re.compile(
     re.I,
 )
 _NON_EVIDENCE_LINE = re.compile(r"^(?:#|источник:|https?://|\[источник:)", re.I)
+_EDITORIAL_EVIDENCE_LINE = re.compile(
+    r"^(?:область применения|вопрос (?:пользователя|клиента)|"
+    r"что проверено|не обещать\b|цель документа|назначение документа)",
+    re.I,
+)
 _FACT_STOPWORDS = {
     "это", "есть", "для", "при", "после", "перед", "через", "можно", "нужно", "следует",
     "будет", "быть", "этот", "эта", "эти", "того", "который", "которая", "которые",
@@ -166,7 +193,8 @@ def claim_supported(claim: str, evidence: str) -> bool:
     evidence_text = " ".join(compatible)
     evidence_terms = _content_terms(evidence_text)
     overlap = len(claim_terms & evidence_terms) / len(claim_terms)
-    action_supported = all(has_action(evidence_text, family) for family in action_families)
+    action_supported = all(_action_supported(claim, evidence_text, family)
+                           for family in action_families)
     # Technical identifiers such as FN are relation-sensitive: a separate
     # source mention cannot be combined with a receipt-search claim. Require
     # them in the same source paragraph, with matching polarity.
@@ -178,22 +206,27 @@ def claim_supported(claim: str, evidence: str) -> bool:
     return action_supported and critical_supported and overlap >= 0.40
 
 
-def evidence_statements(results, context: str, *, limit: int = 12) -> list[dict]:
+def evidence_statements(results, context: str, *, limit: int = 4,
+                        request: str | None = None) -> list[dict]:
     """Return source statements actually included in the model context.
 
     Metadata can label provenance and coverage, but cannot create factual
     content: every returned statement must also occur verbatim in the context.
     """
     visible = normalize(context)
-    found, seen = [], set()
+    request_terms = _content_terms(request or "")
+    candidates, seen = [], set()
+    order = 0
     for result in results:
         metadata = result.metadata or {}
         section = str(metadata.get("section") or "")
         for sentence in statements(result.text):
-            sentence = sentence.strip()
+            sentence = re.sub(r"^>\s*", "", sentence.strip())
             key = normalize(sentence)
             if (not key or key in seen or key not in visible or sentence == section
-                    or _NON_EVIDENCE_LINE.match(sentence) or sentence.endswith("?")
+                    or _NON_EVIDENCE_LINE.match(sentence)
+                    or _EDITORIAL_EVIDENCE_LINE.match(sentence)
+                    or sentence.endswith("?")
                     or len(sentence.split()) < 2):
                 continue
             kind = "limitation" if (_EVIDENCE_LIMIT_SECTION.search(section)
@@ -204,13 +237,27 @@ def evidence_statements(results, context: str, *, limit: int = 12) -> list[dict]
                 kind = "search"
             elif any(has_action(sentence, family) for family in ACTION_FAMILIES):
                 kind = "procedure"
-            found.append({"source": result.source,
-                          "document_id": metadata.get("document_id"),
-                          "section": section or None, "kind": kind, "text": sentence})
+            sentence_terms = _content_terms(sentence)
+            overlap = len(request_terms & sentence_terms)
+            # A partial answer must address the current question, not merely
+            # occur in an article selected for the same service. Metadata is a
+            # gate; concrete wording in the statement is still required.
+            if request_terms and not overlap:
+                continue
+            priority = overlap * 10 + (3 if kind == "procedure" else 2 if kind == "fact" else 1)
+            candidates.append((priority, order, {
+                "source": result.source,
+                "document_id": metadata.get("document_id"),
+                "section": section or None,
+                "kind": kind,
+                "text": sentence,
+            }))
+            order += 1
             seen.add(key)
-            if len(found) >= limit:
-                return found
-    return found
+    # Select the most question-specific statements, then restore their source
+    # order so multi-step extracts remain readable.
+    chosen = sorted(candidates, key=lambda item: (-item[0], item[1]))[:limit]
+    return [item[2] for item in sorted(chosen, key=lambda item: item[1])]
 
 
 def unsafe_operation_issue(text: str) -> str | None:
@@ -269,22 +316,40 @@ def _evidence(results, context: str, operation: str) -> list[dict]:
     seen = set()
     for result in results:
         section = str((result.metadata or {}).get("section") or "")
+        if operation == "assign_role" and re.search(r"огранич|когда нужен|применим|важно|предупреж", section, re.I):
+            # Safety limits are added from retrieval coverage below. Keeping
+            # them in this procedural evidence pool can crowd out a later,
+            # confirmed assignment step.
+            continue
         if re.search(r"вопрос клиента|когда нужен|применимость|перед выполнением", section, re.I):
             continue
         for sentence in statements(result.text):
             if (sentence == section or sentence.startswith(("#", "Источник:", "http", "[Источник:"))
                     or sentence.endswith("?") or len(sentence.split()) < 4):
                 continue
+            if (operation == "assign_role" and re.search(
+                    r"^\s*(?:нельзя\b|развернут\w*|для задачи\b.*\bспециалист\b)",
+                    sentence, re.I)):
+                continue
             key = normalize(sentence)
             if key in seen or key not in source:
                 continue
             seen.add(key)
-            matches = (family is None or has_action(sentence, family)
-                       or (family == 'assign' and has_named_role(sentence)))
+            if operation == "assign_role":
+                # Assigning a role is a short workflow: its source evidence can
+                # legitimately include naming the role, choosing capabilities,
+                # and attaching users, not only the final «назначить» verb.
+                matches = (family is None or has_action(sentence, family)
+                           or has_named_role(sentence)
+                           or any(has_action(sentence, candidate)
+                                  for candidate in ("create", "input", "choose", "edit", "save")))
+            else:
+                matches = (family is None or has_action(sentence, family)
+                           or (family == 'assign' and has_named_role(sentence)))
             if not matches:
                 continue
             candidates.append({"source": result.source, "text": sentence})
-    return candidates[:3]
+    return candidates[:6 if operation == "assign_role" else 3]
 
 
 def needs_procedure_grounding(answer: str, context: str, state, results) -> bool:
@@ -378,16 +443,9 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
                 if not check(item["text"], context, request, service)]
 
     role_issue = any(item["reason"] == "unsupported_role_or_permissions" for item in removed)
-    if state.operation == "assign_role" and role_issue:
-        # Account creation does not answer which role satisfies a permission
-        # requirement. Do not turn the creation procedure into role advice.
-        documented_roles = [item['text'] for item in evidence if has_named_role(item['text'])]
-        if documented_roles:
-            text = '\n'.join(documented_roles)
-        else:
-            text = ("Инструкция описывает назначение роли сотруднику. " if evidence else "")
-            text += limitation(service, roles=True)
-        return ResponseRepair(text, "documented_scope", removed, [], evidence)
+    if state.operation == "assign_role" and role_issue and not evidence:
+        # Without source statements there is nothing safe to reconstruct.
+        return ResponseRepair(limitation(service, roles=True), "documented_scope", removed, [], evidence)
 
     family = OPERATION_FAMILY.get(state.operation)
     if family or state.intent in {'access', 'credentials'}:
@@ -395,14 +453,12 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
         # promises from neighbouring steps. Reconstruct its actions from the
         # source; retain only literal evidence and independent, named navigation.
         grounded = []
-        evidence_text = normalize(' '.join(item['text'] for item in evidence))
         for sentence in retained:
             labels = re.findall(r'[«"]([^»"]+)[»"]', sentence)
             navigation = bool(re.match(r'(?:Перейдите|Откройте)\b', sentence, re.I))
             other_action = any(has_action(sentence, name) for name in ACTION_FAMILIES)
             named_navigation = (navigation and labels and not other_action
-                                and all(normalize(label) in normalize(context) for label in labels)
-                                and any(normalize(label) not in evidence_text for label in labels))
+                                and all(normalize(label) in normalize(context) for label in labels))
             if normalize(sentence) in normalize(context) or named_navigation:
                 grounded.append(sentence)
             else:
@@ -412,8 +468,28 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
     # An invalid step can contain several dependent actions. Use the source
     # statement in its place, rather than deleting a word inside that workflow.
     if evidence:
-        if (family and not any(has_action(s, family) for s in retained)) or not retained:
-            retained.extend(item["text"] for item in evidence)
+        removed_families = {
+            candidate for item in removed
+            for candidate in ACTION_FAMILIES
+            if has_action(item["text"], candidate)
+        }
+        # A valid navigation sentence may itself contain «Добавить» and thus
+        # look like a complete create workflow. If a model statement was
+        # rejected, replace its unsupported details with the corresponding
+        # source steps instead of silently keeping only the navigation.
+        should_reconstruct = (
+            not retained
+            or bool(removed and family)
+            or (family and not any(has_action(s, family) for s in retained))
+        )
+        if should_reconstruct:
+            for item in evidence:
+                if (state.operation in {"assign_role", "change_permissions"}
+                        or not removed_families
+                        or any(has_action(item["text"], candidate)
+                               for candidate in removed_families)):
+                    if normalize(item["text"]) not in {normalize(s) for s in retained}:
+                        retained.append(item["text"])
     if retained:
         navigation = _navigation_reference(results, context, evidence) if family else None
         if navigation:
@@ -424,8 +500,16 @@ def repair_response(answer: str, issue: str, *, context: str, request: str,
             evidence.append(navigation)
         text = "\n".join(dict.fromkeys(retained))
         if role_issue and state.operation in {"assign_role", "change_permissions"}:
-            text += "\n\n" + limitation(service, roles=True)
-        elif state.operation == "change_permissions" and not any(
+            has_capability_matrix = any(
+                has_named_role(item["text"]) and list(permission_clauses(item["text"]))
+                for item in evidence
+            )
+            if not has_capability_matrix:
+                service_name = service or "этого сервиса"
+                text += ("\n\nДля " + service_name +
+                         ": Конкретная роль и её полномочия для ваших требований "
+                         "в источнике не подтверждены.")
+        if state.operation == "change_permissions" and not any(
                 re.search(r'\bправ(?:а|ам|ами|ах)?\b|доступ\w*|рол[ьи]', item['text'], re.I) for item in evidence):
             text += "\n\nОтдельный порядок настройки прав в этой инструкции не указан."
         elif issue == 'unsupported_technical_claim':

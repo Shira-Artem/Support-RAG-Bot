@@ -76,6 +76,32 @@ def test_numbered_question_is_not_treated_as_exact_error_code(tmp_path: Path):
     assert retriever.search('запрос клиента: 2. Где посмотреть кассу АТОЛ?')
 
 
+def test_business_numbers_rank_but_do_not_become_exact_identifiers(tmp_path: Path):
+    store = QdrantStore(QdrantClient(":memory:"), FakeEmbedding())
+    documents = {
+        "upd.txt": "При расхождении количества в УПД зафиксируйте фактическую поставку.",
+        "invoice.txt": "Для оплаты счёта проверьте назначение платежа и реквизиты.",
+        "date.txt": "Дата поставки уточняется по сопроводительным документам.",
+        "document.txt": "Расхождение по УПД нужно согласовать с поставщиком.",
+    }
+    for name, text in documents.items():
+        (tmp_path / name).write_text(text, encoding="utf-8")
+        (tmp_path / f"{name}.meta.yaml").write_text(
+            "status: approved\nverified_at: 2026-10-22\n", encoding="utf-8"
+        )
+    store.index(DocumentLoader(tmp_path).load_all())
+    retriever = Retriever(store)
+
+    cases = {
+        "В УПД 12 упаковок, а привезли 10": "upd.txt",
+        "Как оплатить счёт на 1500 рублей?": "invoice.txt",
+        "Поставка была 22.10.2026, где проверить дату?": "date.txt",
+        "Что делать с УПД №12345 при расхождении?": "document.txt",
+    }
+    for query, source in cases.items():
+        assert source in {hit.metadata["source"] for hit in retriever.search(query, top_k=10)}
+
+
 def test_semantic_result_without_lexical_overlap(tmp_path: Path):
     store = QdrantStore(QdrantClient(":memory:"), FakeEmbedding())
     (tmp_path / "printing.txt").write_text("Печать фискального документа не работает.", encoding="utf-8")
@@ -102,6 +128,8 @@ def test_evotor_models_do_not_mix(tmp_path: Path):
     for model in ("Эвотор 6", "Эвотор 6 lite", "Эвотор 7.2", "Эвотор 7.3"):
         hits = retriever.search(model)
         assert hits and all(hit.metadata["model"] == model for hit in hits)
+    inflected = retriever.search("На Эвоторе 7.3 горит индикатор")
+    assert inflected and all(hit.metadata["model"] == "Эвотор 7.3" for hit in inflected)
 
 
 def test_named_manufacturer_does_not_return_other_vendor(tmp_path: Path):
@@ -129,6 +157,17 @@ def test_error_article_subsections_inherit_code_and_service_filter_runs_before_r
     assert hits and '30 дней' in hits[0].text
     assert r.search('Эвотор ФН 234', source_prefixes=('evotor/',)) == []
     assert r.search('Эвотор ФН 235', source_prefixes=('aqsi_online/',)) == []
+
+
+def test_flk_code_in_article_title_applies_to_its_subsections(tmp_path):
+    store = QdrantStore(QdrantClient(':memory:'), FakeEmbedding())
+    (tmp_path / 'flk.md').write_text(
+        '---\ntitle: "Код ФЛК 507"\nstatus: approved\nverified_at: 2026-10-22\n'
+        '---\n## Проверка\nСравните итог чека и сумму оплат.', encoding='utf-8')
+    store.index(DocumentLoader(tmp_path).load_all())
+    hits = Retriever(store).search('Что означает код ФЛК 507?')
+    assert hits and 'сумму оплат' in hits[0].text
+    assert Retriever(store).search('Что означает код ФЛК 508?') == []
 
 
 def test_api_contract_and_validation(tmp_path: Path):

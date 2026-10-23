@@ -557,6 +557,8 @@ ENTITY_NAMES = (
 )
 OBJECTS = (
     ("bank_statement", "банковская выписка", ("выпис",)),
+    ("billing", "тариф", ("тариф",)),
+    ("delivery_document", "УПД", ("упд", "накладн", "поставк")),
     ("credentials", "учётная запись", ("парол", "авторизац")),
     ("access", "сотрудник", ("сотрудник", "коллег", "пользовател", "учетн", "учетк", "аккаунт", "доступ", "роль", "роли", "ролей", "прав", "полномоч")),
     ("report", "отчёт", ("отчет",)),
@@ -570,6 +572,8 @@ OBJECTS = (
 OPERATIONS = (
     ("repeat_print", ("распечат", "перепечат", "повторн")),
     ("reset_password", ("восстанов", "сброс", "забыл")),
+    ("correct", ("исправ", "корректир", "скоррект")),
+    ("reconcile", ("расхожд", "недостач", "свер", "прием", "приём", "подпис")),
     ("replace", ("замен",)),
     ("close", ("закры", "закрой", "заверш")),
     ("add", ("добав", "созда", "приглас", "завести")),
@@ -725,8 +729,17 @@ class LexicalAnalyzer:
             obs.operation = 'transmit'
             if has(tokens, ('не', 'нет', 'неотправ')):
                 obs.details.append(obs.evidence)
-        if obs.intent in {"device", "fiscal_drive", "network", "receipt"} and has(tokens, ("ошиб", "неисправ", "перестал", "печата", "отправля")):
+        # A client's own mistake in an already issued receipt is a correction
+        # request, not a device/OFD failure. Diagnostic routing remains for an
+        # error code or a malfunction that prevents printing/transmission.
+        if (obs.intent in {"device", "fiscal_drive", "network", "receipt"}
+                and obs.operation != "correct"
+                and has(tokens, ("ошиб", "неисправ", "перестал", "печата", "отправля"))):
             obs.operation = "diagnose"
+        if (obs.intent == "delivery_document" and obs.operation == "unknown"
+                and (len(re.findall(r"\b\d+\b", text)) >= 2
+                     or has(tokens, ("привез", "получ", "количеств", "нехват")))):
+            obs.operation = "reconcile"
         if obs.intent == "receipt" and has(tokens, ("статус", "дошел", "дошли", "передан")):
             obs.operation = "status"
         code = re.search(r"(?:\bфн|ошибк\w*|код)\s*[:№#-]?\s*(-?\d{2,5})\b", text, re.I)
@@ -773,11 +786,20 @@ class LexicalAnalyzer:
         contradiction |= bool(state.task_id and state.intent == 'report'
                               and has(tokens, ('кабинет', 'раздел', 'пункт', 'отчет'))
                               and re.search(r"\bнет\b|отсутств\w*|не\s+(?:вижу|отобража\w*)", text, re.I))
+        # A short free-form answer to a requested detail belongs to the active
+        # task. Explicit topic switches and a newly recognized different object
+        # are handled below and must not be swallowed as clarification text.
+        detail_reply = bool(state.expected and state.expected.slot == 'details'
+                            and not obs.new_topic
+                            and (obs.intent == 'unknown' or obs.intent == state.intent))
+        if detail_reply and obs.evidence:
+            obs.details.append(obs.evidence)
         clarification_matches = bool(state.expected and (
             state.expected.slot in obs.entities
             or state.expected.slot == 'service' and obs.entities
             or state.expected.slot == 'goal' and (obs.goals or obs.constraints)
-            or state.expected.slot in {'details', 'task'} and (obs.intent != 'unknown' or obs.entities or obs.constraints)))
+            or state.expected.slot == 'details' and detail_reply
+            or state.expected.slot == 'task' and (obs.intent != 'unknown' or obs.entities or obs.constraints)))
         if contradiction:
             obs.relation = 'contradiction'
             obs.constraints = []
@@ -898,7 +920,13 @@ class DialogueManager:
                 state.transition = "refine_requirements" if relation == "constraint_update" else "change_parameter"
             if obs.intent != "unknown" and (obs.intent == state.intent or state.intent == "unknown"):
                 state.intent = obs.intent
-                if obs.operation != "unknown":
+                # Words inside a requested detail (for example «чек уже
+                # выдан») describe the active correction case; they are not a
+                # new command and must not replace the operation being refined.
+                preserves_operation = (relation == "answer_to_clarification"
+                                       and previous.expected
+                                       and previous.expected.slot == "details")
+                if obs.operation != "unknown" and not preserves_operation:
                     state.operation = obs.operation
                 if obs.object:
                     state.object = obs.object

@@ -4,7 +4,7 @@ title: Для чего АТОЛ Онлайн нужен оператор фис�
 category: atol_online
 service: "АТОЛ Онлайн"
 task_category: ofd_connection
-operations: [check_transmission]
+operations: [explain_ofd]
 manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null

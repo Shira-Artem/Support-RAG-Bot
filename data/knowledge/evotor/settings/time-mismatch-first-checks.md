@@ -3,8 +3,8 @@ document_id: evotor-time-mismatch-check-20261019
 title: 'Эвотор: расхождение времени кассы и планшета'
 category: settings
 service: "Эвотор"
-task_category: settings
-operations: [configure_settings]
+task_category: error_diagnosis
+operations: [diagnose_error]
 manufacturer: Эвотор
 model: ''
 version: ''

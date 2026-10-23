@@ -61,6 +61,16 @@
       ],
       "expected_before_followup": null,
       "target": "same task and goals/constraints, active route switches to ATOL, old product is not mixed into the query"
+    },
+    "H": {
+      "name": "aQsi Online — подбор прав для нового сотрудника",
+      "messages": [
+        "Как добавить нового сотрудника в aQsi Online?",
+        "А какую роль ему назначить?",
+        "Мне нужно, чтобы он мог смотреть кассы и отчёты, но не менять настройки. Как это сделать?"
+      ],
+      "expected_before_followup": null,
+      "target": "partial approved evidence reaches grounded generation and preserves role configuration facts and limitations"
     }
   }
 }

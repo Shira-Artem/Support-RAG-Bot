@@ -1,5 +1,6 @@
 import asyncio
 import importlib
+import json
 import sqlite3
 import sys
 from types import SimpleNamespace
@@ -12,6 +13,7 @@ from app.config import Settings
 from app.conversation_store import ConversationStore
 from app.expert_store import ExpertStore
 from app.dialogue_state import DialogueManager, DialogueState
+from app.llm_client import Generation
 from app.rag import SearchResult
 from app.retrieval_pipeline import RetrievalResult
 from scripts.support_report import summary
@@ -97,7 +99,7 @@ def test_feedback_and_confirmed_local_request_are_bound_to_answer(tmp_path):
     assert queue[0]['answer'] == 'Подтверждённый ответ'
 
 
-def test_cash_report_source_answer_uses_no_llm(monkeypatch, tmp_path):
+def test_cash_report_source_answer_uses_grounded_generation(monkeypatch, tmp_path):
     hit = SearchResult('atol_online/account/cash-reports.md',
         'Просмотр отчётов\nПосле замены ФН сервис направляет отчёты на регистрационную почту. '
         'Доступные отчёты можно посмотреть в разделе личного кабинета «Отчеты по кассам».', .05,
@@ -106,17 +108,20 @@ def test_cash_report_source_answer_uses_no_llm(monkeypatch, tmp_path):
     class Rag:
         def search_for_state(self, state, query):
             return RetrievalResult(query, [], [], [hit], True, None, hit.text)
-    async def no_llm(*args, **kwargs):
-        raise AssertionError('LLM call is unnecessary')
-    monkeypatch.setattr('app.answer_service.generate', no_llm)
-    settings = Settings('', '', '', '', '', False, tmp_path)
+    calls = []
+    async def fake_llm(messages, config):
+        calls.append(messages)
+        return Generation(json.dumps({'scenario': 'answer', 'response':
+            'Доступные отчёты можно посмотреть в разделе личного кабинета «Отчеты по кассам».'},
+            ensure_ascii=False), 'stub-model')
+    monkeypatch.setattr('app.answer_service.generate', fake_llm)
+    settings = Settings('', 'stub-key', 'stub-model', '', '', False, tmp_path)
     state = DialogueManager().advance(DialogueState(),
         'Где посмотреть отчёты по кассам после замены ФН в АТОЛ Онлайн?', 1)
     answer = asyncio.run(AnswerService(Rag(), settings).answer(state.task.value, state=state))
-    assert answer.scenario == 'answer' and answer.generation_status == 'partial'
-    assert not answer.llm_call_attempted
-    assert 'регистрационную почту' in answer.text and 'отчёты' in answer.text.casefold()
-    assert answer.response_repair['mode'] == 'partial_answer'
+    assert answer.scenario == 'answer' and answer.generation_status == 'generated'
+    assert answer.llm_call_attempted and calls
+    assert 'Отчеты по кассам' in answer.text
 
 
 def test_rephrased_unresolved_question_is_detected_by_facts_not_message_ids(tmp_path):

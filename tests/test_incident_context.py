@@ -27,7 +27,7 @@ def test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output
     assert 'Полный порядок изменения прав' in rows[2]['answer']['text']
     assert rows[2]['answer']['retrieval_diagnostics']['evidence_status'] == 'partial'
     assert not rows[2]['answer']['retrieval_diagnostics']['sufficient']
-    assert rows[2]['simulated_generation_calls'] == 0
+    assert rows[2]['simulated_generation_calls'] == 1
     assert 'Читатель' not in rows[2]['answer']['text']
     assert 'aQsi' not in rows[3]['query']
     assert rows[3]['simulated_generation_calls'] == 0
@@ -42,7 +42,7 @@ def test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output
         assert 'Мониторинг' not in row['answer']['text']
     # The updated card now states the FN limitation explicitly; absence-only
     # repair is no longer the only valid way to convey the documented boundary.
-    assert 'ФН не подтверждён как прямой фильтр чеков' in rows[6]['answer']['text']
+    assert 'по номеру ФН' in rows[6]['answer']['text'] and 'не подтверждён' in rows[6]['answer']['text']
     assert 'Смена ФН' not in rows[6]['answer']['text']
     assert rows[6]['answer']['response_repair']['evidence']
 

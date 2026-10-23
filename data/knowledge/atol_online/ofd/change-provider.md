@@ -4,7 +4,7 @@ title: "Смена оператора ОФД на облачной кассе А
 category: "atol_online"
 service: "АТОЛ Онлайн"
 task_category: ofd_connection
-operations: [check_transmission]
+operations: [change_ofd_provider]
 manufacturer: "АТОЛ"
 model: "АТОЛ Онлайн — облачная ККТ"
 version: ""

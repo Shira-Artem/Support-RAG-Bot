@@ -33,7 +33,16 @@ class RetrieverRAGAdapter:
                 if self.retriever._allowed(payload, {}):
                     self._articles.setdefault(payload.get("document_id"), []).append(point)
             for points in self._articles.values():
-                points.sort(key=lambda p: (p.payload.get("section") or "", p.payload.get("page") or 0, str(p.id)))
+                # New indexes preserve source order explicitly.  Legacy
+                # collections have no recoverable ordinal, so keep a stable
+                # fallback without pretending alphabetical section order is
+                # the document order.
+                points.sort(key=lambda p: (
+                    0 if isinstance(p.payload.get("chunk_index"), int) else 1,
+                    p.payload.get("chunk_index") if isinstance(p.payload.get("chunk_index"), int) else 0,
+                    p.payload.get("page") or 0,
+                    str(p.id),
+                ))
         return [SearchResult(str(p.payload.get("source") or ""), p.payload["text"], 0.0,
                              metadata={k: v for k, v in p.payload.items() if k != "text"})
                 for p in self._articles.get(document_id, [])]
