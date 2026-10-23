@@ -36,18 +36,28 @@ def test_unknown_fiscal_drive_change_requests_target_and_equipment_before_retrie
 
 
 def test_safe_fiscal_drive_resource_check_remains_applicable_without_model():
-    current = state("Как проверить ресурс ФН?")
+    current = state("Как в Платформе ОФД проверить ресурс ФН?")
     assert current.intent == "fiscal_drive" and current.operation == "check"
-    guide = hit(
-        "В разделе состояния ФН проверьте оставшийся ресурс накопителя.",
-        task_category="cash_list", operations=["list_cash_registers"],
-        _operations_explicit=True,
+    # This is the real approved knowledge article: it describes the resource
+    # filter in Platforma OFD cash monitoring, rather than a fabricated
+    # cash_list operation attached to an unrelated technical article.
+    guide = SearchResult(
+        "data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md",
+        "Откройте «Кассы» → «Мониторинг». Предустановленные фильтры позволяют отбирать кассы "
+        "с почти заполненной памятью ФН. «Ресурс ФН менее 30 дней» определяется признаками "
+        "срочной замены или исчерпания ресурса из отчёта закрытия смены.", .9,
+        metadata={
+            "document_id": "platformaofd-lkk-cash-monitoring",
+            "status": "approved", "service": "Платформа ОФД",
+            "task_category": "cash_list", "operations": ["list_cash_registers"],
+            "_operations_explicit": True,
+        },
     )
     assert operation_compatibility(current.operation, guide.metadata, current.task.value,
                                    task_category="cash_list") == "match"
     assert not document_applicability(current, guide.metadata, technical=True)
     result = RetrievalPipeline(Source([guide])).search(current, current.task.value)
-    assert result.documents and result.documents[0].metadata["document_id"] == "specialized-guide"
+    assert result.documents and result.documents[0].metadata["document_id"] == "platformaofd-lkk-cash-monitoring"
 
 
 def test_explicit_operation_mismatch_is_a_hard_procedure_rejection():

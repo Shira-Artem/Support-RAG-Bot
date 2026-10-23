@@ -7,17 +7,17 @@
 ### Архитектура
 
 - Telegram-бот (`bot.py`) принимает сообщения; `app/conversation_store.py` хранит сообщения и состояние диалога.
-- `app/dialogue_state.py` и `app/message_analyzer.py` формируют состояние задачи, intent/operation, факты и уточнения.
+- `app/dialogue_state.py::LexicalAnalyzer` формирует типизированные наблюдения; `DialogueManager` редуцирует их в `DialogueState` с историей диалога и контекстом активной задачи. Отдельного `app/message_analyzer.py` файла нет; `MessageAnalyzer` — Protocol в `app/dialogue_state.py`.
 - `app/rag_query.py` строит запрос; `app/retrieval_pipeline.py` выполняет retrieval, проверяет статус/совместимость и выбирает контекст.
 - `app/answer_service.py` управляет уточнениями, retrieval, ответом и валидацией; `app/response_grounding.py` проверяет соответствие ответа evidence.
 - `app/runtime.py` собирает runtime-конфигурацию и RAG-компоненты.
+- Экспериментальный A/B CLI `scripts/compare_dialogue_analyzers.py` изолирован от Telegram/RAG; A и B используют отдельные `DialogueManager`/состояния, B — Groq structured JSON.
 
 ### Ветка и версия
 
 - Ветка: `main`.
-- Последний подтверждённый Git commit на момент записи: `0754352465d70ad638e6c69d7a2cded879c3e098` (`Fix P0 support routing and response diagnostics`, 2026-10-23 15:38:49 +03).
-- Пользователь сообщил, что P0 commit запушен; состояние удалённой ветки в этой задаче отдельно не проверялось.
-- Незакоммиченная работа P1: изменения `app/answer_service.py`, `app/response_grounding.py`, `app/retrieval_pipeline.py`; новые `app/procedure_policy.py` и `tests/test_procedure_applicability.py`. Commit/push не выполнялись.
+- Предыдущий подтверждённый commit: `a026dd2de40f192329049aec2b26ba5940f7d664` (`Add safe procedural evidence applicability checks`); локальная `main` и `origin/main` были синхронизированы перед текущей публикацией.
+- DialogueState v2.1 и изолированный A/B стенд включены в текущую публикацию на `main` по явному запросу пользователя от 2026-10-23. Финальный commit SHA будет внесён в журнал после создания commit.
 
 ### Конфигурация (подтверждённые defaults/receipt, секреты опущены)
 
@@ -29,12 +29,13 @@
 
 ### Последние подтверждённые проверки
 
-- Полный pytest после изменений: **269 passed**.
-- Целевой regression-набор после изменений grounding: **38 passed**.
-- Retrieval benchmark на 83 approved-кейсах: expected context **81/83**, 2 erroneous rejections — те же два, что в зафиксированном baseline; новых ошибочных отказов нет. Ранее в ходе настройки появилось 7 дополнительных отказов, затем область applicability была сужена и итоговый benchmark вернулся к baseline.
-- Полный benchmark содержал 100 вопросов: top1=54, top5=72, top10=77, top30=83; это retrieval-метрики, не точность ответов.
-- `git diff --check`: пройден.
-- Benchmark выполнил read-only Qdrant retrieval; Groq-вызовов и индексации не было.
+- Полный pytest после A/B стенда: **288 passed** (включая тесты схемы/span validation); до стенда после v2.1 было 278 passed.
+- Targeted state/P0/P1 регрессии: **143 passed**.
+- Retrieval benchmark: 100 вопросов, 83 approved; expected context **81/83**, те же два baseline false rejections, новых отказов нет. Метрики: top1=55, top5=74, top10=78, top30=83; это retrieval rank, не точность ответов.
+- `git diff --check`: пройден после финальных изменений.
+- Первые ручные A/B последовательности: 7 пользовательских реплик, 7 Groq вызовов; 3 результата прошли исходную local validation, 3 ответа отвергнуты validation и 1 HTTP 400 из-за строгой object enum. Текущий cross-field audit дополнительно выявил 1 из этих 3 как intent-object mismatch. Для 3 прошедших исходную проверку ответов receipt сообщил 8,457 токенов. Всего за задачу было 17 запросов Groq, включая 10 предварительных/отладочных вызовов; известный usage по полученным usage receipts составил 16,649 токенов, usage остальных ответов не восстановим. Runner теперь сохраняет usage до validation для будущих запусков.
+- Sanitized A/B артефакт: `docs/experiments/dialogue_analyzer_ab_2026-10-23-final.jsonl`; тексты реплик и произвольные evidence quotes в файл не записываются.
+- Benchmark использовал read-only retrieval из локальной коллекции `knowledge_stage3_retrieval_20261022`; без индексации и Groq. Локальная embedding-модель загрузилась; HF Hub вывел предупреждение об anonymous rate limits.
 
 ## 2. Принятые архитектурные решения
 
@@ -70,14 +71,14 @@
 - По доступному Git и отчётам цель этапа — безопаснее маршрутизировать операции и улучшить диагностику ответов/grounding. Подробные причинно-следственные детали для этого commit в текущем аудите не переустанавливались; см. ниже известные остатки после P0.
 - Пять ручных Telegram-диалогов от 23.10.2026 показали, что P0 не устранил stale DialogueState, небезопасный unresolved fallback, слабую применимость специализированного документа и широкую неоднозначность операций.
 
-### P1 — граница между релевантностью и разрешённым evidence (текущая незакоммиченная работа)
+### P1 — граница между релевантностью и разрешённым evidence (выполнен, commit в main)
 
 - `app/procedure_policy.py`: общий `operation_compatibility` и `document_applicability`.
 - `app/retrieval_pipeline.py`: fallback допускает неизвестную операцию, но блокирует подтверждённый mismatch; applicability для оборудования/сервиса и семейства задачи; generic OFD-запрос не получает vendor-specific процедуру без подтверждения.
 - `app/answer_service.py`: предметное уточнение для неопределённого изменения фискальных настроек с вопросом о действии и оборудовании; зазор применимости приводит к уточнению с сохранением текущей задачи.
 - `app/response_grounding.py`: запрет составлять одно предлагаемое действие из частично подтверждённых разных clauses; mismatch фильтруется также на repair пути.
 - `tests/test_procedure_applicability.py`: позитивные и негативные проверки vague fiscal change/resource lookup, operation mismatch, equipment/service applicability и неподтверждённых составных claims.
-- До/после: targeted и полный pytest пройдены; итоговый approved benchmark сохранил baseline 81/83 и те же 2 старых отказа, новых false rejection нет. См. точные результаты в разделе 1.
+- Commit `a026dd2` включён в `main`. На момент завершения P1: 269 pytest passed; benchmark 81/83 и те же 2 старых отказа, новых false rejection не было. Текущий полный набор повторно пройден после DialogueState v2.1: 278 passed, benchmark снова 81/83.
 - Остаточный риск: проверяемая политика намеренно не решает понимание произвольных разговорных формулировок, сложную смену темы и общую семантику DialogueState.
 
 ## 4. Ручное Telegram-тестирование — 23.10.2026
@@ -108,45 +109,90 @@
 
 | Приоритет | Проблема и основание | Состояние | Следующее действие |
 |---|---|---|---|
-| P1 | DialogueState сохраняет старые task facts при смене темы и чрезмерно удерживает ожидаемый clarification slot; подтверждено сценариями 1, 4. | Открыто; глобальный DialogueState в этом P1 не менялся. | Следующий отдельный этап: relation/new-task/clarification precedence, тесты последовательностей и provenance для service/constraints. |
-| P1 | Semantic understanding разговорной жалобы «закончился ОФД», различения outage/list/connect и операции срока договора. | Открыто; semantic analyzer не реализовывался. | Разработать общий taxonomy/analysis с confidence и уточнением, проверить на парафразах и сохранённых synthetic fixtures. |
+| P1 | DialogueState lifecycle: stale task/clarification, потеря symptom и query root. | Исправлено в DialogueState v2.1, включённом в текущую публикацию; sequence tests и full suite проходят. Live Telegram не повторялся. | После публикации получить hash-bound worker receipt и провести ручные sequence tests. |
+| P1 | Семантическое понимание «закончился ОФД», payment/renewal, outage vs list/connect. | Улучшено ограниченным lexical contract; экспериментальный Groq analyzer есть только в A/B CLI. В 2 коротких диалогах 4/7 ответов B не прошли исходную validation, плюс post-run audit выявил один inconsistent intent/object; непроверенные парафразы остаются риском. | Расширять independent paraphrase/state coverage; не подключать semantic analyzer к production до стабильного typed evidence contract. |
+| P1 | Определить, стоит ли развивать semantic analyzer после A/B эксперимента. | Из 7 Groq ответов в двух последовательностях только 3 прошли проверку; 3 отбракованы из-за отсутствующего claim evidence / несовпадения entity evidence, 1 отклонён Groq Structured Outputs по object enum. Небольшая выборка не доказывает преимущество B; production подключения нет. | Разобрать сохранённые turn-level результаты; улучшать общий контракт/schema/prompt только на новых независимых примерах, затем повторить сравнение с telemetry токенов для каждого ответа. Не подключать к Telegram без отдельного решения. |
 | P1 | Доказательство runtime-кода пяти ручных диалогов не совпадает по сохранённым hashes с HEAD P0. | Неразрешённая неопределённость артефакта. | До следующего Telegram-теста обеспечить hash-bound runtime receipt и сохранить source snapshot, не меняя данных клиента. |
-| P1 | Часть вопросов о конкретном сервисе/модели остаётся `no_context`, если нет подтверждённой операции или применимого evidence. Для срока Платформа ОФД кандидатами были approved-документы, но отказали как ambiguous. | P1 создал безопасную границу; coverage содержания/операций требует проверки. | Аудировать approved knowledge/evidence по задаче проверки срока договора; не принимать отсутствие документа без content review. |
+| P1 | Coverage approved evidence по проверке срока/продлению/оплате Платформа ОФД. | Лексическая задача теперь определяет `billing/check` для явного запроса о сроке; retrieval coverage/content для этой узкой операции не подтверждались этим benchmark. | Отдельно проверить approved source metadata/evidence и offline retrieval cases; не считать исторический no_context доказательством отсутствия статьи. |
 | P2 | 2 erroneous rejections в benchmark из baseline (`integration!=error_diagnosis`, `fns_registration!=receipt_transmission`). | Не являются новой регрессией P1; присутствовали до изменений. | Разбирать отдельно с ожидаемым намерением, не ослабляя hard mismatch gate. |
 | P2 | В ходе P1 настройки временно выросли false rejections до 7 на 83 approved. Итоговый scope tuning убрал добавочные отказы. | Итоговый benchmark вернулся к baseline. | Повторять benchmark при изменениях operation/applicability; отслеживать абсолютные пары вопрос/отказ, а не только aggregate. |
 
 ## 6. Следующий этап
 
-### Цель
+### DialogueState v2.1 — сделано локально; A/B стенд — экспериментальный и локальный
 
-Улучшить переходы `DialogueState` и общее понимание relation/operation для новых тем, уточнений и разговорных формулировок, сохраняя текущую P1 safety boundary.
+- `TaskContext` владеет исходной задачей, отдельным symptom, operation evidence/confidence и superseded facts; новые сообщения не меняют историю, а reducer обновляет только active task.
+- `LexicalAnalyzer` отделяет объект, запрошенное действие и symptom; failure language больше не превращается в `list`. Явное действие и symptom остаются отдельными свидетельствами. Причинный вывод не создаётся.
+- Подтверждение сервиса/оборудования/интеграции продолжает ожидаемую задачу и сохраняет её operation/symptom. `DirectBank` хранится как `integration`, не как service, чтобы не конфликтовать с metadata 1С.
+- Явная смена темы создаёт новый `task_id`, очищает expected clarification и task facts старой задачи; сообщения остаются в ConversationStore. Новая тема распознаётся и после вводного «А теперь…».
+- Повтор вопроса сохраняет текущие intent/operation и исходный запрос. Query builder включает root request по жизненному циклу задачи, редактируя superseded service/model/error/parameters и не смешивая разные задачи.
+- Billing-парафразы без ясного действия остаются `unknown`/`analysis_required`; запрос «проверить срок договора» распознаёт `billing/check` и нормализуется отдельно от сверки контрагентов.
+- Контракт `Observation` принимает типизированные relation, confidence и source spans; reducer проверяет spans текущего сообщения. Отдельный semantic analyzer реализован только в A/B CLI, не в production runtime.
+- A/B CLI использует строгую schema из фактических vocabularies; post-validation проверяет типы, словари, intent-object пары, topic/relation согласованность, уникальные точные spans и привязку entity value к alias в span. Invalid B не заменяется результатом A и не меняет B state.
+- `/new` начинает независимую пару диалогов; `/expect SLOT` моделирует ответ-уточнение бота для обоих state branches. A/B видят одну и ту же реплику и каждый свою копию ранее накопленного состояния; после расхождения их state не склеиваются.
+- Прогнаны два заданных диалога (7 пользовательских сообщений): A распознал первый сбой как `bank_statement/diagnose` и сохранил операцию при уточнении DirectBank; реплика про банк Точка продолжила эту задачу. В billing диалоге A оставил неоднозначное «кончился ОФД» неразрешённым, затем на «закончился оплаченный период. Как продлить?» начал новую billing-задачу с `operation=unknown`; явная смена темы дала `access/add_employee`.
+- B прошёл три реплики (третья в банковском диалоге, первая в billing, новая тема про сотрудника). На трёх других HTTP-ответах validation отклонил intent без evidence или entity claim с неподходящим evidence; один HTTP 400 возник, когда object не входил в enum. Ошибки не применены к состоянию; поэтому поздние state B сравниваются на его оставшемся/неполном контексте и не являются чистой оценкой семантического качества.
+- Тест ресурса ФН в `tests/test_procedure_applicability.py` использует реальный approved-документ Платформа ОФД `platformaofd-lkk-cash-monitoring`, metadata `cash_list/list_cash_registers` и подтверждённый сервис; synthetic несовпадающую фикстуру заменили.
 
-### Уже сделано
+### Таблица переходов, проверенная в sequence tests
 
-- P1-safe operation compatibility, document applicability и clause-level grounding внесены локально.
-- Полный pytest: 269 passed; approved retrieval benchmark: 81/83 без новых false rejections.
+| Диалоговый ход | До | После | Проверенное свойство |
+|---|---|---|---|
+| Банковские выписки перестали загружаться | Новая задача | `bank_statement/diagnose`, symptom сохранён | Не превращается в `list` |
+| Уточнение «1С, DirectBank» после вопроса о сервисе | `bank_statement/diagnose`, pending service | Тот же `task_id`, `diagnose`, software 1С + integration DirectBank, pending очищен | Не теряет исходную неисправность и не маршрутизирует на connect |
+| Повтор исходного вопроса | Та же задача | Тот же смысл и тот же RAG query | Revision не сокращает root request |
+| Право просмотра и запрет настроек | `access/add_employee`, pending service | Та же задача, service, цель и constraint | Уточнение сохраняет требования |
+| Смена темы при pending clarification | Старая задача | Новый `task_id`, `expected=None` | Старый active task не попадает в новый query, transcript остаётся |
+| Истёк договор/тариф или не проходит оплата | Billing неизвестного действия | `billing/unknown`, clarification-required | Не выбирает оплату/продление наугад |
+| Проверить срок договора | Явная операция | `billing/check` | Не сводится к сверке контрагентов |
+| Неопределённое изменение ФН | `fiscal_drive/change` | Запрос точного действия и оборудования до retrieval | Сохраняется P1-фискальный safety gate |
 
-### Далее
+### Остаточные ограничения и следующий шаг
 
-1. Проверить diff P1 и принять/поправить его; затем пользователь выполняет commit/push.
-2. Спроектировать следующий узкий DialogueState/semantic этап без специальных правил под 5 буквальных реплик.
-3. Добавить synthetic sequence tests: новая тема при ожидаемом slot, service clarification не теряет task operation, constraints сохраняются при уточнении, «срок договора/тариф/оплата ОФД», outage vs list/connect.
-4. Повторить полный pytest и benchmark 83 approved-кейсов; расследовать любые новые отклонения по item-level.
-5. Только после кода и offline регрессий провести ручной Telegram smoke/acceptance на hash-bound runtime receipt; сравнить фактический ответ, selected docs, operation/applicability, validator и generation reason.
+- `LexicalAnalyzer` остаётся ограниченным лексическим анализатором, не семантическим парсером. Новые парафразы, сложные вложенные задачи и случаи без явного relation требуют уточнения; возможный будущий analyzer должен реализовать typed `Observation`, confidence и evidence spans.
+- Для неоднозначного срока договора и оплаты система безопасно уточняет цель; полнота approved knowledge/retrieval по этим операциям отдельно не подтверждалась.
+- Полный pytest **287 passed**; retrieval benchmark по-прежнему **81/83**, без новых false rejections, и не запускался повторно в A/B задаче. A/B результаты — только 2 коротких диалога; B пока не заслуживает статуса победителя, но демонстрирует полезные hypotheses и нуждается в дальнейшем независимом тестировании после устранения ошибок evidence/schema. Production runtime не затронут.
+
+Дальше: проанализировать `docs/experiments/dialogue_analyzer_ab_2026-10-23-final.jsonl`; расширить независимую выборку и зафиксировать scorecard для evidence validity, task linking, operation/symptom separation и state retention. После публикации подтвердить receipt на запущенной версии и провести ручной acceptance для v2.1. Semantic analyzer не включать в Telegram без отдельного разрешения.
 
 ### Ограничения текущей авторизации
 
-Не менять production SQLite, Qdrant содержимое/индекс, `.env`, Telegram worker или пользовательские данные; не запускать индексацию или Groq во время этого этапа; не добавлять правила под буквальные AB-ID/тестовые тексты; не менять глобально DialogueState в P1; не делать commit/push без разрешения пользователя.
+Не менять Qdrant, production SQLite, `.env`, Telegram worker и пользовательские данные; не запускать индексацию или Groq; не добавлять правила под буквальные AB-ID/тестовые тексты; не реализовывать semantic LLM analyzer. Commit/push выполнять только по явному разрешению пользователя.
 
 ## 7. История работ
 
 ### 2026-10-23 — read-only диагностика 5 Telegram-сценариев и P1 safe evidence boundary
 
 - **Цель:** определить причины пяти первых ручных Telegram-ошибок и сделать процедурный retrieval/evidence применимым к заявленному service/equipment/operation.
-- **Изменения:** `app/procedure_policy.py` (новый), `app/retrieval_pipeline.py`, `app/answer_service.py`, `app/response_grounding.py`, `tests/test_procedure_applicability.py` (новый). Локальные незакоммиченные изменения.
+- **Изменения:** `app/procedure_policy.py` (новый), `app/retrieval_pipeline.py`, `app/answer_service.py`, `app/response_grounding.py`, `tests/test_procedure_applicability.py` (новый). Commit `a026dd2` в `main`; push подтверждён.
 - **Причина:** fallback обходил operation mismatch; specialized документ становился универсальным; частичные clauses позволяли procedural claims; неопределённая фискальная задача могла получить опасную процедуру.
-- **Проверки:** полный pytest **269 passed**; targeted grounding/applicability набор **38 passed**; benchmark 83 approved: expected context **81/83**, те же 2 baseline rejections, новых нет; `git diff --check` passed. Retrieval benchmark выполнен без Groq и без записи/индексации Qdrant.
+- **Проверки:** полный pytest на завершении P1 **269 passed**; targeted grounding/applicability набор **38 passed**; benchmark 83 approved: expected context **81/83**, те же 2 baseline rejections, новых нет; `git diff --check` passed. Retrieval benchmark выполнен без Groq и без записи/индексации Qdrant.
 - **Ручные тесты:** только исторические пять диалогов прочитаны из `data/conversations.sqlite3` через SQLite URI `mode=ro` и `PRAGMA query_only=ON`; новые Telegram-сообщения не отправлялись. Установленные причины сведены в разделе 4. Runtime receipt/hash не доказывает точный source snapshot worker.
 - **Регрессии:** первая настройка applicability создала 7 новых отказов на 83 approved; после сужения области применения итоговые проверки вернулись к baseline 81/83 без новых отказов. Оставшиеся 2 ошибочных отказа были и до P1.
 - **Открыто:** DialogueState/semantic transitions; распознавание договора/срока ОФД; проверка runtime hash до следующего ручного теста; coverage approved evidence для срока договора.
 - **Следующий шаг:** проверить P1 diff и спланировать отдельный узкий DialogueState этап; затем повторить offline проверки и ручной тест на точно аттестованной версии worker.
+
+
+### 2026-10-23 — DialogueState v2.1 lifecycle, operation/symptom и stable query
+
+- **Цель:** исправить жизненный цикл активной задачи, связь ответа с уточнением, сохранение симптомов/ограничений и стабильность RAG query; не внедрять LLM analyzer.
+- **Установленные причины:** исходный request добавлялся только при общем `revision <= 1`, поэтому позднее уточнение теряло опорный запрос; `bank_statement` принудительно становился `list` от слова «выписка»; ролевой slot service мог принять техническое уточнение как новую операцию; operation vocabulary смешивала существительное/причастие с действием; в старом P1-тесте ресурса ФН были synthetic metadata.
+- **Изменения:** `app/dialogue_state.py` (`TaskContext`, `Observation`, `LexicalAnalyzer.analyze`, `_failure_span`, `DialogueManager.advance`, `observe_answer`); `app/rag_query.py::build_rag_query`; `app/procedure_policy.py::query_operation_hints` и billing check normalization; `app/retrieval_pipeline.py::_state_task_category`; `app/answer_service.py` уточнение для неоднозначного billing lifecycle; `tests/test_dialogue_state_v21.py` (новые sequence tests); `tests/test_procedure_applicability.py` (реальный approved источник).
+- **Принципы:** `TaskContext` остаётся единственным active-task state; session history не теряется; new task сбрасывает expected и task facts; clarification response дополняет task; явно подтверждённые операции не наследуются; object noun не объявляет operation; symptom имеет собственный evidence span; superseded facts удаляются только из retrieval root query, transcript остаётся неизменным.
+- **Проверки:** targeted sequence/P0/P1 suites **143 passed**; полный pytest **278 passed**; финальный benchmark 100 вопросов/83 approved: selected/context **81/83**, те же две baseline rejection, новые false rejections **0**; top1=55, top5=74, top10=78, top30=83; сервисные ошибки 0; chunks order/index/link проблемы 0. `git diff --check` пройден после финальных изменений.
+- **Эксперименты/регрессии:** промежуточный benchmark временно показал 79/83 и затем 77/83. Item-level разбор выявил ошибочный override явного `check` symptom detector, причастие `подключён` как `connect`, и техническое «сверить адрес/порт» как accounting reconcile. Корректировки operation/symptom separation и категории задачи вернули результат к 81/83; Q022/Q057 и сопутствующие cases повторно проверены. Итоговые новые false rejections отсутствуют.
+- **Безопасность/среда:** Qdrant использован только для read-only retrieval; Groq и индексация не запускались; production SQLite, `.env`, worker и пользовательские данные не менялись. Benchmark/json/csv артефакты записаны в TEMP.
+- **Открыто:** лексический analyzer ограничен и не понимает произвольную семантику; неоднозначный договор/платёж безопасно уточняется; ручной acceptance ещё не запускался на hash-bound worker receipt.
+- **Следующий шаг на момент завершения v2.1:** review изменений, затем после пользовательского commit/push проверить runtime receipt и повторить ручные Telegram-последовательности. Эти изменения опубликованы в рамках последующего явного запроса пользователя.
+
+
+### 2026-10-23 — Изолированный Dialogue Analyzer A/B стенд
+
+- **Цель:** сравнить действующий `LexicalAnalyzer` + `DialogueManager` v2.1 с изолированным Groq `openai/gpt-oss-20b`, `reasoning_effort=medium`; не подключать эксперимент к production.
+- **Изменения:** добавлены `scripts/compare_dialogue_analyzers.py`, `tests/test_compare_dialogue_analyzers.py`, sanitized результаты `docs/experiments/dialogue_analyzer_ab_2026-10-23-final.jsonl`. Скрипт поддерживает последовательные сообщения, `/new`, `/expect SLOT`, независимые состояния A/B, подробный console output и безопасную JSONL проекцию без исходных пользовательских текстов/evidence quotes.
+- **Контракт B:** strict Groq JSON Schema строится из `OBJECTS`, `OPERATIONS`, `RELATIONS`, `ENTITY_NAMES`; код валидирует точные уникальные spans, типы, vocabulary, intent-object coherence, relation/new-topic consistency и подтверждение entity alias. Ошибка не заменяется A и не редуцируется в B state. Groq structured outputs поддерживают strict schema для GPT-OSS 20B согласно [документации Groq Structured Outputs](https://console.groq.com/docs/structured-outputs); модель принимает `reasoning_effort=medium`.
+- **Результат заданных sequence cases:** 7 пользовательских реплик, 7 вызовов B. Три прошли исходную validation: tokens `2890`, `2919`, `2648` (итого **8457**). Три HTTP-200 ответа отклонены локальной проверкой: в двух intent claim не имел evidence, в одном entity value не подтверждалось его quote. Один HTTP 400 от строгой schema: сгенерированный object не был в enum. На отклонённых ответах первоначальный runner не перенёс provider usage в сохранённую строку; исправлена обработка для будущих запусков, прошлые числа не восстанавливались. Запрос с HTTP 400 usage не сообщил. Кроме семи вызовов финального прогона, выполнены 10 предварительных/отладочных запросов; всего за задачу 17, известное usage receipts суммарно 16,649 tokens.
+- **Сравнение A/B:** A в первом диалоге установил `bank_statement/diagnose`, service clarification не сменил операцию; фраза о банке Точка сохранила task/operation/symptom, но relation стал `unknown` и `analysis_required=true`. В OFD диалоге A не распознал intent/operation для «кончился ОФД» (`analysis_required=false`); «Платформа ОФД» принято как clarification/route, но intent/operation остались unknown; явная оплаченная-периодная реплика создала `billing/unknown`, `analysis_required=true`. Новая тема стала `access/add_employee`. B отработал три реплики без исходной schema/span ошибки: первая banking follow-up закончилась unknown state; OFD first turn unknown + symptom; новая тема выбрана как `general/add_employee`. Ещё три HTTP-200 ответа были отвергнуты (2×intent claim без evidence, 1×entity-value/evidence mismatch), один HTTP 400 — generated object вне enum; при ошибках state B оставался прежним. Post-run cross-field audit обнаружил, что `general/add_employee` с object `сотрудник` не соответствует intent-object vocabulary; текущая validation теперь отвергает такую комбинацию. Поэтому из трёх первоначально прошедших результатов только два согласуются с последним cross-field gate; это exploratory evidence, не победа B.
+- **Проверки:** `python -m py_compile scripts/compare_dialogue_analyzers.py`; полный `python -m pytest -q`: **288 passed**; `git diff --check` прошёл с существующими предупреждениями line endings в двух P1-файлах. Groq: ровно 7 вызовов финального прогона; Qdrant, базы, индексация и Telegram worker не использовались. Cross-field intent/object guard и evidence validation оборудования добавлены после сохранённого прогона и покрыты локальными unit tests; сам A/B run после них не повторялся.
+- **Ограничения/вывод:** B показал, что строгая schema и span validation выявляют неподкреплённые claims, но текущий prompt/model не проходят 4 из 7 реплик. Следует тестировать на новой независимой выборке и улучшать общий evidence контракт; не подключать B в production и не объявлять его точнее на 2 коротких диалогах. A/B branches diverged after validation errors, что явно отмечено в сохранённом turn-level отчёте.
+- **Открыто/следующий шаг:** решить по scorecard, какие общие schema/prompt улучшения дают пользу; повторить небольшой A/B run с учётом usage всех ответов. На момент этой записи изменения были локальными; они включены в последующую публикацию по явному запросу пользователя.

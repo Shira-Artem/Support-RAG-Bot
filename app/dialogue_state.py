@@ -14,7 +14,7 @@ from typing import Protocol
 
 
 SCHEMA_VERSION = 2
-ENTITY_SLOTS = {"service", "manufacturer", "equipment", "ofd", "software"}
+ENTITY_SLOTS = {"service", "manufacturer", "equipment", "ofd", "software", "integration"}
 CLARIFICATION_SLOTS = ENTITY_SLOTS | {"goal", "details", "task"}
 RELATIONS = {"new_task", "continue", "parameter_update", "constraint_update",
              "contradiction", "answer_to_clarification", "unknown"}
@@ -79,6 +79,9 @@ class TaskContext:
     object_reference: Fact | None = None
     task_fact: Fact | None = None
     operation_evidence: Fact | None = None
+    operation_confidence: float = 0.0
+    symptom: Fact | None = None
+    superseded_facts: list[Fact] = field(default_factory=list)
     goals: list[Fact] = field(default_factory=list)
     constraints: list[Fact] = field(default_factory=list)
     details: list[Fact] = field(default_factory=list)
@@ -115,9 +118,9 @@ def _task_from(value: TaskContext | dict) -> TaskContext:
         return value
     raw = deepcopy(value)
     raw["entities"] = _facts_by_slot(raw.get("entities", {}))
-    for key in ("parameters", "goals", "constraints", "details"):
+    for key in ("parameters", "goals", "constraints", "details", "superseded_facts"):
         raw[key] = [_fact(f) for f in raw.get(key, [])]
-    for key in ("object_reference", "task_fact", "operation_evidence", "error", "unresolved"):
+    for key in ("object_reference", "task_fact", "operation_evidence", "symptom", "error", "unresolved"):
         raw[key] = _fact(raw.get(key))
     if raw.get("expected") and not isinstance(raw["expected"], ExpectedClarification):
         raw["expected"] = ExpectedClarification(**raw["expected"])
@@ -244,6 +247,16 @@ class DialogueState:
     @operation_evidence.setter
     def operation_evidence(self, value): self._ensure_task().operation_evidence = value
     @property
+    def operation_confidence(self): return self.task_context.operation_confidence if self.task_context else 0.0
+    @operation_confidence.setter
+    def operation_confidence(self, value): self._ensure_task().operation_confidence = float(value)
+    @property
+    def symptom(self): return self.task_context.symptom if self.task_context else None
+    @symptom.setter
+    def symptom(self, value): self._ensure_task().symptom = value
+    @property
+    def superseded_facts(self): return self.task_context.superseded_facts if self.task_context else []
+    @property
     def goals(self): return self.task_context.goals if self.task_context else []
     @goals.setter
     def goals(self, value): self._ensure_task().goals = value
@@ -359,6 +372,9 @@ class DialogueState:
                 "object_reference": asdict(t.object_reference) if t.object_reference else None,
                 "task_fact": asdict(t.task_fact) if t.task_fact else None,
                 "operation_evidence": asdict(t.operation_evidence) if t.operation_evidence else None,
+                "operation_confidence": t.operation_confidence,
+                "symptom": asdict(t.symptom) if t.symptom else None,
+                "superseded_facts": [asdict(f) for f in t.superseded_facts],
                 "goals": [asdict(f) for f in t.goals], "constraints": [asdict(f) for f in t.constraints],
                 "details": [asdict(f) for f in t.details], "error": asdict(t.error) if t.error else None,
                 "expected": asdict(t.expected) if t.expected else None, "relation": t.relation,
@@ -413,6 +429,8 @@ class DialogueState:
                              if routing_slot in task_entities and len(task_entities[routing_slot]) == 1 else None),
             "parameters": raw.get("parameters", []), "object_reference": raw.get("object_reference"),
             "task_fact": raw.get("task"), "operation_evidence": raw.get("operation_evidence"),
+            "operation_confidence": raw.get("operation_confidence", 0.0), "symptom": raw.get("symptom"),
+            "superseded_facts": raw.get("superseded_facts", []),
             "goals": raw.get("goals", []), "constraints": raw.get("constraints", []),
             "details": raw.get("details", []), "error": raw.get("error"), "expected": raw.get("expected"),
             "relation": "new_task" if raw.get("transition", "new_task") == "new_task" else "continue",
@@ -427,12 +445,22 @@ class DialogueState:
 
 @dataclass
 class Observation:
-    """Typed patch produced solely from the current client message."""
+    """Typed patch produced solely from the current client message.
+
+    This is the stable boundary for a future semantic analyzer: each typed
+    claim may carry its own confidence and source span, and relation must be
+    one of RELATIONS. The reducer validates every span before applying it.
+    """
     entities: dict[str, list[Fact]] = field(default_factory=dict)
     intent: str = "unknown"
     operation: str = "unknown"
     object: str | None = None
     evidence: Fact | None = None
+    intent_evidence: Fact | None = None
+    object_evidence: Fact | None = None
+    operation_evidence: Fact | None = None
+    relation_evidence: Fact | None = None
+    symptom: Fact | None = None
     goals: list[Fact] = field(default_factory=list)
     constraints: list[Fact] = field(default_factory=list)
     details: list[Fact] = field(default_factory=list)
@@ -448,6 +476,9 @@ class Observation:
     binds_object: bool = False
     relation: str = "unknown"
     confidence: float = 0.5
+    intent_confidence: float = 0.0
+    operation_confidence: float = 0.0
+    relation_confidence: float = 0.0
 
 
 class MessageAnalyzer(Protocol):
@@ -524,6 +555,27 @@ def has(tokens: list[str], stems: tuple[str, ...]) -> bool:
     return any(token.startswith(stems) for token in tokens)
 
 
+_FAILURE_STEMS = ("сбо", "ошиб", "неисправ", "перестал", "прекрат", "непроход", "незагруж")
+_NEGATED_ACTION_STEMS = ("работ", "загруж", "проход", "отправ", "печат", "подключ", "приним")
+_DESCRIPTIVE_ACTION_ENDINGS = ("ен", "ена", "ено", "ены", "ён", "ёна", "ёно", "ёны",
+                               "анный", "енный", "авший", "ивший", "уемый", "имая", "имое")
+
+
+def _failure_span(text: str) -> tuple[int, int] | None:
+    """Return an evidence span for explicit failure language, not its cause."""
+    tokens = list(re.finditer(r"[\w]+(?:[-.,][\w]+)*", text.casefold().replace("ё", "е")))
+    for index, token in enumerate(tokens):
+        word = token.group()
+        if word.startswith(_FAILURE_STEMS):
+            prefix = [t.group() for t in tokens[max(0, index - 2):index]]
+            if word.startswith(("перестал", "прекрат")) and "не" in prefix:
+                continue
+            return token.start(), token.end()
+        if word == "не" and index + 1 < len(tokens) and tokens[index + 1].group().startswith(_NEGATED_ACTION_STEMS):
+            return token.start(), tokens[index + 1].end()
+    return None
+
+
 def client_clauses(text: str):
     """Source spans separated by punctuation and restriction operators."""
     boundaries = {0, len(text)}
@@ -549,6 +601,7 @@ ENTITY_NAMES = (
     ("ofd", "Астрал", ("астрал",)),
     ("software", "1С", ("1с", "1c", "один эс")),
     ("service", "ТС ПиОТ", ("тс пиот", "тспиот")),
+    ("integration", "DirectBank", ("directbank", "директбанк")),
     ("service", "Честный ЗНАК", ("честный знак", "честном знаке")),
     ("manufacturer", "Эвотор", ("эвотор", "evotor")),
     ("manufacturer", "aQsi", ("aqsi", "акси")),
@@ -557,7 +610,9 @@ ENTITY_NAMES = (
 )
 OBJECTS = (
     ("bank_statement", "банковская выписка", ("выпис",)),
-    ("billing", "тариф", ("тариф",)),
+    ("billing", "договор", ("договор", "срок договора", "срок действия")),
+    ("billing", "тариф", ("тариф", "продлен", "продл")),
+    ("billing", "оплата", ("оплата",)),
     ("delivery_document", "УПД", ("упд", "накладн", "поставк")),
     ("credentials", "учётная запись", ("парол", "авторизац")),
     ("access", "сотрудник", ("сотрудник", "коллег", "пользовател", "учетн", "учетк", "аккаунт", "доступ", "роль", "роли", "ролей", "прав", "полномоч")),
@@ -595,7 +650,11 @@ class LexicalAnalyzer:
     def analyze(self, text: str, message_id: int | str, state: DialogueState) -> Observation:
         tokens = words(text)
         obs = Observation(evidence=Fact.span(text, message_id))
-        obs.new_topic = any(tuple(tokens[:len(prefix)]) == prefix for prefix in NEW_TOPIC)
+        obs.new_topic = any(
+            tuple(tokens[index:index + len(prefix)]) == prefix
+            for prefix in NEW_TOPIC
+            for index in range(max(1, min(len(tokens), 8)))
+        )
         obs.reference = bool(set(tokens) & REFERENCES)
         obs.feedback = bool(tokens and (tokens[0] in {"да", "нет", "понятно", "спасибо"}
                             or (tokens[0] == 'не' and has(tokens[1:], ('помог', 'получил', 'сработа')))))
@@ -653,7 +712,10 @@ class LexicalAnalyzer:
         boundary = next((i for i, token in enumerate(tokens) if token in {'но', 'без', 'нельзя'}), len(tokens))
         actions = [(name, token) for name, stems in OPERATIONS for token in tokens[:boundary] if token.startswith(stems)]
         commands = [name for name, token in actions if token.endswith(('ть', 'ти', 'йте'))]
-        obs.operation = commands[0] if commands else actions[0][0] if actions else 'unknown'
+        nominal_or_action = [(name, token) for name, token in actions
+                             if not token.endswith(_DESCRIPTIVE_ACTION_ENDINGS)]
+        obs.operation = (commands[0] if commands else
+                         nominal_or_action[0][0] if nominal_or_action else 'unknown')
         subject_tokens = tokens[:parameter_at] if search_request else tokens
         if search_request:
             # In a multi-clause follow-up («есть только номер ФН. Получится
@@ -678,6 +740,17 @@ class LexicalAnalyzer:
             if has(subject_tokens, stems):
                 obs.intent, obs.object = intent, obj
                 break
+        if (obs.intent == "unknown" and has(tokens, ("оплат",))
+                and not has(tokens, ("способ",))):
+            obs.intent, obs.object = "billing", "оплата"
+        if obs.intent != "unknown":
+            obs.intent_evidence = obs.evidence
+            obs.object_evidence = obs.evidence
+            obs.intent_confidence = 0.9
+        if obs.intent == "receipt" and obs.operation == "reconcile":
+            # "Сверить адрес/порт передачи" is a technical check. Reconcile
+            # remains reserved for inventory/accounting discrepancies.
+            obs.operation = "check"
         if (search_request and parameter_at < len(tokens) and obs.intent == 'unknown'
                 and (obs.reference or elliptical_search) and state.operation == 'search' and not obs.new_topic):
             obs.intent, obs.object = state.intent, state.object
@@ -748,7 +821,7 @@ class LexicalAnalyzer:
             obs.operation = "check"
         if obs.intent == 'report' and obs.operation in {'check', 'search', 'list'}:
             obs.operation = 'view_reports'
-        if obs.intent == 'bank_statement' and has(tokens, ('список', 'перечень', 'выписк')):
+        if obs.intent == 'bank_statement' and has(tokens, ('список', 'перечень')):
             obs.operation = 'list'
         if obs.intent == 'receipt' and has(tokens, ('отправ', 'переда')) and has(tokens, ('документ',)):
             obs.operation = 'transmit'
@@ -757,10 +830,21 @@ class LexicalAnalyzer:
         # A client's own mistake in an already issued receipt is a correction
         # request, not a device/OFD failure. Diagnostic routing remains for an
         # error code or a malfunction that prevents printing/transmission.
-        if (obs.intent in {"device", "fiscal_drive", "network", "receipt"}
-                and obs.operation != "correct"
-                and has(tokens, ("ошиб", "неисправ", "перестал", "печата", "отправля"))):
-            obs.operation = "diagnose"
+        failure = _failure_span(text)
+        if failure:
+            obs.symptom = Fact.span(text, message_id, *failure)
+            if obs.intent in {"device", "fiscal_drive", "network", "receipt", "bank_statement"}:
+                if obs.operation == "unknown":
+                    obs.operation = "diagnose"
+            elif obs.intent == "billing":
+                # A payment/contract symptom does not establish whether the
+                # customer needs status, renewal, or troubleshooting.
+                obs.operation = "unknown"
+                obs.uncertain = True
+        elif obs.intent == "billing" and obs.operation == "unknown":
+            # Contract/tariff lifecycle statements without an explicit request
+            # are not enough to route to payment, renewal, or status procedure.
+            obs.uncertain = True
         if (obs.intent == "delivery_document" and obs.operation == "unknown"
                 and (len(re.findall(r"\b\d+\b", text)) >= 2
                      or has(tokens, ("привез", "получ", "количеств", "нехват")))):
@@ -816,8 +900,15 @@ class LexicalAnalyzer:
         # are handled below and must not be swallowed as clarification text.
         detail_reply = bool(state.expected and state.expected.slot == 'details'
                             and not obs.new_topic
-                            and (obs.intent == 'unknown' or obs.intent == state.intent))
+                            and (obs.intent == 'unknown' or obs.intent == state.intent
+                                 or obs.entities or obs.parameters or obs.constraints or obs.goals
+                                 or (not obs.question and not obs.symptom)))
         if detail_reply and obs.evidence:
+            obs.details.append(obs.evidence)
+        elif (state.task_id and state.operation == "search" and obs.reference
+              and obs.intent == "unknown" and not obs.parameters and obs.evidence):
+            # A referential follow-up can add search context without declaring
+            # a new standalone operation or an unverified structured filter.
             obs.details.append(obs.evidence)
         clarification_matches = bool(state.expected and (
             state.expected.slot in obs.entities
@@ -832,6 +923,11 @@ class LexicalAnalyzer:
             obs.relation = 'new_task'
         elif clarification_matches:
             obs.relation = 'answer_to_clarification'
+        elif (state.task_id and obs.symptom
+              and (obs.intent != state.intent or obs.operation != state.operation)):
+            # A new failure mode is a new task boundary when it changes the
+            # diagnosed object/action; do not carry the old operation into it.
+            obs.relation = 'new_task'
         elif state.expected and obs.intent != 'unknown' and obs.intent != state.intent:
             obs.relation = 'new_task'
         elif state.task_id and obs.intent != 'unknown' and obs.intent != state.intent and not obs.entity_only:
@@ -858,6 +954,26 @@ class LexicalAnalyzer:
             obs.relation = 'constraint_update'
         elif obs.relation != 'unknown':
             obs.confidence = 0.9 if obs.intent != 'unknown' or obs.entities else 0.75
+        if obs.operation != "unknown":
+            action = next((token for name, stems in OPERATIONS if name == obs.operation
+                           for token in tokens if token.startswith(stems)), None)
+            operation_has_local_evidence = bool(action or obs.symptom)
+            if action:
+                match = re.search(re.escape(action), text, re.I)
+                if match:
+                    obs.operation_evidence = Fact.span(text, message_id, *match.span())
+            elif obs.symptom:
+                obs.operation_evidence = obs.symptom
+            if obs.operation_evidence is None:
+                # Composite operations (add_employee, view_reports, etc.) are
+                # derived from a typed action rule; retain the full current
+                # utterance as their grounded evidence span.
+                obs.operation_evidence = obs.evidence
+            obs.operation_confidence = 0.9 if operation_has_local_evidence else 0.7
+        else:
+            obs.operation_confidence = 0.3 if obs.uncertain else 0.0
+        obs.relation_confidence = obs.confidence
+        obs.relation_evidence = obs.evidence
         return obs
 
 
@@ -883,6 +999,11 @@ class DialogueManager:
         # Enforce the boundary even for a future model-backed analyser.
         facts = [f for values in obs.entities.values() for f in values]
         facts += [*obs.goals, *obs.constraints, *obs.details, *obs.parameters,
+                  *([obs.intent_evidence] if obs.intent_evidence else []),
+                  *([obs.object_evidence] if obs.object_evidence else []),
+                  *([obs.operation_evidence] if obs.operation_evidence else []),
+                  *([obs.relation_evidence] if obs.relation_evidence else []),
+                  *([obs.symptom] if obs.symptom else []),
                   *([obs.evidence] if obs.evidence else []), *([obs.error] if obs.error else [])]
         valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'create_role', 'view_reports', 'change_permissions', 'diagnose', 'status'}
         if obs.operation not in valid_operations or obs.intent not in {name for name, _, _ in OBJECTS} | {'unknown', 'general'}:
@@ -907,6 +1028,9 @@ class DialogueManager:
                                          or obs.feedback or obs.reference):
             relation = "parameter_update" if obs.parameters else (
                 "constraint_update" if obs.constraints else "continue")
+        if (relation == "unknown" and previous.task_id and obs.symptom
+                and (obs.intent != previous.intent or obs.operation != previous.operation)):
+            relation = "new_task"
 
         if relation == "new_task":
             state = DialogueState(revision=previous.revision, session=deepcopy(previous.session))
@@ -916,11 +1040,16 @@ class DialogueManager:
             state.intent = obs.intent
             state.operation = obs.operation
             state.object = obs.object
-            state.operation_evidence = obs.evidence if known_task else None
+            state.operation_evidence = obs.operation_evidence if known_task else None
+            state.operation_confidence = obs.operation_confidence
+            state.symptom = obs.symptom
             state.task_context.entities = deepcopy(obs.entities)
             tokens = words(text)
-            explicit_reset = any(tuple(tokens[:len(prefix)]) == prefix for prefix in NEW_TOPIC
-                                 if prefix != ("кстати",))
+            explicit_reset = any(
+                tuple(tokens[index:index + len(prefix)]) == prefix
+                for prefix in NEW_TOPIC if prefix != ("кстати",)
+                for index in range(max(1, min(len(tokens), 8)))
+            )
             if not explicit_reset and obs.operation != "explain" and not obs.entities:
                 inherited_route = state.reusable_session_route(obs.intent)
                 if inherited_route:
@@ -950,13 +1079,19 @@ class DialogueManager:
                 # new command and must not replace the operation being refined.
                 preserves_operation = (relation == "answer_to_clarification"
                                        and previous.expected
-                                       and previous.expected.slot == "details")
+                                       and previous.expected.slot in {"service", "ofd", "software", "manufacturer",
+                                                                      "equipment", "details", "goal"})
                 if obs.operation != "unknown" and not preserves_operation:
+                    if (obs.operation != previous.operation and previous.operation_evidence):
+                        _append_unique(state.superseded_facts, [previous.operation_evidence])
                     state.operation = obs.operation
                 if obs.object:
                     state.object = obs.object
                 if known_task:
-                    state.operation_evidence = obs.evidence
+                    state.operation_evidence = obs.operation_evidence
+                    state.operation_confidence = obs.operation_confidence
+                if obs.symptom:
+                    state.symptom = obs.symptom
 
         state.revision = previous.revision + 1
         state.relation = relation
@@ -973,6 +1108,9 @@ class DialogueManager:
         for slot, values in obs.entities.items():
             old = state.session.entities.get(slot, [])
             changed_entity |= [f.value for f in old] != [f.value for f in values]
+            for old_fact in state.task_context.entities.get(slot, []):
+                if old_fact.value not in {fact.value for fact in values}:
+                    _append_unique(state.superseded_facts, [old_fact])
             state.session.entities[slot] = values
             state.task_context.entities[slot] = values
         explicit_routes = [slot for slot in ("service", "ofd", "software", "manufacturer")
@@ -987,7 +1125,16 @@ class DialogueManager:
             slot = route_candidates[0]
             values = obs.entities[slot]
             route_changed = (previous.routing_slot != slot or previous.routing_service != values[0].value)
+            old_route = previous.task_context.active_route if previous.task_context else None
             state.task_context.active_route = ActiveRoute(slot, values[0]) if len(values) == 1 else None
+            if route_changed and old_route and relation != "new_task":
+                current_values = {fact.value for values in state.task_entities.values() for fact in values}
+                if old_route.value not in current_values:
+                    _append_unique(state.superseded_facts, [old_route.fact])
+                if old_route.slot == "manufacturer":
+                    for equipment_fact in state.task_context.entities.get("equipment", []):
+                        if equipment_fact.value not in current_values:
+                            _append_unique(state.superseded_facts, [equipment_fact])
             if len(values) == 1:
                 state.session.active_route = state.task_context.active_route
             if len(values) != 1:
@@ -999,17 +1146,22 @@ class DialogueManager:
             before_manufacturer = previous.entity("manufacturer")
             after_manufacturer = obs.entities["manufacturer"][0].value
             if before_manufacturer != after_manufacturer:
+                _append_unique(state.superseded_facts, state.task_context.entities.get("equipment", []))
                 state.session.entities.pop("equipment", None)
                 state.task_context.entities.pop("equipment", None)
         if obs.binds_object:
             state.object_reference = obs.evidence
         if any(words(f.value)[:1] == ["за"] for f in obs.parameters):
+            replaced_parameters = [f for f in state.parameters if words(f.value)[:1] == ["за"]]
+            _append_unique(state.superseded_facts, replaced_parameters)
             state.parameters = [f for f in state.parameters if words(f.value)[:1] != ["за"]]
         _append_unique(state.parameters, obs.parameters)
         _append_unique(state.goals, obs.goals)
         _append_unique(state.constraints, obs.constraints)
         _append_unique(state.details, obs.details)
         if obs.error:
+            if previous.error and previous.error.value != obs.error.value:
+                _append_unique(state.superseded_facts, [previous.error])
             state.error = obs.error
         if relation == "contradiction":
             _append_unique(state.details, [obs.evidence])

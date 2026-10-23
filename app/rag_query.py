@@ -1,6 +1,8 @@
 """Build a bounded, standalone retrieval request from typed client facts."""
 from __future__ import annotations
 
+import re
+
 from app.dialogue_state import DialogueState
 
 
@@ -45,7 +47,8 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
             task = "просмотр списка банковских выписок"
     entities = [f"{label}: {state.task_entity(slot)}" for slot, label in (
         ("service", "сервис"), ("equipment", "оборудование"), ("manufacturer", "производитель"),
-        ("ofd", "ОФД"), ("software", "ПО")) if slot in state.task_entities and state.task_entity(slot)]
+        ("ofd", "ОФД"), ("software", "ПО"), ("integration", "интеграция"))
+        if slot in state.task_entities and state.task_entity(slot)]
     required = [*entities, task]
     if state.error:
         required.append("код ошибки " + state.error.value)
@@ -63,9 +66,31 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
                               and not state.constraints and not state.goals
                               and not state.error)
     unresolved_access_task = state.intent == "access" and state.operation == "unknown"
-    if (include_client_facts and state.task and state.revision <= 1
+    # The task fact is the immutable root request, not a first-message cache.
+    # User refinements increment revision but must not erase the original
+    # symptom/action from retrieval context; a new task gets a new task_fact.
+    if (include_client_facts and state.task and state.task_id and state.operation != "explain"
             and not low_information_status and not unresolved_access_task):
-        parts.append("запрос клиента: " + state.task.value)
+        root_request = state.task.value
+        # Keep root symptoms stable while removing facts explicitly superseded
+        # later in this same task (service, device, operation, code). The
+        # transcript remains intact in ConversationStore; only retrieval scope
+        # follows the current task facts.
+        active_entities = {(slot, fact.value)
+                           for slot, facts in state.task_entities.items() for fact in facts}
+        obsolete_entities = [
+            fact
+            for slot, facts in (state.task_context.entities.items() if state.task_context else [])
+            for fact in facts
+            if (slot, fact.value) not in active_entities
+        ]
+        redact = [*state.superseded_facts, *obsolete_entities]
+        for fact in sorted(redact, key=lambda item: len(item.quote), reverse=True):
+            if fact.quote:
+                root_request = root_request.replace(fact.quote, " ")
+        root_request = re.sub(r"\s+", " ", root_request).strip()
+        if root_request:
+            parts.append("запрос клиента: " + root_request)
     if state.goals:
         parts.append("цель: " + "; ".join(f.value for f in state.goals))
     if state.constraints:

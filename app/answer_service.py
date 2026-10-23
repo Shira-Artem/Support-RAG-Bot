@@ -627,8 +627,15 @@ class AnswerService:
         except QueryNeedsClarification:
             reason = 'message_ambiguous' if state.analysis_required else 'query_budget_exceeded'
             diagnostics.update(active_request=None, confirmed_service=service)
+            if reason == 'message_ambiguous' and state.intent == 'billing':
+                question = ("Вам нужно проверить срок договора, продлить тариф или разобраться с оплатой? "
+                            "Уточните также название ОФД или сервиса.")
+            else:
+                question = ('Кратко сформулируйте текущую задачу и все обязательные ограничения.'
+                            if reason == 'query_budget_exceeded' else
+                            'Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.')
             return Answer('Кратко сформулируйте текущую задачу и все обязательные ограничения.' if reason == 'query_budget_exceeded'
-                          else 'Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.',
+                          else question,
                           generation_status='clarification', scenario='clarify', scenario_reason=reason,
                           generation_reason=reason, model=model, provider=self.settings.llm_provider,
                           rag_chunks=0, context_chars=0, duration_ms=round((perf_counter() - started) * 1000))

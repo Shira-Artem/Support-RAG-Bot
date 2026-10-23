@@ -7,7 +7,6 @@ import re
 _CONTEXTUAL_OPERATIONS = {
     ("billing", "change"): "change_plan",
     ("billing", "close"): "get_closing_documents",
-    ("billing", "check"): "get_reconciliation_act",
     ("billing", "search"): "get_renewal_invoice",
     ("billing", "return"): "request_refund",
     ("billing", "change_permissions"): "pay_debt",
@@ -84,8 +83,19 @@ _QUERY_OPERATION_HINTS = {
 
 def query_operation_hints(query: str | None) -> set[str]:
     context = (query or "").casefold().replace("ё", "е")
-    return {operation for operation, terms in _QUERY_OPERATION_HINTS.items()
-            if any(term in context for term in terms)}
+    hints = set()
+    for operation, terms in _QUERY_OPERATION_HINTS.items():
+        for term in terms:
+            if operation == "connect_cash_register" and term == "подключ":
+                # A connected device is a state description, not a request to
+                # connect it. Only imperative/infinitive action forms qualify.
+                matched = bool(re.search(r"\bподключ(?:ить|ать|ите|айте|аем|ают|ает)\b", context))
+            else:
+                matched = term in context
+            if matched:
+                hints.add(operation)
+                break
+    return hints
 
 
 def normalize_operation(operation: str, task_category: str | None = None,
@@ -109,6 +119,8 @@ def normalize_operation(operation: str, task_category: str | None = None,
             return "get_closing_documents"
         if operation == "check" and "акт свер" in context_folded:
             return "get_reconciliation_act"
+        if operation == "check" and any(term in context_folded for term in ("договор", "срок действия", "окончан")):
+            return "check_contract_status"
         if operation == "search" and any(term in context_folded for term in ("счет на продлен", "счёт на продлен", "продлен")):
             return "get_renewal_invoice"
         if operation == "change_permissions" and any(term in context_folded for term in ("задолж", "долг", "оплат")):

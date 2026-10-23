@@ -361,6 +361,9 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     # these before broad words such as «ФФД», «возврат» or «передача» can
     # pull the request into an unrelated technical family.
     if state.intent == "receipt":
+        if (state.symptom and any(term in task_folded for term in
+                                  ("не печат", "не записан", "ошибк", "бумаг"))):
+            return "error_diagnosis"
         if (state.operation == "return"
                 or any(term in task_folded for term in _TASK_TERMS["refund"])
                 or "оплаченных товаров" in task_folded):
@@ -398,6 +401,9 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     explicit_error_code = bool(re.search(r"\b(?:фн|код)\s*-?\d{2,}", task_folded))
     if ((explicit_error_code or ("ошибк" in task_folded and re.search(r"\b\d{2,}\b", task_folded)))
             and state.intent != "receipt"):
+        return "error_diagnosis"
+    if (state.intent == "fiscal_drive" and state.symptom
+            and any(term in task_folded for term in ("ошибк", "неисправ", "сбой"))):
         return "error_diagnosis"
     fn_status_request = any(term in task_folded for term in (
         "остаток ресурса", "состояние фн", "срок", "прослуж", "заполн", "ресурс",
@@ -504,7 +510,9 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     if (state.operation == "diagnose" and state.task_entity("manufacturer")
             and any(term in task_folded for term in ("не печат", "печать", "индикатор", "ошибка"))):
         return "error_diagnosis"
-    if state.intent in {"device", "fiscal_drive", "network"} and (state.error or state.operation == "diagnose"):
+    if state.intent in {"device", "fiscal_drive", "network"} and (
+            state.error or state.operation == "diagnose"
+            or (state.symptom and any(term in task_folded for term in ("ошибк", "неисправ", "сбой")))):
         return "error_diagnosis"
     query_terms = _terms(query)
     matches = [(len(query_terms & _terms(" ".join(words))), family)
