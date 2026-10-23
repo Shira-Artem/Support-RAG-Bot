@@ -1,0 +1,121 @@
+{
+  "captured_at": "2026-10-23",
+  "source": "data/conversations.sqlite3",
+  "llm_calls": 0,
+  "cases": [
+    {
+      "id": "ofd-receipt-search-182",
+      "service": "Платформа ОФД",
+      "operation": "search",
+      "question": "Мне нужно найти чеки за прошлый месяц на определённую сумму и по способу оплаты. Где это сделать в Платформе ОФД?",
+      "raw": "{\"scenario\":\"answer\",\"reason\":\"client needs specific steps to search receipts\",\"response\":\"1. В меню Платформы ОФД откройте раздел «Чеки» → «Поиск чеков». 2. В поле «Период» выберите даты начала и конца прошлого месяца (например, 01.10.2023 – 31.10.2023). 3. В разделе «Дополнительные условия» укажите диапазон суммы, которую хотите отобрать, и выберите способ оплаты (наличные, карта и т.д.). 4. Нажмите кнопку «Найти» – появятся все чеки, удовлетворяющие этим критериям.\"}",
+      "old_final": "Маршрут: «Чеки» → «Поиск чеков».\nПоиск кассы по ФН описан отдельно.",
+      "old_validation_reason": "procedural_details_not_grounded",
+      "results": [
+        {
+          "source": "platformaofd/ofd/lkk-receipt-search.md",
+          "text": "Поиск чеков\nМаршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.",
+          "metadata": {"document_id": "platformaofd-lkk-receipt-search", "service": "Платформа ОФД", "task_category": "receipt_search", "operations": ["search_receipt"], "section": "Поиск чеков", "chunk_role": "detail", "evidence_coverage": {"search_receipt": "full"}, "status": "approved"}
+        },
+        {
+          "source": "platformaofd/ofd/lkk-receipt-search.md",
+          "text": "Дополнительные условия\nМожно отбирать по номеру смены, диапазону суммы, полному или частичному имени кассира, способу оплаты, признаку расчёта и статусу ФНС. Для дополнительного тега задаётся его значение; пустое значение отбирает документы с заполненным выбранным тегом. Проверка маркировки доступна при активном тарифе УМ.",
+          "metadata": {"document_id": "platformaofd-lkk-receipt-search", "service": "Платформа ОФД", "task_category": "receipt_search", "operations": ["search_receipt"], "section": "Дополнительные условия", "chunk_role": "condition", "evidence_coverage": {"search_receipt": "full"}, "status": "approved"}
+        },
+        {
+          "source": "platformaofd/ofd/lkk-receipt-search.md",
+          "text": "Ограничения\nФН не подтверждён как прямой фильтр чеков. Не подменяйте ФН номером ФД или ФП. Поиск кассы по ФН описан отдельно. Отсутствие поля в статье не доказывает отсутствие функции в сервисе.",
+          "metadata": {"document_id": "platformaofd-lkk-receipt-search", "service": "Платформа ОФД", "task_category": "receipt_search", "operations": ["search_receipt"], "section": "Ограничения", "chunk_role": "warning", "evidence_coverage": {"search_receipt": "full"}, "status": "approved"}
+        }
+      ]
+    },
+    {
+      "id": "aqsi-role-170",
+      "service": "aQsi Online",
+      "operation": "change_permissions",
+      "question": "Мне нужно, чтобы сотрудник мог смотреть кассы и отчёты, но не менять настройки. Как это сделать?",
+      "raw": "{\"scenario\":\"answer\",\"reason\":\"Client requests role assignment with view-only permissions, which is covered by the provided documentation.\",\"response\":\"1. Откройте раздел «Роли» в aQsi Online. 2. Нажмите «Создать роль», введите название (например, «Смотритель касс»). 3. В блоке «Разрешения» включите только режим просмотра для разделов «Кассы» и «Отчёты» (отключите режим редактирования). 4. Сохраните роль. 5. Перейдите в «Пользователи» → «Добавить пользователя», заполните данные сотрудника, выберите только что созданную роль и сохраните. После этого сотрудник сможет просматривать кассы и отчёты, но не сможет менять настройки.\"}",
+      "old_final": "Инструкция описывает назначение роли сотруднику. В найденной инструкции для aQsi Online не указаны названия ролей и их конкретные полномочия. По ней нельзя выбрать конкретную роль под требуемый доступ.\n\nПолная последовательность действий по этой операции в источнике не подтверждена. Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.",
+      "old_validation_reason": "unsupported_ui_label:Создать роль",
+      "results": [
+        {
+          "source": "aqsi_online/account/create-role.md",
+          "text": "Создать и назначить роль\nВо вкладке «Роли» задайте название роли. Выберите доступные инструменты и отметьте режим просмотра либо редактирования. Внизу формы можно выбрать пользователей для назначения роли.",
+          "metadata": {"document_id": "aqsi-online-account-create-role", "service": "aQsi Online", "task_category": "access", "operations": ["create_role", "configure_role", "assign_role"], "section": "Создать и назначить роль", "chunk_role": "detail", "evidence_coverage": {"assign_role": "partial", "configure_role": "partial"}, "status": "approved"}
+        },
+        {
+          "source": "aqsi_online/account/create-role.md",
+          "text": "Полномочия\nТекст статьи называет блок «Расширения», а официальный рисунок 30 — «Разрешения». На рисунке видны разделы мониторинга, магазинов, касс, документов, пользователей, чеков и услуг с колонками просмотра и редактирования. Это пример настроенной роли, а не обязательный набор прав для каждой роли.",
+          "metadata": {"document_id": "aqsi-online-account-create-role", "service": "aQsi Online", "task_category": "access", "operations": ["create_role", "configure_role", "assign_role"], "section": "Полномочия", "chunk_role": "detail", "status": "approved"}
+        },
+        {
+          "source": "aqsi_online/account/create-role.md",
+          "text": "Ограничения\nРазвёрнутые разрешения на рисунке скрыты. Нельзя обещать права на конкретный отчёт или изменение кассы по одному названию раздела. Для задачи «только смотреть кассы и отчёты» специалист должен сверить актуальные подразделы и проверить доступ тестовой учётной записью.",
+          "metadata": {"document_id": "aqsi-online-account-create-role", "service": "aQsi Online", "task_category": "access", "operations": ["create_role", "configure_role", "assign_role"], "section": "Ограничения", "chunk_role": "warning", "status": "approved"}
+        },
+        {
+          "source": "aqsi_online/account/add-user.md",
+          "text": "Создать пользователя\nОткройте «Пользователи» → «Добавить пользователя». Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.",
+          "metadata": {"document_id": "aqsi-online-account-add-user", "service": "aQsi Online", "task_category": "access", "operations": ["add_employee", "assign_role"], "section": "Создать пользователя", "chunk_role": "detail", "evidence_coverage": {"add_employee": "full", "assign_role": "partial"}, "status": "approved"}
+        },
+        {
+          "source": "aqsi_online/account/add-user.md",
+          "text": "Ограничения\nЭто создание новой записи. Для существующей записи есть отдельная карточка редактирования. Источник не устанавливает обязательное название роли администратора и не задаёт матрицу полномочий для задач сотрудника. Уточните необходимые задачи у владельца кабинета.",
+          "metadata": {"document_id": "aqsi-online-account-add-user", "service": "aQsi Online", "task_category": "access", "operations": ["add_employee", "assign_role"], "section": "Ограничения", "chunk_role": "warning", "status": "approved"}
+        }
+      ]
+    },
+    {
+      "id": "aqsi-add-employee-166",
+      "service": "aQsi Online",
+      "operation": "add_employee",
+      "question": "Привет! Как добавить нового сотрудника в aQsi Online?",
+      "raw": "{\"scenario\":\"answer\",\"reason\":\"Наличие конкретного документа с инструкцией по добавлению пользователя\",\"response\":\"Откройте раздел «Пользователи» → «Добавить пользователя». Введите имя и email, выберите нужную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.\"}",
+      "old_final": "Откройте «Пользователи» → «Добавить пользователя».\nИзображение необязательно.",
+      "old_validation_reason": "procedural_details_not_grounded",
+      "results": [
+        {
+          "source": "aqsi_online/account/add-user.md",
+          "text": "Создать пользователя\nОткройте «Пользователи» → «Добавить пользователя». Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.",
+          "metadata": {"document_id": "aqsi-online-account-add-user", "service": "aQsi Online", "task_category": "access", "operations": ["add_employee", "assign_role"], "section": "Создать пользователя", "chunk_role": "detail", "evidence_coverage": {"add_employee": "full", "assign_role": "partial"}, "status": "approved"}
+        },
+        {
+          "source": "aqsi_online/account/add-user.md",
+          "text": "Ограничения\nЭто создание новой записи. Для существующей записи есть отдельная карточка редактирования. Источник не устанавливает обязательное название роли администратора и не задаёт матрицу полномочий для задач сотрудника. Уточните необходимые задачи у владельца кабинета.",
+          "metadata": {"document_id": "aqsi-online-account-add-user", "service": "aQsi Online", "task_category": "access", "operations": ["add_employee", "assign_role"], "section": "Ограничения", "chunk_role": "warning", "status": "approved"}
+        }
+      ]
+    },
+    {
+      "id": "1c-directbank-184",
+      "service": "1С:Бухгалтерия 8",
+      "operation": "load_bank_statements",
+      "question": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+      "raw": "{\"scenario\":\"answer\",\"reason\":\"документ подтверждает возможность загрузки выписок по всем счетам\",\"response\":\"Да, в 1С:Бухгалтерия 8 с DirectBank это возможно, если у вас версия DirectBank 3.0.148 и выше. Проверьте, что DirectBank включён в настройках банка, а в списке банковских счетов указаны все нужные счета. После этого в меню «Банк → Банковские выписки» можно выбрать загрузку по всем счетам одновременно.\"}",
+      "old_final": "Да, в 1С:Бухгалтерия 8 с DirectBank это возможно, если у вас версия DirectBank 3.0.148 и выше.\nПроверьте, что DirectBank включён в настройках банка, а в списке банковских счетов указаны все нужные счета.\n\nПолная последовательность действий здесь не подтверждена.",
+      "old_validation_reason": "unsupported_ui_label:Банк → Банковские выписки",
+      "results": [
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "text": "Вопрос\nКак загрузить выписку из банка сразу по всем счетам организации в 1С?",
+          "metadata": {"document_id": "batch-20261013-bank-directbank-all-accounts", "service": "1С:Бухгалтерия 8", "software": "1С:Бухгалтерия 8", "model": "1С:Бухгалтерия 8, редакция 3.0", "version": "3.0.148", "task_category": "bank_statement", "operations": ["load_bank_statements", "list_bank_statements"], "section": "Вопрос", "chunk_role": "question", "status": "approved"}
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "text": "Подтверждённая возможность\nС версии 3.0.148 для настроенного обмена через 1С:ДиректБанк доступна загрузка выписки сразу по всем банковским счетам организации, указанным в настройках взаимодействия с банком.",
+          "metadata": {"document_id": "batch-20261013-bank-directbank-all-accounts", "service": "1С:Бухгалтерия 8", "software": "1С:Бухгалтерия 8", "model": "1С:Бухгалтерия 8, редакция 3.0", "version": "3.0.148", "task_category": "bank_statement", "operations": ["load_bank_statements", "list_bank_statements"], "section": "Подтверждённая возможность", "chunk_role": "detail", "status": "approved"}
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "text": "Безопасная диагностика\n1. Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.\n2. Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк».\n3. Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.\n4. При отсутствии функции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.",
+          "metadata": {"document_id": "batch-20261013-bank-directbank-all-accounts", "service": "1С:Бухгалтерия 8", "software": "1С:Бухгалтерия 8", "model": "1С:Бухгалтерия 8, редакция 3.0", "version": "3.0.148", "task_category": "bank_statement", "operations": ["load_bank_statements", "list_bank_statements"], "section": "Безопасная диагностика", "chunk_role": "warning", "status": "approved"}
+        },
+        {
+          "source": "1c/bank/directbank-all-accounts.md",
+          "text": "Передать специалисту\nЕсли счета доступны, но часть платежей отсутствует или дублируется, потребуется сверка с оригинальной банковской выпиской.",
+          "metadata": {"document_id": "batch-20261013-bank-directbank-all-accounts", "service": "1С:Бухгалтерия 8", "software": "1С:Бухгалтерия 8", "model": "1С:Бухгалтерия 8, редакция 3.0", "version": "3.0.148", "task_category": "bank_statement", "operations": ["load_bank_statements", "list_bank_statements"], "section": "Передать специалисту", "chunk_role": "warning", "status": "approved"}
+        }
+      ]
+    }
+  ]
+}

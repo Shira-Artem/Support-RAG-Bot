@@ -38,11 +38,41 @@ def test_requested_report_is_not_its_contextual_hardware(message):
     ('Как назначить роль сотруднику в aQsi Online?', 'assign_role'),
     ('Как изменить права существующего пользователя в aQsi Online?', 'change_permissions'),
     ('Как поменять роль сотруднику в aQsi Online?', 'change_permissions'),
+    ('Как дать доступ существующему сотруднику в aQsi Online?', 'change_permissions'),
     ('Как создать пользователя с ролью «Менеджер» в aQsi Online?', 'add_employee'),
 ])
 def test_role_operation_depends_on_action_and_target(message, operation):
     state = DialogueManager().advance(DialogueState(), message, 1)
     assert state.operation == operation and state.routing_service == 'aQsi Online'
+
+
+@pytest.mark.parametrize('service', ['aQsi Online', 'АТОЛ Онлайн', 'Платформа ОФД'])
+def test_new_employee_access_is_service_agnostic(service):
+    state = DialogueManager().advance(
+        DialogueState(), f'Как дать новому сотруднику доступ в {service}?', 1)
+    assert state.intent == 'access' and state.operation == 'add_employee'
+
+
+def test_fn_state_question_resolves_to_safe_inspection():
+    state = DialogueManager().advance(
+        DialogueState(),
+        'Как в АТОЛ Онлайн понять, сколько ещё прослужит ФН и насколько он заполнен?',
+        1,
+    )
+    query = build_rag_query(state)
+    assert state.intent == 'fiscal_drive'
+    assert state.operation == 'check'
+    assert state.routing_service == 'АТОЛ Онлайн'
+    assert 'проверка' in query and 'ФН' in query
+    assert 'прослужит' in query and 'заполнен' in query
+
+
+def test_ambiguous_employee_access_stays_uncertain():
+    state = DialogueManager().advance(
+        DialogueState(), 'Как дать сотруднику доступ?', 1)
+    assert state.intent == 'access'
+    assert state.operation == 'unknown'
+    assert state.analysis_required is True
 
 
 def test_report_query_uses_latest_explicit_request_after_switching_cabinet():

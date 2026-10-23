@@ -23,6 +23,18 @@ sys.path.insert(0, str(ROOT))
 DB = ROOT / 'data/evaluations/expert_reviews.sqlite3'
 
 
+def verify_retriever_collection(service, expected: str) -> str:
+    """Verify the collection actually bound to the constructed retriever."""
+    actual = getattr(getattr(getattr(service, 'rag', None), 'retriever', None), 'store', None)
+    actual = getattr(actual, 'collection', None)
+    if actual != expected:
+        raise RuntimeError(
+            f"Retriever collection mismatch: expected {expected!r}, actual {actual!r}. "
+            "Abort before Groq; set the process-only QDRANT_COLLECTION explicitly."
+        )
+    return actual
+
+
 def encoded(value):
     return json.dumps(value, ensure_ascii=False)
 
@@ -159,9 +171,15 @@ async def run(args):
     assert settings.groq_reasoning_effort == 'medium'
     assert os.getenv('RAG_BACKEND', 'qdrant') == 'qdrant'
     collection = os.getenv('QDRANT_COLLECTION', 'knowledge_demo')
+    expected_collection = args.expected_collection or collection
     client = QdrantClient(url=os.getenv('QDRANT_URL', 'http://127.0.0.1:6333'), timeout=15)
     info = client.get_collection(collection)  # fail before constructors; never create a collection
     print('QDRANT', collection, info.points_count, info.status, flush=True)
+    # Construct and inspect the same retriever that will serve the run.  This
+    # catches a stage2/stage3 mismatch that an environment-variable check alone
+    # cannot catch, before backups, persistence, or any provider call.
+    service = answer_service.AnswerService(build_answer_rag(settings.docs_dir), settings)
+    collection = verify_retriever_collection(service, expected_collection)
     stamp = datetime.now().strftime('%Y%m%d-%H%M%S')
     batch = args.batch or stamp
     backup_databases(stamp)
@@ -185,7 +203,6 @@ async def run(args):
     store = ConversationStore(ROOT / '.local' / f'assistant-conversations-{batch}.sqlite3')
     # Recovery is local to this synthetic DB, and never touches Telegram histories.
     store.recover_pending()
-    service = answer_service.AnswerService(build_answer_rag(settings.docs_dir), settings)
     original = answer_service.generate
     last_call = 0.0
     recent = []
@@ -256,6 +273,7 @@ def main():
     parser.add_argument('--batch', help='Resume an existing batch or name a new batch')
     parser.add_argument('--export', action='store_true', help='Only regenerate the local report; no API calls')
     parser.add_argument('--reviews', type=Path, help='Import assistant grades from JSONL; no API calls')
+    parser.add_argument('--expected-collection', help='Abort unless the constructed retriever uses this exact Qdrant collection')
     args = parser.parse_args()
     if args.reviews:
         assert args.batch, '--reviews requires --batch'

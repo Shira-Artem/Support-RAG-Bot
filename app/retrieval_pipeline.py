@@ -165,6 +165,7 @@ _CONTEXTUAL_OPERATIONS = {
     ("cash_operations", "change"): "manage_shift",
     ("fiscal_format", "check"): "check_ffd",
     ("fiscal_drive", "replace"): "inspect_fiscal_drive",
+    ("fiscal_drive", "check"): "inspect_fiscal_drive",
     ("sales", "return"): "issue_refund",
     ("refund", "return"): "issue_refund",
     ("cash_search", "search"): "search_cash_register",
@@ -434,9 +435,12 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     if ((explicit_error_code or ("ошибк" in task_folded and re.search(r"\b\d{2,}\b", task_folded)))
             and state.intent != "receipt"):
         return "error_diagnosis"
+    fn_status_request = any(term in task_folded for term in (
+        "остаток ресурса", "состояние фн", "срок", "прослуж", "заполн", "ресурс",
+    ))
     if (state.intent == "fiscal_drive" and re.search(r"\bфн\b", task_folded)
             and (("кабинет" in task_folded and state.operation in {"check", "search"})
-                 or "остаток ресурса" in task_folded or "состояние фн" in task_folded)):
+                 or (state.operation in {"check", "search"} and fn_status_request))):
         return "cash_list"
     if (state.intent == "fiscal_drive" and state.operation in {"replace", "check"}
             and re.search(r"\bфн\b", task_folded)):
@@ -637,6 +641,66 @@ def _operation_matches(operation: str, metadata: dict, hit: SearchResult,
     return False
 
 
+_UNRESOLVED_GENERIC_OPERATIONS = {
+    "unknown", "explain", "change", "check", "connect", "configure",
+    "list", "search", "status",
+}
+
+
+def _unresolved_task_fallback(state: DialogueState, query: str, hit: SearchResult,
+                              metadata: dict, *, service_match: bool,
+                              manufacturer_match: bool, model_match: bool,
+                              software_match: bool, operation_match: bool) -> bool:
+    """Allow a well-supported approved article when task classification is absent.
+
+    This is deliberately narrower than ordinary task matching.  It requires a
+    confirmed service, compatible explicit entities, a generic (not
+    operation-specific) client verb, and two independent retrieval signals.
+    A high raw rank alone is never enough.  The fallback does not apply to an
+    unsafe request or to a specific operation mismatch.
+    """
+    if metadata.get("status") != "approved" or not service_match:
+        return False
+    if unsafe_operation_issue(query):
+        return False
+    manufacturer = state.entity("manufacturer") or state.task_entity("manufacturer")
+    equipment = state.entity("equipment") or state.task_entity("equipment")
+    software = state.entity("software") or state.task_entity("software")
+    if any((manufacturer and not manufacturer_match,
+            equipment and not model_match,
+            software and not software_match)):
+        return False
+    if not operation_match and state.operation not in _UNRESOLVED_GENERIC_OPERATIONS:
+        return False
+
+    request = state.task.value if state.task else query
+    # Compare stems and remove the confirmed service itself.  Otherwise a
+    # high-ranked article from the right cabinet could pass merely by
+    # repeating "aQsi Online" without supporting the requested object.
+    stem = lambda value: {item[:5] if item.isalpha() and len(item) > 5 else item
+                          for item in _terms(value)}
+    routing_terms = stem(state.routing_service or "")
+    request_terms = stem(request) - routing_terms
+    searchable = " ".join((
+        hit.text,
+        str(metadata.get("title") or ""),
+        str(metadata.get("source") or ""),
+        str(metadata.get("task_category") or ""),
+        " ".join(str(item) for item in metadata.get("operations") or ()),
+    ))
+    document_terms = stem(searchable) - routing_terms
+    overlap = len(request_terms & document_terms) / max(1, len(request_terms))
+    shared_terms = len(request_terms & document_terms)
+    semantic = hit.semantic_score
+    if semantic is None:
+        # Test doubles and legacy stores may not expose a dense score.  In
+        # that case require a stronger lexical signal instead of guessing.
+        return overlap >= 0.45 and shared_terms >= 3
+    combined = 0.55 * max(0.0, float(semantic)) + 0.45 * overlap
+    return (shared_terms >= 2 and overlap >= 0.15 and float(semantic) >= 0.33
+            and combined >= 0.28)
+
+
 def _access_evidence(state, documents, context):
     """Coverage is reviewed source metadata, never a relevance-score claim.
 
@@ -713,9 +777,12 @@ def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str
             continue
         if expected_task and meta.get("task_category") != expected_task:
             continue
-        if state.operation == "unknown":
+        if state.operation == "unknown" and expected_task is not None:
             continue
-        if state.operation != "explain" and not _operation_matches(state.operation, meta, document):
+        if (state.operation != "explain"
+                and not _operation_matches(state.operation, meta, document)
+                and not (expected_task is None
+                         and state.operation in _UNRESOLVED_GENERIC_OPERATIONS)):
             continue
         key = str(meta.get("document_id") or meta.get("source") or document.source)
         if primary_key is None:
@@ -770,8 +837,10 @@ class RetrievalPipeline:
             if meta.get("procedure_service") and state.routing_slot not in {"manufacturer", "software"}:
                 service_match = _procedure_matches(state, meta)
             # Keep manufacturer, equipment model and operator as independent facts.
-            manufacturer_match = _matches_entity(state.entity("manufacturer"), meta.get("manufacturer"))
-            model_match = _matches_entity(state.entity("equipment"), meta.get("model"))
+            manufacturer_fact = state.entity("manufacturer") or state.task_entity("manufacturer")
+            equipment_fact = state.entity("equipment") or state.task_entity("equipment")
+            manufacturer_match = _matches_entity(manufacturer_fact, meta.get("manufacturer"))
+            model_match = _matches_entity(equipment_fact, meta.get("model"))
             technical = state.intent in {'device', 'fiscal_drive', 'network'} and expected_task != 'cash_list'
             ofd = state.entity("ofd") if technical else None
             ofd_match = _matches_entity(ofd, " ".join(str(meta.get(k) or "") for k in ("ofd", "operator", "title", "source", "text")))
@@ -780,9 +849,6 @@ class RetrievalPipeline:
             body_terms = _terms(hit.text + " " + str(meta.get("title") or ""))
             lexical_overlap = len(query_terms & body_terms) / max(1, len(query_terms))
             related_search_task = _related_search_task(state, expected_task, actual_task)
-            unscoped_match = (expected_task is None and state.intent != "unknown"
-                              and lexical_overlap >= 0.50)
-            task_match = (actual_task == expected_task if expected_task else unscoped_match) or related_search_task
             operation_metadata = meta
             if expected_task and actual_task == expected_task and meta.get("document_id"):
                 article_getter = getattr(self.source, "article", None)
@@ -793,6 +859,20 @@ class RetrievalPipeline:
                     if not meta.get("_operations_explicit"):
                         operation_metadata["operations"] = _derive_operations(article_text.casefold(), actual_task)
             operation_match = _operation_matches(state.operation, operation_metadata, hit, query)
+            unscoped_match = (expected_task is None and state.intent != "unknown"
+                              and lexical_overlap >= 0.50)
+            unresolved_fallback = False
+            if expected_task is None:
+                unresolved_fallback = _unresolved_task_fallback(
+                    state, query, hit, meta,
+                    service_match=service_match,
+                    manufacturer_match=manufacturer_match,
+                    model_match=model_match,
+                    software_match=software_match,
+                    operation_match=operation_match,
+                )
+                unscoped_match = unscoped_match or unresolved_fallback
+            task_match = (actual_task == expected_task if expected_task else unscoped_match) or related_search_task
             if routing and not service_match:
                 reasons.append("service_mismatch_or_unlabeled")
             procedure_service = meta.get("procedure_service")
@@ -830,7 +910,16 @@ class RetrievalPipeline:
             service_score = 1.0 if not state.entity("service") or service_match else 0.0
             task_score = 1.0 if task_match else (0.0 if actual_task else lexical_overlap)
             score = 0.55 * task_score + 0.3 * service_score + 0.15 * min(1.0, lexical_overlap * 2)
-            relevance = Relevance("match" if service_match else "unknown_or_mismatch", "match" if task_match else "mismatch", round(score, 4), [f"task_category={actual_task or 'unknown'}", f"lexical_overlap={lexical_overlap:.3f}", f"operation_match={operation_match}", f"related_search_task={related_search_task}", f"procedure_service={procedure_service or 'unreviewed'}"])
+            relevance_reasons = [f"task_category={actual_task or 'unknown'}",
+                                 f"lexical_overlap={lexical_overlap:.3f}",
+                                 f"operation_match={operation_match}",
+                                 f"related_search_task={related_search_task}",
+                                 f"procedure_service={procedure_service or 'unreviewed'}"]
+            if unresolved_fallback:
+                relevance_reasons.append("unresolved_task_fallback")
+            relevance = Relevance("match" if service_match else "unknown_or_mismatch",
+                                  "match" if task_match else "mismatch", round(score, 4),
+                                  relevance_reasons)
             diagnostic_fields = {"source", "title", "category", "service", "task_category", "operation",
                                  "operations", "manufacturer", "model", "status", "source_type", "section", "page",
                                  "procedure_service", "evidence_coverage"}
@@ -859,16 +948,49 @@ class RetrievalPipeline:
         for evaluated in candidates:
             evaluated.selected = True
 
-        selected.sort(key=lambda pair: (pair[1].relevance.score, pair[0].score), reverse=True)
+        def selection_rank(pair):
+            hit, evaluated = pair
+            if expected_task is None and "unresolved_task_fallback" in evaluated.relevance.reasons:
+                # For unresolved routing, lexical evidence identifies the
+                # requested object/action more precisely than a dense tie.
+                # Dense relevance already passed as a separate hard gate.
+                return (hit.lexical_score or 0.0, hit.semantic_score or 0.0, hit.score)
+            return (evaluated.relevance.score, hit.score, 0.0)
+
+        selected.sort(key=selection_rank, reverse=True)
+        unresolved_ambiguity = False
+        if expected_task is None and len(selected) > 1:
+            top_hit, top_evaluated = selected[0]
+            second_hit, second_evaluated = selected[1]
+            if ("unresolved_task_fallback" in top_evaluated.relevance.reasons
+                    and "unresolved_task_fallback" in second_evaluated.relevance.reasons):
+                top_lexical = top_hit.lexical_score or 0.0
+                second_lexical = second_hit.lexical_score or 0.0
+                lexical_margin = ((top_lexical - second_lexical) / max(1.0, abs(second_lexical))
+                                  if top_lexical else 0.0)
+                semantic_margin = ((top_hit.semantic_score or 0.0)
+                                   - (second_hit.semantic_score or 0.0))
+                if lexical_margin < 0.03 and semantic_margin < 0.08:
+                    unresolved_ambiguity = True
+                    for _, evaluated in selected:
+                        if "unresolved_task_ambiguous" not in evaluated.reasons:
+                            evaluated.reasons.append("unresolved_task_ambiguous")
+                    selected = []
         # Related chunks are fetched only after article-level gates have passed;
         # their own task relevance is checked and they keep their own identity.
-        docs = self._expand(selected[:self.max_documents], expected_task, state, query)
+        # An unresolved task cannot safely justify mixing several procedures
+        # from one service.  Keep the strongest coherent article only; its
+        # sibling chunks are expanded below and preserve the needed steps.
+        selection_limit = 1 if expected_task is None and selected else self.max_documents
+        docs = self._expand(selected[:selection_limit], expected_task, state, query)
         used_sources = {doc.source for doc in docs}
         for item in candidates:
             item.selected = item.source in used_sources
         context = _format_context(docs, self.max_context_chars)
         sufficient = bool(docs) and any(item.relevance.task == "match" and item.relevance.score >= 0.62 for _, item in selected)
-        reason = None if sufficient else ("no_task_matched_candidates" if raw else "no_candidates")
+        reason = ("unresolved_task_ambiguous" if unresolved_ambiguity
+                  else None if sufficient
+                  else "no_task_matched_candidates" if raw else "no_candidates")
         # The new source-coverage contract is scoped to access workflows.
         # Other task families retain their existing gate, without claiming a
         # reviewed proof of every search parameter or business requirement.

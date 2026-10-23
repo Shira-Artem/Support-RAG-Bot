@@ -308,7 +308,7 @@ def _client_evidence_text(text: str) -> str:
     return cleaned[:1].upper() + cleaned[1:] if cleaned else cleaned
 
 
-def _evidence_gap_messages(missing_evidence) -> list[str]:
+def _evidence_gap_messages(missing_evidence, *, state=None, request: str = "") -> list[str]:
     """Translate retrieval coverage gaps into safe, customer-facing limits."""
     gaps = {
         'permission_change_workflow_unverified': 'Полный порядок изменения прав существующего пользователя в источнике не подтверждён.',
@@ -317,7 +317,23 @@ def _evidence_gap_messages(missing_evidence) -> list[str]:
         'requested_role_or_permissions_unverified': 'Конкретная роль и её полномочия для ваших требований в источнике не подтверждены.',
         'procedure_completeness_unverified': 'Полная последовательность действий здесь не подтверждена.',
     }
-    messages = [gaps[gap] for gap in missing_evidence if gap in gaps]
+    missing = set(missing_evidence)
+    messages = []
+    for gap in missing_evidence:
+        if gap not in gaps:
+            continue
+        # A generic completeness marker is an internal retrieval diagnostic,
+        # not automatically a useful customer warning. Mention it only when
+        # the customer explicitly asks for a procedure and no more specific
+        # access/permission limitation already explains the gap.
+        if gap == 'procedure_completeness_unverified':
+            asks_procedure = bool(re.search(r'как|куда|где|порядок|шаг|открыть|настро', request, re.I))
+            if not asks_procedure or ({'access_workflow_unverified',
+                                       'requested_role_or_permissions_unverified'} & missing):
+                continue
+        if gap == 'access_workflow_unverified' and 'requested_role_or_permissions_unverified' in missing:
+            continue
+        messages.append(gaps[gap])
     messages.extend(
         f"По запросу {gap.split(':', 1)[1]} поиск в найденной инструкции не подтверждён. "
         "Это не доказывает, что функция недоступна в сервисе."
@@ -327,7 +343,63 @@ def _evidence_gap_messages(missing_evidence) -> list[str]:
     return list(dict.fromkeys(messages))
 
 
-def _validation_issue(answer: str, context: str, request: str = "", service: str | None = None) -> str | None:
+_GENERIC_COVERAGE_NOTICE = re.compile(
+    r"(?:полная последовательность|полный порядок|полная процедура).*не подтвержд",
+    re.I,
+)
+_SPECIFIC_COVERAGE_NOTICE = re.compile(
+    r"^(?:полный порядок изменения прав|полная процедура создания роли)\b",
+    re.I,
+)
+
+
+def _is_generic_coverage_notice(text: str) -> bool:
+    return bool(_GENERIC_COVERAGE_NOTICE.search(text)
+                and not _SPECIFIC_COVERAGE_NOTICE.search(text.strip()))
+
+
+def _has_grounded_customer_action(text: str, context: str, results=()) -> bool:
+    """Return whether the answer already contains a supported useful action."""
+    action_words = re.compile(
+        r"откро\w*|перейд\w*|нажм\w*|выбер\w*|введ\w*|укаж\w*|"
+        r"заполн\w*|сохран\w*|проверь\w*|уточн\w*|найд\w*|настро\w*|"
+        r"выгруз\w*|напечат\w*|покаж\w*|свер\w*",
+        re.I,
+    )
+    for sentence in statements(text):
+        if _is_generic_coverage_notice(sentence):
+            continue
+        if action_words.search(sentence) and claim_supported(sentence, context, evidence_results=results):
+            return True
+    return False
+
+
+def _coverage_notice_is_relevant(notice: str, text: str, *, state, request: str,
+                                 context: str, results=()) -> bool:
+    """Keep a limitation only when it describes a live gap in this answer."""
+    if normalize(notice) in normalize(text):
+        return False
+    if notice.startswith("Конкретная роль"):
+        return bool(re.search(r"рол\w*|прав\w*|доступ\w*|просмотр\w*|полномоч\w*", request, re.I))
+    if notice.startswith("Полный порядок изменения прав"):
+        return state.operation == "change_permissions"
+    if notice.startswith("Полная процедура создания роли"):
+        return state.operation in {"create_role", "assign_role"}
+    if _is_generic_coverage_notice(notice):
+        return not _has_grounded_customer_action(text, context, results)
+    return True
+
+
+def _remove_redundant_coverage_notices(text: str, *, context: str, results=()) -> str:
+    """Remove only generic coverage boilerplate when useful steps remain."""
+    if not _has_grounded_customer_action(text, context, results):
+        return text
+    kept = [sentence for sentence in statements(text) if not _is_generic_coverage_notice(sentence)]
+    return "\n".join(kept) if kept else text
+
+
+def _validation_issue(answer: str, context: str, request: str = "", service: str | None = None,
+                      *, results=()) -> str | None:
     """Check final customer text; retrieval mentioning a risky operation is not approval."""
     source = normalize(context)
     # Check dangerous instructions FIRST: a missing UI label must not mask them.
@@ -361,9 +433,19 @@ def _validation_issue(answer: str, context: str, request: str = "", service: str
             if stem not in source:
                 return 'unsupported_technical_claim'
     for sentence in statements(answer):
+        # A clarification is a conversational request, not a factual or UI
+        # claim. Do not replace it with a generic limitation after validation.
+        if sentence.endswith('?') or re.match(r'^(?:уточните|опишите|сообщите)\b', sentence, re.I):
+            continue
         issue = instruction_issue(sentence, context)
         if issue:
             return issue
+        # Technical relations are claims even when the sentence has no action
+        # verb. This catches e.g. assigning a configuration release to
+        # DirectBank merely because both names occur in the same source card.
+        if (context and re.search(r"\b(?:верси\w*|релиз\w*)\b", sentence, re.I)
+                and not claim_supported(sentence, context, evidence_results=results)):
+            return 'unsupported_technical_claim'
         # Explicit negative coverage statements do not assert a capability.
         # Keep them while continuing to validate every positive instruction.
         if re.search(r'не (?:подтвержд\w*|описан\w*|указан\w*|найден\w*)|'
@@ -374,7 +456,15 @@ def _validation_issue(answer: str, context: str, request: str = "", service: str
                 r"направля\w*|отправля\w*|показыва\w*|наход\w*|доступ\w*|"
                 r"выберите|перейдите|откройте|нажм\w*|клик\w*|введите|укажите|сохран\w*|найд\w*|"
                 r"отбира\w*|фильтр\w*|проверьте|созда\w*|измен\w*|восстанов\w*)\b",
-                sentence, re.I) and not claim_supported(sentence, context):
+                sentence, re.I) and not claim_supported(sentence, context, evidence_results=results):
+            return "unsupported_claim"
+        # Login and permission outcomes are relations, not standalone nouns.
+        # Do not accept them merely because the source mentions a user or
+        # rights somewhere else in the same article.
+        if (context and re.search(r"\bвойд\w*|\bзайд\w*|"
+                                  r"\bполуч\w*.{0,40}\b(?:прав\w*|доступ\w*)|"
+                                  r"\b(?:прав\w*|доступ\w*).{0,40}\bполуч\w*", sentence, re.I)
+                and not claim_supported(sentence, context, evidence_results=results)):
             return "unsupported_claim"
     return None
 
@@ -392,8 +482,10 @@ def _safe_alternative(answer: str, issue: str, question: str, *, context: str = 
         if _ACCOUNT_ACTION.search(question):
             return _account_limitation(name, roles=roles, operation=state.operation)
         return "Не удалось подтвердить точный ответ по подходящей документации. Предлагаю обратиться к специалисту поддержки."
+    grounded_check = lambda text, source, request_text, service_name: _validation_issue(
+        text, source, request_text, service_name, results=results)
     repair = repair_response(answer, issue, context=context, request=question, service=service,
-                             state=state, results=results, check=_validation_issue, limitation=limitation)
+                             state=state, results=results, check=grounded_check, limitation=limitation)
     if diagnostics is not None:
         diagnostics.update(asdict(repair))
     return repair.text
@@ -594,7 +686,8 @@ class AnswerService:
         # Safe partial evidence continues through the normal generation and
         # grounding path. Coverage gaps are supplied to the model and appended
         # deterministically below; the model still cannot invent missing steps.
-        partial_limitations = (_evidence_gap_messages(retrieval.missing_evidence)
+        partial_limitations = (_evidence_gap_messages(
+                                    retrieval.missing_evidence, state=state, request=active_request)
                                if retrieval is not None and _evidence_level(retrieval) == 'partial'
                                else [])
 
@@ -751,14 +844,16 @@ class AnswerService:
             if scenario == 'answer' and needs_procedure_grounding(model_answer, context, state, results):
                 validation_reason = 'procedural_details_not_grounded'
             if not validation_reason:
-                validation_reason = _validation_issue(model_answer, context, active_request, service)
+                validation_reason = _validation_issue(model_answer, context, active_request, service,
+                                                      results=results)
             validation_status = "modified" if validation_reason else "passed"
             response_repair = {}
             text = (_safe_alternative(model_answer, validation_reason, active_request, context=context,
                                      state=state, results=results, diagnostics=response_repair)
                     if validation_reason else model_answer)
             # Repair is held to exactly the same safety/grounding rules.
-            remaining_issue = _validation_issue(text, context, active_request, service) if validation_reason else None
+            remaining_issue = (_validation_issue(text, context, active_request, service, results=results)
+                              if validation_reason else None)
             if remaining_issue:
                 text = _safe_alternative('', remaining_issue, active_request)
                 response_repair['final_check_issue'] = remaining_issue
@@ -778,11 +873,15 @@ class AnswerService:
                 validation_status = 'modified'
                 validation_reason = 'search_parameter_not_confirmed'
                 scenario, scenario_reason = 'answer', 'supported_search_scope'
+            text = _remove_redundant_coverage_notices(text, context=context, results=results)
             # A clarification is already the useful next action. Appending a
             # generic coverage warning makes the question look like a failure
             # and repeats the same limitation on every follow-up turn.
             if partial_limitations and scenario not in {'escalate', 'clarify'}:
-                additions = [item for item in partial_limitations if normalize(item) not in normalize(text)]
+                additions = [item for item in partial_limitations
+                             if _coverage_notice_is_relevant(
+                                 item, text, state=state, request=active_request,
+                                 context=context, results=results)]
                 if additions:
                     text = text.rstrip() + '\n\n' + ' '.join(additions)
                     response_repair.setdefault('mode', 'coverage_notice')

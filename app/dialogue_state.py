@@ -711,6 +711,14 @@ class LexicalAnalyzer:
             user_stems = ("сотрудник", "пользовател", "коллег", "учетн", "учетк", "аккаунт")
             target = next(("role" if token.startswith(role_stems) else "user"
                            for token in subject_tokens if token.startswith(role_stems + user_stems)), None)
+            new_user_target = bool(re.search(
+                r"\b(?:нов\w*|добав\w*|созданн\w*|приглаш\w*)\s+"
+                r"(?:сотрудник\w*|пользовател\w*|коллег\w*|учетн\w*|учетк\w*|аккаунт\w*)\b",
+                text, re.I))
+            existing_user_target = bool(re.search(
+                r"\b(?:существующ\w*|текущ\w*|уже\s+(?:создан\w*|есть))\s+"
+                r"(?:сотрудник\w*|пользовател\w*|коллег\w*|учетн\w*|учетк\w*|аккаунт\w*)\b",
+                text, re.I))
             if obs.operation == 'add' and target == 'role':
                 obs.operation, obs.object = 'create_role', 'роль'
             elif obs.operation in {"change", "configure"}:
@@ -720,7 +728,24 @@ class LexicalAnalyzer:
             elif has(tokens, role_stems):
                 obs.operation = "assign_role"
             elif obs.operation == 'assign':
-                obs.operation = "change_permissions"
+                if (target == "user" and new_user_target and not existing_user_target
+                        and has(tokens, ("доступ", "прав", "полномоч", "предостав"))):
+                    obs.operation = "add_employee"
+                elif (target == "user" and existing_user_target
+                      and has(tokens, ("доступ", "прав", "полномоч", "предостав"))):
+                    obs.operation = "change_permissions"
+                elif (target == "user"
+                      and has(tokens, ("доступ", "прав", "полномоч", "предостав"))):
+                    obs.operation = "unknown"
+                    obs.uncertain = True
+                else:
+                    obs.operation = "change_permissions"
+        if (obs.intent == "fiscal_drive" and obs.operation == "unknown"
+                and any(token.startswith(("понят", "прослуж", "заполн", "срок", "состояни", "ресурс"))
+                        for token in tokens)):
+            # Informational state questions are safe inspection requests, not
+            # replacement/closure commands and do not require a service guess.
+            obs.operation = "check"
         if obs.intent == 'report' and obs.operation in {'check', 'search', 'list'}:
             obs.operation = 'view_reports'
         if obs.intent == 'bank_statement' and has(tokens, ('список', 'перечень', 'выписк')):
