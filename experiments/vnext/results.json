@@ -1,0 +1,2992 @@
+{
+  "config": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points": 934,
+    "approved_points": 672,
+    "embedding": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium"
+  },
+  "scenarios": [
+    {
+      "id": "ofd_paid_period",
+      "name": "Окончание оплаченного периода ОФД",
+      "turns": [
+        {
+          "user": "у меня проблема кончился офд",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.4205
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.4205
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Безопасная диагностика без изменения базы",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Запрещённое автоматическое действие",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Передать специалисту",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Возможные причины по базе aQsi",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Безопасная проверка",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "section": "Контекст ошибки",
+              "status": "approved",
+              "score": 0.3782
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "section": "Проверка без изменения регистрации",
+              "status": "approved",
+              "score": 0.3782
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.3617
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.3617
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 577,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд"
+            ],
+            "confirmed_quotes": [
+              "кончился офд"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 1491,
+          "retrieval_ms": 129,
+          "llm_ms": 1118
+        },
+        {
+          "user": "Уточняю: закончился оплаченный период ОФД. Что проверить сначала?",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи.",
+          "documents": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Признаки",
+              "status": "approved",
+              "score": 0.6787
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.6787
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "section": "Просмотр списка касс",
+              "status": "approved",
+              "score": 0.6326
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "section": "Значение показателей",
+              "status": "approved",
+              "score": 0.6326
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.6326
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6259
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6259
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6108
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6108
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6108
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.6105
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.6105
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.605
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.605
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 888,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд",
+              "Уточняю: закончился оплаченный период ОФД. Что проверить сначала?"
+            ],
+            "confirmed_quotes": [
+              "кончился офд",
+              "кончился оплаченный период ОФД"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 24719,
+          "retrieval_ms": 104,
+          "llm_ms": 7858
+        }
+      ]
+    },
+    {
+      "id": "directbank_outage",
+      "name": "Не загружаются выписки DirectBank",
+      "turns": [
+        {
+          "user": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+          "answer": "По найденным approved-фрагментам не подтверждается инструкция именно для вашей задачи.",
+          "documents": [
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6842
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.6842
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Ограничение",
+              "status": "approved",
+              "score": 0.6842
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6117
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.6117
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Передать специалисту",
+              "status": "approved",
+              "score": 0.6117
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.601
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "section": "Проверка",
+              "status": "approved",
+              "score": 0.601
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.601
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.5963
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.5963
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Передать бухгалтеру",
+              "status": "approved",
+              "score": 0.5963
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5684
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.5684
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5684
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5576
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.5576
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5576
+            }
+          ],
+          "applicability": [
+            {
+              "id": "4cf76a13-ac3d-5feb-9fb0-f1fe36383ca5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "partial",
+              "reason": "requires 1C:Бухгалтерия 8 версии ≥3.0.203 и настроенный DirectBank"
+            },
+            {
+              "id": "bd0b92bd-12b0-5228-9b9a-a7b67d2ba0c5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "usable",
+              "reason": "diagnostic steps for DirectBank integration"
+            },
+            {
+              "id": "724a53cc-2d6c-5497-a7c9-6b5251789ab7",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "only limitation, not a claim"
+            },
+            {
+              "id": "90e4eac2-6bf2-5c27-a2ac-af88dd1df4e4",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "supports loading multiple accounts via DirectBank"
+            },
+            {
+              "id": "0f6701e5-dc47-5259-aedc-b5c0620938fd",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "diagnostic steps including interface check"
+            },
+            {
+              "id": "6b59d211-eba5-5f83-8f36-5d4dc48cbcdc",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "suggests specialist review if discrepancies found"
+            },
+            {
+              "id": "9266a599-235b-5808-b1e3-14e762605b12",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "unassessed",
+              "reason": "scope_compatible"
+            },
+            {
+              "id": "b7120c37-b7a6-571d-9c66-09ea494aeeb9",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "unassessed",
+              "reason": "scope_compatible"
+            },
+            {
+              "id": "1a1d8659-8be9-536f-a337-a9bed704d14e",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "unassessed",
+              "reason": "scope_compatible"
+            },
+            {
+              "id": "c0355b7b-efa5-5122-a7eb-d944a8d3a7f1",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "unassessed",
+              "reason": "scope_compatible"
+            },
+            {
+              "id": "3a8a43ed-148c-5ee7-aab5-68148925cf51",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "unassessed",
+              "reason": "scope_compatible"
+            },
+            {
+              "id": "2747c062-c8fb-5672-8be9-48edc140b7d8",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "unassessed",
+              "reason": "scope_compatible"
+            },
+            {
+              "id": "1bd115da-3932-5da4-9868-c82346a0136b",
+              "document_id": "aqsi-device-fn-close-safety",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "015a2457-756a-5a14-b962-dd7ba7d6184e",
+              "document_id": "aqsi-device-fn-close-safety",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "23c46dbb-e5e6-54c8-92e9-2348ff43cff5",
+              "document_id": "aqsi-device-fn-close-safety",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "02f0bbdf-aa12-574f-b8c3-32ca79864f6e",
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "92d21945-382d-5677-bd63-f5476249fddb",
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "79355e22-3106-572b-92f8-980c7b279e47",
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 6738,
+          "decision": "limitation: model_assessment",
+          "context": {
+            "original_problem": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+            "task_messages": [
+              "В 1С перестали загружаться банковские выписки. Как разобраться?"
+            ],
+            "confirmed_quotes": [
+              "В 1С перестали загружаться банковские выписки. Как разобраться?"
+            ],
+            "questions_asked": []
+          },
+          "grounding_rejections": [
+            "missing_usable_exact_evidence"
+          ],
+          "elapsed_ms": 33171,
+          "retrieval_ms": 131,
+          "llm_ms": 6533
+        },
+        {
+          "user": "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank.",
+          "answer": "Проверьте, включена ли функция загрузки выписок сразу по всем счетам в настройках 1С:ДиректБанк. Убедитесь, что ваш банк поддерживает автоматическое получение выписок через 1С:ДиректБанк. Неизвестно, включена ли функция загрузки по нескольким счетам и поддерживает ли банк автоматическое получение выписок. Какая версия 1С:Бухгалтерии 8 и включён ли 1С:ДиректБанк для вашего банка?",
+          "documents": [
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.7732
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.7732
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Ограничение",
+              "status": "approved",
+              "score": 0.7732
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.76
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.76
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Передать специалисту",
+              "status": "approved",
+              "score": 0.76
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6855
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Что проверить",
+              "status": "approved",
+              "score": 0.6855
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6855
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6445
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Безопасный порядок проверки",
+              "status": "approved",
+              "score": 0.6445
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6445
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.6243
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.6243
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Передать бухгалтеру",
+              "status": "approved",
+              "score": 0.6243
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5498
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.5498
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5498
+            }
+          ],
+          "applicability": [
+            {
+              "id": "4cf76a13-ac3d-5feb-9fb0-f1fe36383ca5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "bd0b92bd-12b0-5228-9b9a-a7b67d2ba0c5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "724a53cc-2d6c-5497-a7c9-6b5251789ab7",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "90e4eac2-6bf2-5c27-a2ac-af88dd1df4e4",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "подтверждена возможность загрузки по нескольким счетам"
+            },
+            {
+              "id": "0f6701e5-dc47-5259-aedc-b5c0620938fd",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "подтверждена диагностика для DirectBank"
+            },
+            {
+              "id": "6b59d211-eba5-5f83-8f36-5d4dc48cbcdc",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "передать специалисту при отсутствии данных"
+            },
+            {
+              "id": "6d6d8ff3-8b54-5814-8f08-e3be8dc4f231",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "usable",
+              "reason": "подтверждена возможность авто расписания"
+            },
+            {
+              "id": "f43e293f-b424-5a77-acfb-4b6afe4e1860",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "usable",
+              "reason": "проверка авто расписания"
+            },
+            {
+              "id": "0df0bd5a-242d-5001-9275-eefe3bd318cd",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "usable",
+              "reason": "передать специалисту при авто расписании"
+            },
+            {
+              "id": "39348f44-81f0-5ca2-a698-2abb0c893ca7",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "11d86366-890d-5ecb-98ac-2503d1b11af5",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "16ea2d14-b140-5ae6-8b6a-faeef126fad3",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "c0355b7b-efa5-5122-a7eb-d944a8d3a7f1",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "3a8a43ed-148c-5ee7-aab5-68148925cf51",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "2747c062-c8fb-5672-8be9-48edc140b7d8",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "не относится к DirectBank"
+            },
+            {
+              "id": "f81a531e-4c53-5552-8a2f-366a4c2b821d",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "a20ec5d4-c550-560b-8727-757857c3744c",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "78410ac7-58b6-574f-a02f-0488adac7639",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 6894,
+          "decision": "partial_answer: Ответ основан на доступных фрагментах, но не подтверждён конкретными данными о конфигурации.",
+          "context": {
+            "original_problem": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+            "task_messages": [
+              "В 1С перестали загружаться банковские выписки. Как разобраться?",
+              "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank."
+            ],
+            "confirmed_quotes": [
+              "В 1С перестали загружаться банковские выписки. Как разобраться?",
+              "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank."
+            ],
+            "questions_asked": [
+              "Какая версия 1С:Бухгалтерии 8 и включён ли 1С:ДиректБанк для вашего банка?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 88130,
+          "retrieval_ms": 102,
+          "llm_ms": 5432
+        }
+      ]
+    },
+    {
+      "id": "fiscal_change",
+      "name": "Неопределённое изменение ФН",
+      "turns": [
+        {
+          "user": "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+          "answer": "No evidence on fiscal storage settings change procedures. Could you specify which settings of the fiscal storage you wish to modify (e.g., fiscal data retention period, server address, etc.)?",
+          "documents": [
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5951
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5951
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5951
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5858
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5858
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5858
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+              "section": "Подтверждённое правило",
+              "status": "approved",
+              "score": 0.579
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+              "section": "Для диагностики",
+              "status": "approved",
+              "score": 0.579
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.579
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5764
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5764
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5764
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Сначала уточните",
+              "status": "approved",
+              "score": 0.57
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Почему нельзя давать универсальную команду",
+              "status": "approved",
+              "score": 0.57
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Безопасная рекомендация",
+              "status": "approved",
+              "score": 0.57
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "section": "Симптом",
+              "status": "approved",
+              "score": 0.5676
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "section": "Варианты возникновения в базе aQsi",
+              "status": "approved",
+              "score": 0.5676
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.5676
+            }
+          ],
+          "applicability": [
+            {
+              "id": "ea8c3e23-c290-5f39-870c-1329873bb5f4",
+              "document_id": "aqsi-online-fns-finish-reg",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "76aa36cf-1668-5b05-8417-2b8d28edf19c",
+              "document_id": "aqsi-online-fns-finish-reg",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "907d7633-f2c9-5408-b89b-b6c606e69628",
+              "document_id": "aqsi-online-fns-finish-reg",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "5938ddaa-8127-5111-a266-2cd276cf6a0c",
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "565dc6b6-a140-5c3e-90ed-1d6fdbf00263",
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "9fbfb180-c6ee-5efe-8b12-ba42b2f1dd11",
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "fd144eb3-932b-5ee2-88f7-683f18e9c1e7",
+              "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+              "status": "incompatible",
+              "reason": "not about fiscal storage"
+            },
+            {
+              "id": "071c2a2f-efde-5171-9886-5d33ff60d625",
+              "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+              "status": "incompatible",
+              "reason": "not about fiscal storage"
+            },
+            {
+              "id": "35cdbb6e-1402-5025-a042-ed4f8a3bda68",
+              "document_id": "batch-20261013-vat-usn-invoice-on-exempt",
+              "status": "incompatible",
+              "reason": "not about fiscal storage"
+            },
+            {
+              "id": "c0cd0a20-28fc-5156-9c69-00c58ff6aa87",
+              "document_id": "aqsi-online-setup-fiscalize",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "03c4a962-7a26-5925-9bf1-07372ce60c99",
+              "document_id": "aqsi-online-setup-fiscalize",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "c7db6a00-3aab-56bf-8bc6-2d50b806ce2d",
+              "document_id": "aqsi-online-setup-fiscalize",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "e911a80f-5659-5666-a0b9-e4a05a26cc2a",
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "ddf7a2d8-1a62-5afd-b7f9-f7d3cf717d92",
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "89d894a6-9336-5902-8df8-1215b0f1d39b",
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "d0118a06-d544-5039-9312-90706966cdc8",
+              "document_id": "aqsi-kkt-error-126",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "e4a530bc-95f0-5e31-a829-b2941d0ef04d",
+              "document_id": "aqsi-kkt-error-126",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "f918cee4-2c23-5e4d-b4e9-5dd68193522b",
+              "document_id": "aqsi-kkt-error-126",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 2445,
+          "decision": "limitation: None of the provided fragments address fiscal storage configuration.",
+          "context": {
+            "original_problem": "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+            "task_messages": [
+              "Нужно изменить настройки фискального накопителя. Подскажите порядок действий."
+            ],
+            "confirmed_quotes": [
+              "Нужно изменить настройки фискального накопителя. Подскажите порядок действий."
+            ],
+            "questions_asked": [
+              "Could you specify which settings of the fiscal storage you wish to modify (e.g., fiscal data retention period, server address, etc.)?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 86378,
+          "retrieval_ms": 102,
+          "llm_ms": 3734
+        },
+        {
+          "user": "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5508
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5508
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5508
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5472
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.5472
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5472
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5421
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5421
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5421
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5373
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5373
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5373
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Сначала уточните",
+              "status": "approved",
+              "score": 0.5329
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Почему нельзя давать универсальную команду",
+              "status": "approved",
+              "score": 0.5329
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Безопасная рекомендация",
+              "status": "approved",
+              "score": 0.5329
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "section": "Симптом",
+              "status": "approved",
+              "score": 0.5249
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "section": "Варианты возникновения в базе aQsi",
+              "status": "approved",
+              "score": 0.5249
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.5249
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-finish-reg",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-126",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 739,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+            "task_messages": [
+              "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+              "Нужно изменить настройки фискального накопителя. Подскажите порядок действий."
+            ],
+            "confirmed_quotes": [
+              "Нужно изменить настройки фискального накопителя. Подскажите порядок действий."
+            ],
+            "questions_asked": [
+              "Could you specify which settings of the fiscal storage you wish to modify (e.g., fiscal data retention period, server address, etc.)?",
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 17055,
+          "retrieval_ms": 122,
+          "llm_ms": 1318
+        }
+      ]
+    },
+    {
+      "id": "topic_switch_access",
+      "name": "Смена темы на сотрудника с ограниченными правами",
+      "turns": [
+        {
+          "user": "Как узнать, какой ОФД подключён к моей кассе?",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "section": "Проверки из раздела «Неполадки и их устранение»",
+              "status": "approved",
+              "score": 0.634
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.6322
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.6322
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.6322
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.618
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.618
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.618
+            },
+            {
+              "document_id": "atol-online-12473-integrator-settings",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.5927
+            },
+            {
+              "document_id": "atol-online-12473-integrator-settings",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.5927
+            },
+            {
+              "document_id": "platformaofd-fn-number-in-lkk",
+              "section": "Где проверить",
+              "status": "approved",
+              "score": 0.5925
+            },
+            {
+              "document_id": "platformaofd-fn-number-in-lkk",
+              "section": "Граница операции",
+              "status": "approved",
+              "score": 0.5925
+            },
+            {
+              "document_id": "platformaofd-shtrih-connection-checks",
+              "section": "Базовая сверка",
+              "status": "approved",
+              "score": 0.5855
+            },
+            {
+              "document_id": "platformaofd-shtrih-connection-checks",
+              "section": "Граница инструкции",
+              "status": "approved",
+              "score": 0.5855
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-connection-fields",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-12473-integrator-settings",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-12473-integrator-settings",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fn-number-in-lkk",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fn-number-in-lkk",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-shtrih-connection-checks",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-shtrih-connection-checks",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 631,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "Как узнать, какой ОФД подключён к моей кассе?",
+            "task_messages": [
+              "Как узнать, какой ОФД подключён к моей кассе?"
+            ],
+            "confirmed_quotes": [
+              "Как узнать, какой ОФД подключён к моей кассе"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 17924,
+          "retrieval_ms": 134,
+          "llm_ms": 1237
+        },
+        {
+          "user": "А теперь другой вопрос. Нужно добавить сотрудника в личный кабинет.",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5511
+            },
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5511
+            },
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5511
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "section": "Создать пользователя",
+              "status": "approved",
+              "score": 0.5495
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5495
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5378
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5378
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5378
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.525
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.525
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.525
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5224
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5224
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5224
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.5127
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.5127
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.5127
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-company-details",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-receipts-incorrect-105",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-order-cash-register",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 1056,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "А теперь другой вопрос. Нужно добавить сотрудника в личный кабинет.",
+            "task_messages": [
+              "А теперь другой вопрос. Нужно добавить сотрудника в личный кабинет."
+            ],
+            "confirmed_quotes": [
+              "Нужно добавить сотрудника в личный кабинет"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 18261,
+          "retrieval_ms": 86,
+          "llm_ms": 1544
+        },
+        {
+          "user": "Хочу, чтобы он мог просматривать документы, но не менять настройки.",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи.",
+          "documents": [
+            {
+              "document_id": "aqsi-online-account-settings",
+              "section": "Настройки",
+              "status": "approved",
+              "score": 0.7545
+            },
+            {
+              "document_id": "aqsi-online-account-settings",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.7545
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.622
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.622
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "section": "Создать пользователя",
+              "status": "approved",
+              "score": 0.6091
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.6091
+            },
+            {
+              "document_id": "aqsi-online-account-monitoring",
+              "section": "Просмотр статистики",
+              "status": "approved",
+              "score": 0.6071
+            },
+            {
+              "document_id": "aqsi-online-account-monitoring",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.6071
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "section": "Создать и назначить роль",
+              "status": "approved",
+              "score": 0.5956
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "section": "Полномочия",
+              "status": "approved",
+              "score": 0.5956
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5956
+            },
+            {
+              "document_id": "platformaofd-partner-kkt-diagnostics",
+              "section": "Данные для диагностики",
+              "status": "approved",
+              "score": 0.5882
+            },
+            {
+              "document_id": "platformaofd-partner-kkt-diagnostics",
+              "section": "Граница доступа",
+              "status": "approved",
+              "score": 0.5882
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "aqsi-online-account-settings",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-settings",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-add-user",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-monitoring",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-monitoring",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-account-create-role",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-partner-kkt-diagnostics",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-partner-kkt-diagnostics",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 1049,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "А теперь другой вопрос. Нужно добавить сотрудника в личный кабинет.",
+            "task_messages": [
+              "А теперь другой вопрос. Нужно добавить сотрудника в личный кабинет.",
+              "Хочу, чтобы он мог просматривать документы, но не менять настройки."
+            ],
+            "confirmed_quotes": [
+              "Нужно добавить сотрудника в личный кабинет",
+              "Хочу, чтобы он мог просматривать документы, но не менять настройки."
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 19265,
+          "retrieval_ms": 94,
+          "llm_ms": 2805
+        }
+      ]
+    },
+    {
+      "id": "platforma_contract",
+      "name": "Срок договора Платформа ОФД",
+      "turns": [
+        {
+          "user": "Мне нужно проверить срок действия договора с ОФД. Как это сделать?",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Признаки",
+              "status": "approved",
+              "score": 0.6765
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.6765
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "section": "Суть",
+              "status": "approved",
+              "score": 0.6303
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "section": "Первичная проверка",
+              "status": "approved",
+              "score": 0.6303
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.6303
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.6237
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Что проверить",
+              "status": "approved",
+              "score": 0.6237
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.6237
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.606
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.606
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Признаки",
+              "status": "approved",
+              "score": 0.5977
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.5977
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.5977
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.5975
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "section": "Проверка перед действием",
+              "status": "approved",
+              "score": 0.5975
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.5975
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 548,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "Мне нужно проверить срок действия договора с ОФД. Как это сделать?",
+            "task_messages": [
+              "Мне нужно проверить срок действия договора с ОФД. Как это сделать?"
+            ],
+            "confirmed_quotes": [
+              "проверить срок действия договора с ОФД"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 16375,
+          "retrieval_ms": 132,
+          "llm_ms": 1143
+        },
+        {
+          "user": "У меня Платформа ОФД. Распиши подробно, куда заходить и что проверять.",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи.",
+          "documents": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Признаки",
+              "status": "approved",
+              "score": 0.6699
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.6699
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6246
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6246
+            },
+            {
+              "document_id": "atol-online-11072-terminate-contract",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6157
+            },
+            {
+              "document_id": "atol-online-11072-terminate-contract",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6157
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.613
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Что проверить",
+              "status": "approved",
+              "score": 0.613
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.613
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "section": "Суть",
+              "status": "approved",
+              "score": 0.6127
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "section": "Первичная проверка",
+              "status": "approved",
+              "score": 0.6127
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.6127
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Признаки",
+              "status": "approved",
+              "score": 0.6084
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.6084
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.6084
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11072-terminate-contract",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11072-terminate-contract",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 922,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "Мне нужно проверить срок действия договора с ОФД. Как это сделать?",
+            "task_messages": [
+              "Мне нужно проверить срок действия договора с ОФД. Как это сделать?",
+              "У меня Платформа ОФД. Распиши подробно, куда заходить и что проверять."
+            ],
+            "confirmed_quotes": [
+              "проверить срок действия договора с ОФД",
+              "Платформа ОФД"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 17970,
+          "retrieval_ms": 124,
+          "llm_ms": 1136
+        }
+      ]
+    },
+    {
+      "id": "positive_platforma_receipt",
+      "name": "Положительный контроль: поиск чека Платформа ОФД",
+      "turns": [
+        {
+          "user": "Как найти чек по номеру ФД в Платформе ОФД?",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6603
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6603
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6603
+            },
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "section": "Проверки из раздела «Неполадки и их устранение»",
+              "status": "approved",
+              "score": 0.6566
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6553
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6553
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "section": "Данные для сверки",
+              "status": "approved",
+              "score": 0.6525
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "section": "Контроль последовательности",
+              "status": "approved",
+              "score": 0.6525
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6476
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6476
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6476
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6466
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6466
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6466
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 645,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "Как найти чек по номеру ФД в Платформе ОФД?",
+            "task_messages": [
+              "Как найти чек по номеру ФД в Платформе ОФД?"
+            ],
+            "confirmed_quotes": [
+              "Как найти чек по номеру ФД в Платформе ОФД?"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 17790,
+          "retrieval_ms": 102,
+          "llm_ms": 948
+        },
+        {
+          "user": "Где задать период поиска?",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи.",
+          "documents": [
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6913
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6913
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6913
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6502
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6502
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6496
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6496
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6496
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "section": "Данные для сверки",
+              "status": "approved",
+              "score": 0.6433
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "section": "Контроль последовательности",
+              "status": "approved",
+              "score": 0.6433
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6432
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6432
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6432
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6382
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6382
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6382
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11071-disable-one-cashier",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-ofd-taxcom-account",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fns-registration",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ooo",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 750,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "Как найти чек по номеру ФД в Платформе ОФД?",
+            "task_messages": [
+              "Как найти чек по номеру ФД в Платформе ОФД?",
+              "Где задать период поиска?"
+            ],
+            "confirmed_quotes": [
+              "Как найти чек по номеру ФД в Платформе ОФД?",
+              "Где задать период поиска?"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 18238,
+          "retrieval_ms": 99,
+          "llm_ms": 1195
+        }
+      ]
+    },
+    {
+      "id": "positive_aqsi_user",
+      "name": "Положительный контроль: пользователь aQsi Online",
+      "turns": [
+        {
+          "user": "Как добавить сотрудника в aQsi Online?",
+          "answer": "No fragment covers adding an employee in aQsi Online Какой тип сотрудника вы хотите добавить (например, администратор, кассир)?",
+          "documents": [
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.7542
+            },
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.7542
+            },
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.7542
+            },
+            {
+              "document_id": "atol-online-12148-company-registration",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.7474
+            },
+            {
+              "document_id": "atol-online-12148-company-registration",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.7474
+            },
+            {
+              "document_id": "aqsi-online-account-contact-support",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.7343
+            },
+            {
+              "document_id": "aqsi-online-account-contact-support",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.7343
+            },
+            {
+              "document_id": "aqsi-online-account-contact-support",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.7343
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.7027
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.7027
+            },
+            {
+              "document_id": "aqsi-online-fns-register-ip",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.7027
+            },
+            {
+              "document_id": "atol-online-22559-agent-status",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6993
+            },
+            {
+              "document_id": "atol-online-22559-agent-status",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6993
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6834
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6834
+            },
+            {
+              "document_id": "aqsi-online-setup-sign-contract",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6834
+            }
+          ],
+          "applicability": [
+            {
+              "id": "7eec5a6c-22fc-5531-9c43-89b14d4eefaf",
+              "document_id": "aqsi-online-account-register-account",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "0b29bad4-1fc1-579b-80d9-26c3148bfaff",
+              "document_id": "aqsi-online-account-register-account",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "9eaf6d05-41e6-5070-8215-eaa9a4d360a4",
+              "document_id": "aqsi-online-account-register-account",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "e7bf292e-381f-5b09-a0f5-c025ec979850",
+              "document_id": "atol-online-12148-company-registration",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "c9b8e1cc-9f49-5024-a47c-4c003d327c56",
+              "document_id": "atol-online-12148-company-registration",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "fd7c2462-d1d1-5511-a88d-aa49b8dbb2ed",
+              "document_id": "aqsi-online-account-contact-support",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "517b9812-1b59-59f2-b336-54e59571608a",
+              "document_id": "aqsi-online-account-contact-support",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "31d77e4f-0bf9-52f4-a64e-4dbbf20290e2",
+              "document_id": "aqsi-online-account-contact-support",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "024997be-82a6-544b-8edf-a037be27119f",
+              "document_id": "aqsi-online-fns-register-ip",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "4387d1d4-ce80-52c1-84d8-f271695f1944",
+              "document_id": "aqsi-online-fns-register-ip",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "dccf28fd-d660-5394-83f6-f4c09d522fb7",
+              "document_id": "aqsi-online-fns-register-ip",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "c7bc3bbe-a5f5-5b67-99fd-51c4b0074be5",
+              "document_id": "atol-online-22559-agent-status",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "22107f00-d2da-57ab-8a43-f56c9572cbce",
+              "document_id": "atol-online-22559-agent-status",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "9020bdfd-5330-5b9a-b0a3-62ff59697ec4",
+              "document_id": "aqsi-online-setup-sign-contract",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "cbc9c881-fb7a-536d-a60d-74f2c7538634",
+              "document_id": "aqsi-online-setup-sign-contract",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            },
+            {
+              "id": "6b4c23f6-e37c-5a73-a951-444190ea585d",
+              "document_id": "aqsi-online-setup-sign-contract",
+              "status": "incompatible",
+              "reason": "no employee addition"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 3728,
+          "decision": "limitation: None of the provided fragments address employee addition.",
+          "context": {
+            "original_problem": "Как добавить сотрудника в aQsi Online?",
+            "task_messages": [
+              "Как добавить сотрудника в aQsi Online?"
+            ],
+            "confirmed_quotes": [
+              "Как добавить сотрудника в aQsi Online?"
+            ],
+            "questions_asked": [
+              "Какой тип сотрудника вы хотите добавить (например, администратор, кассир)?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 36392,
+          "retrieval_ms": 140,
+          "llm_ms": 2886
+        },
+        {
+          "user": "Он должен просматривать документы, но не менять настройки.",
+          "answer": "No fragment covers adding an employee or setting view‑only permissions in aQsi Online. Какой уровень доступа вы хотите предоставить сотруднику?",
+          "documents": [
+            {
+              "document_id": "atol-online-14749-incoming-documents",
+              "section": "Принять приглашение",
+              "status": "approved",
+              "score": 0.7318
+            },
+            {
+              "document_id": "atol-online-14749-incoming-documents",
+              "section": "Применимость",
+              "status": "approved",
+              "score": 0.7318
+            },
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6588
+            },
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6588
+            },
+            {
+              "document_id": "aqsi-online-account-register-account",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6588
+            },
+            {
+              "document_id": "aqsi-online-account-reset-password",
+              "section": "Что можно объяснить и проверить",
+              "status": "approved",
+              "score": 0.6568
+            },
+            {
+              "document_id": "aqsi-online-account-reset-password",
+              "section": "Перед выполнением действий",
+              "status": "approved",
+              "score": 0.6568
+            },
+            {
+              "document_id": "aqsi-online-account-reset-password",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6568
+            },
+            {
+              "document_id": "atol-online-22559-agent-status",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6501
+            },
+            {
+              "document_id": "atol-online-22559-agent-status",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6501
+            },
+            {
+              "document_id": "atol-online-12148-company-registration",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.6419
+            },
+            {
+              "document_id": "atol-online-12148-company-registration",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.6419
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.6301
+            },
+            {
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.6301
+            }
+          ],
+          "applicability": [
+            {
+              "id": "6e2c21e1-f687-5612-92c8-6e5addff6be2",
+              "document_id": "atol-online-14749-incoming-documents",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "7f6dc450-f613-5682-9eea-86b45655c14c",
+              "document_id": "atol-online-14749-incoming-documents",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "7eec5a6c-22fc-5531-9c43-89b14d4eefaf",
+              "document_id": "aqsi-online-account-register-account",
+              "status": "incompatible",
+              "reason": "registration only"
+            },
+            {
+              "id": "0b29bad4-1fc1-579b-80d9-26c3148bfaff",
+              "document_id": "aqsi-online-account-register-account",
+              "status": "incompatible",
+              "reason": "registration only"
+            },
+            {
+              "id": "9eaf6d05-41e6-5070-8215-eaa9a4d360a4",
+              "document_id": "aqsi-online-account-register-account",
+              "status": "incompatible",
+              "reason": "registration only"
+            },
+            {
+              "id": "9ae7ea90-e049-5aaa-88e9-1b4e1bf2a325",
+              "document_id": "aqsi-online-account-reset-password",
+              "status": "incompatible",
+              "reason": "password reset only"
+            },
+            {
+              "id": "2bb96e1c-93bf-5293-aa00-eee879adf6c3",
+              "document_id": "aqsi-online-account-reset-password",
+              "status": "incompatible",
+              "reason": "password reset only"
+            },
+            {
+              "id": "95d95abe-4b31-5e4b-b375-177bcb366773",
+              "document_id": "aqsi-online-account-reset-password",
+              "status": "incompatible",
+              "reason": "password reset only"
+            },
+            {
+              "id": "c7bc3bbe-a5f5-5b67-99fd-51c4b0074be5",
+              "document_id": "atol-online-22559-agent-status",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "22107f00-d2da-57ab-8a43-f56c9572cbce",
+              "document_id": "atol-online-22559-agent-status",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "e7bf292e-381f-5b09-a0f5-c025ec979850",
+              "document_id": "atol-online-12148-company-registration",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "c9b8e1cc-9f49-5024-a47c-4c003d327c56",
+              "document_id": "atol-online-12148-company-registration",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "beacd745-04a1-5a00-a8f0-cd09003bd88c",
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "351d880d-a051-58f3-bdf6-07e521e2b260",
+              "document_id": "atol-online-16568-step7-fn-activation",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 2706,
+          "decision": "limitation: None of the provided fragments address employee addition or permission settings.",
+          "context": {
+            "original_problem": "Как добавить сотрудника в aQsi Online?",
+            "task_messages": [
+              "Как добавить сотрудника в aQsi Online?",
+              "Он должен просматривать документы, но не менять настройки."
+            ],
+            "confirmed_quotes": [
+              "Как добавить сотрудника в aQsi Online?",
+              "Он должен просматривать документы, но не менять настройки."
+            ],
+            "questions_asked": [
+              "Какой тип сотрудника вы хотите добавить (например, администратор, кассир)?",
+              "Какой уровень доступа вы хотите предоставить сотруднику?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 67686,
+          "retrieval_ms": 128,
+          "llm_ms": 2875
+        }
+      ]
+    }
+  ]
+}

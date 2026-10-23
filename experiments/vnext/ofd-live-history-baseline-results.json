@@ -1,0 +1,3115 @@
+{
+  "config": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points": 934,
+    "approved_points": 672,
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium"
+  },
+  "scenarios": [
+    {
+      "id": "ofd_live_history",
+      "name": "Точная пользовательская предыстория первого Telegram-разговора",
+      "turns": [
+        {
+          "user": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+          "answer": "С версии 3.0.148 для настроенного обмена через 1С:ДиректБанк доступна загрузка выписки сразу по всем банковским счетам организации, указанным в настройках взаимодействия с банком.\nВ «1С:Бухгалтерии 8» с версии 3.0.117 можно загружать выписки из файла, не отключая сервис 1С:ДиректБанк.\nСверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.",
+          "scenario": "escalate",
+          "reason": "unsupported_technical_claim",
+          "generation_status": "rejected",
+          "llm_used": true,
+          "tokens": 3191,
+          "elapsed_ms": 1873,
+          "active_request": "ПО: 1С — интеграция: DirectBank — У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+          "selected": [
+            {
+              "source": "1c/bank/directbank-all-accounts.md",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-all-accounts.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements",
+                  "list_bank_statements"
+                ],
+                "evidence_coverage": {
+                  "load_bank_statements": "partial"
+                },
+                "section": "Подтверждённая возможность",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.05,
+                "dense": 0.74393517,
+                "bm25": 72.80342
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.9625,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.375",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/import-file-directbank.md",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/import-file-directbank.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "import_bank_statement_file"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "import_bank_statement_file"
+              },
+              "retrieval": {
+                "rrf": 0.048131,
+                "dense": 0.6455581,
+                "bm25": 66.38204
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.925,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.250",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/directbank-other-banks.md",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-other-banks.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "import_bank_statements_via_intermediary"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "import_bank_statements_via_intermediary"
+              },
+              "retrieval": {
+                "rrf": 0.045541,
+                "dense": 0.66044617,
+                "bm25": 41.07473
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.9063,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.188",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/directbank-auto-schedule.md",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "approved",
+              "metadata": {
+                "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-auto-schedule.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "schedule_bank_statement_import"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "schedule_bank_statement_import"
+              },
+              "retrieval": {
+                "rrf": 0.042649,
+                "dense": 0.44911286,
+                "bm25": 43.2886
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.8875,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            }
+          ],
+          "candidates": [
+            {
+              "source": "1c/bank/directbank-all-accounts.md",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-all-accounts.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements",
+                  "list_bank_statements"
+                ],
+                "evidence_coverage": {
+                  "load_bank_statements": "partial"
+                },
+                "section": "Подтверждённая возможность",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.05,
+                "dense": 0.74393517,
+                "bm25": 72.80342
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.9625,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.375",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/import-file-directbank.md",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/import-file-directbank.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "import_bank_statement_file"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "import_bank_statement_file"
+              },
+              "retrieval": {
+                "rrf": 0.048131,
+                "dense": 0.6455581,
+                "bm25": 66.38204
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.925,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.250",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/directbank-other-banks.md",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-other-banks.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "import_bank_statements_via_intermediary"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "import_bank_statements_via_intermediary"
+              },
+              "retrieval": {
+                "rrf": 0.045541,
+                "dense": 0.66044617,
+                "bm25": 41.07473
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.9063,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.188",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/directbank-auto-schedule.md",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "approved",
+              "metadata": {
+                "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-auto-schedule.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "schedule_bank_statement_import"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "schedule_bank_statement_import"
+              },
+              "retrieval": {
+                "rrf": 0.042649,
+                "dense": 0.44911286,
+                "bm25": 43.2886
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.8875,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/acquiring-returns.md",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "approved",
+              "metadata": {
+                "title": "Возврат покупателю по эквайрингу: новая операция списания в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/acquiring-returns.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements"
+                ],
+                "evidence_coverage": {},
+                "section": "Диагностика",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.039481,
+                "dense": 0.62956023,
+                "bm25": 21.85683
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.8875,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": false
+            },
+            {
+              "source": "1c/bank/acquiring-patent-tax.md",
+              "document_id": "batch-20261013-bank-acquiring-patent-tax",
+              "status": "approved",
+              "metadata": {
+                "title": "Эквайринг при совмещении ПСН и УСН: классификация аванса в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/acquiring-patent-tax.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements"
+                ],
+                "evidence_coverage": {},
+                "section": "Что уточнить",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.030357,
+                "dense": 0.45009005,
+                "bm25": 9.82937
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.8688,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": false
+            },
+            {
+              "source": "1c/counterparty/reconciliation-act.md",
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "status": "approved",
+              "metadata": {
+                "title": "Электронный акт сверки с контрагентом в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/counterparty/reconciliation-act.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "reconciliation",
+                "operations": [
+                  "reconcile_counterparty"
+                ],
+                "evidence_coverage": {},
+                "section": "Суть",
+                "operation": "reconcile_counterparty"
+              },
+              "retrieval": {
+                "rrf": 0.038462,
+                "dense": 0.4577677,
+                "bm25": 25.67297
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3562,
+                "reasons": [
+                  "task_category=reconciliation",
+                  "lexical_overlap=0.188",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:reconciliation!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "atol_online/integration/integration-1c-versions.md",
+              "document_id": "atol-online-12790-integration-1c-versions",
+              "status": "approved",
+              "metadata": {
+                "title": "АТОЛ Онлайн и 1С: где проверить поддерживаемую интеграцию",
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "source_type": "vendor_support_article",
+                "status": "approved",
+                "source": "atol_online/integration/integration-1c-versions.md",
+                "service": "АТОЛ Онлайн",
+                "task_category": "integration",
+                "operations": [
+                  "check_integration_compatibility"
+                ],
+                "procedure_service": "АТОЛ Онлайн",
+                "evidence_coverage": {},
+                "section": "Что проверено по инструкции производителя",
+                "operation": "check_integration_compatibility"
+              },
+              "retrieval": {
+                "rrf": 0.033606,
+                "dense": 0.43385288,
+                "bm25": 14.4995
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=integration",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=АТОЛ Онлайн"
+                ]
+              },
+              "reasons": [
+                "procedure_service_mismatch:АТОЛ Онлайн",
+                "task_mismatch:integration!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/closing/monthly-schedule.md",
+              "document_id": "batch-20261013-closing-monthly-schedule",
+              "status": "approved",
+              "metadata": {
+                "title": "Закрытие месяца по расписанию в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/closing/monthly-schedule.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "period_close",
+                "operations": [
+                  "close_period"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "close_period"
+              },
+              "retrieval": {
+                "rrf": 0.034903,
+                "dense": 0.3823201,
+                "bm25": 26.0078
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3562,
+                "reasons": [
+                  "task_category=period_close",
+                  "lexical_overlap=0.188",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:period_close!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-operations-name.md",
+              "document_id": "batch-20261013-taxes-ens-operations-name",
+              "status": "approved",
+              "metadata": {
+                "title": "Документ «Операции ЕНС» вместо «Корректировка ЕНС»",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-operations-name.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Диагностика",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.034492,
+                "dense": 0.41905263,
+                "bm25": 19.17248
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/closing/close-several-months.md",
+              "document_id": "batch-20261013-closing-close-several-months",
+              "status": "approved",
+              "metadata": {
+                "title": "Закрытие сразу нескольких месяцев в 1С:Бухгалтерии 3.0",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/closing/close-several-months.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "period_close",
+                "operations": [
+                  "close_period"
+                ],
+                "evidence_coverage": {},
+                "section": "Проверка перед действием",
+                "operation": "close_period"
+              },
+              "retrieval": {
+                "rrf": 0.034259,
+                "dense": 0.38683048,
+                "bm25": 22.62187
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=period_close",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:period_close!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/counterparty/reconciliation-monitor.md",
+              "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+              "status": "approved",
+              "metadata": {
+                "title": "Монитор сверки с контрагентами и отправка ссылки на акт",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/counterparty/reconciliation-monitor.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "reconciliation",
+                "operations": [
+                  "reconcile_counterparty"
+                ],
+                "evidence_coverage": {},
+                "section": "Что проверить",
+                "operation": "reconcile_counterparty"
+              },
+              "retrieval": {
+                "rrf": 0.033987,
+                "dense": 0.4348504,
+                "bm25": 15.596
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=reconciliation",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:reconciliation!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-menu-2026.md",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Где в 1С находятся документы ЕНС в простом интерфейсе",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-menu-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённое изменение",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.03239,
+                "dense": 0.37278077,
+                "bm25": 21.95144
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3562,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.188",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/edo/connect-1c-edo.md",
+              "document_id": "batch-20261013-edo-connect-1c-edo",
+              "status": "approved",
+              "metadata": {
+                "title": "С чего начать подключение 1С-ЭДО к контрагенту",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/edo/connect-1c-edo.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "edo",
+                "operations": [
+                  "exchange_edo_documents"
+                ],
+                "evidence_coverage": {},
+                "section": "Что уточнить перед инструкцией",
+                "operation": "exchange_edo_documents"
+              },
+              "retrieval": {
+                "rrf": 0.031862,
+                "dense": 0.49853778,
+                "bm25": 10.22274
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=edo",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:edo!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/goods/single-upd-many-warehouses.md",
+              "document_id": "batch-20261013-goods-single-upd-many-warehouses",
+              "status": "approved",
+              "metadata": {
+                "title": "Один УПД поставщика, поступление товара на несколько складов",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/goods/single-upd-many-warehouses.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "goods_receipt",
+                "operations": [
+                  "receive_goods"
+                ],
+                "evidence_coverage": {},
+                "section": "Диагностика",
+                "operation": "receive_goods"
+              },
+              "retrieval": {
+                "rrf": 0.028144,
+                "dense": 0.4147154,
+                "bm25": 9.21375
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=goods_receipt",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:goods_receipt!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "aqsi_online/setup/add-store.md",
+              "document_id": "aqsi-online-setup-add-store",
+              "status": "approved",
+              "metadata": {
+                "title": "aQsi Online: добавление интернет-магазина",
+                "category": "kkt",
+                "manufacturer": "aQsi",
+                "model": "aQsi Online (облачная касса)",
+                "source_type": "vendor_support_article",
+                "status": "approved",
+                "source": "aqsi_online/setup/add-store.md",
+                "service": "aQsi Online",
+                "task_category": "service_connection",
+                "operations": [
+                  "connect_cash_register",
+                  "add_store"
+                ],
+                "evidence_coverage": {},
+                "section": "Перед выполнением действий",
+                "operation": "connect_cash_register"
+              },
+              "retrieval": {
+                "rrf": 0.027298,
+                "dense": 0.40203923,
+                "bm25": 8.16512
+              },
+              "relevance": {
+                "service": "unknown_or_mismatch",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=service_connection",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:service_connection!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-accounting-settings.md",
+              "document_id": "batch-20261013-taxes-ens-accounting-settings",
+              "status": "approved",
+              "metadata": {
+                "title": "Способ учёта операций по ЕНС в настройках 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-accounting-settings.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасный алгоритм",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.027048,
+                "dense": 0.36004442,
+                "bm25": 11.81038
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/closing/error-first-diagnostics.md",
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "status": "approved",
+              "metadata": {
+                "title": "Не закрывается месяц: первые вопросы для диагностики",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/closing/error-first-diagnostics.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "period_close",
+                "operations": [
+                  "close_period"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасная диагностика без изменения базы",
+                "operation": "close_period"
+              },
+              "retrieval": {
+                "rrf": 0.025627,
+                "dense": 0.3516179,
+                "bm25": 10.79473
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=period_close",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:period_close!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/invoice-forms-april.md",
+              "document_id": "batch-20261013-vat-invoice-forms-april",
+              "status": "approved",
+              "metadata": {
+                "title": "Новые формы счёта-фактуры и книг НДС с апреля 2026 в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/invoice-forms-april.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Что проверить",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.024691,
+                "dense": null,
+                "bm25": 22.4964
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/vat-usn-settings.md",
+              "document_id": "batch-20261013-vat-vat-usn-settings",
+              "status": "approved",
+              "metadata": {
+                "title": "Настройка НДС на УСН в 1С:Бухгалтерии в 2026 году",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/vat-usn-settings.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Важно",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.021277,
+                "dense": null,
+                "bm25": 13.52169
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-automatic-data.md",
+              "document_id": "batch-20261013-taxes-ens-automatic-data",
+              "status": "approved",
+              "metadata": {
+                "title": "Начисления на ЕНС по данным ФНС в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-automatic-data.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённое изменение",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.016949,
+                "dense": null,
+                "bm25": 7.7103
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/electronic-upd-2026.md",
+              "document_id": "batch-20261013-vat-electronic-upd-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Электронный счёт-фактура и УПД 2026: строка 5б в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/electronic-upd-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасность",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.019231,
+                "dense": null,
+                "bm25": 11.10969
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/usn-to-osno-2026.md",
+              "document_id": "batch-20261013-vat-usn-to-osno-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Входной НДС по остаткам при переходе с УСН на ОСНО в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/usn-to-osno-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.018868,
+                "dense": null,
+                "bm25": 10.69332
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3375,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.125",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-cashflow-article.md",
+              "document_id": "batch-20261013-taxes-ens-cashflow-article",
+              "status": "approved",
+              "metadata": {
+                "title": "Статья движения денежных средств «Единый налоговый платёж»",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-cashflow-article.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.013986,
+                "dense": null,
+                "bm25": 4.88067
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/edo/epd-vs-edo.md",
+              "document_id": "batch-20261013-edo-epd-vs-edo",
+              "status": "approved",
+              "metadata": {
+                "title": "1С-ЭПД: обмен транспортными ЭПД и ошибка «контрагент не найден»",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/edo/epd-vs-edo.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "edo",
+                "operations": [
+                  "exchange_edo_documents"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасная диагностика",
+                "operation": "exchange_edo_documents"
+              },
+              "retrieval": {
+                "rrf": 0.015873,
+                "dense": null,
+                "bm25": 6.27844
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=edo",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:edo!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/usn-advances-2026.md",
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Переход с освобождения от НДС: учёт авансов в 1С в 2026",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/usn-advances-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.015152,
+                "dense": null,
+                "bm25": 6.08017
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "accounting/vat_usn/advance-invoice.md",
+              "document_id": "batch-20261013-vat-usn-advance-invoice",
+              "status": "approved",
+              "metadata": {
+                "title": "НДС на УСН: нужен ли авансовый счёт-фактура при ставке 5% или 7%",
+                "category": "accounting",
+                "source_type": "fns_guidance",
+                "status": "approved",
+                "source": "accounting/vat_usn/advance-invoice.md",
+                "service": "Налоги и бухгалтерский учёт",
+                "task_category": "vat_usn",
+                "operations": [
+                  "check_vat_rules"
+                ],
+                "evidence_coverage": {},
+                "section": "Что спросить",
+                "operation": "check_vat_rules"
+              },
+              "retrieval": {
+                "rrf": 0.013333,
+                "dense": null,
+                "bm25": 3.86647
+              },
+              "relevance": {
+                "service": "unknown_or_mismatch",
+                "task": "mismatch",
+                "score": 0.3187,
+                "reasons": [
+                  "task_category=vat_usn",
+                  "lexical_overlap=0.062",
+                  "operation_match=False",
+                  "operation_compatibility=unknown",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:vat_usn!=bank_statement"
+              ],
+              "selected": false
+            }
+          ],
+          "validation_reason": "unsupported_technical_claim",
+          "dialogue_state": {
+            "schema_version": 2,
+            "revision": 1,
+            "session": {
+              "entities": {
+                "software": [
+                  {
+                    "value": "1С",
+                    "message_id": 1,
+                    "quote": "1С",
+                    "start": 6,
+                    "end": 8
+                  }
+                ],
+                "integration": [
+                  {
+                    "value": "DirectBank",
+                    "message_id": 1,
+                    "quote": "ДиректБанком",
+                    "start": 25,
+                    "end": 37
+                  }
+                ]
+              },
+              "active_route": {
+                "slot": "software",
+                "fact": {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              }
+            },
+            "task_context": {
+              "task_id": "task:1",
+              "topic_start_message_id": 1,
+              "intent": "bank_statement",
+              "operation": "unknown",
+              "object": "банковская выписка",
+              "entities": {
+                "software": [
+                  {
+                    "value": "1С",
+                    "message_id": 1,
+                    "quote": "1С",
+                    "start": 6,
+                    "end": 8
+                  }
+                ],
+                "integration": [
+                  {
+                    "value": "DirectBank",
+                    "message_id": 1,
+                    "quote": "ДиректБанком",
+                    "start": 25,
+                    "end": 37
+                  }
+                ]
+              },
+              "active_route": {
+                "slot": "software",
+                "fact": {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              },
+              "parameters": [],
+              "object_reference": null,
+              "task_fact": {
+                "value": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+                "message_id": 1,
+                "quote": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+                "start": 0,
+                "end": 101
+              },
+              "operation_evidence": null,
+              "operation_confidence": 0.0,
+              "symptom": null,
+              "superseded_facts": [],
+              "goals": [],
+              "constraints": [],
+              "details": [],
+              "error": null,
+              "expected": null,
+              "relation": "new_task",
+              "confidence": 0.9,
+              "transition": "new_task",
+              "analysis_required": false,
+              "unresolved": null
+            },
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "bank_statement",
+            "operation": "unknown",
+            "object": "банковская выписка",
+            "entities": {
+              "software": [
+                {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              ],
+              "integration": [
+                {
+                  "value": "DirectBank",
+                  "message_id": 1,
+                  "quote": "ДиректБанком",
+                  "start": 25,
+                  "end": 37
+                }
+              ]
+            },
+            "routing_slot": "software",
+            "parameters": [],
+            "object_reference": null,
+            "task": {
+              "value": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "message_id": 1,
+              "quote": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "start": 0,
+              "end": 101
+            },
+            "operation_evidence": null,
+            "goals": [],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "new_task",
+            "confidence": 0.9,
+            "transition": "new_task",
+            "analysis_required": false,
+            "unresolved": null
+          }
+        },
+        {
+          "user": "А где потом открыть список этих выписок?",
+          "answer": "Откройте список выписок в 1С: Бухгалтерия 8 через меню:\n• В простом интерфейсе – «Деньги → Банк»\n• В полном – «Банк и касса → Банк»",
+          "scenario": "answer",
+          "reason": "доступная информация о расположении списка выписок",
+          "generation_status": "generated",
+          "llm_used": true,
+          "tokens": 1838,
+          "elapsed_ms": 17909,
+          "active_request": "ПО: 1С — интеграция: DirectBank — просмотр списка банковских выписок",
+          "selected": [
+            {
+              "source": "1c/bank/directbank-all-accounts.md",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-all-accounts.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements",
+                  "list_bank_statements"
+                ],
+                "evidence_coverage": {
+                  "load_bank_statements": "partial"
+                },
+                "section": "Подтверждённая возможность",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.05,
+                "dense": 0.7896138,
+                "bm25": 48.91569
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.955,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.350",
+                  "operation_match=True",
+                  "operation_compatibility=match",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            }
+          ],
+          "candidates": [
+            {
+              "source": "1c/bank/directbank-all-accounts.md",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-all-accounts.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements",
+                  "list_bank_statements"
+                ],
+                "evidence_coverage": {
+                  "load_bank_statements": "partial"
+                },
+                "section": "Подтверждённая возможность",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.05,
+                "dense": 0.7896138,
+                "bm25": 48.91569
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.955,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.350",
+                  "operation_match=True",
+                  "operation_compatibility=match",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [],
+              "selected": true
+            },
+            {
+              "source": "1c/bank/import-file-directbank.md",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/import-file-directbank.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "import_bank_statement_file"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "import_bank_statement_file"
+              },
+              "retrieval": {
+                "rrf": 0.047938,
+                "dense": 0.6861755,
+                "bm25": 45.72346
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.91,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.200",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "operation_mismatch:list"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/bank/directbank-other-banks.md",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "approved",
+              "metadata": {
+                "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-other-banks.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "import_bank_statements_via_intermediary"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "import_bank_statements_via_intermediary"
+              },
+              "retrieval": {
+                "rrf": 0.045285,
+                "dense": 0.694364,
+                "bm25": 32.41493
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.895,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.150",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "operation_mismatch:list"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/bank/directbank-auto-schedule.md",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "approved",
+              "metadata": {
+                "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/directbank-auto-schedule.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "schedule_bank_statement_import"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "schedule_bank_statement_import"
+              },
+              "retrieval": {
+                "rrf": 0.042875,
+                "dense": 0.66480386,
+                "bm25": 28.32774
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.895,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.150",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "operation_mismatch:list"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/bank/acquiring-returns.md",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "approved",
+              "metadata": {
+                "title": "Возврат покупателю по эквайрингу: новая операция списания в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/acquiring-returns.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements"
+                ],
+                "evidence_coverage": {},
+                "section": "Диагностика",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.042051,
+                "dense": 0.68794364,
+                "bm25": 21.85683
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.88,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "operation_mismatch:list"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/counterparty/reconciliation-act.md",
+              "document_id": "batch-20261013-counterparty-reconciliation-act",
+              "status": "approved",
+              "metadata": {
+                "title": "Электронный акт сверки с контрагентом в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/counterparty/reconciliation-act.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "reconciliation",
+                "operations": [
+                  "reconcile_counterparty"
+                ],
+                "evidence_coverage": {},
+                "section": "Суть",
+                "operation": "reconcile_counterparty"
+              },
+              "retrieval": {
+                "rrf": 0.037195,
+                "dense": 0.48877123,
+                "bm25": 15.79137
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.345,
+                "reasons": [
+                  "task_category=reconciliation",
+                  "lexical_overlap=0.150",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:reconciliation!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "atol_online/integration/integration-1c-versions.md",
+              "document_id": "atol-online-12790-integration-1c-versions",
+              "status": "approved",
+              "metadata": {
+                "title": "АТОЛ Онлайн и 1С: где проверить поддерживаемую интеграцию",
+                "category": "atol_online",
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "source_type": "vendor_support_article",
+                "status": "approved",
+                "source": "atol_online/integration/integration-1c-versions.md",
+                "service": "АТОЛ Онлайн",
+                "task_category": "integration",
+                "operations": [
+                  "check_integration_compatibility"
+                ],
+                "procedure_service": "АТОЛ Онлайн",
+                "evidence_coverage": {},
+                "section": "Что проверено по инструкции производителя",
+                "operation": "check_integration_compatibility"
+              },
+              "retrieval": {
+                "rrf": 0.034972,
+                "dense": 0.49081448,
+                "bm25": 12.42909
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=integration",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=АТОЛ Онлайн"
+                ]
+              },
+              "reasons": [
+                "procedure_service_mismatch:АТОЛ Онлайн",
+                "task_mismatch:integration!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-operations-name.md",
+              "document_id": "batch-20261013-taxes-ens-operations-name",
+              "status": "approved",
+              "metadata": {
+                "title": "Документ «Операции ЕНС» вместо «Корректировка ЕНС»",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-operations-name.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Диагностика",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.034492,
+                "dense": 0.4692335,
+                "bm25": 12.8894
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/counterparty/reconciliation-monitor.md",
+              "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+              "status": "approved",
+              "metadata": {
+                "title": "Монитор сверки с контрагентами и отправка ссылки на акт",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/counterparty/reconciliation-monitor.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "reconciliation",
+                "operations": [
+                  "reconcile_counterparty"
+                ],
+                "evidence_coverage": {},
+                "section": "Что проверить",
+                "operation": "reconcile_counterparty"
+              },
+              "retrieval": {
+                "rrf": 0.034164,
+                "dense": 0.49340218,
+                "bm25": 9.59913
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=reconciliation",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:reconciliation!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/bank/acquiring-patent-tax.md",
+              "document_id": "batch-20261013-bank-acquiring-patent-tax",
+              "status": "approved",
+              "metadata": {
+                "title": "Эквайринг при совмещении ПСН и УСН: классификация аванса в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/bank/acquiring-patent-tax.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "load_bank_statements"
+                ],
+                "evidence_coverage": {},
+                "section": "Что уточнить",
+                "operation": "load_bank_statements"
+              },
+              "retrieval": {
+                "rrf": 0.033644,
+                "dense": 0.47189122,
+                "bm25": 9.82937
+              },
+              "relevance": {
+                "service": "match",
+                "task": "match",
+                "score": 0.865,
+                "reasons": [
+                  "task_category=bank_statement",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "operation_mismatch:list"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/closing/monthly-schedule.md",
+              "document_id": "batch-20261013-closing-monthly-schedule",
+              "status": "approved",
+              "metadata": {
+                "title": "Закрытие месяца по расписанию в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/closing/monthly-schedule.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "period_close",
+                "operations": [
+                  "close_period"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённая возможность",
+                "operation": "close_period"
+              },
+              "retrieval": {
+                "rrf": 0.033129,
+                "dense": 0.40247634,
+                "bm25": 15.98665
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.345,
+                "reasons": [
+                  "task_category=period_close",
+                  "lexical_overlap=0.150",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:period_close!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/closing/close-several-months.md",
+              "document_id": "batch-20261013-closing-close-several-months",
+              "status": "approved",
+              "metadata": {
+                "title": "Закрытие сразу нескольких месяцев в 1С:Бухгалтерии 3.0",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/closing/close-several-months.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "period_close",
+                "operations": [
+                  "close_period"
+                ],
+                "evidence_coverage": {},
+                "section": "Проверка перед действием",
+                "operation": "close_period"
+              },
+              "retrieval": {
+                "rrf": 0.032163,
+                "dense": 0.42089543,
+                "bm25": 12.99687
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=period_close",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:period_close!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-menu-2026.md",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Где в 1С находятся документы ЕНС в простом интерфейсе",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-menu-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённое изменение",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.031396,
+                "dense": 0.39734438,
+                "bm25": 13.87641
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.345,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.150",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/edo/connect-1c-edo.md",
+              "document_id": "batch-20261013-edo-connect-1c-edo",
+              "status": "approved",
+              "metadata": {
+                "title": "С чего начать подключение 1С-ЭДО к контрагенту",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/edo/connect-1c-edo.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "edo",
+                "operations": [
+                  "exchange_edo_documents"
+                ],
+                "evidence_coverage": {},
+                "section": "Что уточнить перед инструкцией",
+                "operation": "exchange_edo_documents"
+              },
+              "retrieval": {
+                "rrf": 0.030694,
+                "dense": 0.48882052,
+                "bm25": 7.58165
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=edo",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:edo!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "aqsi_online/setup/add-store.md",
+              "document_id": "aqsi-online-setup-add-store",
+              "status": "approved",
+              "metadata": {
+                "title": "aQsi Online: добавление интернет-магазина",
+                "category": "kkt",
+                "manufacturer": "aQsi",
+                "model": "aQsi Online (облачная касса)",
+                "source_type": "vendor_support_article",
+                "status": "approved",
+                "source": "aqsi_online/setup/add-store.md",
+                "service": "aQsi Online",
+                "task_category": "service_connection",
+                "operations": [
+                  "connect_cash_register",
+                  "add_store"
+                ],
+                "evidence_coverage": {},
+                "section": "Перед выполнением действий",
+                "operation": "connect_cash_register"
+              },
+              "retrieval": {
+                "rrf": 0.029944,
+                "dense": 0.44555146,
+                "bm25": 8.16512
+              },
+              "relevance": {
+                "service": "unknown_or_mismatch",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=service_connection",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:service_connection!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-accounting-settings.md",
+              "document_id": "batch-20261013-taxes-ens-accounting-settings",
+              "status": "approved",
+              "metadata": {
+                "title": "Способ учёта операций по ЕНС в настройках 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-accounting-settings.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасный алгоритм",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.028652,
+                "dense": 0.4148684,
+                "bm25": 8.54009
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/goods/single-upd-many-warehouses.md",
+              "document_id": "batch-20261013-goods-single-upd-many-warehouses",
+              "status": "approved",
+              "metadata": {
+                "title": "Один УПД поставщика, поступление товара на несколько складов",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/goods/single-upd-many-warehouses.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "goods_receipt",
+                "operations": [
+                  "receive_goods"
+                ],
+                "evidence_coverage": {},
+                "section": "Диагностика",
+                "operation": "receive_goods"
+              },
+              "retrieval": {
+                "rrf": 0.027505,
+                "dense": 0.45088,
+                "bm25": 6.27503
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=goods_receipt",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:goods_receipt!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/closing/error-first-diagnostics.md",
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "status": "approved",
+              "metadata": {
+                "title": "Не закрывается месяц: первые вопросы для диагностики",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/closing/error-first-diagnostics.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "period_close",
+                "operations": [
+                  "close_period"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасная диагностика без изменения базы",
+                "operation": "close_period"
+              },
+              "retrieval": {
+                "rrf": 0.026144,
+                "dense": 0.3861847,
+                "bm25": 8.31402
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=period_close",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:period_close!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/invoice-forms-april.md",
+              "document_id": "batch-20261013-vat-invoice-forms-april",
+              "status": "approved",
+              "metadata": {
+                "title": "Новые формы счёта-фактуры и книг НДС с апреля 2026 в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/invoice-forms-april.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Что проверить",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.02381,
+                "dense": null,
+                "bm25": 13.59044
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/vat-usn-settings.md",
+              "document_id": "batch-20261013-vat-vat-usn-settings",
+              "status": "approved",
+              "metadata": {
+                "title": "Настройка НДС на УСН в 1С:Бухгалтерии в 2026 году",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/vat-usn-settings.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Важно",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.021978,
+                "dense": null,
+                "bm25": 9.98636
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-automatic-data.md",
+              "document_id": "batch-20261013-taxes-ens-automatic-data",
+              "status": "approved",
+              "metadata": {
+                "title": "Начисления на ЕНС по данным ФНС в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-automatic-data.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Подтверждённое изменение",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.018519,
+                "dense": null,
+                "bm25": 7.7103
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/electronic-upd-2026.md",
+              "document_id": "batch-20261013-vat-electronic-upd-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Электронный счёт-фактура и УПД 2026: строка 5б в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/electronic-upd-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасность",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.019048,
+                "dense": null,
+                "bm25": 8.03342
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/usn-to-osno-2026.md",
+              "document_id": "batch-20261013-vat-usn-to-osno-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Входной НДС по остаткам при переходе с УСН на ОСНО в 1С",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/usn-to-osno-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.018692,
+                "dense": null,
+                "bm25": 7.82524
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.33,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.100",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/edo/epd-vs-edo.md",
+              "document_id": "batch-20261013-edo-epd-vs-edo",
+              "status": "approved",
+              "metadata": {
+                "title": "1С-ЭПД: обмен транспортными ЭПД и ошибка «контрагент не найден»",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/edo/epd-vs-edo.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "edo",
+                "operations": [
+                  "exchange_edo_documents"
+                ],
+                "evidence_coverage": {},
+                "section": "Безопасная диагностика",
+                "operation": "exchange_edo_documents"
+              },
+              "retrieval": {
+                "rrf": 0.016529,
+                "dense": null,
+                "bm25": 6.27844
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=edo",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:edo!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/vat/usn-advances-2026.md",
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "status": "approved",
+              "metadata": {
+                "title": "Переход с освобождения от НДС: учёт авансов в 1С в 2026",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/vat/usn-advances-2026.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "vat_accounting",
+                "operations": [
+                  "configure_vat_accounting"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "configure_vat_accounting"
+              },
+              "retrieval": {
+                "rrf": 0.015873,
+                "dense": null,
+                "bm25": 6.08017
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=vat_accounting",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:vat_accounting!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "1c/taxes/ens-cashflow-article.md",
+              "document_id": "batch-20261013-taxes-ens-cashflow-article",
+              "status": "approved",
+              "metadata": {
+                "title": "Статья движения денежных средств «Единый налоговый платёж»",
+                "category": "1c",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "source_type": "vendor_article",
+                "status": "approved",
+                "source": "1c/taxes/ens-cashflow-article.md",
+                "service": "1С:Бухгалтерия 8",
+                "task_category": "ens",
+                "operations": [
+                  "check_ens"
+                ],
+                "evidence_coverage": {},
+                "section": "Вопрос",
+                "operation": "check_ens"
+              },
+              "retrieval": {
+                "rrf": 0.014599,
+                "dense": null,
+                "bm25": 4.88067
+              },
+              "relevance": {
+                "service": "match",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=ens",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "task_mismatch:ens!=bank_statement"
+              ],
+              "selected": false
+            },
+            {
+              "source": "accounting/vat_usn/advance-invoice.md",
+              "document_id": "batch-20261013-vat-usn-advance-invoice",
+              "status": "approved",
+              "metadata": {
+                "title": "НДС на УСН: нужен ли авансовый счёт-фактура при ставке 5% или 7%",
+                "category": "accounting",
+                "source_type": "fns_guidance",
+                "status": "approved",
+                "source": "accounting/vat_usn/advance-invoice.md",
+                "service": "Налоги и бухгалтерский учёт",
+                "task_category": "vat_usn",
+                "operations": [
+                  "check_vat_rules"
+                ],
+                "evidence_coverage": {},
+                "section": "Что спросить",
+                "operation": "check_vat_rules"
+              },
+              "retrieval": {
+                "rrf": 0.013889,
+                "dense": null,
+                "bm25": 3.86647
+              },
+              "relevance": {
+                "service": "unknown_or_mismatch",
+                "task": "mismatch",
+                "score": 0.315,
+                "reasons": [
+                  "task_category=vat_usn",
+                  "lexical_overlap=0.050",
+                  "operation_match=False",
+                  "operation_compatibility=mismatch",
+                  "related_search_task=False",
+                  "procedure_service=unreviewed"
+                ]
+              },
+              "reasons": [
+                "service_mismatch_or_unlabeled",
+                "task_mismatch:vat_usn!=bank_statement"
+              ],
+              "selected": false
+            }
+          ],
+          "validation_reason": null,
+          "dialogue_state": {
+            "schema_version": 2,
+            "revision": 2,
+            "session": {
+              "entities": {
+                "software": [
+                  {
+                    "value": "1С",
+                    "message_id": 1,
+                    "quote": "1С",
+                    "start": 6,
+                    "end": 8
+                  }
+                ],
+                "integration": [
+                  {
+                    "value": "DirectBank",
+                    "message_id": 1,
+                    "quote": "ДиректБанком",
+                    "start": 25,
+                    "end": 37
+                  }
+                ]
+              },
+              "active_route": {
+                "slot": "software",
+                "fact": {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              }
+            },
+            "task_context": {
+              "task_id": "task:1",
+              "topic_start_message_id": 1,
+              "intent": "bank_statement",
+              "operation": "list",
+              "object": "банковская выписка",
+              "entities": {
+                "software": [
+                  {
+                    "value": "1С",
+                    "message_id": 1,
+                    "quote": "1С",
+                    "start": 6,
+                    "end": 8
+                  }
+                ],
+                "integration": [
+                  {
+                    "value": "DirectBank",
+                    "message_id": 1,
+                    "quote": "ДиректБанком",
+                    "start": 25,
+                    "end": 37
+                  }
+                ]
+              },
+              "active_route": {
+                "slot": "software",
+                "fact": {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              },
+              "parameters": [],
+              "object_reference": null,
+              "task_fact": {
+                "value": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+                "message_id": 1,
+                "quote": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+                "start": 0,
+                "end": 101
+              },
+              "operation_evidence": {
+                "value": "А где потом открыть список этих выписок?",
+                "message_id": 3,
+                "quote": "А где потом открыть список этих выписок?",
+                "start": 0,
+                "end": 40
+              },
+              "operation_confidence": 0.7,
+              "symptom": null,
+              "superseded_facts": [],
+              "goals": [],
+              "constraints": [],
+              "details": [],
+              "error": null,
+              "expected": null,
+              "relation": "continue",
+              "confidence": 0.9,
+              "transition": "continue_task",
+              "analysis_required": false,
+              "unresolved": null
+            },
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "bank_statement",
+            "operation": "list",
+            "object": "банковская выписка",
+            "entities": {
+              "software": [
+                {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              ],
+              "integration": [
+                {
+                  "value": "DirectBank",
+                  "message_id": 1,
+                  "quote": "ДиректБанком",
+                  "start": 25,
+                  "end": 37
+                }
+              ]
+            },
+            "routing_slot": "software",
+            "parameters": [],
+            "object_reference": null,
+            "task": {
+              "value": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "message_id": 1,
+              "quote": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "start": 0,
+              "end": 101
+            },
+            "operation_evidence": {
+              "value": "А где потом открыть список этих выписок?",
+              "message_id": 3,
+              "quote": "А где потом открыть список этих выписок?",
+              "start": 0,
+              "end": 40
+            },
+            "goals": [],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "continue",
+            "confidence": 0.9,
+            "transition": "continue_task",
+            "analysis_required": false,
+            "unresolved": null
+          }
+        },
+        {
+          "user": "у меня проблема кончился офд",
+          "answer": "Уточните, пожалуйста, какую задачу нужно решить и какие требования сейчас обязательны.",
+          "scenario": "clarify",
+          "reason": "message_ambiguous",
+          "generation_status": "clarification",
+          "llm_used": false,
+          "tokens": null,
+          "elapsed_ms": 5,
+          "active_request": null,
+          "selected": [],
+          "candidates": [],
+          "validation_reason": null,
+          "dialogue_state": {
+            "schema_version": 2,
+            "revision": 3,
+            "session": {
+              "entities": {
+                "software": [
+                  {
+                    "value": "1С",
+                    "message_id": 1,
+                    "quote": "1С",
+                    "start": 6,
+                    "end": 8
+                  }
+                ],
+                "integration": [
+                  {
+                    "value": "DirectBank",
+                    "message_id": 1,
+                    "quote": "ДиректБанком",
+                    "start": 25,
+                    "end": 37
+                  }
+                ]
+              },
+              "active_route": {
+                "slot": "software",
+                "fact": {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              }
+            },
+            "task_context": {
+              "task_id": "task:1",
+              "topic_start_message_id": 1,
+              "intent": "bank_statement",
+              "operation": "list",
+              "object": "банковская выписка",
+              "entities": {
+                "software": [
+                  {
+                    "value": "1С",
+                    "message_id": 1,
+                    "quote": "1С",
+                    "start": 6,
+                    "end": 8
+                  }
+                ],
+                "integration": [
+                  {
+                    "value": "DirectBank",
+                    "message_id": 1,
+                    "quote": "ДиректБанком",
+                    "start": 25,
+                    "end": 37
+                  }
+                ]
+              },
+              "active_route": {
+                "slot": "software",
+                "fact": {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              },
+              "parameters": [],
+              "object_reference": null,
+              "task_fact": {
+                "value": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+                "message_id": 1,
+                "quote": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+                "start": 0,
+                "end": 101
+              },
+              "operation_evidence": {
+                "value": "А где потом открыть список этих выписок?",
+                "message_id": 3,
+                "quote": "А где потом открыть список этих выписок?",
+                "start": 0,
+                "end": 40
+              },
+              "operation_confidence": 0.7,
+              "symptom": null,
+              "superseded_facts": [],
+              "goals": [],
+              "constraints": [],
+              "details": [],
+              "error": null,
+              "expected": null,
+              "relation": "unknown",
+              "confidence": 0.4,
+              "transition": "continue_task",
+              "analysis_required": true,
+              "unresolved": {
+                "value": "у меня проблема кончился офд",
+                "message_id": 5,
+                "quote": "у меня проблема кончился офд",
+                "start": 0,
+                "end": 28
+              }
+            },
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "bank_statement",
+            "operation": "list",
+            "object": "банковская выписка",
+            "entities": {
+              "software": [
+                {
+                  "value": "1С",
+                  "message_id": 1,
+                  "quote": "1С",
+                  "start": 6,
+                  "end": 8
+                }
+              ],
+              "integration": [
+                {
+                  "value": "DirectBank",
+                  "message_id": 1,
+                  "quote": "ДиректБанком",
+                  "start": 25,
+                  "end": 37
+                }
+              ]
+            },
+            "routing_slot": "software",
+            "parameters": [],
+            "object_reference": null,
+            "task": {
+              "value": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "message_id": 1,
+              "quote": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "start": 0,
+              "end": 101
+            },
+            "operation_evidence": {
+              "value": "А где потом открыть список этих выписок?",
+              "message_id": 3,
+              "quote": "А где потом открыть список этих выписок?",
+              "start": 0,
+              "end": 40
+            },
+            "goals": [],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "unknown",
+            "confidence": 0.4,
+            "transition": "continue_task",
+            "analysis_required": true,
+            "unresolved": {
+              "value": "у меня проблема кончился офд",
+              "message_id": 5,
+              "quote": "у меня проблема кончился офд",
+              "start": 0,
+              "end": 28
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "platforma_receipt",
+    "document_id": "platformaofd-lkk-receipt-search",
+    "dense_rank_100": 49,
+    "hybrid_rank_30": 7
+  },
+  {
+    "id": "aqsi_add_user",
+    "document_id": "aqsi-online-account-add-user",
+    "dense_rank_100": 51,
+    "hybrid_rank_30": 3
+  },
+  {
+    "id": "directbank",
+    "document_id": "batch-20261013-bank-directbank-all-accounts",
+    "dense_rank_100": 2,
+    "hybrid_rank_30": 2
+  }
+]

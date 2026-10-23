@@ -1,0 +1,699 @@
+{
+  "config": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points": 934,
+    "approved_points": 672,
+    "embedding": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium"
+  },
+  "scenarios": [
+    {
+      "id": "ofd_live_history",
+      "name": "Точная пользовательская предыстория первого Telegram-разговора",
+      "turns": [
+        {
+          "user": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+          "answer": "Да, начиная с версии 3.0.148 в 1С:Бухгалтерия 8 с настроенным обменом через 1С:ДиректБанк можно загрузить выписку сразу по всем банковским счетам организации.",
+          "documents": [
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.8019
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.8019
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Передать специалисту",
+              "status": "approved",
+              "score": 0.8019
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.7338
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.7338
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Ограничение",
+              "status": "approved",
+              "score": 0.7338
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.696
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Безопасный порядок проверки",
+              "status": "approved",
+              "score": 0.696
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.696
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.6564
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.6564
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Передать бухгалтеру",
+              "status": "approved",
+              "score": 0.6564
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6454
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Что проверить",
+              "status": "approved",
+              "score": 0.6454
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6454
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.599
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.599
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.599
+            }
+          ],
+          "applicability": [
+            {
+              "id": "90e4eac2-6bf2-5c27-a2ac-af88dd1df4e4",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "Supports loading statements for all accounts via DirectBank from 3.0.148"
+            },
+            {
+              "id": "0f6701e5-dc47-5259-aedc-b5c0620938fd",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "partial",
+              "reason": "Diagnostic guidance only"
+            },
+            {
+              "id": "6b59d211-eba5-5f83-8f36-5d4dc48cbcdc",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "partial",
+              "reason": "Troubleshooting guidance only"
+            },
+            {
+              "id": "4cf76a13-ac3d-5feb-9fb0-f1fe36383ca5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "Relates to other banks via intermediary"
+            },
+            {
+              "id": "bd0b92bd-12b0-5228-9b9a-a7b67d2ba0c5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "Relates to other banks via intermediary"
+            },
+            {
+              "id": "724a53cc-2d6c-5497-a7c9-6b5251789ab7",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "incompatible",
+              "reason": "Describes limitation of bank exchange function"
+            },
+            {
+              "id": "39348f44-81f0-5ca2-a698-2abb0c893ca7",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "File import, not multiple accounts"
+            },
+            {
+              "id": "11d86366-890d-5ecb-98ac-2503d1b11af5",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "File import safety checks"
+            },
+            {
+              "id": "16ea2d14-b140-5ae6-8b6a-faeef126fad3",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "File import specialist guidance"
+            },
+            {
+              "id": "c0355b7b-efa5-5122-a7eb-d944a8d3a7f1",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "New operation type, unrelated"
+            },
+            {
+              "id": "3a8a43ed-148c-5ee7-aab5-68148925cf51",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "New operation type diagnostics"
+            },
+            {
+              "id": "2747c062-c8fb-5672-8be9-48edc140b7d8",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "New operation type guidance"
+            },
+            {
+              "id": "6d6d8ff3-8b54-5814-8f08-e3be8dc4f231",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "incompatible",
+              "reason": "Automatic schedule, unrelated"
+            },
+            {
+              "id": "f43e293f-b424-5a77-acfb-4b6afe4e1860",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "incompatible",
+              "reason": "Automatic schedule checks"
+            },
+            {
+              "id": "0df0bd5a-242d-5001-9275-eefe3bd318cd",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "incompatible",
+              "reason": "Automatic schedule specialist guidance"
+            },
+            {
+              "id": "f81a531e-4c53-5552-8a2f-366a4c2b821d",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "a20ec5d4-c550-560b-8727-757857c3744c",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "78410ac7-58b6-574f-a02f-0488adac7639",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 6502,
+          "llm_used": true,
+          "decision": "answer: Answer based on confirmed capability.",
+          "context": {
+            "original_problem": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+            "task_messages": [
+              "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?"
+            ],
+            "confirmed_quotes": [
+              "У нас 1С:Бухгалтерия 8 с ДиректБанком",
+              "Можно загрузить выписки сразу по нескольким банковским счетам?"
+            ],
+            "questions_asked": []
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 21706,
+          "retrieval_ms": 98,
+          "llm_ms": 4954
+        },
+        {
+          "user": "А где потом открыть список этих выписок?",
+          "answer": "Да, можно загрузить выписки сразу по всем банковским счетам организации, если версия 1С:Бухгалтерия 8 ≥ 3.0.148 и настроен обмен через 1С:ДиректБанк. Список выписок можно открыть в меню «Деньги → Банк» (простом интерфейсе) или «Банк и касса → Банк» (полном).",
+          "documents": [
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6929
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Безопасный порядок проверки",
+              "status": "approved",
+              "score": 0.6929
+            },
+            {
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6929
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6538
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Что проверить",
+              "status": "approved",
+              "score": 0.6538
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "section": "Когда нужен специалист",
+              "status": "approved",
+              "score": 0.6538
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.6333
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.6333
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Передать специалисту",
+              "status": "approved",
+              "score": 0.6333
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.624
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.624
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Передать бухгалтеру",
+              "status": "approved",
+              "score": 0.624
+            },
+            {
+              "document_id": "evotor-ffd-version-check-20261019",
+              "section": "Быстрый способ",
+              "status": "approved",
+              "score": 0.5945
+            },
+            {
+              "document_id": "evotor-ffd-version-check-20261019",
+              "section": "Дополнительная проверка",
+              "status": "approved",
+              "score": 0.5945
+            },
+            {
+              "document_id": "evotor-ffd-version-check-20261019",
+              "section": "Почему это важно",
+              "status": "approved",
+              "score": 0.5945
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5926
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.5926
+            },
+            {
+              "document_id": "aqsi-device-standard-refund",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.5926
+            }
+          ],
+          "applicability": [
+            {
+              "id": "39348f44-81f0-5ca2-a698-2abb0c893ca7",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "file import only"
+            },
+            {
+              "id": "11d86366-890d-5ecb-98ac-2503d1b11af5",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "file import only"
+            },
+            {
+              "id": "16ea2d14-b140-5ae6-8b6a-faeef126fad3",
+              "document_id": "batch-20261013-bank-import-file-directbank",
+              "status": "incompatible",
+              "reason": "file import only"
+            },
+            {
+              "id": "6d6d8ff3-8b54-5814-8f08-e3be8dc4f231",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "incompatible",
+              "reason": "auto schedule only"
+            },
+            {
+              "id": "f43e293f-b424-5a77-acfb-4b6afe4e1860",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "incompatible",
+              "reason": "auto schedule only"
+            },
+            {
+              "id": "0df0bd5a-242d-5001-9275-eefe3bd318cd",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "status": "incompatible",
+              "reason": "auto schedule only"
+            },
+            {
+              "id": "90e4eac2-6bf2-5c27-a2ac-af88dd1df4e4",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "multi‑account load supported"
+            },
+            {
+              "id": "0f6701e5-dc47-5259-aedc-b5c0620938fd",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "usable",
+              "reason": "list opening guidance"
+            },
+            {
+              "id": "6b59d211-eba5-5f83-8f36-5d4dc48cbcdc",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "partial",
+              "reason": "specialist needed for discrepancies"
+            },
+            {
+              "id": "c0355b7b-efa5-5122-a7eb-d944a8d3a7f1",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "acquiring returns only"
+            },
+            {
+              "id": "3a8a43ed-148c-5ee7-aab5-68148925cf51",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "acquiring returns only"
+            },
+            {
+              "id": "2747c062-c8fb-5672-8be9-48edc140b7d8",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "acquiring returns only"
+            },
+            {
+              "id": "dbab65a1-f47b-561f-ac97-f441e433386f",
+              "document_id": "evotor-ffd-version-check-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "ebbd7774-4917-5bc6-87b2-e30a9888a54f",
+              "document_id": "evotor-ffd-version-check-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "11cc5955-66d8-5aad-a802-59040676b5bb",
+              "document_id": "evotor-ffd-version-check-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "f81a531e-4c53-5552-8a2f-366a4c2b821d",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "a20ec5d4-c550-560b-8727-757857c3744c",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "78410ac7-58b6-574f-a02f-0488adac7639",
+              "document_id": "aqsi-device-standard-refund",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 6211,
+          "llm_used": true,
+          "decision": "answer: Ответ основан на подтверждённой возможности загрузки выписок по нескольким счетам и открытии списка выписок в указанном меню. Для точного применения необходимо знать версию конфигурации.",
+          "context": {
+            "original_problem": "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+            "task_messages": [
+              "У нас 1С:Бухгалтерия 8 с ДиректБанком. Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "А где потом открыть список этих выписок?"
+            ],
+            "confirmed_quotes": [
+              "У нас 1С:Бухгалтерия 8 с ДиректБанком",
+              "Можно загрузить выписки сразу по нескольким банковским счетам?",
+              "А где потом открыть список этих выписок?"
+            ],
+            "questions_asked": []
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 87588,
+          "retrieval_ms": 123,
+          "llm_ms": 4686
+        },
+        {
+          "user": "у меня проблема кончился офд",
+          "answer": "В найденных approved-материалах нет применимой инструкции для этой задачи. Какой ОФД или кассовый сервис вы используете?",
+          "documents": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.4205
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.4205
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Безопасная диагностика без изменения базы",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Запрещённое автоматическое действие",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Передать специалисту",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Когда передавать специалисту",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Ограничения",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Возможные причины по базе aQsi",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Безопасная проверка",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "section": "Контекст ошибки",
+              "status": "approved",
+              "score": 0.3782
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "section": "Проверка без изменения регистрации",
+              "status": "approved",
+              "score": 0.3782
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.3617
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "section": "Важно / когда передать специалисту",
+              "status": "approved",
+              "score": 0.3617
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "scope": "service_unconfirmed_or_other",
+              "status": "incompatible"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 949,
+          "llm_used": true,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд"
+            ],
+            "confirmed_quotes": [
+              "кончился офд"
+            ],
+            "questions_asked": [
+              "Какой ОФД или кассовый сервис вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 67351,
+          "retrieval_ms": 98,
+          "llm_ms": 1259
+        }
+      ]
+    }
+  ]
+}

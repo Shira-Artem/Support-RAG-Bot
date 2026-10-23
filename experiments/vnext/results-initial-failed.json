@@ -1,0 +1,410 @@
+{
+  "config": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points": 934,
+    "approved_points": 672,
+    "embedding": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium"
+  },
+  "scenarios": [
+    {
+      "id": "ofd_paid_period",
+      "name": "Окончание оплаченного периода ОФД",
+      "turns": [
+        {
+          "user": "у меня проблема кончился офд",
+          "answer": "Проверьте, сколько неотправленных документов осталось, и восстановите связь с ОФД. Нет конкретных инструкций по восстановлению связи с ОФД Сколько неотправленных документов осталось в очереди?",
+          "documents": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.4205
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Симптомы",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Симптомы",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "section": "Контекст ошибки",
+              "status": "approved",
+              "score": 0.3782
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.3617
+            },
+            {
+              "document_id": "platformaofd-fns-indicators",
+              "section": "Ошибки в чеках",
+              "status": "approved",
+              "score": 0.36
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.3538
+            },
+            {
+              "document_id": "atol-online-11077-service-blocked",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.3492
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.3474
+            },
+            {
+              "document_id": "atol-online-22561-request-errors-26-1008",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.3455
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.3425
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.3395
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.3325
+            }
+          ],
+          "applicability": [
+            {
+              "id": "d8263e02-5a3a-53e2-9673-235d907f2055",
+              "document_id": "atol-online-11075-fn-invoice",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "987b52db-21f4-5e73-a4ae-243c71746328",
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "c0930a48-3d7a-5961-bc90-4b1f11dc0ca9",
+              "document_id": "aqsi-device-paper-print-retry",
+              "status": "incompatible",
+              "reason": "не относится к ОФД"
+            },
+            {
+              "id": "70d6b4ba-a974-55d1-8c86-d08ab9cd531b",
+              "document_id": "aqsi-kkt-error-115",
+              "status": "incompatible",
+              "reason": "не относится к ОФД"
+            },
+            {
+              "id": "6493d0b6-98e0-5150-b51d-531855aae3eb",
+              "document_id": "evotor-fn-231-360005098974",
+              "status": "incompatible",
+              "reason": "не относится к ОФД"
+            },
+            {
+              "id": "f95549cd-b34a-56cd-bf19-bfc7f0740afa",
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "db469a07-cdf3-5d50-8a06-82cfca2ab203",
+              "document_id": "platformaofd-fns-indicators",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "e037f79c-8eea-50ad-aa8c-a5431759b717",
+              "document_id": "batch-20261013-closing-close-several-months",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "2adb8e04-166c-53d5-864c-5ec6b6160e84",
+              "document_id": "atol-online-11077-service-blocked",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "bf098f1b-b9a2-50d6-9a5a-21e4ddf51331",
+              "document_id": "aqsi-device-fn18-expired",
+              "status": "incompatible",
+              "reason": "не относится к ОФД"
+            },
+            {
+              "id": "cb935f81-4bf6-5cbc-af86-5878a3d5a131",
+              "document_id": "atol-online-22561-request-errors-26-1008",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "05ad9ea8-bd7a-5668-9d59-b1eb8f88cc22",
+              "document_id": "aqsi-device-fn7-date",
+              "status": "incompatible",
+              "reason": "не относится к ОФД"
+            },
+            {
+              "id": "79fbf7d4-0fdf-5cc2-b4d5-15b84258cab6",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "65458bc2-5352-59da-a927-e5c6d8d46099",
+              "document_id": "evotor-fn-235-360004715213",
+              "status": "usable",
+              "reason": "связь с ОФД не восстановлена"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 3620,
+          "decision": "partial_answer: Ответ основан на Evotor error FN 235 / -3979",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд"
+            ],
+            "confirmed_quotes": [
+              "кончился офд"
+            ],
+            "questions_asked": [
+              "Сколько неотправленных документов осталось в очереди?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 5114,
+          "retrieval_ms": 48,
+          "llm_ms": 5038
+        },
+        {
+          "user": "Уточняю: закончился оплаченный период ОФД. Что проверить сначала?",
+          "answer": "Проверьте количество неотправленных документов и восстановите связь с ОФД.",
+          "documents": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.6311
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.5945
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.5748
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "section": "Значение показателей",
+              "status": "approved",
+              "score": 0.5704
+            },
+            {
+              "document_id": "acc-usn-nds-exemption-2026",
+              "section": "Проверенные ориентиры из разъяснений ФНС",
+              "status": "approved",
+              "score": 0.5681
+            },
+            {
+              "document_id": "acc-usn-nds-trigger-2026",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.5604
+            },
+            {
+              "document_id": "acc-usn-psn-income-2026",
+              "section": "Эскалация",
+              "status": "approved",
+              "score": 0.5402
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-when-tax-starts",
+              "section": "Подтверждённый принцип",
+              "status": "approved",
+              "score": 0.5389
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-exemption-threshold-2026",
+              "section": "Проверенные правила 2026 года",
+              "status": "approved",
+              "score": 0.5385
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.5336
+            },
+            {
+              "document_id": "evotor-fn-234-360005580254",
+              "section": "Первое различение причины",
+              "status": "approved",
+              "score": 0.5253
+            },
+            {
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.5226
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.5197
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Важное ограничение / передача специалисту",
+              "status": "approved",
+              "score": 0.5178
+            }
+          ],
+          "applicability": [
+            {
+              "id": "d8263e02-5a3a-53e2-9673-235d907f2055",
+              "document_id": "atol-online-11075-fn-invoice",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "65458bc2-5352-59da-a927-e5c6d8d46099",
+              "document_id": "evotor-fn-235-360004715213",
+              "status": "usable",
+              "reason": "directly addresses OFD connection and document queue"
+            },
+            {
+              "id": "4b1e3b04-4959-58e8-a540-bc02a08a7dcd",
+              "document_id": "aqsi-online-setup-fiscalize",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "ae4f8b78-ca46-573e-b06f-dfe1b1efc5ed",
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "0a7a2d96-94b6-54ed-a71c-2243f51531b1",
+              "document_id": "acc-usn-nds-exemption-2026",
+              "status": "incompatible",
+              "reason": "tax rules, not OFD"
+            },
+            {
+              "id": "bf0114c1-0c6c-52e0-aa96-90aa718b270d",
+              "document_id": "acc-usn-nds-trigger-2026",
+              "status": "incompatible",
+              "reason": "tax escalation, not OFD"
+            },
+            {
+              "id": "c8326359-31f6-5176-809a-ee64233c8be3",
+              "document_id": "acc-usn-psn-income-2026",
+              "status": "incompatible",
+              "reason": "taxes, not OFD"
+            },
+            {
+              "id": "7e0ff043-651e-50a4-8088-90402cbce6a6",
+              "document_id": "batch-20261013-vat-usn-when-tax-starts",
+              "status": "incompatible",
+              "reason": "taxes, not OFD"
+            },
+            {
+              "id": "137a5aed-acc2-57fb-aa2f-f2198261572e",
+              "document_id": "batch-20261013-vat-usn-exemption-threshold-2026",
+              "status": "incompatible",
+              "reason": "taxes, not OFD"
+            },
+            {
+              "id": "56e7bf55-8739-51fa-88fa-a814498519bb",
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "c6d8a0cd-12dc-56c0-a939-70ba2d2447bc",
+              "document_id": "evotor-fn-234-360005580254",
+              "status": "incompatible",
+              "reason": "different error code"
+            },
+            {
+              "id": "800083b2-8480-531b-8c33-2ce66c2aa88b",
+              "document_id": "batch-20261013-vat-usn-advances-2026",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "e037f79c-8eea-50ad-aa8c-a5431759b717",
+              "document_id": "batch-20261013-closing-close-several-months",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "74f61d95-5a5c-5d5a-bb3b-212a1361ec54",
+              "document_id": "atol-online-11075-fn-invoice",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 3541,
+          "decision": "answer: The only fragment that directly addresses the issue of an expired OFD period and provides actionable steps is the Evotor FN 235 fragment. All other fragments relate to tax rules and are not applicable.",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд",
+              "Уточняю: закончился оплаченный период ОФД. Что проверить сначала?"
+            ],
+            "confirmed_quotes": [
+              "кончился офд",
+              "закончился оплаченный период ОФД"
+            ],
+            "questions_asked": [
+              "Сколько неотправленных документов осталось в очереди?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 2658,
+          "retrieval_ms": 61,
+          "llm_ms": 2589
+        }
+      ]
+    }
+  ]
+}

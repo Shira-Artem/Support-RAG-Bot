@@ -1,0 +1,586 @@
+{
+  "config": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points": 934,
+    "approved_points": 672,
+    "embedding": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium"
+  },
+  "scenarios": [
+    {
+      "id": "ofd_paid_period",
+      "name": "Окончание оплаченного периода ОФД",
+      "turns": [
+        {
+          "user": "у меня проблема кончился офд",
+          "answer": "Пока не нашёл применимой инструкции для вашего случая. Какой сервис или модель кассы вы используете?",
+          "documents": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.4205
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Симптомы",
+              "status": "approved",
+              "score": 0.4104
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.4004
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "section": "Симптомы",
+              "status": "approved",
+              "score": 0.3929
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "section": "Контекст ошибки",
+              "status": "approved",
+              "score": 0.3782
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.3617
+            },
+            {
+              "document_id": "platformaofd-fns-indicators",
+              "section": "Ошибки в чеках",
+              "status": "approved",
+              "score": 0.36
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.3538
+            },
+            {
+              "document_id": "atol-online-11077-service-blocked",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.3492
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.3474
+            },
+            {
+              "document_id": "atol-online-22561-request-errors-26-1008",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.3455
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.3425
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.3395
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.3325
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-kkt-error-115",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-231-360005098974",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-22561-gateway-errors-timeout-128-protocol",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-fns-indicators",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-closing-close-several-months",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11077-service-blocked",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-22561-request-errors-26-1008",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 576,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд"
+            ],
+            "confirmed_quotes": [
+              "кончился офд"
+            ],
+            "questions_asked": [
+              "Какой сервис или модель кассы вы используете?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 1161,
+          "retrieval_ms": 67,
+          "llm_ms": 1084
+        },
+        {
+          "user": "Уточняю: закончился оплаченный период ОФД. Что проверить сначала?",
+          "answer": "Пока не нашёл применимой инструкции для вашего случая. Какая именно операция не получается и что вы уже проверили?",
+          "documents": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "section": "Смысл и безопасная проверка",
+              "status": "approved",
+              "score": 0.6905
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.6327
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "section": "Значение показателей",
+              "status": "approved",
+              "score": 0.6273
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.6234
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.5982
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "section": "Сначала уточните",
+              "status": "approved",
+              "score": 0.5944
+            },
+            {
+              "document_id": "evotor-fn-234-360005580254",
+              "section": "Первое различение причины",
+              "status": "approved",
+              "score": 0.5894
+            },
+            {
+              "document_id": "aqsi-device-opening-closing",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5863
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5856
+            },
+            {
+              "document_id": "platformaofd-crpt-indicators",
+              "section": "Что показывает раздел",
+              "status": "approved",
+              "score": 0.5841
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "section": "Безопасная диагностика",
+              "status": "approved",
+              "score": 0.5815
+            },
+            {
+              "document_id": "atol-online-11072-terminate-contract",
+              "section": "Что проверено по инструкции производителя",
+              "status": "approved",
+              "score": 0.5802
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "section": "Подтверждённые сведения",
+              "status": "approved",
+              "score": 0.578
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "section": "Проверенная информация и первичная диагностика",
+              "status": "approved",
+              "score": 0.5749
+            }
+          ],
+          "applicability": [
+            {
+              "document_id": "evotor-fn-235-360004715213",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-lkk-cash-monitoring",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-26774-advance-closing",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-correction-receipt-scope-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-fn-234-360005580254",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-opening-closing",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-paper-print-retry",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "platformaofd-crpt-indicators",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "evotor-time-mismatch-check-20261019",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11072-terminate-contract",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "atol-online-11251-replacement-reasons",
+              "scope": "service_unconfirmed_or_other"
+            },
+            {
+              "document_id": "aqsi-device-fn18-expired",
+              "scope": "service_unconfirmed_or_other"
+            }
+          ],
+          "llm_calls": 1,
+          "tokens": 958,
+          "decision": "no_scope_compatible_approved_source",
+          "context": {
+            "original_problem": "у меня проблема кончился офд",
+            "task_messages": [
+              "у меня проблема кончился офд",
+              "Уточняю: закончился оплаченный период ОФД. Что проверить сначала?"
+            ],
+            "confirmed_quotes": [
+              "кончился офд",
+              "закончился оплаченный период ОФД"
+            ],
+            "questions_asked": [
+              "Какой сервис или модель кассы вы используете?",
+              "Какая именно операция не получается и что вы уже проверили?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 18289,
+          "retrieval_ms": 52,
+          "llm_ms": 1385
+        }
+      ]
+    },
+    {
+      "id": "directbank_outage",
+      "name": "Не загружаются выписки DirectBank",
+      "turns": [
+        {
+          "user": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+          "answer": "Неизвестно, какие ошибки возникают при попытке загрузки, и не проверено состояние подключения к банку Какие сообщения об ошибках появляются при попытке загрузки выписок?",
+          "documents": [
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.6842
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.6117
+            },
+            {
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "section": "Вопрос",
+              "status": "approved",
+              "score": 0.601
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Диагностика",
+              "status": "approved",
+              "score": 0.5963
+            },
+            {
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "section": "Подтверждённое изменение",
+              "status": "approved",
+              "score": 0.5806
+            },
+            {
+              "document_id": "aqsi-device-fn-close-safety",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.5684
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.5631
+            },
+            {
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.5576
+            },
+            {
+              "document_id": "atol-online-11075-fn-invoice",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.5566
+            },
+            {
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "section": "Подтверждённая возможность",
+              "status": "approved",
+              "score": 0.5549
+            },
+            {
+              "document_id": "aqsi-online-setup-fiscalize",
+              "section": "Вопрос клиента",
+              "status": "approved",
+              "score": 0.5525
+            },
+            {
+              "document_id": "atol-online-11077-service-blocked",
+              "section": "Вопрос пользователя",
+              "status": "approved",
+              "score": 0.5484
+            },
+            {
+              "document_id": "evotor-ofd-error-not-connected-20261019",
+              "section": "Признаки",
+              "status": "approved",
+              "score": 0.5476
+            },
+            {
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "section": "Симптомы",
+              "status": "approved",
+              "score": 0.5447
+            }
+          ],
+          "applicability": [
+            {
+              "id": "d7a18b17-1aad-5a39-b442-cdfb3677f56d",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "partial",
+              "reason": "relevant to loading via intermediary"
+            },
+            {
+              "id": "a8a5c138-f27e-5dd6-a649-18f13c9f72fd",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "partial",
+              "reason": "relevant to loading all accounts"
+            },
+            {
+              "id": "79fbf7d4-0fdf-5cc2-b4d5-15b84258cab6",
+              "document_id": "batch-20261013-taxes-ens-menu-2026",
+              "status": "incompatible",
+              "reason": "not about bank statements"
+            },
+            {
+              "id": "3a8a43ed-148c-5ee7-aab5-68148925cf51",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "not about bank statements"
+            },
+            {
+              "id": "c0355b7b-efa5-5122-a7eb-d944a8d3a7f1",
+              "document_id": "batch-20261013-bank-acquiring-returns",
+              "status": "incompatible",
+              "reason": "not about bank statements"
+            },
+            {
+              "id": "d8e63fc4-9de6-5871-887d-9ce2eb80e9ea",
+              "document_id": "aqsi-device-fn-close-safety",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "4cf76a13-ac3d-5feb-9fb0-f1fe36383ca5",
+              "document_id": "batch-20261013-bank-directbank-other-banks",
+              "status": "partial",
+              "reason": "relevant to loading via intermediary"
+            },
+            {
+              "id": "642f1035-4aa4-56a8-9a53-f49eb34f5333",
+              "document_id": "aqsi-device-fn161-document-not-saved",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "d8263e02-5a3a-53e2-9673-235d907f2055",
+              "document_id": "atol-online-11075-fn-invoice",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "90e4eac2-6bf2-5c27-a2ac-af88dd1df4e4",
+              "document_id": "batch-20261013-bank-directbank-all-accounts",
+              "status": "partial",
+              "reason": "relevant to loading all accounts"
+            },
+            {
+              "id": "4b1e3b04-4959-58e8-a540-bc02a08a7dcd",
+              "document_id": "aqsi-online-setup-fiscalize",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "2adb8e04-166c-53d5-864c-5ec6b6160e84",
+              "document_id": "atol-online-11077-service-blocked",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "283ff3d1-083d-54dd-9866-10b9a5edc035",
+              "document_id": "evotor-ofd-error-not-connected-20261019",
+              "status": "incompatible",
+              "reason": "service_unconfirmed_or_other"
+            },
+            {
+              "id": "987b52db-21f4-5e73-a4ae-243c71746328",
+              "document_id": "batch-20261013-closing-error-first-diagnostics",
+              "status": "incompatible",
+              "reason": "not about bank statements"
+            }
+          ],
+          "llm_calls": 2,
+          "tokens": 4754,
+          "decision": "limitation: Нужна информация о конкретных ошибках для дальнейшей диагностики",
+          "context": {
+            "original_problem": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+            "task_messages": [
+              "В 1С перестали загружаться банковские выписки. Как разобраться?"
+            ],
+            "confirmed_quotes": [
+              "В 1С перестали загружаться банковские выписки"
+            ],
+            "questions_asked": [
+              "Какие сообщения об ошибках появляются при попытке загрузки выписок?"
+            ]
+          },
+          "grounding_rejections": [
+            "missing_usable_exact_evidence"
+          ],
+          "elapsed_ms": 37665,
+          "retrieval_ms": 64,
+          "llm_ms": 4390
+        },
+        {
+          "user": "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank.",
+          "answer": "Можете уточнить, какие ошибки появляются при попытке загрузки выписок?",
+          "documents": [],
+          "applicability": [],
+          "llm_calls": 1,
+          "tokens": 914,
+          "decision": "Need error details",
+          "context": {
+            "original_problem": "В 1С перестали загружаться банковские выписки. Как разобраться?",
+            "task_messages": [
+              "В 1С перестали загружаться банковские выписки. Как разобраться?",
+              "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank."
+            ],
+            "confirmed_quotes": [
+              "В 1С перестали загружаться банковские выписки",
+              "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank."
+            ],
+            "questions_asked": [
+              "Какие сообщения об ошибках появляются при попытке загрузки выписок?",
+              "Можете уточнить, какие ошибки появляются при попытке загрузки выписок?"
+            ]
+          },
+          "grounding_rejections": [],
+          "elapsed_ms": 16015,
+          "retrieval_ms": 0,
+          "llm_ms": 1119
+        }
+      ]
+    }
+  ]
+}

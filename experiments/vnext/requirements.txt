@@ -1,0 +1,2 @@
+# Install into an isolated target directory; do not modify the worker environment.
+langgraph==1.2.16
