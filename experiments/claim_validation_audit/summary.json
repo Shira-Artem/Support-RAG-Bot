@@ -1,0 +1,270 @@
+{
+  "input_sha256": {
+    "raw": "5f54259ef7273106c245bdb9422b9886bcca7dea78787b892579ef2681a8bdde",
+    "manual_review": "621b4067b0797d0a5d396f0166484f0afad56e535528fa40838b5d91b0ae714e",
+    "adapter": "db2fc1d6a1785f917d2378f28ac14a23a701c5bdae38c2b7196601a011dd5a4f"
+  },
+  "rows": 316,
+  "turns": 30,
+  "manual_statuses": {
+    "unsupported": 179,
+    "general": 38,
+    "supported": 56,
+    "potentially_dangerous": 39,
+    "contradicted": 4
+  },
+  "span_ambiguous": 25,
+  "direct_claim_supported": {
+    "TN": 192,
+    "excluded_general": 38,
+    "TP": 45,
+    "FP": 30,
+    "FN": 11,
+    "total_scored": 278,
+    "dangerous_false_acceptance": 2,
+    "supported_false_rejection": 11
+  },
+  "isolated_validation": {
+    "FP": 175,
+    "excluded_general": 38,
+    "TP": 49,
+    "TN": 47,
+    "FN": 7,
+    "total_scored": 278,
+    "dangerous_false_acceptance": 28,
+    "supported_false_rejection": 7
+  },
+  "unique_span_claim_supported": {
+    "TN": 182,
+    "excluded_general": 38,
+    "TP": 38,
+    "FP": 23,
+    "FN": 10,
+    "total_scored": 253,
+    "dangerous_false_acceptance": 2,
+    "supported_false_rejection": 10
+  },
+  "ambiguous_span_claim_supported": {
+    "FP": 7,
+    "TN": 10,
+    "TP": 7,
+    "FN": 1,
+    "total_scored": 25,
+    "dangerous_false_acceptance": 0,
+    "supported_false_rejection": 1
+  },
+  "by_scenario": {
+    "directbank": {
+      "count": 99,
+      "manual_statuses": {
+        "unsupported": 60,
+        "general": 12,
+        "supported": 13,
+        "potentially_dangerous": 14
+      },
+      "direct_claim_supported": {
+        "TN": 57,
+        "excluded_general": 12,
+        "TP": 13,
+        "FP": 17,
+        "total_scored": 87,
+        "dangerous_false_acceptance": 0,
+        "supported_false_rejection": 0
+      },
+      "isolated_validation": {
+        "FP": 60,
+        "excluded_general": 12,
+        "TP": 13,
+        "TN": 14,
+        "total_scored": 87,
+        "dangerous_false_acceptance": 8,
+        "supported_false_rejection": 0
+      }
+    },
+    "receipt_fd": {
+      "count": 42,
+      "manual_statuses": {
+        "supported": 18,
+        "unsupported": 23,
+        "general": 1
+      },
+      "direct_claim_supported": {
+        "TP": 15,
+        "TN": 17,
+        "FP": 6,
+        "excluded_general": 1,
+        "FN": 3,
+        "total_scored": 41,
+        "dangerous_false_acceptance": 0,
+        "supported_false_rejection": 3
+      },
+      "isolated_validation": {
+        "TP": 18,
+        "TN": 9,
+        "FP": 14,
+        "excluded_general": 1,
+        "total_scored": 41,
+        "dangerous_false_acceptance": 0,
+        "supported_false_rejection": 0
+      }
+    },
+    "aqsi_access": {
+      "count": 55,
+      "manual_statuses": {
+        "supported": 22,
+        "unsupported": 26,
+        "general": 2,
+        "potentially_dangerous": 5
+      },
+      "direct_claim_supported": {
+        "TP": 15,
+        "FN": 7,
+        "TN": 30,
+        "excluded_general": 2,
+        "FP": 1,
+        "total_scored": 53,
+        "dangerous_false_acceptance": 1,
+        "supported_false_rejection": 7
+      },
+      "isolated_validation": {
+        "TP": 16,
+        "FN": 6,
+        "TN": 16,
+        "excluded_general": 2,
+        "FP": 15,
+        "total_scored": 53,
+        "dangerous_false_acceptance": 3,
+        "supported_false_rejection": 6
+      }
+    },
+    "fn_unspecified": {
+      "count": 72,
+      "manual_statuses": {
+        "unsupported": 39,
+        "general": 12,
+        "contradicted": 4,
+        "potentially_dangerous": 17
+      },
+      "direct_claim_supported": {
+        "TN": 60,
+        "excluded_general": 12,
+        "total_scored": 60,
+        "dangerous_false_acceptance": 0,
+        "supported_false_rejection": 0
+      },
+      "isolated_validation": {
+        "FP": 55,
+        "excluded_general": 12,
+        "TN": 5,
+        "total_scored": 60,
+        "dangerous_false_acceptance": 14,
+        "supported_false_rejection": 0
+      }
+    },
+    "ofd_term": {
+      "count": 48,
+      "manual_statuses": {
+        "unsupported": 31,
+        "general": 11,
+        "supported": 3,
+        "potentially_dangerous": 3
+      },
+      "direct_claim_supported": {
+        "TN": 28,
+        "excluded_general": 11,
+        "TP": 2,
+        "FN": 1,
+        "FP": 6,
+        "total_scored": 37,
+        "dangerous_false_acceptance": 1,
+        "supported_false_rejection": 1
+      },
+      "isolated_validation": {
+        "FP": 31,
+        "excluded_general": 11,
+        "TP": 2,
+        "FN": 1,
+        "TN": 3,
+        "total_scored": 37,
+        "dangerous_false_acceptance": 3,
+        "supported_false_rejection": 1
+      }
+    }
+  },
+  "by_model": {
+    "openai/gpt-oss-20b": {
+      "count": 118,
+      "manual_statuses": {
+        "unsupported": 66,
+        "general": 16,
+        "supported": 26,
+        "potentially_dangerous": 7,
+        "contradicted": 3
+      },
+      "direct_claim_supported": {
+        "TN": 65,
+        "excluded_general": 16,
+        "TP": 20,
+        "FP": 11,
+        "FN": 6,
+        "total_scored": 102,
+        "dangerous_false_acceptance": 0,
+        "supported_false_rejection": 6
+      },
+      "isolated_validation": {
+        "FP": 60,
+        "excluded_general": 16,
+        "TP": 22,
+        "TN": 16,
+        "FN": 4,
+        "total_scored": 102,
+        "dangerous_false_acceptance": 5,
+        "supported_false_rejection": 4
+      }
+    },
+    "openai/gpt-oss-120b": {
+      "count": 198,
+      "manual_statuses": {
+        "unsupported": 113,
+        "general": 22,
+        "supported": 30,
+        "potentially_dangerous": 32,
+        "contradicted": 1
+      },
+      "direct_claim_supported": {
+        "TN": 127,
+        "excluded_general": 22,
+        "TP": 25,
+        "FP": 19,
+        "FN": 5,
+        "total_scored": 176,
+        "dangerous_false_acceptance": 2,
+        "supported_false_rejection": 5
+      },
+      "isolated_validation": {
+        "FP": 115,
+        "excluded_general": 22,
+        "TP": 27,
+        "TN": 31,
+        "FN": 3,
+        "total_scored": 176,
+        "dangerous_false_acceptance": 23,
+        "supported_false_rejection": 3
+      }
+    }
+  },
+  "full_answer_issue_counts": {
+    "passed": 7,
+    "unsupported_ui_label:Настройки → Банковские счета → DirectBank": 2,
+    "unsupported_technical_claim": 1,
+    "unsupported_ui_label:Экспортировать настройки": 1,
+    "unsupported_dangerous_operation:заменить ФН": 1,
+    "unsupported_ui_label:Найти": 1,
+    "unsupported_ui_label:Дата начала": 1,
+    "unsupported_claim": 8,
+    "unsupported_role_or_permissions": 4,
+    "unconfirmed_service_assignment": 2,
+    "unsupported_ui_label:Настройки": 1,
+    "unsupported_ui_label:Срок действия": 1
+  }
+}

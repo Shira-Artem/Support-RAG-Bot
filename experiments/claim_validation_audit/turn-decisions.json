@@ -1,0 +1,642 @@
+[
+  {
+    "scenario": "directbank",
+    "model": "openai/gpt-oss-20b",
+    "turn": 1,
+    "state_intent": "bank_statement",
+    "state_operation": "diagnose",
+    "confirmed_service": "1С",
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "directbank",
+    "model": "openai/gpt-oss-20b",
+    "turn": 2,
+    "state_intent": "bank_statement",
+    "state_operation": "diagnose",
+    "confirmed_service": "1С",
+    "evidence_ids": [
+      "batch-20261013-bank-directbank-all-accounts"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "task_category": "bank_statement",
+        "operations": [
+          "load_bank_statements",
+          "list_bank_statements"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_ui_label:Настройки → Банковские счета → DirectBank",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "directbank",
+    "model": "openai/gpt-oss-20b",
+    "turn": 3,
+    "state_intent": "bank_statement",
+    "state_operation": "check",
+    "confirmed_service": "1С",
+    "evidence_ids": [
+      "batch-20261013-bank-directbank-all-accounts"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "task_category": "bank_statement",
+        "operations": [
+          "load_bank_statements",
+          "list_bank_statements"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_ui_label:Настройки → Банковские счета → DirectBank",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "directbank",
+    "model": "openai/gpt-oss-120b",
+    "turn": 1,
+    "state_intent": "bank_statement",
+    "state_operation": "diagnose",
+    "confirmed_service": "1С",
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "directbank",
+    "model": "openai/gpt-oss-120b",
+    "turn": 2,
+    "state_intent": "bank_statement",
+    "state_operation": "diagnose",
+    "confirmed_service": "1С",
+    "evidence_ids": [
+      "batch-20261013-bank-directbank-all-accounts"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "task_category": "bank_statement",
+        "operations": [
+          "load_bank_statements",
+          "list_bank_statements"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_technical_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "directbank",
+    "model": "openai/gpt-oss-120b",
+    "turn": 3,
+    "state_intent": "bank_statement",
+    "state_operation": "check",
+    "confirmed_service": "1С",
+    "evidence_ids": [
+      "batch-20261013-bank-directbank-all-accounts"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "task_category": "bank_statement",
+        "operations": [
+          "load_bank_statements",
+          "list_bank_statements"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_ui_label:Экспортировать настройки",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "receipt_fd",
+    "model": "openai/gpt-oss-20b",
+    "turn": 1,
+    "state_intent": "receipt",
+    "state_operation": "search",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-lkk-receipt-search"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-lkk-receipt-search",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "receipt_search",
+        "operations": [
+          "search_receipt"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_dangerous_operation:заменить ФН",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "receipt_fd",
+    "model": "openai/gpt-oss-20b",
+    "turn": 2,
+    "state_intent": "unknown",
+    "state_operation": "search",
+    "confirmed_service": null,
+    "evidence_ids": [
+      "platformaofd-lkk-receipt-search"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-lkk-receipt-search",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "receipt_search",
+        "operations": [
+          "search_receipt"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_ui_label:Найти",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "receipt_fd",
+    "model": "openai/gpt-oss-20b",
+    "turn": 3,
+    "state_intent": "receipt",
+    "state_operation": "unknown",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-lkk-receipt-search"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-lkk-receipt-search",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "receipt_search",
+        "operations": [
+          "search_receipt"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_ui_label:Дата начала",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "receipt_fd",
+    "model": "openai/gpt-oss-120b",
+    "turn": 1,
+    "state_intent": "receipt",
+    "state_operation": "search",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-lkk-receipt-search"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-lkk-receipt-search",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "receipt_search",
+        "operations": [
+          "search_receipt"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "receipt_fd",
+    "model": "openai/gpt-oss-120b",
+    "turn": 2,
+    "state_intent": "unknown",
+    "state_operation": "search",
+    "confirmed_service": null,
+    "evidence_ids": [
+      "platformaofd-lkk-receipt-search"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-lkk-receipt-search",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "receipt_search",
+        "operations": [
+          "search_receipt"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "receipt_fd",
+    "model": "openai/gpt-oss-120b",
+    "turn": 3,
+    "state_intent": "receipt",
+    "state_operation": "unknown",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-lkk-receipt-search"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-lkk-receipt-search",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "receipt_search",
+        "operations": [
+          "search_receipt"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "aqsi_access",
+    "model": "openai/gpt-oss-20b",
+    "turn": 1,
+    "state_intent": "access",
+    "state_operation": "add_employee",
+    "confirmed_service": "aQsi Online",
+    "evidence_ids": [
+      "aqsi-online-account-add-user"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "aqsi-online-account-add-user",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "task_category": "access",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "aqsi_access",
+    "model": "openai/gpt-oss-20b",
+    "turn": 2,
+    "state_intent": "access",
+    "state_operation": "add_employee",
+    "confirmed_service": "aQsi Online",
+    "evidence_ids": [
+      "aqsi-online-account-add-user"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "aqsi-online-account-add-user",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "task_category": "access",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_role_or_permissions",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "aqsi_access",
+    "model": "openai/gpt-oss-20b",
+    "turn": 3,
+    "state_intent": "access",
+    "state_operation": "assign_role",
+    "confirmed_service": "aQsi Online",
+    "evidence_ids": [
+      "aqsi-online-account-add-user"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "aqsi-online-account-add-user",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "task_category": "access",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_role_or_permissions",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "aqsi_access",
+    "model": "openai/gpt-oss-120b",
+    "turn": 1,
+    "state_intent": "access",
+    "state_operation": "add_employee",
+    "confirmed_service": "aQsi Online",
+    "evidence_ids": [
+      "aqsi-online-account-add-user"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "aqsi-online-account-add-user",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "task_category": "access",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "aqsi_access",
+    "model": "openai/gpt-oss-120b",
+    "turn": 2,
+    "state_intent": "access",
+    "state_operation": "add_employee",
+    "confirmed_service": "aQsi Online",
+    "evidence_ids": [
+      "aqsi-online-account-add-user"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "aqsi-online-account-add-user",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "task_category": "access",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": true,
+    "full_answer_validation_issue": "unsupported_role_or_permissions",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "aqsi_access",
+    "model": "openai/gpt-oss-120b",
+    "turn": 3,
+    "state_intent": "access",
+    "state_operation": "assign_role",
+    "confirmed_service": "aQsi Online",
+    "evidence_ids": [
+      "aqsi-online-account-add-user"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "aqsi-online-account-add-user",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "task_category": "access",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_role_or_permissions",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "fn_unspecified",
+    "model": "openai/gpt-oss-20b",
+    "turn": 1,
+    "state_intent": "fiscal_drive",
+    "state_operation": "change",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "fn_unspecified",
+    "model": "openai/gpt-oss-20b",
+    "turn": 2,
+    "state_intent": "fiscal_drive",
+    "state_operation": "change",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "fn_unspecified",
+    "model": "openai/gpt-oss-20b",
+    "turn": 3,
+    "state_intent": "device",
+    "state_operation": "assign",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "fn_unspecified",
+    "model": "openai/gpt-oss-120b",
+    "turn": 1,
+    "state_intent": "fiscal_drive",
+    "state_operation": "change",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unconfirmed_service_assignment",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "fn_unspecified",
+    "model": "openai/gpt-oss-120b",
+    "turn": 2,
+    "state_intent": "fiscal_drive",
+    "state_operation": "change",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unconfirmed_service_assignment",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "fn_unspecified",
+    "model": "openai/gpt-oss-120b",
+    "turn": 3,
+    "state_intent": "device",
+    "state_operation": "assign",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_ui_label:Настройки",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "ofd_term",
+    "model": "openai/gpt-oss-20b",
+    "turn": 1,
+    "state_intent": "billing",
+    "state_operation": "check",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "ofd_term",
+    "model": "openai/gpt-oss-20b",
+    "turn": 2,
+    "state_intent": "billing",
+    "state_operation": "check",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-tariff-activation"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-tariff-activation",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "ofd_connection",
+        "operations": [
+          "activate_tariff"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "ofd_term",
+    "model": "openai/gpt-oss-20b",
+    "turn": 3,
+    "state_intent": "billing",
+    "state_operation": "check",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-tariff-activation"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-tariff-activation",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "ofd_connection",
+        "operations": [
+          "activate_tariff"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "ofd_term",
+    "model": "openai/gpt-oss-120b",
+    "turn": 1,
+    "state_intent": "billing",
+    "state_operation": "check",
+    "confirmed_service": null,
+    "evidence_ids": [],
+    "evidence_scope": [],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": null,
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "ofd_term",
+    "model": "openai/gpt-oss-120b",
+    "turn": 2,
+    "state_intent": "billing",
+    "state_operation": "check",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-tariff-activation"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-tariff-activation",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "ofd_connection",
+        "operations": [
+          "activate_tariff"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_claim",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  },
+  {
+    "scenario": "ofd_term",
+    "model": "openai/gpt-oss-120b",
+    "turn": 3,
+    "state_intent": "billing",
+    "state_operation": "check",
+    "confirmed_service": "Платформа ОФД",
+    "evidence_ids": [
+      "platformaofd-tariff-activation"
+    ],
+    "evidence_scope": [
+      {
+        "document_id": "platformaofd-tariff-activation",
+        "service": "Платформа ОФД",
+        "model": null,
+        "task_category": "ofd_connection",
+        "operations": [
+          "activate_tariff"
+        ]
+      }
+    ],
+    "full_answer_procedure_issue": false,
+    "full_answer_validation_issue": "unsupported_ui_label:Срок действия",
+    "caveat": "Oracle context and section adapter; not a production execution"
+  }
+]
