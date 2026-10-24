@@ -1,0 +1,125 @@
+{
+  "inputs_sha256": {
+    "raw": "5f54259ef7273106c245bdb9422b9886bcca7dea78787b892579ef2681a8bdde",
+    "review": "621b4067b0797d0a5d396f0166484f0afad56e535528fa40838b5d91b0ae714e",
+    "audit": "88f368621d8b8e326e3366568f2c9a25ae936c60073f214f0d4665b8b332194f"
+  },
+  "labels": 316,
+  "turns": 30,
+  "span_ambiguous": 25,
+  "old": {
+    "TN": 192,
+    "excluded_general": 38,
+    "TP": 45,
+    "FP": 30,
+    "FN": 11,
+    "dangerous_false_acceptance": 2
+  },
+  "typed": {
+    "TN": 222,
+    "excluded_general": 38,
+    "FN": 56,
+    "NEEDS_REVIEW": 112
+  },
+  "verdicts": {
+    "UNSUPPORTED": 199,
+    "NEEDS_REVIEW": 117
+  },
+  "reasons": {
+    "approved_clause_missing": 175,
+    "semantic_entailment_unproven": 90,
+    "claim_span_mismatch": 24,
+    "polarity_requires_semantic_review": 27
+  },
+  "families": {
+    "aqsi_access": {
+      "old": {
+        "TP": 15,
+        "FN": 7,
+        "TN": 30,
+        "excluded_general": 2,
+        "FP": 1,
+        "dangerous_false_acceptance": 1
+      },
+      "typed": {
+        "FN": 22,
+        "NEEDS_REVIEW": 25,
+        "TN": 31,
+        "excluded_general": 2
+      }
+    },
+    "directbank": {
+      "old": {
+        "TN": 57,
+        "excluded_general": 12,
+        "TP": 13,
+        "FP": 17
+      },
+      "typed": {
+        "TN": 74,
+        "excluded_general": 12,
+        "FN": 13,
+        "NEEDS_REVIEW": 41
+      }
+    },
+    "fn_unspecified": {
+      "old": {
+        "TN": 60,
+        "excluded_general": 12
+      },
+      "typed": {
+        "TN": 60,
+        "excluded_general": 12
+      }
+    },
+    "ofd_term": {
+      "old": {
+        "TN": 28,
+        "excluded_general": 11,
+        "TP": 2,
+        "FN": 1,
+        "FP": 6,
+        "dangerous_false_acceptance": 1
+      },
+      "typed": {
+        "TN": 34,
+        "excluded_general": 11,
+        "NEEDS_REVIEW": 16,
+        "FN": 3
+      }
+    },
+    "receipt_fd": {
+      "old": {
+        "TP": 15,
+        "TN": 17,
+        "FP": 6,
+        "excluded_general": 1,
+        "FN": 3
+      },
+      "typed": {
+        "FN": 18,
+        "NEEDS_REVIEW": 30,
+        "TN": 23,
+        "excluded_general": 1
+      }
+    }
+  },
+  "ambiguous_spans": {
+    "old": {
+      "FP": 7,
+      "TN": 10,
+      "TP": 7,
+      "FN": 1
+    },
+    "typed": {
+      "TN": 17,
+      "NEEDS_REVIEW": 15,
+      "FN": 8
+    }
+  },
+  "coverage": {
+    "certified_turns": 0,
+    "total_answer_characters": 42870,
+    "covered_characters_lower_bound": 7572
+  }
+}
