@@ -1,0 +1,1214 @@
+{
+  "head": "a20bbffbe121a22f5793d9aba8bb77fb67873cf1",
+  "retrieval_receipt": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points": 934,
+    "approved_points": 672,
+    "embedding": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "retriever": "app.retrieval.Retriever BM25+Dense+RRF",
+    "context_limits": {
+      "documents": 8,
+      "chunks_per_document": 2,
+      "characters": 16000
+    }
+  },
+  "new_cases_sha256": "a7a8ea62cfb20043fcaaf64a2d91c6f33b6666eb95119a0bdac06eb4fc91d1ca",
+  "groq_calls": 0,
+  "cases": [
+    {
+      "id": "evotor_mobile",
+      "question": "Эвотор перестал выходить в интернет через SIM. Какие первичные проверки можно сделать самому?",
+      "messages": [
+        "Эвотор перестал выходить в интернет через SIM. Какие первичные проверки можно сделать самому?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Эвотор: не работает мобильный интернет — первичные проверки»:\n1. Проверьте, загружается ли «Поддержка → Справочный центр» на терминале.\n2. Уточните модель, версию ПО и верно ли установлены дата и время.\n3. Если используется смарт-карта Эвотора, проверьте её статус и оплаченный доступ в личном кабинете в разделе «Мои приложения → Кассовые сервисы → Настройки».\n4. Проверьте, что мобильная передача данных включена и не установлен ограничивающий лимит трафика.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "evotor-mobile-network-check-20261019",
+      "cards": [
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Проверьте, загружается ли «Поддержка → Справочный центр» на терминале.",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 1,
+          "risk_flag": false
+        },
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Уточните модель, версию ПО и верно ли установлены дата и время.",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 2,
+          "risk_flag": false
+        },
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Если используется смарт-карта Эвотора, проверьте её статус и оплаченный доступ в личном кабинете в разделе «Мои приложения → Кассовые сервисы → Настройки».",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 3,
+          "risk_flag": false
+        },
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Проверьте, что мобильная передача данных включена и не установлен ограничивающий лимит трафика.",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 4,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "accepted": 4,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "evotor-mobile-network-check-20261019"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "evotor-mobile-network-check-20261019",
+            "reason": "selected"
+          },
+          {
+            "document_id": "evotor-model-7-3-360002760513",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-7-3-ofd-connection-360014099534",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-ofd-error-not-connected-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-tspiot-localmodule-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-6-ofd-connection-360014099534",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-model-7-2-360002718353",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-model-6-lite-1d8e8869",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-fn-210-360004715693",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-235-360004715213",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-ofd-subscription-8865646794770",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-212-360016100393",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 414
+      }
+    },
+    {
+      "id": "evotor_marking",
+      "question": "На Эвоторе перед оплатой пишет, что марка не проверена. С чего начать диагностику?",
+      "messages": [
+        "На Эвоторе перед оплатой пишет, что марка не проверена. С чего начать диагностику?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Эвотор: проверка оплаты обслуживания ОФД»:\n1. Одна из причин отсутствия передачи — завершившийся оплаченный период обслуживания оператора. Проверять баланс и срок подписки нужно в личном кабинете **своего** ОФД. Если доступ к кабинету неизвестен, обратитесь в поддержку оператора. После продления производитель советует повторно проверить параметры ОФД на кассе.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "evotor-ofd-subscription-8865646794770",
+      "cards": [
+        {
+          "document_id": "evotor-ofd-subscription-8865646794770",
+          "section": "Возможная причина",
+          "text": "Одна из причин отсутствия передачи — завершившийся оплаченный период обслуживания оператора. Проверять баланс и срок подписки нужно в личном кабинете **своего** ОФД. Если доступ к кабинету неизвестен, обратитесь в поддержку оператора. После продления производитель советует повторно проверить параметры ОФД на кассе.",
+          "source_sha256": "67b3f075662faf8174b01fa92d854f3aad138162c64781ad1f62bd9088237b49",
+          "source_path": "data/knowledge/evotor/ofd/ofd-subscription.md",
+          "ordinal": 1,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "evotor-ofd-subscription-8865646794770",
+          "section": "Возможная причина",
+          "accepted": 1,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "evotor-ofd-subscription-8865646794770"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "evotor-7-3-ofd-connection-360014099534",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-ofd-error-not-connected-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-217-89e20cf4",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-235-360004715213",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-210-360004715693",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-6-ofd-connection-360014099534",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-mark-check-error-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-marked-goods-upd-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-212-360016100393",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "platformaofd-partner-kkt-diagnostics",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 155
+      }
+    },
+    {
+      "id": "aqsi_paper",
+      "question": "На физической кассе aQsi закончилась лента и чек не напечатался. Что теперь делать, чтобы не пробить дубль?",
+      "messages": [
+        "На физической кассе aQsi закончилась лента и чек не напечатался. Что теперь делать, чтобы не пробить дубль?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «aQsi: чек не напечатался, закончилась бумага»:\n1. Если во время оформления чека закончилась бумага либо открыт лоток, в истории чеков может появиться документ со статусом ошибки печати.\n2. Загрузите чековую ленту и проверьте правильность установки рулона.\n3. В разделе истории чеков выберите запись с ошибкой печати: производитель описывает повторную печать через действие «Оформить».\n4. Сначала проверьте, что чек уже существует, и не создавайте повторный фискальный чек на ту же оплату.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "aqsi-device-paper-print-retry",
+      "cards": [
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "section": "Проверенная информация и первичная диагностика",
+          "text": "Если во время оформления чека закончилась бумага либо открыт лоток, в истории чеков может появиться документ со статусом ошибки печати.",
+          "source_sha256": "59b6dd94837d7f08f43c0e7bccd673fa7a32e0d408faeed1bd3dcc4d25c769fc",
+          "source_path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+          "ordinal": 1,
+          "risk_flag": false
+        },
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "section": "Проверенная информация и первичная диагностика",
+          "text": "Загрузите чековую ленту и проверьте правильность установки рулона.",
+          "source_sha256": "59b6dd94837d7f08f43c0e7bccd673fa7a32e0d408faeed1bd3dcc4d25c769fc",
+          "source_path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+          "ordinal": 2,
+          "risk_flag": false
+        },
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "section": "Проверенная информация и первичная диагностика",
+          "text": "В разделе истории чеков выберите запись с ошибкой печати: производитель описывает повторную печать через действие «Оформить».",
+          "source_sha256": "59b6dd94837d7f08f43c0e7bccd673fa7a32e0d408faeed1bd3dcc4d25c769fc",
+          "source_path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+          "ordinal": 3,
+          "risk_flag": false
+        },
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "section": "Проверенная информация и первичная диагностика",
+          "text": "Сначала проверьте, что чек уже существует, и не создавайте повторный фискальный чек на ту же оплату.",
+          "source_sha256": "59b6dd94837d7f08f43c0e7bccd673fa7a32e0d408faeed1bd3dcc4d25c769fc",
+          "source_path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+          "ordinal": 4,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "aqsi-device-paper-print-retry",
+          "section": "Проверенная информация и первичная диагностика",
+          "accepted": 4,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "aqsi-device-paper-print-retry"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "aqsi-device-paper-print-retry",
+            "reason": "selected"
+          },
+          {
+            "document_id": "aqsi-device-fn161-document-not-saved",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-receipts-incorrect-105",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-online-receipts-partial-refund",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-x-report",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-receipts-full-refund",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-fiscal-status-report",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-receipts-enable-manual-receipt",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-standard-refund",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-kkt-error-126",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-unbox-hardware",
+            "reason": "equipment_model_unconfirmed"
+          }
+        ],
+        "retrieval_ms": 152
+      }
+    },
+    {
+      "id": "aqsi_x_report",
+      "question": "Где на кассе aQsi распечатать X-отчёт, не закрывая смену?",
+      "messages": [
+        "Где на кассе aQsi распечатать X-отчёт, не закрывая смену?"
+      ],
+      "mode": "escalate",
+      "reason": "no_applicable_approved_evidence",
+      "answer": "В доступных подтверждённых материалах не нашёл применимого решения. Передам вопрос специалисту; вы также можете вызвать специалиста сами.",
+      "document_id": null,
+      "cards": [],
+      "rejected_cards": [],
+      "considered": [],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [],
+        "candidate_reasons": [
+          {
+            "document_id": "aqsi-device-x-report",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-fiscal-status-report",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-opening-closing",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-fn-close-safety",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-deferred-order-refund",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-kkt-error-126",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-kkt-error-115",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-account-my-cash-registers",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-online-ofd-taxcom-account",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-connection-fields",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-paper-print-retry",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 165
+      }
+    },
+    {
+      "id": "atol_receipt_address",
+      "question": "В чеке АТОЛ Онлайн указан адрес дата-центра, а не моего магазина. Это ошибка?",
+      "messages": [
+        "В чеке АТОЛ Онлайн указан адрес дата-центра, а не моего магазина. Это ошибка?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Почему в чеке АТОЛ Онлайн указан московский адрес»:\n1. Для облачных касс АТОЛ Онлайн справка объясняет отображение адреса фактического размещения ККТ в центре обработки данных. Это может отличаться от местонахождения интернет-магазина и само по себе не означает ошибку. Дополнительно проверьте обязательные реквизиты места расчётов.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "atol-online-11258-receipt-location",
+      "cards": [
+        {
+          "document_id": "atol-online-11258-receipt-location",
+          "section": "Подтверждённые сведения",
+          "text": "Для облачных касс АТОЛ Онлайн справка объясняет отображение адреса фактического размещения ККТ в центре обработки данных. Это может отличаться от местонахождения интернет-магазина и само по себе не означает ошибку. Дополнительно проверьте обязательные реквизиты места расчётов.",
+          "source_sha256": "e21315bac07ec776b3d0c786601af097ef1cd847c579a8fb5fb093f18bb8ca88",
+          "source_path": "data/knowledge/atol_online/receipts/receipt-location.md",
+          "ordinal": 1,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "atol-online-11258-receipt-location",
+          "section": "Подтверждённые сведения",
+          "accepted": 1,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "atol-online-11258-receipt-location",
+          "atol-online-11255-sender-email",
+          "atol-online-22561-amount-errors-16-23"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "atol-online-11258-receipt-location",
+            "reason": "selected"
+          },
+          {
+            "document_id": "atol-online-11255-sender-email",
+            "reason": "selected"
+          },
+          {
+            "document_id": "atol-online-11238-add-more-shop-urls",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-11247-shop-without-url",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-12161-add-shop-step3",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-11077-service-blocked",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-12789-bring-own-fn",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-22559-agent-status",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-22561-request-errors-26-1008",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-22560-receipt-journal-export",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-12148-company-registration",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-22561-amount-errors-16-23",
+            "reason": "selected"
+          }
+        ],
+        "retrieval_ms": 139
+      }
+    },
+    {
+      "id": "marking_current_rule_gap",
+      "question": "Какие действующие правила поэкземплярного учёта маркированной молочной продукции сегодня?",
+      "messages": [
+        "Какие действующие правила поэкземплярного учёта маркированной молочной продукции сегодня?"
+      ],
+      "mode": "escalate",
+      "reason": "no_applicable_approved_evidence",
+      "answer": "В доступных подтверждённых материалах не нашёл применимого решения. Передам вопрос специалисту; вы также можете вызвать специалиста сами.",
+      "document_id": null,
+      "cards": [],
+      "rejected_cards": [],
+      "considered": [],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [],
+        "candidate_reasons": [
+          {
+            "document_id": "aqsi-device-create-product",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-marking-178",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-marked-product",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "batch-20261013-taxes-ens-accounting-settings",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "aqsi-device-marked-beer",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "acc-usn-nds-invoice-2026",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "platformaofd-crpt-indicators",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-22553-choose-fn-with-excise",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-flk-508",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-online-integration-direct-api",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "acc-usn-special-vat-switch-2026",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 141
+      }
+    },
+    {
+      "id": "unknown_terminal",
+      "question": "На неизвестной модели кассы ошибка при записи в ФН. Дайте последовательность изменения параметров.",
+      "messages": [
+        "На неизвестной модели кассы ошибка при записи в ФН. Дайте последовательность изменения параметров."
+      ],
+      "mode": "escalate",
+      "reason": "no_applicable_approved_evidence",
+      "answer": "В доступных подтверждённых материалах не нашёл применимого решения. Передам вопрос специалисту; вы также можете вызвать специалиста сами.",
+      "document_id": null,
+      "cards": [],
+      "rejected_cards": [],
+      "considered": [],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [],
+        "candidate_reasons": [
+          {
+            "document_id": "aqsi-kkt-error-115",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-registration-status",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-fn161-document-not-saved",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "evotor-fn-231-360005098974",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-marking-178",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-fns-registration",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-fn18-expired",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-fn-number-in-lkk",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-18220-blocked",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-22060-change-parameters",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "evotor-fn-217-89e20cf4",
+            "reason": "service_unconfirmed_or_other"
+          }
+        ],
+        "retrieval_ms": 170
+      }
+    },
+    {
+      "id": "evotor_mobile_paraphrase",
+      "question": "Связь через мобильную сеть на Эвоторе пропала, Wi-Fi работает. Что безопасно сверить до обращения к инженеру?",
+      "messages": [
+        "Связь через мобильную сеть на Эвоторе пропала, Wi-Fi работает. Что безопасно сверить до обращения к инженеру?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Эвотор: не работает мобильный интернет — первичные проверки»:\n1. Проверьте, загружается ли «Поддержка → Справочный центр» на терминале.\n2. Уточните модель, версию ПО и верно ли установлены дата и время.\n3. Если используется смарт-карта Эвотора, проверьте её статус и оплаченный доступ в личном кабинете в разделе «Мои приложения → Кассовые сервисы → Настройки».\n4. Проверьте, что мобильная передача данных включена и не установлен ограничивающий лимит трафика.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "evotor-mobile-network-check-20261019",
+      "cards": [
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Проверьте, загружается ли «Поддержка → Справочный центр» на терминале.",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 1,
+          "risk_flag": false
+        },
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Уточните модель, версию ПО и верно ли установлены дата и время.",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 2,
+          "risk_flag": false
+        },
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Если используется смарт-карта Эвотора, проверьте её статус и оплаченный доступ в личном кабинете в разделе «Мои приложения → Кассовые сервисы → Настройки».",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 3,
+          "risk_flag": false
+        },
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "text": "Проверьте, что мобильная передача данных включена и не установлен ограничивающий лимит трафика.",
+          "source_sha256": "5964e6c34f8ab269f7f4a2a9fa3c20941d96f9f979db3677a8d3e88bb45408fb",
+          "source_path": "data/knowledge/evotor/network/mobile-internet-first-checks.md",
+          "ordinal": 4,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "evotor-mobile-network-check-20261019",
+          "section": "Первичная диагностика",
+          "accepted": 4,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "evotor-mobile-network-check-20261019"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "evotor-mobile-network-check-20261019",
+            "reason": "selected"
+          },
+          {
+            "document_id": "evotor-6-ofd-connection-360014099534",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-marked-goods-upd-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-tspiot-localmodule-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-model-7-2-360002718353",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-7-3-ofd-connection-360014099534",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-model-7-3-360002760513",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-model-6-lite-1d8e8869",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-ofd-error-not-connected-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-210-360004715693",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-mark-check-error-20261019",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-fn-235-360004715213",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 136
+      }
+    },
+    {
+      "id": "oracle_directbank",
+      "question": "Версия 3.0.148 или новее; выписки раньше загружались по нескольким счетам. Что безопасно проверить сейчас?",
+      "messages": [
+        "В 1С перестали загружаться банковские выписки. Как разобраться?",
+        "У нас 1С:Бухгалтерия 3.0, подключение к банку через DirectBank.",
+        "Версия 3.0.148 или новее; выписки раньше загружались по нескольким счетам. Что безопасно проверить сейчас?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк»:\n1. Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.\n2. Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк».\n3. Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.\n4. При отсутствии функции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "batch-20261013-bank-directbank-all-accounts",
+      "cards": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "text": "Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.",
+          "source_sha256": "c020b78a39ba7dcfa8d5bc51660fe3f48f91db165d57ff2b6d427504384eda72",
+          "source_path": "data/knowledge/1c/bank/directbank-all-accounts.md",
+          "ordinal": 1,
+          "risk_flag": false
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "text": "Открыть список «Банковские выписки»: в простом интерфейсе «Деньги → Банк», в полном — «Банк и касса → Банк».",
+          "source_sha256": "c020b78a39ba7dcfa8d5bc51660fe3f48f91db165d57ff2b6d427504384eda72",
+          "source_path": "data/knowledge/1c/bank/directbank-all-accounts.md",
+          "ordinal": 2,
+          "risk_flag": false
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "text": "Сверить список счетов организации с настройкой обмена и выяснить, должен ли загружаться один счёт или все.",
+          "source_sha256": "c020b78a39ba7dcfa8d5bc51660fe3f48f91db165d57ff2b6d427504384eda72",
+          "source_path": "data/knowledge/1c/bank/directbank-all-accounts.md",
+          "ordinal": 3,
+          "risk_flag": false
+        },
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "text": "При отсутствии функции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.",
+          "source_sha256": "c020b78a39ba7dcfa8d5bc51660fe3f48f91db165d57ff2b6d427504384eda72",
+          "source_path": "data/knowledge/1c/bank/directbank-all-accounts.md",
+          "ordinal": 4,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "batch-20261013-bank-directbank-all-accounts",
+          "section": "Безопасная диагностика",
+          "accepted": 4,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "batch-20261013-bank-directbank-all-accounts",
+          "batch-20261013-bank-directbank-other-banks",
+          "batch-20261013-bank-import-file-directbank",
+          "batch-20261013-bank-directbank-auto-schedule",
+          "batch-20261013-closing-close-several-months"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "batch-20261013-bank-directbank-all-accounts",
+            "reason": "selected"
+          },
+          {
+            "document_id": "batch-20261013-bank-directbank-other-banks",
+            "reason": "selected"
+          },
+          {
+            "document_id": "batch-20261013-bank-import-file-directbank",
+            "reason": "selected"
+          },
+          {
+            "document_id": "batch-20261013-bank-directbank-auto-schedule",
+            "reason": "selected"
+          },
+          {
+            "document_id": "batch-20261013-bank-acquiring-returns",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-closing-monthly-schedule",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-vat-invoice-forms-april",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-taxes-ens-accounting-settings",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-taxes-ens-menu-2026",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-closing-close-several-months",
+            "reason": "selected"
+          },
+          {
+            "document_id": "batch-20261013-bank-acquiring-patent-tax",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-vat-electronic-upd-2026",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 162
+      }
+    },
+    {
+      "id": "oracle_receipt_fd",
+      "question": "Чек пробили вчера, а в ОФД он поступил сегодня. Какую дату выбрать для периода?",
+      "messages": [
+        "Как найти чек по номеру ФД в Платформе ОФД?",
+        "Где задать период поиска?",
+        "Чек пробили вчера, а в ОФД он поступил сегодня. Какую дату выбрать для периода?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Платформа ОФД: поиск чеков и фильтры»:\n1. Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "platformaofd-lkk-receipt-search",
+      "cards": [
+        {
+          "document_id": "platformaofd-lkk-receipt-search",
+          "section": "Поиск чеков",
+          "text": "Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "source_path": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "ordinal": 1,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "platformaofd-lkk-receipt-search",
+          "section": "Поиск чеков",
+          "accepted": 1,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "platformaofd-lkk-receipt-search"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "platformaofd-lkk-receipt-search",
+            "reason": "selected"
+          },
+          {
+            "document_id": "batch-20261013-vat-usn-advance-invoice",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "atol-online-22560-receipt-journal-export",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-lkk-cash-search",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "platformaofd-crpt-indicators",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "platformaofd-fn-number-in-lkk",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-fns-indicators",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-device-fn161-document-not-saved",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-12472-enter-rnm",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-deferred-order",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "evotor-ofd-subscription-8865646794770",
+            "reason": "service_unconfirmed_or_other"
+          }
+        ],
+        "retrieval_ms": 196
+      }
+    },
+    {
+      "id": "oracle_aqsi_access",
+      "question": "Как называется нужная роль и где её назначить?",
+      "messages": [
+        "Как добавить сотрудника в aQsi Online?",
+        "Он должен просматривать документы, но не менять настройки.",
+        "Как называется нужная роль и где её назначить?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «aQsi Online: добавление сотрудника в личный кабинет»:\n1. Откройте «Пользователи» → «Добавить пользователя». Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "aqsi-online-account-add-user",
+      "cards": [
+        {
+          "document_id": "aqsi-online-account-add-user",
+          "section": "Создать пользователя",
+          "text": "Откройте «Пользователи» → «Добавить пользователя». Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.",
+          "source_sha256": "8df26ccc8d094b577cc979163b087d6ec004dc68f97a4f68e08c9a77265dd126",
+          "source_path": "data/knowledge/aqsi_online/account/add-user.md",
+          "ordinal": 1,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "aqsi-online-account-add-user",
+          "section": "Создать пользователя",
+          "accepted": 1,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "aqsi-online-account-add-user",
+          "aqsi-online-account-settings",
+          "aqsi-online-receipts-enable-manual-receipt",
+          "aqsi-online-receipts-full-refund"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "aqsi-online-account-add-user",
+            "reason": "selected"
+          },
+          {
+            "document_id": "aqsi-online-account-create-role",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-account-register-account",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-account-settings",
+            "reason": "selected"
+          },
+          {
+            "document_id": "aqsi-online-account-contact-support",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-setup-add-store",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-setup-sign-contract",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-account-my-cash-registers",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-fns-finish-reg",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-fns-register-ooo",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "aqsi-online-receipts-enable-manual-receipt",
+            "reason": "selected"
+          },
+          {
+            "document_id": "aqsi-online-account-edit-user",
+            "reason": "title_topic_mismatch"
+          }
+        ],
+        "retrieval_ms": 153
+      }
+    },
+    {
+      "id": "oracle_fn_unspecified",
+      "question": "Модель кассы тоже пока неизвестна. Можно ли всё же дать общую последовательность?",
+      "messages": [
+        "Нужно изменить настройки фискального накопителя. Подскажите порядок действий.",
+        "Я пока не знаю, какой именно параметр нужно изменить.",
+        "Модель кассы тоже пока неизвестна. Можно ли всё же дать общую последовательность?"
+      ],
+      "mode": "escalate",
+      "reason": "no_applicable_approved_evidence",
+      "answer": "В доступных подтверждённых материалах не нашёл применимого решения. Передам вопрос специалисту; вы также можете вызвать специалиста сами.",
+      "document_id": null,
+      "cards": [],
+      "rejected_cards": [],
+      "considered": [],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [],
+        "candidate_reasons": [
+          {
+            "document_id": "platformaofd-reregistration-kkt",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-11251-replacement-reasons",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-online-receipts-incorrect-105",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-22060-change-parameters",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "batch-20261013-vat-usn-advances-2026",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "evotor-time-mismatch-check-20261019",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-11075-fn-invoice",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-fn-number-in-lkk",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-registration-status",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-deferred-order-refund",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-device-connection-fields",
+            "reason": "service_unconfirmed_or_other"
+          }
+        ],
+        "retrieval_ms": 190
+      }
+    },
+    {
+      "id": "oracle_ofd_term",
+      "question": "Если тариф конкретной кассы активен, значит ли это, что договор ещё действует? Где узнать юридическую дату окончания?",
+      "messages": [
+        "Мне нужно проверить срок действия договора с ОФД. Как это сделать?",
+        "У меня Платформа ОФД. Интересует также срок оплаченного периода.",
+        "Если тариф конкретной кассы активен, значит ли это, что договор ещё действует? Где узнать юридическую дату окончания?"
+      ],
+      "mode": "answer",
+      "reason": "source_exact_plan",
+      "answer": "По подтверждённому материалу «Платформа ОФД: покупка и активация тарифа ККТ»:\n1. Если касса не передаёт документы, проверьте в кабинете, куплен и активирован ли тариф именно для этой ККТ. На странице «Лицевой счёт → Оплата ККТ» можно найти кассу, выбрать тариф и оплатить его с баланса либо банковской картой. Для уже купленного ключа в строке кассы используется действие «Активировать ключ».\nЕсли эти проверки не решат вопрос, можно подключить специалиста.",
+      "document_id": "platformaofd-tariff-activation",
+      "cards": [
+        {
+          "document_id": "platformaofd-tariff-activation",
+          "section": "Перед проверкой связи",
+          "text": "Если касса не передаёт документы, проверьте в кабинете, куплен и активирован ли тариф именно для этой ККТ. На странице «Лицевой счёт → Оплата ККТ» можно найти кассу, выбрать тариф и оплатить его с баланса либо банковской картой. Для уже купленного ключа в строке кассы используется действие «Активировать ключ».",
+          "source_sha256": "1c1f21472f13219fe7c3ba2ebf09e2ea004c7cbde556305c105074ee56d88665",
+          "source_path": "data/knowledge/platformaofd/ofd/tariff-activation.md",
+          "ordinal": 1,
+          "risk_flag": false
+        }
+      ],
+      "rejected_cards": [],
+      "considered": [
+        {
+          "document_id": "platformaofd-tariff-activation",
+          "section": "Перед проверкой связи",
+          "accepted": 1,
+          "rejected": 0
+        }
+      ],
+      "retrieval": {
+        "collection": "knowledge_stage3_retrieval_20261022",
+        "context_document_ids": [
+          "platformaofd-tariff-activation"
+        ],
+        "candidate_reasons": [
+          {
+            "document_id": "atol-online-12149-select-ofd",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-14133-debt-payment",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "aqsi-online-ofd-taxcom-account",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "evotor-ofd-subscription-8865646794770",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-11081-included-providers",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-tariff-activation",
+            "reason": "selected"
+          },
+          {
+            "document_id": "atol-online-11078-change-plan",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "atol-online-11059-find-offer",
+            "reason": "service_unconfirmed_or_other"
+          },
+          {
+            "document_id": "platformaofd-archive-kkt",
+            "reason": "title_topic_mismatch"
+          },
+          {
+            "document_id": "batch-20261013-vat-usn-advances-2026",
+            "reason": "equipment_model_unconfirmed"
+          },
+          {
+            "document_id": "atol-online-23349-activate-first-ofd",
+            "reason": "service_unconfirmed_or_other"
+          }
+        ],
+        "retrieval_ms": 174
+      }
+    }
+  ]
+}

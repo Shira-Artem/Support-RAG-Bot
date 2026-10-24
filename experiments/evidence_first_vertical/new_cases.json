@@ -1,0 +1,10 @@
+[
+  {"id":"evotor_mobile","question":"Эвотор перестал выходить в интернет через SIM. Какие первичные проверки можно сделать самому?","expected_document_id":"evotor-mobile-network-check-20261019","expected_mode":"answer_or_partial","family":"evotor_network"},
+  {"id":"evotor_marking","question":"На Эвоторе перед оплатой пишет, что марка не проверена. С чего начать диагностику?","expected_document_id":"evotor-mark-check-error-20261019","expected_mode":"partial_or_clarify","family":"evotor_marking"},
+  {"id":"aqsi_paper","question":"На физической кассе aQsi закончилась лента и чек не напечатался. Что теперь делать, чтобы не пробить дубль?","expected_document_id":"aqsi-device-paper-print-retry","expected_mode":"answer_or_partial","family":"aqsi_device"},
+  {"id":"aqsi_x_report","question":"Где на кассе aQsi распечатать X-отчёт, не закрывая смену?","expected_document_id":"aqsi-device-x-report","expected_mode":"answer","family":"aqsi_device"},
+  {"id":"atol_receipt_address","question":"В чеке АТОЛ Онлайн указан адрес дата-центра, а не моего магазина. Это ошибка?","expected_document_id":"atol-online-11258-receipt-location","expected_mode":"answer_or_partial","family":"atol_online"},
+  {"id":"marking_current_rule_gap","question":"Какие действующие правила поэкземплярного учёта маркированной молочной продукции сегодня?","expected_document_id":null,"expected_mode":"escalate_or_clarify","family":"marking"},
+  {"id":"unknown_terminal","question":"На неизвестной модели кассы ошибка при записи в ФН. Дайте последовательность изменения параметров.","expected_document_id":null,"expected_mode":"clarify_or_escalate","family":"unknown_fiscal"},
+  {"id":"evotor_mobile_paraphrase","question":"Связь через мобильную сеть на Эвоторе пропала, Wi-Fi работает. Что безопасно сверить до обращения к инженеру?","expected_document_id":"evotor-mobile-network-check-20261019","expected_mode":"answer_or_partial","family":"evotor_network"}
+]

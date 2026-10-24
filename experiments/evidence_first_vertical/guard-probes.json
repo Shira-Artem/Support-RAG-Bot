@@ -1,0 +1,43 @@
+[
+  {
+    "probe": "invented_group",
+    "mode": "escalate",
+    "rejected": [
+      {
+        "reason": "invalid_or_missing_group_id"
+      }
+    ],
+    "technical_units_published": 0
+  },
+  {
+    "probe": "tampered_source",
+    "mode": "escalate",
+    "rejected": [
+      {
+        "reason": "source_group_changed"
+      }
+    ],
+    "technical_units_published": 0
+  },
+  {
+    "probe": "risky_source",
+    "mode": "escalate",
+    "rejected": [
+      {
+        "text": "Для дальнейшей работы обычно требуется закрытие старого ФН, его замена и корректная перерегистрация в ФНС.",
+        "reason": "high_risk_needs_context_review"
+      }
+    ],
+    "technical_units_published": 0
+  },
+  {
+    "probe": "draft_status",
+    "mode": "escalate",
+    "rejected": [
+      {
+        "reason": "source_group_changed"
+      }
+    ],
+    "technical_units_published": 0
+  }
+]
