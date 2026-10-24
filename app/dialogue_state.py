@@ -921,6 +921,17 @@ class LexicalAnalyzer:
             obs.constraints = []
         elif obs.new_topic:
             obs.relation = 'new_task'
+        elif (state.task_id and obs.entities and not obs.symptom and not obs.error
+              and not obs.question and "?" not in text and not obs.requirement
+              and not ((commands or re.search(r"\b\w+(?:йте|ьте|ите)\b", text, re.I))
+                       and obs.intent not in {'unknown', state.intent})):
+            # A declarative service/equipment/integration update is context
+            # for the active task. Nominal actions inside it ("подключение к
+            # банку") are not commands to start another workflow. The new
+            # fact remains in the task query without replacing its problem.
+            obs.relation = 'answer_to_clarification' if clarification_matches else 'continue'
+            if not obs.entity_only:
+                obs.details.append(obs.evidence)
         elif clarification_matches:
             obs.relation = 'answer_to_clarification'
         elif (state.task_id and obs.symptom

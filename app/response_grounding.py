@@ -387,6 +387,34 @@ def _positive_evidence_clauses(evidence_raw: str, evidence_results=(), *,
     return clauses
 
 
+_NEGATIVE_PREDICATE = re.compile(
+    r"\b(?:не\s+(?:подтвержд\w*|поддерж\w*|доступ\w*|предусмотр\w*|описан\w*|"
+    r"указан\w*|можно)|недоступ\w*|запрещ\w*)\b", re.I)
+
+
+def _same_negative_subject(claim: str, clause: str) -> bool:
+    """A negative boundary applies only to the subject it actually names."""
+    requested = _NEGATIVE_PREDICATE.search(claim)
+    documented = _NEGATIVE_PREDICATE.search(clause)
+    if not requested or not documented:
+        return False
+    requested_terms = _content_terms(claim[:requested.start()])
+    documented_terms = _content_terms(clause[:documented.start()])
+    if not requested_terms or not documented_terms:
+        return False
+    # All requested subject terms must occur before the source's negation.
+    # This prevents "do not substitute A for B" from becoming "B is absent".
+    return requested_terms <= documented_terms
+
+
+def _searched_object_terms(claim: str) -> set[str]:
+    """Return the object of a search/filter claim, separate from its field."""
+    match = re.search(r"\b(?:поиск|фильтр)\s+(.+?)(?:\s+по\s+|[.,;]|$)", claim)
+    if not match:
+        return set()
+    return _content_terms(match.group(1))
+
+
 def claim_supported(claim: str, evidence: str, *, evidence_results=()) -> bool:
     """Conservative local check for a paraphrased factual statement.
 
@@ -402,6 +430,9 @@ def claim_supported(claim: str, evidence: str, *, evidence_results=()) -> bool:
         return False
     if not _interface_configuration_binding_supported(claim, evidence_raw):
         return False
+    # A literal source statement is evidence for itself. Paraphrased negative
+    # claims must pass the scoped check below.
+    claim_negated = bool(re.search(r"\bне\b|\bбез\b|недоступ\w*|запре\w*", claim, re.I))
     if claim in evidence:
         return True
     positive_source_clauses = _positive_evidence_clauses(evidence_raw, evidence_results)
@@ -417,7 +448,6 @@ def claim_supported(claim: str, evidence: str, *, evidence_results=()) -> bool:
         return True
     action_families = [family for family in ACTION_FAMILIES
                        if has_action(claim, family)]
-    claim_negated = bool(re.search(r"\bне\b|\bбез\b|недоступ\w*|запре\w*", claim, re.I))
     source_clauses = positive_source_clauses
     if claim_negated:
         # Explicit document boundaries are valid evidence for a negative
@@ -426,6 +456,16 @@ def claim_supported(claim: str, evidence: str, *, evidence_results=()) -> bool:
             evidence_raw, evidence_results, include_limitations=True)
     compatible_raw = [item for item in source_clauses
                       if bool(re.search(r"\bне\b|\bбез\b|недоступ\w*|запре\w*", item, re.I)) == claim_negated]
+    if claim_negated:
+        # A boundary must name the same operation and object in one clause.
+        # Co-occurrence elsewhere in the article is only an evidence gap, not
+        # proof that a requested capability is unavailable.
+        compatible_raw = [item for item in compatible_raw
+                          if _same_negative_subject(claim, item)
+                          and all(_action_supported(claim, item, family)
+                                 for family in action_families)
+                          and len(claim_terms & _content_terms(item))
+                          / len(claim_terms) >= 0.40]
     if not _relation_supported(claim, compatible_raw):
         return False
     compatible = [normalize(item) for item in compatible_raw]
@@ -444,10 +484,11 @@ def claim_supported(claim: str, evidence: str, *, evidence_results=()) -> bool:
     # source mention cannot be combined with a receipt-search claim. Require
     # them in the same source paragraph, with matching polarity.
     critical_terms = claim_terms & {"fn", "fd", "fp"}
-    other_claim_terms = claim_terms - critical_terms
+    searched_object = _searched_object_terms(claim)
+    other_claim_terms = searched_object or (claim_terms - critical_terms)
     critical_supported = (not critical_terms or any(
         critical_terms <= _content_terms(item)
-        and bool(other_claim_terms & _content_terms(item)) for item in compatible_raw))
+        and other_claim_terms <= _content_terms(item) for item in compatible_raw))
     return action_supported and critical_supported and overlap >= 0.40
 
 
