@@ -628,6 +628,7 @@ OBJECTS = (
     ("report", "отчёт", ("отчет",)),
     ("fiscal_drive", "ФН", ("фн", "накопител")),
     ("receipt", "чек", ("чек", "квитанц", "документ", "оператор")),
+    ("general", "ОФД", ("офд", "оператор фискальных данных")),
     ("network", "соединение", ("интернет", "связь", "сети", "подключен")),
     ("marking", "маркировка", ("маркиров", "gtin")),
     ("tax", "налогообложение", ("налог", "ндс", "усн", "псн")),
@@ -1165,7 +1166,7 @@ class DialogueManager:
             if len(values) != 1:
                 state.analysis_required = True
                 state.relation = "unknown"
-            elif route_changed and relation != "new_task":
+            elif route_changed and relation not in {"new_task", "answer_to_clarification"}:
                 state.relation = "parameter_update"
         if "manufacturer" in obs.entities and "equipment" not in obs.entities:
             before_manufacturer = previous.entity("manufacturer")

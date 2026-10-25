@@ -42,6 +42,13 @@ def _sections(body: str) -> list[tuple[str, str]]:
     return rows
 
 
+def _question_only_section(item: dict) -> bool:
+    """A heading chunk that only repeats a client question is not answer evidence."""
+    text = str(item.get("text") or "").strip()
+    return (len(text) <= 360 and text.endswith("?") and text.count("?") == 1
+            and "\n" not in text and not any(mark in text[:-1] for mark in (".", "!")))
+
+
 def _approved_sources(root: Path) -> dict[str, tuple[Path, dict, str]]:
     result = {}
     for path in (root / "data/knowledge").rglob("*.md"):
@@ -291,7 +298,18 @@ class SourceFirstService:
                                   duration_ms=round((perf_counter()-started)*1000), **base)
                 return self._escalate("Не нашёл подтверждённый источник для указанного сервиса или оборудования. Не буду переносить инструкцию другого производителя; запросите специалиста.",
                                       "source_scope_mismatch", "retrieved_source_scope_conflicts_with_confirmed_client_facts", started, **base)
+        if informational:
+            question_only = [item for item in sections if _question_only_section(item)]
+            if question_only:
+                sections = [item for item in sections if not _question_only_section(item)]
+                base.setdefault("retrieval_diagnostics", {})["planner_input_filter"] = {
+                    "reason": "question_only_chunks_are_not_answer_evidence",
+                    "removed_count": len(question_only)}
+            if not sections:
+                return self._escalate("В approved-источниках не нашёл раздела с подтверждённым объяснением. Не буду выдавать заголовок-вопрос за ответ; запросите специалиста.",
+                    "no_answer_bearing_information_source", "approved_retrieval_returned_only_question_chunks", started, **base)
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
+                  "Не выбирай раздел, который только повторяет вопрос пользователя и не содержит объяснения или подтверждённой инструкции. "
                   "Не создавай и не пересказывай инструкции. Для select выставляй applicability_confirmed=true, только если task, сервис, модель и условия источника совпадают с сообщением и активной задачей клиента. "
                   "Для select выставляй order_confirmed=true только если все предварительные условия, предупреждения и порядок действий явно сохранены в этом полном разделе и не противоречат просьбе; если непонятно или условие вынесено за его пределы — clarify/escalate. Для справочной информации без шагов это поле true. "
                   "Верни только JSON: {\"mode\":\"select|clarify|escalate\",\"section_id\":\"...\",\"applicability_confirmed\":true,\"order_confirmed\":true,\"reason\":\"...\"}. "

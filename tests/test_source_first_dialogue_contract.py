@@ -132,7 +132,7 @@ def test_approved_source_integrity_accepts_v12b_metadata_projection():
 
 
 def test_stage2_stale_operation_fails_closed_against_approved_front_matter():
-    source = "atol_online/ofd/what-is-ofd.md"
+    source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
     doc_id, heading = "atol-online-11256-what-is-ofd", "Вопрос пользователя"
     metadata = {"service": "АТОЛ Онлайн", "task_category": "receipt_transmission",
                 "operations": ["check_transmission"], "manufacturer": "АТОЛ",
@@ -248,3 +248,53 @@ def test_rejected_entity_cannot_satisfy_vendor_scope_gate(monkeypatch, tmp_path)
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "source_scope_context_missing"
     assert answer.clarification_slot in {"service", "manufacturer"}
+
+
+def test_information_planner_never_receives_question_only_chunk(monkeypatch, tmp_path):
+    import hashlib
+    import json
+    from app.llm_client import Generation
+    from app.dialogue_understanding import validate_response
+
+    source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    doc_id = "atol-online-11256-what-is-ofd"
+    path = ROOT / source
+    body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    local_sections = {heading: text for heading, text in _sections(body)}
+    scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
+             "operations": ["explain_ofd"], "manufacturer": "АТОЛ",
+             "model": "АТОЛ Онлайн — облачная ККТ"}
+    candidate_sections = [{"id": f"{doc_id}::{heading}", "document_id": doc_id,
+        "section": heading, "text": local_sections[heading], "source": source,
+        "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "scope": scope,
+        "qdrant_scope": scope}
+        for heading in ("Вопрос пользователя", "Что проверено по инструкции производителя",
+                        "Важное ограничение / передача специалисту")]
+    monkeypatch.setattr("app.source_first_service._source_sections", lambda *_args: candidate_sections)
+    retrieval = _retrieval(source, doc_id, "Вопрос пользователя", scope,
+                           local_sections["Вопрос пользователя"])
+    text = "Объясни, что такое ОФД?"
+    raw = {"request_type": "information", "relation": "new_task", "intent": "general",
+        "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "ОФД"},
+        "goal": {"quote": text}, "symptom": None, "entities": [], "unknown_facts": [],
+        "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
+    _, _, _, observation = validate_response(raw, text, 1)
+    state = DialogueManager().advance(DialogueState(), text, 1, observation=observation)
+    seen = {}
+
+    async def planner(messages, _settings):
+        payload = json.loads(messages[-1]["content"])
+        seen["sections"] = [item["section"] for item in payload["candidate_sections"]]
+        chosen = next(item for item in payload["candidate_sections"]
+                      if item["section"] == "Что проверено по инструкции производителя")
+        return Generation(json.dumps({"mode": "select", "section_id": chosen["id"],
+            "applicability_confirmed": True, "order_confirmed": True, "reason": "grounded explanation"}),
+            "test-model", 100, 60, 160)
+
+    monkeypatch.setattr("app.source_first_service.generate", planner)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+                         .answer(text, state=state))
+    assert "Вопрос пользователя" not in seen["sections"]
+    assert "Что проверено по инструкции производителя" in seen["sections"]
+    assert answer.scenario == "answer" and answer.scenario_reason == "source_first_exact_section"
+    assert "ОФД получает фискальные документы" in answer.text

@@ -55,6 +55,19 @@ def test_information_is_explain_and_separates_ofd_from_manufacturer():
     assert state.entity("manufacturer") is None and state.entity("ofd") is None
 
 
+def test_unique_registered_object_is_grounded_when_model_omits_it():
+    text = "Привет! Объясни простыми словами, что такое ОФД?"
+    data = payload(text, kind="information", intent="general", operation="explain",
+        obj=None, goal="что такое ОФД", relation="new_task")
+    kind, _, _, obs = validate_response(data, text, 77)
+    state = DialogueManager().advance(DialogueState(), text, 77, observation=obs)
+    assert kind == "information" and obs.object == "ОФД"
+    assert obs.object_evidence.quote == "ОФД"
+    assert state.object == "ОФД"
+    assert any(d.get("reason") == "unique_registered_object_alias_from_current_message"
+               for d in obs.validation_diagnostics)
+
+
 def test_semantic_intent_needs_no_quote_but_concrete_claims_do():
     for text in ("Что такое ОФД?", "Объясните простыми словами, что такое оператор фискальных данных?"):
         data = payload(text, kind="information", intent="general", operation="explain", obj="понятие",
@@ -157,7 +170,8 @@ def test_unquoted_or_cross_slot_facts_fail_closed():
         intent_quote=text, operation_quote=text, object_quote="ОФД", relation="new_task", relation_quote=text,
         entities=[("manufacturer", "Эвотор", "Платформа ОФД")])
     _, _, _, obs = validate_response(data, text, 77)
-    assert not obs.entities and obs.intent == "general" and obs.operation == "explain"
+    assert "manufacturer" not in obs.entities and obs.entities["ofd"][0].value == "Платформа ОФД"
+    assert obs.intent == "general" and obs.operation == "explain"
 
 
 def test_valid_fields_survive_one_bad_entity_and_alias_is_normalized_from_source():
@@ -201,14 +215,153 @@ def test_one_invalid_semantic_field_becomes_unknown_for_safe_clarification():
     assert state.operation == "unknown" or state.analysis_required
 
 
+def test_unknown_operation_on_grounded_information_question_uses_read_only_search():
+    text = "Как найти чек по ФД?"
+    data = payload(text, kind="information", intent="information_request",
+        operation="unrecognized_lookup_label", obj="receipt", object_quote="чек", goal=text)
+    kind, _, _, obs = validate_response(data, text, 77)
+    assert kind == "information" and obs.intent == "general" and obs.operation == "search"
+    assert any(d.get("reason") == "safe_information_lookup_from_grounded_goal"
+               for d in obs.validation_diagnostics)
+    state = DialogueManager().advance(DialogueState(), text, 77, observation=obs)
+    assert state.operation == "search" and state.expected is None
+
+
 def test_common_semantic_label_aliases_are_canonicalized_locally():
     text = "Что такое ОФД?"
     data = payload(text, kind="information_request", intent="definition", operation="explanation",
         obj="ОФД", object_quote="ОФД", relation="new_topic")
     kind, _, _, obs = validate_response(data, text, 77)
     assert kind == "information" and obs.intent == "general" and obs.operation == "explain"
-    assert obs.relation == "new_task" and obs.object is None
+    assert obs.relation == "new_task" and obs.object == "ОФД"
     assert {item["field"]: item["reason"] for item in obs.validation_diagnostics}["request_type"] == "normalized_turn_type_alias"
+
+
+def test_saved_explanation_labels_preserve_continuation_and_task_state(tmp_path):
+    from app.answer_service import Answer
+    store = ConversationStore(tmp_path / "saved_explanations.sqlite3")
+    cid = store.new(11, 12)
+    first = "Привет! Объясни простыми словами, что такое ОФД?"
+    first_data = payload(first, kind="explanation", intent="explain", operation="explain",
+        obj="ОФД", object_quote="ОФД", goal="что такое ОФД", relation="new_task")
+    kind, specialist, unknown, obs = validate_response(first_data, first, "current")
+    assert kind == "information" and obs.intent == "general" and obs.operation == "explain"
+    mid = store.begin(cid, first, semantic_mode=True, understanding=understanding_to_dict(
+        Understanding(kind, specialist, unknown, obs, {}, "test", 1)))
+    task_id = store.dialogue_state(cid).task_id
+    store.complete(mid, Answer("Definition source answer", scenario="answer"))
+
+    second = "А зачем он вообще нужен кассе?"
+    second_data = payload(second, kind="explain_operation", intent="explain_operation",
+        operation="explain_operation", obj="ОФД", object_quote="он", goal=second,
+        relation="continuation")
+    kind, specialist, unknown, obs = validate_response(second_data, second, "current")
+    mid = store.begin(cid, second, semantic_mode=True, understanding=understanding_to_dict(
+        Understanding(kind, specialist, unknown, obs, {}, "test", 1)))
+    state = store.dialogue_state(cid)
+    assert kind == "information" and state.task_id == task_id
+    assert state.operation == "explain" and state.goals[-1].quote == second
+    store.complete(mid, Answer("Continuation source answer", scenario="answer"))
+
+    # Repeating the first request is a new task, not a continuation forced by stale context.
+    kind, _, _, repeated = validate_response(first_data, first, 900)
+    state = DialogueManager().advance(state, first, 900, observation=repeated)
+    assert state.task_id == "task:900" and state.transition == "new_task"
+
+
+def test_saved_receipt_lookup_labels_and_omitted_platform_alias_reach_typed_state(tmp_path):
+    text = "Как найти чек по номеру ФД в Платформе ОФД?"
+    raw = payload(text, kind="information", intent="information_request", operation="find_receipt",
+        obj="receipt", object_quote="чек", goal=text, relation="new_task")
+    kind, specialist, unknown, obs = validate_response(raw, text, "current")
+    assert kind == "information" and obs.intent == "receipt" and obs.operation == "search"
+    assert obs.object == "чек" and obs.object_evidence.quote == "чек"
+    assert obs.entities["ofd"][0].value == "Платформа ОФД"
+    assert any(d.get("reason") == "exact_known_alias_found_in_current_message"
+               and d.get("value") == "Платформа ОФД" for d in obs.validation_diagnostics)
+    store = ConversationStore(tmp_path / "receipt_lookup.sqlite3")
+    cid = store.new(21, 22)
+    store.begin(cid, text, semantic_mode=True, understanding=understanding_to_dict(
+        Understanding(kind, specialist, unknown, obs, {}, "test", 1)))
+    state = store.dialogue_state(cid)
+    assert state.task_id and state.intent == "receipt" and state.operation == "search"
+    assert state.entity("ofd") == "Платформа ОФД"
+    assert state.expected is None
+
+
+def test_search_target_is_grounded_before_parameter_without_accepting_parameter_as_object():
+    text = "Как найти чек по номеру ФД в Платформе ОФД?"
+    raw = payload(text, kind="information", intent="general", operation="search",
+        obj="receipt", object_quote=None, goal=text, relation="new_task")
+    raw["object_evidence"] = None
+    kind, _, _, obs = validate_response(raw, text, 31)
+    assert kind == "information" and obs.operation == "search"
+    assert obs.object == "чек" and obs.object_evidence.quote == "чек"
+    assert obs.intent == "receipt"
+    assert any(item["reason"] == "registered_search_target_grounded_before_parameter"
+               for item in obs.validation_diagnostics)
+
+
+def test_common_question_information_and_lookup_labels_normalize_to_safe_search():
+    text = "Как найти чек по номеру ФД в Платформе ОФД?"
+    raw = payload(text, kind="question", intent="information", operation="lookup",
+        obj="чек", object_quote="чек", goal=text,
+        entities=[("ofd", "Платформа ОФД", "Платформе ОФД")])
+    kind, _, _, obs = validate_response(raw, text, 32)
+    assert kind == "information"
+    assert obs.intent == "receipt" and obs.operation == "search" and obs.object == "чек"
+    assert obs.entities["ofd"][0].value == "Платформа ОФД"
+
+
+def test_reference_pronoun_does_not_ground_a_new_object_claim():
+    first = "Объясни, что такое ОФД?"
+    first_raw = payload(first, kind="information", intent="general", operation="explain",
+        obj="ОФД", object_quote="ОФД", goal=first)
+    _, _, _, first_obs = validate_response(first_raw, first, 10)
+    prior = DialogueManager().advance(DialogueState(), first, 10, observation=first_obs)
+    assert prior.object == "ОФД"
+
+    followup = "А зачем он вообще нужен кассе?"
+    followup_raw = payload(followup, kind="information", relation="continuation",
+        intent="general", operation="explain", obj="ОФД", object_quote="он", goal=followup)
+    _, _, _, followup_obs = validate_response(followup_raw, followup, 11)
+    assert followup_obs.object is None
+    state = DialogueManager().advance(prior, followup, 11, observation=followup_obs)
+    assert state.object == "ОФД" and state.task_id == prior.task_id
+    assert any(d.get("reason") == "object_value_not_grounded_by_evidence"
+               for d in followup_obs.validation_diagnostics)
+
+
+def test_saved_operator_clarification_preserves_diagnosis_and_applies_exact_known_alias(tmp_path):
+    from app.answer_service import Answer
+    first = "На кассе Эвотор перестали отправляться чеки в ОФД. Помоги разобраться."
+    raw_first = payload(first, kind="diagnosis", intent="request_help", operation="diagnosis",
+        obj="Эвотор", object_quote="Эвотор", goal="Помоги разобраться",
+        symptom="перестали отправляться чеки в ОФД", relation="new_task")
+    kind, specialist, unknown, obs = validate_response(raw_first, first, "current")
+    assert obs.operation == "diagnose" and obs.entities["manufacturer"][0].value == "Эвотор"
+    store = ConversationStore(tmp_path / "operator_clarification.sqlite3")
+    cid = store.new(31, 32)
+    mid = store.begin(cid, first, semantic_mode=True, understanding=understanding_to_dict(
+        Understanding(kind, specialist, unknown, obs, {}, "test", 1)))
+    store.complete(mid, Answer("Какой оператор?", scenario="clarify",
+        scenario_reason="source_scope_context_missing", clarification_slot="service"))
+    prior = store.dialogue_state(cid)
+    assert prior.operation == "diagnose" and prior.expected.slot == "service"
+
+    answer = "Оператор у меня Платформа ОФД."
+    raw_answer = payload(answer, kind="information", relation="clarification_answer",
+        intent="provide_info", operation="diagnose", obj=None, goal=None,
+        entities=[("service", "Платформа ОФД", "Платформа ОФД")])
+    kind, specialist, unknown, obs = validate_response(raw_answer, answer, "current")
+    assert kind == "information" and obs.relation == "answer_to_clarification"
+    assert obs.entities["ofd"][0].value == "Платформа ОФД"
+    mid = store.begin(cid, answer, semantic_mode=True, understanding=understanding_to_dict(
+        Understanding(kind, specialist, unknown, obs, {}, "test", 1)))
+    state = store.dialogue_state(cid)
+    assert state.operation == "diagnose" and state.entity("ofd") == "Платформа ОФД"
+    assert state.expected is None and not state.analysis_required
+    assert state.relation == "answer_to_clarification" and state.transition == "clarification"
 
 
 def test_schema_has_semantic_labels_without_evidence_properties():

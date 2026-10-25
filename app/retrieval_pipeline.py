@@ -329,6 +329,8 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     task_facts = [*([state.task] if state.task else []), *state.goals,
                   *state.constraints, *state.details, *state.parameters]
     task_folded = " ".join(f.value for f in task_facts).casefold().replace("ё", "е")
+    if state.object == "ОФД" and state.operation == "explain":
+        return "ofd_connection"
     # Resolve the task family from positive subject/context evidence before
     # falling back to the coarse DialogueState intent.  These are semantic
     # families, not expected-document lookups.

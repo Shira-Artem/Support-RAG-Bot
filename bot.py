@@ -217,6 +217,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             understanding_error = {"type": type(exc).__name__, "message": str(exc),
                 "http_status": exc.http_status, "tokens": exc.tokens,
                 "duration_ms": exc.duration_ms, "model": exc.model,
+                "phase": exc.phase, "error_code": exc.code,
                 "structured_response": exc.structured_response,
                 "field_diagnostics": exc.field_diagnostics,
                 "provider_error": exc.provider_error}

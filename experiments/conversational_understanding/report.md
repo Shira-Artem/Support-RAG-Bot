@@ -57,6 +57,47 @@ Worker не переключался. Read-only process check нашёл еди�
 
 Единственный следующий шаг: после снятия Groq throttling повторить семисценарную synthetic understanding проверку; worker оставить неизменным, пока каждый сценарий не даст валидный контракт и ожидаемый state transition.
 
+## 2026-10-25 — причинный разбор ручного Telegram-провала
+
+Проверка была read-only: SQLite открыт с `mode=ro`; локальная JSONL-трасса и runtime receipt сопоставлены по UTC timestamps; секреты, user/chat IDs и сырые сообщения в этот журнал не переносятся. В окне 15:01–15:02 MSK найдено шесть ходов в трёх разговорах одного чата. Для всех шести Groq вернул успешный HTTP и структурно допустимый JSON; provider/schema ошибок в этих ходах нет.
+
+| Группа хода | Сохранённый structured result | Где оборвался путь | Подтверждённая причина |
+|---|---|---|---|
+| Смешанное приветствие + определение ОФД | `request_type=explanation`, `intent=explain`, `operation=explain` | local Understanding validation; reducer/retrieval не запущены | Алиас `explanation` отсутствовал в request type словаре. |
+| Продолжение «зачем он нужен кассе» | `request_type=explain_operation`, `relation=continuation` | local Understanding validation; state остался пустым | Алиас объяснительной классификации отсутствовал, поэтому валидная relation не дошла до state. |
+| Повтор определения | `request_type=explanation`, `relation=new_task` | local Understanding validation | То же чрезмерно закрытое перечисление request type. |
+| Диагностика Эвотора | `request_type=diagnosis`, `operation=diagnosis`; exact symptom/goal spans | reducer и Stage3 retrieval; до planner/render остановлен source scope gate | `request_help` сброшен в `unknown`; производитель «Эвотор» пришёл как `object` вместо `entities`, и object-vocabulary его отклонил. Поиск выбрал частичный approved document `evotor/fn/fn-210.md` через `unresolved_task_fallback`; procedure scope не подтверждён, поэтому запрос оператора был fail-closed уточнением. |
+| Ответ «Платформа ОФД» | `relation=clarification_answer`, `operation=diagnose`, service alias exact-spanned | local Understanding validation; pending service slot остался | Validator считал request type `information` несовместимым с `diagnose`, хотя turn был ответом на уточнение. Из-за раннего aggregate throw entity field diagnostics потерялись. |
+| Найти чек по ФД в Платформе ОФД | `request_type=information`, `intent=information_request`, `operation=find_receipt`; goal span присутствует | local fields частично приняты; replay validator затем no-op; early task gate до retrieval | `information_request` и `find_receipt` отсутствовали в нормализации; независимые значения стали `unknown`. Replay требовал `information => general/explain`, отбросил записанный semantic observation, сохранил пустой state, после чего `dialogue_state_task_incomplete` спросил повторно о задаче. В этом direct-query turn model не вернул entity candidate для явно написанного сервиса, хотя local alias vocabulary его знает. |
+
+Первые три сообщения принадлежат одной conversation: после ошибки state не изменился, поэтому продолжение не стало evidence для reducer. Эвотор и ответ про оператора принадлежат другой conversation: после successful diagnostic turn state сохранил `operation=diagnose`, `intent=unknown`, и pending `service` clarification; ошибочный validator не записал подтверждённую платформу. Поиск чека — третий новый task; state в нём и должен начинаться заново, но должен быть заполнен текущим ходом.
+
+Runtime receipt при read-only проверке показывал PID `19552`, `source_first`, Groq `openai/gpt-oss-20b` / `medium`, Stage3 `knowledge_stage3_retrieval_20261022` / 934 points, allowlist count 3. Receipt hash snapshot указывает на старый кодовый commit `367e5db`; процесс активен, автоматическое переключение запрещено до успешного повторного gate. Текущий `.env` не используется для вывода о фактически унаследованном process environment.
+
+## Локальная коррекция и сохранённый-output replay
+
+В `app/dialogue_understanding.py` расширены общие aliases request type/intent/operation; turn type и операция больше не обязаны быть одним классом, а незнакомая операция в вопросе с exact goal получает только read-only `search`. Exact known entity aliases, пропущенные моделью, восстанавливаются из текущего текста по зарегистрированному alias + проверяемому span; отрицание/неуверенность и слоты проверяются. `app/dialogue_state.py` сохраняет relation/transition ответа на уточнение при route update. `app/conversation_store.py` и `bot.py` сохраняют фазу и стабильный код ошибки для distinction provider/transport/decode/shape/semantic/replay.
+
+Шесть raw outputs из локальной приватной трассы прогнаны без API и без записи в production SQLite: 6/6 прошли typed validation, evidence replay и изолированное state replay. Состояния: объяснение `general/explain`; зависимое продолжение оставило ту же задачу; явный повтор создал новую задачу; Эвотор подтвердил только exact manufacturer + symptom/goal и остался в diagnose; ответ назвал exact зарегистрированный OFD alias и снял service clarification, сохранив операцию; поиск чека стал `general/search` с route `Платформа ОФД`, прежнее раннее уточнение задачи не срабатывает. Approved retrieval/planner и качество ответа этими локальными проверками пока не подтверждены.
+
+Targeted checks: `python -m py_compile ...` passed; `python -m pytest tests/test_dialogue_understanding.py tests/test_source_first_dialogue_contract.py -q` → **35 passed**; `git diff --check` passed. Следующий шаг — небольшая контролируемая real Groq серия и фактический approved Stage3 retrieval/planner path; runtime не переключать до прохождения каждого сценария.
+
+## Остановка real gate: локальный exception и rate limit
+
+Первый запуск controlled natural-turn smoke выявил ошибку в новом fallback ordering: `request_type` fallback прочитал normalized operation до её присваивания (`UnboundLocalError`). Попытки с этим внутренним дефектом не считаются successful API/Understanding результатами; provider content пяти таких ответов не попал в local trace из-за неперехваченного exception. Путь теперь исправлен: semantic labels нормализуются до fallback; неожиданные internal exceptions проходят через trace с `phase=internal` и без публикации текста в общие отчёты. `py_compile`, targeted suite **35 passed**, saved-output replay **6/6**.
+
+Следующий вызов Groq получил HTTP 429, `rate_limit_exceeded`: on-demand GPT-OSS 20B bucket — **8,000 tokens/minute**, **6,753 used**, **2,117 requested**, reset/retry in **6.525 seconds**. Другие лимиты этим response не раскрыты. Точное provider body/request без Authorization сохранены локально; organization identifier не публикуется. Массовых повторов не было; серия остановлена.
+
+Существующий Telegram PID 19552 продолжает работать на старом receipt snapshot. Ни SQLite production, ни Qdrant, ни worker не менялись. Live route/usefulness gate не пройден; перед следующим одиночным вызовом нужен освобождённый rolling TPM window, а worker запрещено переключать до полного успешного gate.
+
+## Исправление topic-object retrieval
+
+Первый действительный natural follow-up сохранил `task:1`, `general/explain`, но Stage3 выбрал partial approved FN-basics candidate. Planner сформулировал, что section будто отвечает на вопрос о нужности ОФД, хотя candidate был о фискальном накопителе; безопасно завершил `planner_could_not_select_safely` без технических шагов.
+
+Root cause: `ОФД` отсутствовал в supported object vocabulary и был отброшен на первом сообщении. На follow-up точное client span «он» было принято как evidence для model object `ОФД`, хотя эти значения не совпадают. Поскольку state не содержал object, task category осталась неоднозначной и retrieval применил `unresolved_task_fallback`.
+
+Object vocabulary теперь включает ОФД; validator проверяет exact alias/value в quoted span. Неподтверждённый объект на местоимении не добавляется, но существующий object остается в state при continuation. Retrieval task-category выбирает `ofd_connection` по grounded object + explain operation. Saved-output read-only replay на прежнем Q2 output теперь выбрал approved `atol-online-11256-what-is-ofd` и совместимые OFD-кандидаты, а `atol-online-11253-fn-basics` отклонил с task mismatch. Targeted tests — **36 passed**. Planner и реальный follow-up ещё не повторялись после этого исправления; quality gate открыт, Telegram worker PID 19552 не переключался.
+
 ## 2026-10-25 — один readiness-вызов после schema correction
 
 - Локальная проверка JSON Schema: strict object; все required fields покрыты; nullable `goal` и `specialist_evidence` имеют `type=[object,null]`.
@@ -107,3 +148,25 @@ Worker не переключался. Read-only process check нашёл еди�
 - После read-only preflight (0 pending conversation messages; 0 pending expert attempts) остановлен старый PID **1508**. Новый worker запущен из того же checkout и с environment snapshot прежнего процесса; `.env`, токен, SQLite и Qdrant не переписывались. Активен ровно один `python.exe -u bot.py`, PID **19552**; log содержит `Application started`.
 - Runtime receipt [`../../.local/bot-runtime.json`](../../.local/bot-runtime.json): `source_first`, Groq `openai/gpt-oss-20b` / `medium`, Qdrant `knowledge_stage3_retrieval_20261022` / 934 points, allowlist count 3 и hash прежнего allowlist. Receipt includes current SHA for every `bot.py` and `app/*.py`. Verified core hashes: bot.py `867e8ae048a7e15d2aa2e065ef6a73e49c9d5cf3ff8555e6acd96eb17a97224d`; dialogue_understanding.py `b44ea42ecb269b967104627c497c819352aa06a769b2f88f0dbfc8cfa57ed22a`; dialogue_state.py `f05459f8275463738fbd3632244002ee7080460484b3dfd9818d99819a96f416`; source_first_service.py `b49952948b1c5ca60f173d5b056b3f409bf74e9499d67c63bfa464c393f9d5e9`; conversation_store.py `871b7740f2f62804bb350eed51fc6af6fcecf892319d4be39518e775aacec9f7`.
 - Все operational gates пройдены. Автоматические проверки остановлены; следующие реальные диалоги в Telegram пользователь тестирует вручную. Commit/push не выполнялись.
+
+## 2026-10-25 — manual pilot failure replay and search routing correction
+
+### Сохранённые реальные ответы: локальный повтор
+
+Raw Groq structured outputs из фактических Telegram turns повторно прогнаны без API. Шесть typed results проходят независимо; reducer state показывает OFD continuation, новый task на повторе, diagnosis+manufacturer для Эвотора, подтверждённый оператор Platforma OFD и direct receipt lookup с `receipt/search`. Полевая причина direct lookup: Groq не дал object evidence для `receipt`, а реплика содержит несколько зарегистрированных сущностей, так что all-message uniqueness была слишком строгой. Search intent теперь выбирает unique registered object в exact goal span перед параметрным `по`/`за`; `чек` остаётся exact quote, `ФД` не становится объектом поиска. Источники/aliases без exact text по-прежнему отвергаются.
+
+Stage3 read-only retrieval replay после коррекции выбирает approved Platforma OFD receipt-search source и отклоняет `fiscal_drive`, `cash_search`, `ofd_connection` кандидатов как category mismatch. OFD follow-up держит `object=ОФД` и отклоняет FN article. Targeted tests: **39 passed**.
+
+### Один новый natural live turn
+
+Новый mixed greeting + request for a simple OFD definition дал valid Understanding на `openai/gpt-oss-20b` (1,322 tokens). DialogueState сохранил `general/explain`, object ОФД. Stage3 retrieval и planner дали `source_first_exact_section`, generated, approved definition source. Ответ верно объяснил передачу фискальных документов в ФНС, однако также упомянул тариф/договор и очередь передачи, что не требовалось в вопросе. Это подтверждает работающий маршрут, но не достаточное качество. Отдельных массовых прогонов не было.
+
+Рабочий Telegram process не тронут: единственный PID 19552 совпадает с receipt; локальные SHA новее receipt. Следующий gate — живые естественные continuation, diagnosis/operator clarification и receipt lookup с проверкой полной полезности/безопасности; при любом fail runtime не переключать.
+
+## Итог после limited live natural smoke
+
+Проверены Q1 mixed greeting/OFD, Q2 continuation, Evotor diagnosis + оператор clarification, и прямой FD lookup. Q1, Q2, diagnosis/operator, и direct lookup имеют valid provider output; direct lookup потребовал одного retry после подтверждённого общего alias gap (`question`, `information`, `lookup`). Повтор после исправления успешен и даёт ответ из 3 approved Platforma OFD sections. Ни один отказ не дал неподтверждённых технических действий.
+
+Gate остаётся FAILED: продолжение повторяет исходный статический ответ, а Evotor + Platforma OFD diagnosis не имеет применимого approved source и безопасно эскалируется. Единственный прежний worker PID 19552 не остановлен и не обновлён; его receipt hashes показывают старую загруженную версию. Новая версия не заявляется в runtime. Для следующего этапа требуется отдельное согласование source-grounded compositional answering и approved Evotor coverage.
+
+`.env` не считается источником работающей конфигурации: он не задаёт `RAG_ENGINE`, указывает Stage2 collection и пустой Source-first allowlist; PID 19552 использует `source_first`, Stage3 collection и allowlist count 3 из process environment. Запуска из `.env` не делали; текущий worker не тронут.

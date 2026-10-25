@@ -1,0 +1,5 @@
+.env.pilot
+data/
+traces/
+exports/
+preflight-receipt.json

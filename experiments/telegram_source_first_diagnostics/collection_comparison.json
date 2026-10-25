@@ -1,0 +1,185 @@
+{
+  "configured_by_dotenv": "knowledge_organized_stage2_20261022",
+  "v1_2_b_collection_constant": "knowledge_stage3_retrieval_20261022",
+  "collections": [
+    {
+      "name": "knowledge_organized_stage2_20261022",
+      "points": 934,
+      "server_points": 934,
+      "vector_size": 384,
+      "status_counts": {
+        "approved": 672,
+        "draft": 262
+      },
+      "document_count": 269,
+      "approved_document_count": 206
+    },
+    {
+      "name": "knowledge_stage3_retrieval_20261022",
+      "points": 934,
+      "server_points": 934,
+      "vector_size": 384,
+      "status_counts": {
+        "approved": 672,
+        "draft": 262
+      },
+      "document_count": 269,
+      "approved_document_count": 206
+    }
+  ],
+  "point_identity": {
+    "configured_points": 934,
+    "stage3_points": 934,
+    "same_qdrant_point_id_count": 934,
+    "configured_only_point_ids": 0,
+    "stage3_only_point_ids": 0
+  },
+  "document_identity": {
+    "configured_document_count": 269,
+    "stage3_document_count": 269,
+    "same_document_id_count": 269,
+    "configured_only_document_ids": [],
+    "stage3_only_document_ids": [],
+    "documents_with_metadata_or_chunk_count_differences": [
+      {
+        "document_id": "aqsi-device-connection-fields",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "configure_ofd_connection"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "aqsi-device-ofd-oism-current-credentials",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "configure_ofd_connection"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "aqsi-online-ofd-taxcom-account",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "open_ofd_account"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "atol-online-11081-included-providers",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "list_ofd_providers"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "atol-online-11239-change-provider",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "change_ofd_provider"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "atol-online-11256-what-is-ofd",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "explain_ofd"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "edo-upd-discrepancy-2026",
+        "fields": {
+          "operations": {
+            "configured": [
+              "exchange_edo_documents"
+            ],
+            "stage3": [
+              "record_discrepancy"
+            ]
+          },
+          "task_category": {
+            "configured": "edo",
+            "stage3": "document_discrepancy"
+          }
+        }
+      },
+      {
+        "document_id": "evotor-time-mismatch-check-20261019",
+        "fields": {
+          "operations": {
+            "configured": [
+              "configure_settings"
+            ],
+            "stage3": [
+              "diagnose_error"
+            ]
+          },
+          "task_category": {
+            "configured": "settings",
+            "stage3": "error_diagnosis"
+          }
+        }
+      },
+      {
+        "document_id": "platformaofd-archive-kkt",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "archive_cash_register"
+            ]
+          }
+        }
+      },
+      {
+        "document_id": "platformaofd-connect-kkt-to-lkk",
+        "fields": {
+          "operations": {
+            "configured": [
+              "check_transmission"
+            ],
+            "stage3": [
+              "connect_cash_register"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "snapshot_sha256": "655b01c2250d081aa8ceffe2ad56c015ab3aa85963f159496349663695edc131"
+}

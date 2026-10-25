@@ -193,7 +193,9 @@ class ConversationStore:
                             # never a reason to reinterpret the text lexically.
                             diagnostic["understanding_error"] = {
                                 "type": "persisted_semantic_validation",
-                                "error_type": type(exc).__name__}
+                                "error_type": type(exc).__name__,
+                                "phase": getattr(exc, "phase", "persisted_validation"),
+                                "error_code": getattr(exc, "code", "persisted_semantic_validation")}
                             db.execute('UPDATE messages SET diagnostics_json=? WHERE id=?',
                                 (json.dumps(diagnostic, ensure_ascii=False), row['id']))
                             state.revision += 1
