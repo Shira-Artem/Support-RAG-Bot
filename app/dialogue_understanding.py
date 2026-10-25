@@ -581,7 +581,8 @@ def _state_summary(state: DialogueState) -> dict[str, Any]:
             "operation": state.operation, "object": state.object,
             "entities": {k: facts(v) for k, v in task.entities.items()},
             "unknown_facts": list(task.unknown_facts),
-            "symptom": facts([task.symptom]) if task.symptom else [],
+            # Prior task facts are context, not the current-turn Observation.symptom.
+            "prior_symptom_facts": facts([task.symptom]) if task.symptom else [],
             "goals": facts(task.goals), "constraints": facts(task.constraints),
             "details": facts(task.details)},
             "expected_clarification": ({"slot": state.expected.slot, "question": state.expected.question}
@@ -600,6 +601,7 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
         "rules": ["Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.",
             "Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.",
             "Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.",
+            "For the output symptom field, return null when the current message states no symptom; otherwise return only {\"quote\": \"an exact unique substring of current_message\"}. Prior symptom facts are context, never a new current-message symptom.",
             "Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.",
             "Do not infer a cash-register manufacturer from an OFD operator or the reverse.",
         "Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.",

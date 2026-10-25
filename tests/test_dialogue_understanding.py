@@ -6,9 +6,9 @@ import pytest
 
 from app.config import get_settings
 from app.conversation_store import ConversationStore
-from app.dialogue_state import DialogueManager, DialogueState, ExpectedClarification
+from app.dialogue_state import DialogueManager, DialogueState, ExpectedClarification, Fact
 from app.dialogue_understanding import (Understanding, UnderstandingError, response_schema,
-    understand_message, understanding_to_dict, validate_response)
+    _state_summary, understand_message, understanding_to_dict, validate_response)
 from app.source_first_service import SourceFirstService
 
 
@@ -411,6 +411,42 @@ def test_schema_has_semantic_labels_without_evidence_properties():
     assert "enum" not in fields["object"]
     assert "enum" not in fields["intent"]
     assert response_schema()["strict"] is True
+
+
+def test_prior_symptom_summary_is_distinct_from_current_turn_output():
+    text = "Касса не отправляет чеки."
+    state = DialogueState(task_id="task:1", intent="receipt", operation="diagnose")
+    state.symptom = Fact.span(text, "prior", text.index("не отправляет чеки"),
+                              text.index("не отправляет чеки") + len("не отправляет чеки"))
+    before = state.to_dict()
+    active = _state_summary(state)["active_task"]
+    assert "symptom" not in active
+    assert active["prior_symptom_facts"] == [
+        {"value": "не отправляет чеки", "source_message_id": "prior"}]
+    assert state.to_dict() == before
+    assert response_schema()["schema"]["properties"]["symptom"]["type"] == ["object", "null"]
+
+
+def test_current_turn_symptom_is_null_or_exact_current_message_quote():
+    question = "А зачем он нужен кассе?"
+    absent = payload(question, kind="information", relation="continuation", intent="general",
+                     operation="explain", obj=None, symptom=None)
+    _, _, _, observation = validate_response(absent, question, "current")
+    assert observation.symptom is None
+
+    message = "Касса не отправляет чеки."
+    present = payload(message, kind="diagnosis", intent="receipt", operation="diagnose",
+                      obj=None, symptom="не отправляет чеки")
+    _, _, _, observation = validate_response(present, message, "current")
+    assert observation.symptom.quote == "не отправляет чеки"
+    assert observation.symptom.message_id == "current"
+
+    unsupported = payload(message, kind="diagnosis", intent="receipt", operation="diagnose",
+                          obj=None, symptom="нет связи с интернетом")
+    _, _, _, observation = validate_response(unsupported, message, "current")
+    assert observation.symptom is None
+    assert any(item["field"] == "symptom" and item["status"] == "rejected"
+               for item in observation.validation_diagnostics)
 
 
 def test_understanding_is_applied_once_from_sqlite_event(tmp_path):
