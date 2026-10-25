@@ -1,0 +1,43 @@
+# Последовательная программа восстановления
+
+Дата: 2026-10-25. Этот документ фиксирует следующий план, **не запускает реализацию**. Статусы этапов сохраняются в [RAG_MASTER_PLAN](../../docs/RAG_MASTER_PLAN.md). Порядок: P0 → ограниченный diagnostic gate → P1 → P2 → P3. Для каждого шага хранить raw/final ответ, stage route/reason, токены и SHA без персональных данных. Сравнивать одинаковые диалоги, а не отдельную фразу об ОФД.
+
+## P0 — разблокировать полезный разговор в нынешнем пути
+
+**Проблема / evidence.** Telegram 0/6: широкая просьба дошла до retrieval; определение/диагностика/поиск границы по ФН остановились на scope; `expected` потерян и вопрос повторился. Полный suite 376/5. PID 46544 содержит старый snapshot.
+
+**Решение / компоненты.** (1) Единый контракт `request_type/operation/intent` и readiness до retrieval, без узкой regex под одну формулировку. (2) `ConversationStore`/`DialogueManager`: слот закрывать по подтверждённому факту либо явному unknown; сохранять новые симптомы, не отвечая повторно тем же вопросом. (3) `RetrievalPipeline`/`SourceFirstService`: классифицировать ответ как определение, ограничение или действие; применять service/model scope к **действию**, разрешать source-attributed ограничение и нейтральную безопасную проверку при недостающем service. Не допускать product-specific menu без подтверждённой области. Классифицировать четыре настоящих падения и пересмотреть устаревшее ожидание, не исправляя тесты автоматически.
+
+**Риск.** Чрезмерное ослабление applicability может открыть чужую процедуру; слишком широкое explain → general может скрыть действие. **Приёмка.** Один и тот же fake Telegram → real SQLite путь проходит диалоги D1–D3 из [acceptance_scenarios](acceptance_scenarios.md), не повторяет сервисный вопрос и даёт минимум безопасный частичный ответ, если источник его поддерживает. Полный offline suite зелёный или каждая оставшаяся non-safety проблема явно согласована; safety negatives 100% blocked. **Тесты.** Unit на переходы, search scope, exact source; SQLite-backed `bot.handle_message`; один bounded live-path прогон только после offline gate, затем отдельный ручной allowlist пилот после проверенного worker switch. **Остановка.** Любое неподтверждённое действие, потеря обязательного условия, неверное наследование сервиса или runtime SHA mismatch останавливает switch; без useful progress на тех же диалогах прекратить косметические fixes и перейти к P1 проектированию без пилота.
+
+## P1 — минимальная разговорная архитектура B
+
+**Проблема / evidence.** Пять разных классификаций и два scope gate связывают общение с источником; Oracle показывает сильное понимание модели, но слабую техническую точность.
+
+**Решение / компоненты.** Feature-flagged coordinator и typed route contract `conversation|grounded_information|technical_action`; reducer владеет task/slot; safe social route без KB; information route с approved evidence и claim ledger; technical route с существующим exact-section renderer, applicability и risk policy. Объединить дублирующиеся scope решения в один источник истины. Для уточнения хранить slot, причину, число повторов и какое новое evidence было получено. Legacy partial-answer/coverage notice перенести только после safety проверки.
+
+**Риск.** Ошибка координатора направит технический запрос в обычный диалог; исключить технические факты/действия из conversation route детерминированным output guard. **Приёмка.** На замороженных D1–D5 и safety S1–S6: ни одного safety breach, task continuity/new task/unknown slot проходят, не менее 70% из 21 пользовательской реплики получают полезный ответ либо содержательное необходимое уточнение; повтор одинакового слота максимум один без новых фактов. Это предварительный локальный порог, не production SLA. **Тесты.** Парное A/B offline E2E на одинаковом raw Understanding и KB snapshot; shadow replay без отправки в Telegram; ручная оценка полезности слепо к варианту; provider/SQLite/restart fault cases. **Остановка.** Если B не превосходит A по полезности при тех же safety limits или даёт хоть одно неподтверждённое действие, не переключать runtime.
+
+## P2 — RAG, grounding, меньше лишних эскалаций
+
+**Проблема / evidence.** Stage3 selected reference 40/83, 31 reference случаев `task_unresolved` в историческом срезе; approved статьи имеют vendor scope и question-only sections. Q2 Repair содержал поддержанную и неподдержанную фразы, но ответ был потерян. Одна выбранная секция ограничивает ответ.
+
+**Решение / компоненты.** Небольшой приоритетный набор approved карточек для общих определений и безопасной диагностики по source review; отдельная метка applicability каждого факта/шага; rerank answer-bearing sections и проверка связанных предупреждений, а не слепой top section. Claim ledger: supported/unsupported/conditional с provenance, аккуратная частичная выдача только независимых утверждений. Judge оставить как quality check релевантности там, где измеренная польза покрывает ошибки/стоимость; failure должен давать fallback на следующий допустимый source либо честное ограничение, не цикл Repair.
+
+**Риск.** Неполный KB и парафразный false accept/false reject; частичный ответ может потерять условие. **Приёмка.** На независимом holdout растёт доля полезных grounded ответов и падает доля неуместных эскалаций при 0 dangerous false accepts; по каждому реальному отказу известен stage/reason. **Тесты.** Source-level разметка секций, claim/step проверки с отрицательными парами, retrieval recall и applicability отдельно, ручная оценка новых обращений. **Остановка.** При первом опасном false accept остановить расширение и восстановить safety; при отсутствии достаточного approved evidence не компенсировать выдумкой или переиндексацией без отдельного решения.
+
+## P3 — токены, задержка, расширяемость
+
+**Проблема / evidence.** Успешный двухходовый ограниченный live прогон: 9 вызовов, 13 352 токена; отдельные прогоны имели provider 429. Результат не является средней стоимостью трафика.
+
+**Решение / компоненты.** На основе per-stage traces убрать дублирующие вызовы Judge/Repair, где их marginal quality доказанно нулевая, кэшировать только immutable approved sections и безопасные общие определения по source SHA, ограничить history/section payload без потери условий. Сформировать обобщённые metadata contracts для новых тем вместо роста regex. Инструментировать p50/p95 latency, calls/turn, prompt/completion, отказ по стадии.
+
+**Риск.** Кэш устаревает, truncation отбрасывает условия, уменьшение проверок повышает false accept. **Приёмка.** На том же holdout и safety наборе calls/tokens и p95 уменьшаются относительно P1 baseline без снижения usefulness/grounding и без safety breach. **Тесты.** Парные трассы до/после, invalidation по source SHA, rate-limit/failure injection. **Остановка.** Если экономия достигается ценой неподтверждённого шага или падения качества, откатить оптимизацию.
+
+## Первые три конкретные задачи
+
+1. Создать изолированный SQLite-backed тест, вызывающий `bot.handle_message` на всех шести обезличенных репликах с provider fixtures и restart/replay; записать exact route/reason/raw/final без ключей и IDs. Не передавать вручную state в сервис.
+2. Исправить контракт task/expected/route и классифицировать пять падений согласно [failure_matrix](failure_matrix.md), сохраняя отрицательные тесты на подмену сервиса и опасные действия. Добиться прохождения offline safety и principal dialogue routes.
+3. Разделить `information limitation` и `technical procedure` в applicability: дать ответ с явной областью источника и безопасную частичную диагностику Эвотор, не выдавая настройки или модели без подтверждения. Сравнить тот же набор до/после.
+
+**Кратчайший безопасный путь к следующему ручному Telegram-пилоту:** эти три задачи в P0 → полный offline suite + SQLite E2E + отрицательные safety cases → ровно один bounded live-path прогон с лимитом вызовов/токенов → сверка PID/receipt/source SHA/allowlist/коллекции и единственный switch worker только по отдельному разрешённому заданию → ручной пилот на D1–D3 с записью usefulness и safety отдельно. При безопасном, но малополезном результате не заявлять успех; P1 уже выбран как дальнейшее направление.
