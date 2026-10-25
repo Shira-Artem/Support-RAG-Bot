@@ -55,6 +55,30 @@ def test_information_is_explain_and_separates_ofd_from_manufacturer():
     assert state.entity("manufacturer") is None and state.entity("ofd") is None
 
 
+def test_explanation_operation_supplies_generic_intent_when_model_omits_it():
+    text = "Что такое ОФД?"
+    raw = payload(text, kind="information", intent="unknown", operation="explain",
+                  obj="ОФД", object_quote="ОФД", relation="new_task")
+    kind, _, _, observation = validate_response(raw, text, 77)
+    assert kind == "information"
+    assert observation.intent == "general" and observation.operation == "explain"
+    assert any(item.get("reason") == "general_intent_from_explanation_operation"
+               for item in observation.validation_diagnostics)
+
+
+def test_followup_cannot_clear_pending_scope_question_without_answer():
+    previous = DialogueState(task_id="task:1", intent="receipt", operation="diagnose",
+        expected=ExpectedClarification("service", "Какой оператор?", 2, "source_scope_context_missing"))
+    text = "Интернет работает, что ещё проверить?"
+    raw = payload(text, kind="information", intent="unknown", operation="diagnose", obj=None,
+        relation="answer_to_clarification", goal="что ещё проверить?")
+    _, _, _, observation = validate_response(raw, text, 77)
+    state = DialogueManager().advance(previous, text, 77, observation=observation)
+    assert state.transition == "continue_task"
+    assert state.expected == previous.expected
+    assert any(f.value == "что ещё проверить?" for f in state.goals)
+
+
 def test_definition_wording_overrides_lookup_label_without_object_specific_rules():
     examples = (
         ("Что такое ОФД?", "ОФД"),
@@ -173,6 +197,7 @@ def test_unknown_model_is_persisted_and_not_invented():
     assert state.task_context.unknown_facts == ["equipment"]
     assert state.task_context.unknown_facts == list(obs.unknown_facts)
     assert not state.task_entities.get("equipment")
+    assert state.expected is None
 
 
 def test_unknown_fact_requires_a_quote_from_the_current_message():
@@ -258,8 +283,10 @@ def test_unknown_operation_on_grounded_information_question_uses_read_only_searc
     data = payload(text, kind="information", intent="information_request",
         operation="unrecognized_lookup_label", obj="receipt", object_quote="чек", goal=text)
     kind, _, _, obs = validate_response(data, text, 77)
-    assert kind == "information" and obs.intent == "general" and obs.operation == "search"
+    assert kind == "information" and obs.intent == "receipt" and obs.operation == "search"
     assert any(d.get("reason") == "safe_information_lookup_from_grounded_goal"
+               for d in obs.validation_diagnostics)
+    assert any(d.get("reason") == "unique_task_family_from_grounded_direct_object"
                for d in obs.validation_diagnostics)
     state = DialogueManager().advance(DialogueState(), text, 77, observation=obs)
     assert state.operation == "search" and state.expected is None

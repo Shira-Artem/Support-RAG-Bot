@@ -785,7 +785,7 @@ class LexicalAnalyzer:
         # participle ("созданному") likewise must not outrank a command.
         if elliptical_search:
             obs.operation = 'search'
-        if obs.intent == 'device' and obs.operation == 'check' and has(tokens, ('список', 'перечень')):
+        if obs.operation == 'check' and has(tokens, ('список', 'перечень')):
             obs.operation = 'list'
         if obs.question and len(set(commands)) > 1:
             obs.uncertain = True  # several requested operations need disambiguation
@@ -1045,6 +1045,40 @@ class DialogueManager:
         relation = obs.relation
         if not previous.task_id:
             relation = "new_task"
+        # A model may label any follow-up as an answer to the last question.
+        # Keep a slot clarification active until the client supplies that
+        # slot (or explicitly says they do not know it); this lets new symptoms
+        # and constraints accumulate without silently clearing the blocker.
+        elif relation == "answer_to_clarification" and previous.expected is None:
+            relation = "continue"
+        elif (relation == "answer_to_clarification" and previous.expected
+              and previous.expected.slot in ENTITY_SLOTS
+              and not (obs.entities.keys() & {
+                  "service": {"service", "ofd", "software", "integration"},
+                  "ofd": {"ofd", "service"},
+                  "manufacturer": {"manufacturer"}, "equipment": {"equipment"},
+                  "model": {"equipment"}, "software": {"software"},
+                  "integration": {"integration"},
+              }.get(previous.expected.slot, {previous.expected.slot}))
+              and previous.expected.slot not in obs.unknown_facts):
+            relation = "continue"
+        elif (relation == "new_task" and previous.expected
+              and previous.expected.slot in ENTITY_SLOTS
+              and obs.operation == "unknown" and not obs.new_topic
+              and not obs.symptom and not obs.error and not obs.question):
+            # A short ambiguous reply to a route/model question supplies no
+            # new task and cannot close the outstanding slot.
+            relation = "continue"
+        elif (relation == "new_task" and previous.task_id and not obs.new_topic
+              and not obs.symptom and not obs.error and bool(obs.entities)
+              and (obs.object in {None, previous.object}
+                   or (obs.intent == "general" and obs.object == "ОФД" and not obs.question))
+              and obs.operation in {"unknown", previous.operation}
+              and obs.intent in {"unknown", "general", previous.intent}):
+            # A newly supplied route plus elaboration of the same action is
+            # context for the active task, even when the route's generic noun
+            # gave the lexical analyser a coarse intent label.
+            relation = "continue"
         elif relation == "unknown" and (obs.intent != "unknown" and obs.intent != previous.intent
                                          or obs.operation == "explain"):
             relation = "new_task"
@@ -1185,13 +1219,35 @@ class DialogueManager:
         _append_unique(state.goals, obs.goals)
         _append_unique(state.constraints, obs.constraints)
         _append_unique(state.details, obs.details)
+        if relation != "new_task" and obs.goals and not obs.symptom and not obs.details:
+            # A provider goal can cover only the question at the end of a
+            # message. Retain any separate client statement as an exact span.
+            # This preserves newly reported conditions without treating them
+            # as a confirmed route, model, or inferred diagnosis.
+            remaining = list(text)
+            claimed = [*obs.goals, *obs.constraints, *obs.parameters,
+                       *(fact for values in obs.entities.values() for fact in values)]
+            for fact in claimed:
+                for index in range(fact.start, fact.end):
+                    remaining[index] = " "
+            for match in re.finditer(r"[^.!?]+", "".join(remaining)):
+                raw = match.group()
+                leading = len(raw) - len(raw.lstrip(" ,:;—–\t\n"))
+                trailing = len(raw.rstrip(" ,:;—–\t\n"))
+                start, end = match.start() + leading, match.start() + trailing
+                if end > start and len(words(text[start:end])) >= 2:
+                    _append_unique(state.details, [Fact.span(text, message_id, start, end)])
         if obs.error:
             if previous.error and previous.error.value != obs.error.value:
                 _append_unique(state.superseded_facts, [previous.error])
             state.error = obs.error
         if relation == "contradiction":
             _append_unique(state.details, [obs.evidence])
-        elif obs.feedback or (previous.expected and relation == "continue"):
+        elif (obs.feedback
+              or (previous.expected and relation == "continue"
+                  and (obs.entities or obs.goals or obs.constraints or obs.parameters
+                       or obs.symptom or obs.unknown_facts))
+              or (relation == "continue" and obs.relation == "new_task" and obs.entities)):
             _append_unique(state.details, [obs.evidence])
         if previous.expected and relation == "answer_to_clarification":
             state.expected = None

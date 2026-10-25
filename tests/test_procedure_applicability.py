@@ -83,10 +83,12 @@ def test_specialized_aqsi_procedure_needs_confirmed_applicability():
     )
     missing = document_applicability(generic, guide.metadata, technical=True)
     assert "equipment" in missing
-    assert _state_task_category(generic, generic.task.value) == "ofd_connection"
+    # A generic configured-OFD question does not authorize a connection
+    # procedure; the specialized IP/port source still needs confirmed scope.
+    assert _state_task_category(generic, generic.task.value) is None
     retrieval = RetrievalPipeline(Source([guide])).search(generic, generic.task.value)
     assert not retrieval.documents
-    assert retrieval.insufficiency_reason == "applicability_context_missing"
+    assert retrieval.insufficiency_reason == "no_task_matched_candidates"
 
     confirmed = state("На кассе aQsi Online как узнать, какой ОФД подключён?")
     assert not document_applicability(confirmed, guide.metadata, technical=True)

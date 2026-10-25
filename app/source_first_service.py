@@ -65,6 +65,53 @@ def _question_only_section(item: dict) -> bool:
             and "\n" not in text and not any(mark in text[:-1] for mark in (".", "!")))
 
 
+_LIMITATION_CLAIM = re.compile(
+    r"\bне\s+(?:подтвержд\w*|указан\w*|описан\w*|предусмотрен\w*|"
+    r"поддержива\w*|доступен\w*|найден\w*|содерж\w*)\b|\bнельзя\b", re.I)
+_LOOKUP_WORDS = {"number", "номер", "поиск", "найт", "найти", "искать", "можно", "прям", "filter"}
+
+
+def _scoped_limitation_matches(item: dict, question: str, state: DialogueState) -> bool:
+    """A source-specific negative fact may be quoted without a customer route.
+
+    A retrieved, task-matched approved section must state an explicit limit
+    about the distinctive subject of this question. No procedure or interface
+    sentence is allowed into this exceptional information route.
+    """
+    if (state.operation not in {"search", "check", "status", "list"}
+            or not _SCOPE_OR_SAFETY_HEADING.search(item["section"])):
+        return False
+    subject = content_terms(question) - content_terms(state.object or "") - _LOOKUP_WORDS
+    if not subject or unsafe_operation_issue(item["text"]):
+        return False
+    claims = statements(item["text"])
+    if not claims or any(evidence_kind(claim, "") in {"procedure", "interface"}
+                         for claim in claims):
+        return False
+    return any(_LIMITATION_CLAIM.search(claim) and subject & content_terms(claim)
+               for claim in claims)
+
+
+def _generic_preflight(body: str, state: DialogueState, scope: dict) -> str | None:
+    """Take only the first independent checklist item before model-specific steps.
+
+    This is a narrow fail-closed fallback for a confirmed manufacturer without
+    a confirmed equipment model. Later numbered items can depend on a model or
+    the result of preceding checks, so they are never promoted independently.
+    """
+    if (not scope.get("manufacturer") or not state.task_entity("manufacturer")
+            or state.task_entity("equipment")):
+        return None
+    first = next((line.strip() for line in body.splitlines()
+                  if re.match(r"^\s*1[.)]\s+", line)), None)
+    if (not first or re.search(r"\b(?:на|для|у)\s+модел\w*\b", first, re.I)
+            or not re.search(r"\b(?:выясн|уточн|определ|назов|сообщ)\w*.{0,30}\bмодел\w*", first, re.I)):
+        return None
+    if unsafe_operation_issue(first) or evidence_kind(first, "") == "interface":
+        return None
+    return first
+
+
 def _validate_information_composition(candidate: str, evidence: str,
                                       section: str) -> tuple[str | None, str]:
     """Accept only a short, non-procedural answer whose every sentence is grounded."""
@@ -483,7 +530,16 @@ class SourceFirstService:
                           generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
         # DialogueState is authoritative for whether a task is ready. Do not
         # turn a vague request into a retrieval miss followed by escalation.
-        incomplete_task = ((state.expected and state.expected.slot in {"task", "goal", "details"})
+        # `explain` can mean either a complete concept question or a broad
+        # request to help. Only explicit definition/explanation questions are
+        # retrieval-ready; do not convert “help me figure out cash registers”
+        # into a technical search or a false evidence failure.
+        broad_explanation = (state.intent == "general" and state.operation == "explain"
+            and not re.search(r"\b(?:что такое|кто такой|что означает|зачем|почему|для чего|как работает|"
+                              r"объясни(?:те)?|расскажи(?:те)?)\b",
+                              user_message, re.I))
+        incomplete_task = (broad_explanation
+                           or (state.expected and state.expected.slot in {"task", "goal", "details"})
                            or state.analysis_required
                            or state.operation == "unknown")
         if incomplete_task:
@@ -557,6 +613,7 @@ class SourceFirstService:
         inapplicable = []
         if not informational:
             scoped = []
+            scoped_limitations = []
             for item in sections:
                 scope = item["scope"]
                 required = [("service", {"service", "ofd"}),
@@ -570,6 +627,14 @@ class SourceFirstService:
                         continue
                     values = {fact.value.casefold() for slot in client_slots
                               for fact in state.task_entities.get(slot, [])}
+                    # Some reviewed vendor documents encode the device maker
+                    # in `service` because their procedures are specific to
+                    # that vendor's equipment. Accept that route only when
+                    # the exact metadata value matches a client-confirmed
+                    # manufacturer; this does not confirm an OFD operator.
+                    if field == "service" and not values:
+                        values = {fact.value.casefold()
+                                  for fact in state.task_entities.get("manufacturer", [])}
                     if not values:
                         missing_slots.append(field)
                     elif not any(expected_value.casefold() in value or value in expected_value.casefold()
@@ -584,6 +649,9 @@ class SourceFirstService:
                                        if ("equipment" if field == "model" else field) not in unknown_slots]
                     inapplicable.append({"document_id": item["document_id"], "reason": "scope_fact_missing",
                                          "missing": missing_slots, "askable_missing": askable_missing})
+                    if (missing_slots == ["service"] and scope.get("service")
+                            and _scoped_limitation_matches(item, user_message, state)):
+                        scoped_limitations.append(item)
                     continue
                 scoped.append(item)
             sections = scoped
@@ -592,8 +660,47 @@ class SourceFirstService:
                 "eligible_source_count": len(sections),
                 "reason": "customer_confirmed_scope_required_for_procedures"}
             if not sections and inapplicable:
+                limitation_docs = {item["document_id"] for item in scoped_limitations}
+                if len(limitation_docs) == 1 and scoped_limitations:
+                    selected_limit = scoped_limitations[0]
+                    path = self.root / selected_limit["source"]
+                    if sha256(path.read_bytes()).hexdigest() != selected_limit["source_sha256"]:
+                        return self._escalate("Источник изменился во время обработки запроса. Запросите специалиста.",
+                            "source_changed_during_answer", selected_limit["source"], started, **base)
+                    exact_body = next((content for heading, content in _sections(
+                        path.read_text(encoding="utf-8").split("---", 2)[2].strip())
+                        if heading == selected_limit["section"]), None)
+                    if exact_body != selected_limit["text"]:
+                        return self._escalate("Не удалось подтвердить раздел источника. Запросите специалиста.",
+                            "source_section_changed", selected_limit["source"], started, **base)
+                    base["retrieval_diagnostics"]["source_scope_gate"].update({
+                        "reason": "source_attributed_limitation_only",
+                        "limitation_source": selected_limit["source"],
+                        "customer_scope_confirmed": False})
+                    scope_name = selected_limit["scope"]["service"]
+                    answer_text = (f"По документации «{scope_name}» (ваш сервис пока не подтверждён):\n"
+                                   f"{exact_body}\n\nИсточник: {selected_limit['source']} — "
+                                   f"{selected_limit['section']}")
+                    return Answer(answer_text, scenario="answer",
+                        scenario_reason="source_first_scoped_limitation",
+                        generation_status="generated", validation_status="exact_scoped_limitation",
+                        validation_reason="approved local section hash and heading reverified; no procedure",
+                        duration_ms=round((perf_counter()-started)*1000), **base)
                 missing = next((slot for item in inapplicable for slot in item.get("askable_missing", [])), None)
                 if missing:
+                    # A pending scope question is state, not a prompt to emit
+                    # the same sentence on every follow-up. Acknowledge new
+                    # information and explain the evidence boundary while
+                    # leaving that clarification active for a later reply.
+                    if state.expected and state.expected.slot == missing:
+                        return Answer(
+                            "Понял новую деталь. Для этой инструкции всё ещё не хватает подтверждённого "
+                            "сервиса или оператора, поэтому я не буду называть его параметры или советовать "
+                            "менять настройки. Можно прислать модель кассы или точный текст ошибки — "
+                            "это поможет выбрать безопасную проверку.",
+                            scenario="clarify", scenario_reason="source_scope_context_still_missing",
+                            clarification_slot=missing, generation_status="clarification",
+                            duration_ms=round((perf_counter()-started)*1000), **base)
                     questions = {"service": "Какой сервис или оператор ОФД используется?",
                                  "manufacturer": "Какой производитель оборудования используется?",
                                  "model": "Уточните модель оборудования."}
@@ -677,7 +784,22 @@ class SourceFirstService:
                 return self._escalate("Не удалось подтвердить целостность выбранного раздела. Запросите специалиста.",
                                       "source_section_changed", selected["source"], started, **base,
                                       generation_status="error")
-            rendered_sections = [body]
+            preflight = _generic_preflight(body, state, selected["scope"])
+            missing_manufacturer_model = (not informational
+                and selected["scope"].get("manufacturer")
+                and state.task_entity("manufacturer")
+                and not state.task_entity("equipment"))
+            if (missing_manufacturer_model and not preflight
+                    and evidence_kind(body, "") in {"procedure", "interface"}):
+                return Answer("Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+                    scenario="clarify", scenario_reason="source_model_scope_missing",
+                    clarification_slot="equipment", generation_status="clarification",
+                    duration_ms=round((perf_counter()-started)*1000), **base)
+            rendered_sections = [preflight or body]
+            if preflight:
+                base["retrieval_diagnostics"]["partial_evidence"] = {
+                    "reason": "model_unconfirmed_first_independent_preflight_only",
+                    "selected_section": selected["section"], "step_count": 1}
             source_body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
             for related in sections:
                 if (related["document_id"] != selected["document_id"] or related["id"] == selected["id"]
@@ -690,6 +812,9 @@ class SourceFirstService:
                     return self._escalate("Не удалось подтвердить целостность связанного ограничения источника. Запросите специалиста.",
                                           "source_context_section_changed", related["source"], started, **base,
                                           generation_status="error")
+                if preflight and any(evidence_kind(claim, "") in {"procedure", "interface"}
+                                     for claim in statements(exact_related)):
+                    continue
                 rendered_sections.append(f"Дополнительное условие источника ({related['section']}):\n{exact_related}")
             exact_render = "\n\n".join(rendered_sections)
             if unsafe_operation_issue(exact_render):
@@ -968,8 +1093,30 @@ class SourceFirstService:
                 scenario_reason = "source_first_grounded_information_summary"
             else:
                 text = f"{exact_render}\n\nИсточник: {selected['source']} — {selected['section']}"
-                validation_status = "exact_source_copy"
-                scenario_reason = "source_first_exact_section"
+                validation_status = "exact_source_preflight" if preflight else "exact_source_copy"
+                scenario_reason = ("source_first_safe_preflight" if preflight
+                                   else "source_first_exact_section")
+                if any(item.get("role") == "assistant" and item.get("content") == text
+                       for item in (history or [])):
+                    # The planner selects an approved section, while this
+                    # renderer copies it verbatim. A different follow-up must
+                    # not receive the same complete answer a second time.
+                    previous_followup = any(item.get("role") == "assistant"
+                        and item.get("scenario_reason") == "grounded_section_followup_scope_needed"
+                        for item in (history or []))
+                    missing_model = (state.routing_slot == "manufacturer"
+                        and not state.task_entity("equipment")
+                        and "equipment" not in state.task_context.unknown_facts)
+                    if missing_model and not previous_followup:
+                        return Answer(
+                            "Этот раздел инструкции я уже привёл. Для следующей применимой проверки укажите точную модель оборудования.",
+                            scenario="clarify", scenario_reason="grounded_section_followup_scope_needed",
+                            clarification_slot="equipment", generation_status="clarification",
+                            duration_ms=round((perf_counter()-started)*1000), **base)
+                    return self._escalate(
+                        "Этот раздел инструкции уже приведён, а следующего подтверждённого шага для вашего случая не нашёл. Запросите специалиста кнопкой ниже.",
+                        "grounded_section_followup_exhausted", "same_approved_section_already_answered",
+                        started, **base)
             base.update(scenario="answer", scenario_reason=scenario_reason,
                         generation_status="generated", validation_status=validation_status,
                         validation_reason=("each information sentence independently supported by the selected approved section"

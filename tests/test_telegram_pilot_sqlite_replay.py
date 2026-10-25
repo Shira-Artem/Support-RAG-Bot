@@ -1,0 +1,390 @@
+"""Six-turn Telegram pilot through bot.py and a disposable SQLite database.
+
+Provider output is a synthetic fixture matching the *validated* fields seen in
+the saved pilot diagnostics. The provider's original JSON was unavailable, so
+this test does not claim to reproduce its exact bytes. No network or user DB is
+used. Routing fixes and the separate source-scope gap are asserted independently.
+"""
+
+import asyncio
+import importlib
+import json
+import os
+from pathlib import Path
+import sys
+from types import SimpleNamespace
+from unittest.mock import AsyncMock
+
+import pytest
+
+from app.config import Settings
+from app.conversation_store import ConversationStore
+from app.dialogue_understanding import Understanding, validate_response
+from app.expert_store import ExpertStore
+from app.knowledge import Chunker, DocumentLoader
+from app.llm_client import Generation
+from app.rag import SearchResult
+from app.retrieval_pipeline import RetrievalPipeline
+
+
+ROOT = Path(__file__).resolve().parents[1]
+FIXTURE = ROOT / "tests/fixtures/telegram_pilot_20261025_provider.json"
+SOURCES = (
+    "atol_online/ofd/what-is-ofd.md",
+    "evotor/ofd/ofd-unable-to-connect.md",
+    "platformaofd/ofd/lkk-receipt-search.md",
+)
+
+
+def _provider_payload(case):
+    return {
+        "request_type": case["request_type"],
+        "relation": case["relation"],
+        "intent": case["intent"],
+        "operation": case["operation"],
+        "object": case.get("object"),
+        "object_evidence": ({"quote": case["object_quote"]}
+                            if case.get("object_quote") else None),
+        "goal": {"quote": case["goal"]} if case.get("goal") else None,
+        "symptom": {"quote": case["symptom"]} if case.get("symptom") else None,
+        "entities": [{"slot": slot, "value": value, "evidence": {"quote": quote}}
+                     for slot, value, quote in case.get("entities", [])],
+        "unknown_facts": [],
+        "specialist_requested": False,
+        "specialist_evidence": None,
+        "confidence": 0.91,
+    }
+
+
+class LocalApprovedCandidates:
+    """Only the external Qdrant candidate boundary is replaced."""
+
+    def __init__(self):
+        loader = DocumentLoader(ROOT / "data/knowledge")
+        chunker = Chunker()
+        chunks = [chunk for source in SOURCES
+                  for chunk in chunker.split(loader.load(ROOT / "data/knowledge" / source))]
+        self.hits = [SearchResult(chunk.metadata["source"], chunk.text, 0.9,
+                                  semantic_score=0.9, lexical_score=0.9,
+                                  metadata=chunk.metadata) for chunk in chunks]
+        self.by_document = {}
+        for hit in self.hits:
+            self.by_document.setdefault(hit.metadata["document_id"], []).append(hit)
+        self.searches = []
+
+    def search(self, query, top_k=100):
+        self.searches.append(query)
+        return self.hits[:top_k]
+
+    def article(self, document_id):
+        return self.by_document.get(document_id, [])
+
+
+class LocalRag:
+    retriever = None
+
+    def __init__(self):
+        self.source = LocalApprovedCandidates()
+        self.pipeline = RetrievalPipeline(self.source)
+
+    def search_for_state(self, state, query):
+        return self.pipeline.search(state, query)
+
+
+def _assert_client_fact_provenance(store, cid):
+    with store.connect() as db:
+        users = {row["id"]: row["content"] for row in db.execute(
+            "SELECT id,content FROM messages WHERE conversation_id=? AND role='user'", (cid,))}
+    state = store.dialogue_state(cid)
+    facts = [fact for values in state.session.entities.values() for fact in values]
+    if state.task_context:
+        task = state.task_context
+        facts += [fact for values in task.entities.values() for fact in values]
+        facts += [fact for fact in (task.task_fact, task.symptom, task.object_reference)
+                  if fact is not None]
+        facts += [*task.goals, *task.constraints, *task.details, *task.parameters]
+    for fact in facts:
+        assert fact.message_id in users
+        assert users[fact.message_id][fact.start:fact.end] == fact.quote
+
+
+def _safe_state(state, prior_task_id):
+    return {
+        "task_changed": state.task_id != prior_task_id,
+        "intent": state.intent,
+        "operation": state.operation,
+        "object": state.object,
+        "relation": state.relation,
+        "expected_slot": state.expected.slot if state.expected else None,
+        "routing_service": state.routing_service,
+        "confirmed_manufacturer": state.task_entity("manufacturer"),
+        "confirmed_equipment": state.task_entity("equipment"),
+        "goal_count": len(state.goals),
+        "client_details": [fact.value for fact in state.details],
+        "unknown_facts": list(state.task_context.unknown_facts),
+    }
+
+
+def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False):
+    path = tmp_path / "isolated_pilot.sqlite3"
+    store = ConversationStore(path)
+    rag = LocalRag()
+    settings = Settings(telegram_bot_token="offline-token", openrouter_api_key="",
+        openrouter_model="offline", app_name="offline", app_url="http://localhost",
+        show_sources=True, docs_dir=ROOT / "data/docs", llm_provider="groq",
+        groq_api_key="offline-key", groq_model="offline-model",
+        groq_reasoning_effort="low", rag_engine="source_first",
+        source_first_telegram_ids=frozenset({42}))
+
+    class ReadOnlyQdrantCheck:
+        def __init__(self, **_kwargs):
+            pass
+        def collection_exists(self, _name):
+            return True
+        def get_collection(self, _name):
+            return SimpleNamespace(points_count=1)
+
+    monkeypatch.setenv("RAG_BACKEND", "qdrant")
+    monkeypatch.setattr("app.config.get_settings", lambda: settings)
+    monkeypatch.setattr("app.compat.build_answer_rag", lambda _docs: rag)
+    monkeypatch.setattr("app.conversation_store.ConversationStore", lambda: store)
+    monkeypatch.setattr("app.expert_store.ExpertStore", lambda: ExpertStore(tmp_path / "expert.sqlite3"))
+    monkeypatch.setattr("qdrant_client.QdrantClient", ReadOnlyQdrantCheck)
+    monkeypatch.setattr("app.source_first_service._append_composer_rejection", lambda *_args: None)
+    sys.modules.pop("bot", None)
+    bot = importlib.import_module("bot")
+    try:
+        provider_calls = []
+        generation_calls = []
+        planner_choices = []
+
+        async def fake_understanding(text, message_id, _history, _state, _settings):
+            case = cases[len(provider_calls)]
+            assert text == case["text"]
+            raw = _provider_payload(case)
+            kind, specialist, unknown, observation = validate_response(raw, text, message_id)
+            provider_calls.append(raw)
+            return Understanding(kind, specialist, unknown, observation, {}, "offline-fixture", 0,
+                                 raw, observation.validation_diagnostics)
+
+        async def fake_generation(messages, _settings):
+            payload = json.loads(messages[-1]["content"])
+            if "candidate_sections" in payload:
+                generation_calls.append("planner")
+                sections = payload["candidate_sections"]
+                preferred = next((item for item in sections if
+                                  "Что проверено" in item["section"] or
+                                  "Безопасные проверки" in item["section"] or
+                                  "Ограничения" in item["section"]), sections[0])
+                planner_choices.append({"id": preferred["id"], "section": preferred["section"],
+                                        "source": preferred["source"]})
+                value = {"mode": "select", "section_id": preferred["id"],
+                         "applicability_confirmed": True, "order_confirmed": True,
+                         "reason": "offline fixture selects an available approved section"}
+                return Generation(json.dumps(value, ensure_ascii=False), "offline-fixture", 0, 0, 0)
+            if "approved_evidence_fragments" in payload:
+                generation_calls.append("judge")
+                fragments = payload["approved_evidence_fragments"]
+                value = {"verdict": "relevant", "answers_current_question": True,
+                         "supporting_evidence_ids": [fragments[0]["id"]] if fragments else []}
+                return Generation(json.dumps(value, ensure_ascii=False), "offline-fixture", 0, 0, 0)
+            if "approved_source_excerpt" in payload or "exact_approved_evidence" in payload:
+                generation_calls.append("composer_or_repair")
+                body = payload.get("approved_source_excerpt") or payload["exact_approved_evidence"]
+                sentence = body.split(".", 1)[0].strip() + "."
+                return Generation(sentence, "offline-fixture", 0, 0, 0)
+            raise AssertionError("Unexpected model stage")
+
+        monkeypatch.setattr(bot, "understand_message", fake_understanding)
+        monkeypatch.setattr("app.source_first_service.generate", fake_generation)
+        reply = AsyncMock()
+        message = SimpleNamespace(text="", reply_text=reply,
+                                  chat=SimpleNamespace(send_action=AsyncMock()))
+        update = SimpleNamespace(message=message, effective_message=message,
+                                 effective_user=SimpleNamespace(id=42),
+                                 effective_chat=SimpleNamespace(id=42))
+        store.new(42, 42)
+        trace = []
+
+        async def run_dialogue():
+            nonlocal store
+            for index, case in enumerate(cases, 1):
+                store = ConversationStore(path)
+                bot.conversations = store
+                cid = store.state(42, 42)["conversation_id"]
+                before = store.dialogue_state(cid)
+                search_start, generation_start = len(rag.source.searches), len(generation_calls)
+                planner_start = len(planner_choices)
+                message.text = case["text"]
+                reply.reset_mock()
+                await bot.handle_message(update, None)
+                assert reply.await_count == 1
+                with store.connect() as db:
+                    rows = db.execute("SELECT role,content,diagnostics_json FROM messages "
+                                      "WHERE conversation_id=? ORDER BY id DESC LIMIT 2", (cid,)).fetchall()
+                assistant, user = rows
+                assert user["role"] == "user" and user["content"] == case["text"]
+                assert assistant["role"] == "assistant" and assistant["content"] == reply.await_args.args[0]
+                user_diagnostic = json.loads(user["diagnostics_json"])
+                answer_diagnostic = json.loads(assistant["diagnostics_json"])
+                assert user_diagnostic["semantic_mode"] is True
+                assert user_diagnostic["understanding"] is not None
+                after = store.dialogue_state(cid)
+                _assert_client_fact_provenance(store, cid)
+                restarted = ConversationStore(path)
+                assert restarted.dialogue_state(cid).to_dict() == after.to_dict()
+                assert restarted.dialogue_state(cid).to_dict() == after.to_dict()
+                retrieval = answer_diagnostic.get("retrieval_diagnostics") or {}
+                trace.append({
+                    "turn": index,
+                    "user_text": case["text"],
+                    "raw_provider_fixture": provider_calls[-1],
+                    "validated": {"request_type": user_diagnostic["understanding"]["request_type"],
+                                  "intent": after.intent, "operation": after.operation},
+                    "state": _safe_state(after, before.task_id),
+                    "route": answer_diagnostic.get("scenario"),
+                    "reason": answer_diagnostic.get("scenario_reason"),
+                    "retrieval_reason": retrieval.get("insufficiency_reason"),
+                    "retrieval_called": len(rag.source.searches) > search_start,
+                    "generation_stages": generation_calls[generation_start:],
+                    "planner_choices": planner_choices[planner_start:],
+                    "final_reply": assistant["content"],
+                })
+
+        asyncio.run(run_dialogue())
+        assert len(provider_calls) == len(trace) == len(cases)
+        with store.connect() as db:
+            counts = db.execute("SELECT role,status,COUNT(*) FROM messages GROUP BY role,status").fetchall()
+        assert {(row[0], row[1]): row[2] for row in counts} == {
+            ("user", "complete"): len(cases), ("assistant", "complete"): len(cases)}
+        assert all("token" not in json.dumps(row, ensure_ascii=False).lower() for row in trace)
+        (tmp_path / "pilot_trace.json").write_text(
+            json.dumps(trace, ensure_ascii=False, indent=2), encoding="utf-8")
+        if save_pilot and (output := os.environ.get("PILOT_REPLAY_OUTPUT")):
+            target = Path(output).resolve()
+            assert target.parent == (ROOT / "experiments/architecture_recovery_audit").resolve()
+            target.write_text(json.dumps(trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        return trace
+    finally:
+        sys.modules.pop("bot", None)
+
+
+@pytest.fixture
+def pilot_trace(monkeypatch, tmp_path):
+    cases = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    assert len(cases) == 6
+    return _run_replay(monkeypatch, tmp_path, cases, save_pilot=True)
+
+
+def test_six_turn_pilot_dialogue_and_sqlite(pilot_trace):
+    trace = pilot_trace
+    assert trace[0]["route"] == "clarify" and not trace[0]["retrieval_called"]
+    assert trace[1]["route"] == "answer"
+    assert trace[2]["route"] == "answer"
+    assert trace[2]["reason"] == "source_first_safe_preflight"
+    assert "Выясните модель" in trace[2]["final_reply"]
+    assert "Настройки →" not in trace[2]["final_reply"]
+    assert "Проверьте поля EoU" not in trace[2]["final_reply"]
+    assert trace[3]["state"]["relation"] == "continue"
+    assert trace[3]["state"]["expected_slot"] == "equipment"
+    assert trace[3]["reason"] == "grounded_section_followup_scope_needed"
+    assert trace[3]["final_reply"] != trace[2]["final_reply"]
+    assert trace[2]["generation_stages"] == ["planner"]
+    assert trace[3]["generation_stages"] == ["planner"]
+    assert trace[4]["generation_stages"] == ["planner"]
+    assert trace[2]["planner_choices"] == trace[3]["planner_choices"] == trace[4]["planner_choices"]
+    assert trace[3]["state"]["confirmed_equipment"] is None
+    assert trace[4]["state"]["relation"] == "continue"
+    assert trace[4]["reason"] == "grounded_section_followup_exhausted"
+    assert trace[4]["final_reply"] != trace[3]["final_reply"]
+    assert any("Интернет работает" in fact for fact in trace[4]["state"]["client_details"])
+    assert trace[4]["state"]["confirmed_equipment"] is None
+    assert trace[5]["state"]["task_changed"]
+    assert trace[5]["state"]["relation"] == "new_task"
+    assert trace[5]["route"] == "answer"
+    assert trace[5]["reason"] == "source_first_scoped_limitation"
+
+
+def test_six_turn_pilot_fn_scope_quality_gate(pilot_trace):
+    fn = pilot_trace[5]
+    assert fn["state"]["task_changed"] and fn["state"]["relation"] == "new_task"
+    assert fn["retrieval_called"]
+    assert fn["route"] == "answer"
+    assert fn["reason"] == "source_first_scoped_limitation"
+    assert "По документации «Платформа ОФД»" in fn["final_reply"]
+    assert "ваш сервис пока не подтверждён" in fn["final_reply"]
+    assert "ФН не подтверждён как прямой фильтр чеков" in fn["final_reply"]
+    assert "Отсутствие поля" in fn["final_reply"]
+    assert "Маршрут:" not in fn["final_reply"]
+    assert not fn["generation_stages"]
+
+
+def test_independent_access_service_and_topic_switch_via_bot_sqlite(monkeypatch, tmp_path):
+    trace = _run_replay(monkeypatch, tmp_path, [
+        {"text": "Как добавить сотрудника?", "request_type": "instruction",
+         "relation": "new_task", "intent": "access", "operation": "add_employee",
+         "object": "сотрудник", "object_quote": "сотрудника", "goal": "добавить сотрудника"},
+        {"text": "У нас aQsi Online.", "request_type": "information",
+         "relation": "answer_to_clarification", "intent": "unknown", "operation": "unknown",
+         "entities": [["service", "aQsi Online", "aQsi Online"]]},
+        {"text": "Другой вопрос: как найти чек?", "request_type": "information",
+         "relation": "new_task", "intent": "receipt", "operation": "search",
+         "object": "чек", "object_quote": "чек", "goal": "найти чек"},
+    ])
+    assert trace[0]["state"]["expected_slot"] is None
+    assert trace[1]["state"]["relation"] == "parameter_update"
+    assert not trace[1]["state"]["task_changed"]
+    assert trace[1]["state"]["routing_service"] == "aQsi Online"
+    assert trace[2]["state"]["task_changed"]
+    assert trace[2]["state"]["routing_service"] is None
+    assert trace[2]["state"]["intent"] == "receipt"
+    assert "Платформа ОФД" not in trace[2]["final_reply"]
+
+
+def test_independent_receipt_pronoun_via_bot_sqlite(monkeypatch, tmp_path):
+    trace = _run_replay(monkeypatch, tmp_path, [
+        {"text": "Как найти чек в Платформе ОФД?", "request_type": "information",
+         "relation": "new_task", "intent": "receipt", "operation": "search",
+         "object": "чек", "object_quote": "чек", "goal": "найти чек",
+         "entities": [["ofd", "Платформа ОФД", "Платформе ОФД"]]},
+        {"text": "А его по номеру ФД?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "search",
+         "goal": "его по номеру ФД"},
+    ])
+    assert trace[0]["state"]["intent"] == "receipt"
+    assert not trace[1]["state"]["task_changed"]
+    assert trace[1]["state"]["intent"] == "receipt"
+    assert trace[1]["state"]["operation"] == "search"
+    assert trace[1]["state"]["routing_service"] == "Платформа ОФД"
+
+
+def test_independent_risky_operation_via_bot_sqlite(monkeypatch, tmp_path):
+    trace = _run_replay(monkeypatch, tmp_path, [
+        {"text": "Как закрыть архив ФН на Эвотор?", "request_type": "instruction",
+         "relation": "new_task", "intent": "fiscal_drive", "operation": "close",
+         "object": "ФН", "object_quote": "ФН", "goal": "закрыть архив ФН",
+         "entities": [["manufacturer", "Эвотор", "Эвотор"]]},
+    ])
+    assert trace[0]["route"] == "escalate"
+    assert trace[0]["reason"] == "unsafe_operation"
+    assert not trace[0]["retrieval_called"]
+    assert not trace[0]["generation_stages"]
+
+
+@pytest.mark.parametrize("text,entities", [
+    ("Можно найти чек по номеру ФД?", []),
+    ("В aQsi Online можно найти чек по номеру ФН?",
+     [["service", "aQsi Online", "aQsi Online"]]),
+])
+def test_scoped_fn_limitation_does_not_answer_other_filter_or_foreign_service(
+        monkeypatch, tmp_path, text, entities):
+    trace = _run_replay(monkeypatch, tmp_path, [
+        {"text": text, "request_type": "information", "relation": "new_task",
+         "intent": "receipt", "operation": "search", "object": "чек",
+         "object_quote": "чек", "goal": "найти чек", "entities": entities},
+    ])
+    assert trace[0]["state"]["intent"] == "receipt"
+    assert trace[0]["reason"] != "source_first_scoped_limitation"
+    assert "ФН не подтверждён как прямой фильтр" not in trace[0]["final_reply"]
+    assert "Маршрут:" not in trace[0]["final_reply"]

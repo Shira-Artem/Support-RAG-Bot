@@ -367,6 +367,15 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
     else:
         kind_reason = ("valid_turn_classification" if raw_kind.strip().casefold().replace("-", "_").replace(" ", "_") == kind
                        else "normalized_turn_type_alias")
+    # `explain` is a task-family decision, not a client/product intent. Older
+    # Understanding completions often left intent=unknown for plain questions
+    # (e.g. “Что такое ОФД?”); Source-first then treated the answer as a scoped
+    # procedure and demanded a vendor. Preserve the validated operation and
+    # complete its semantic pair generically.
+    if operation == "explain" and intent == "unknown":
+        intent = "general"
+        _field_result(diagnostics, "intent_resolution", "accepted",
+                      "general_intent_from_explanation_operation", value=intent)
     for field_name, raw_value, value, aliases in (
             ("relation", raw_relation, relation, RELATION_ALIASES),
             ("intent", raw_intent, intent, INTENT_ALIASES),
@@ -450,10 +459,6 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
     elif obj is not None:
         _field_result(diagnostics, "object", "accepted", "exact_object_value_grounded_by_evidence",
                       value=obj, start=object_ev.start, end=object_ev.end)
-        if intent == "general" and obj == "чек" and operation == "search":
-            intent = "receipt"
-            _field_result(diagnostics, "intent", "accepted",
-                          "receipt_task_from_grounded_object_and_search_operation", value=intent)
     elif raw_obj is None:
         _field_result(diagnostics, "object", "omitted", "no_object_claimed")
     if obj is None and relation == "new_task":
@@ -465,10 +470,6 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             _field_result(diagnostics, "object", "accepted",
                           "unique_registered_object_alias_from_current_message",
                           value=value, start=start, end=end)
-            if intent == "general" and value == "чек" and operation == "search":
-                intent = "receipt"
-                _field_result(diagnostics, "intent", "accepted",
-                              "receipt_task_from_grounded_object_and_search_operation", value=intent)
     specialist_ev = _parse_optional_fact(text, data["specialist_evidence"], message_id,
                                          diagnostics, "specialist_evidence")
     if specialist_requested and (specialist_ev is None
@@ -548,13 +549,15 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             _field_result(diagnostics, "object", "accepted",
                           "registered_search_target_grounded_before_parameter",
                           value=value, start=start, end=end)
-            if intent in {"unknown", "general"}:
-                category = next((category for category, canonical, _ in OBJECTS
-                                 if canonical == value), None)
-                if category == "receipt":
-                    intent = "receipt"
-                    _field_result(diagnostics, "intent", "accepted",
-                                  "receipt_search_from_grounded_target_and_operation", value=intent)
+    if obj is not None and operation not in {"unknown", "explain"} and intent in {"unknown", "general"}:
+        categories = {category for category, canonical, _ in OBJECTS if canonical == obj}
+        if len(categories) == 1:
+            category = next(iter(categories))
+            if category != "general":
+                intent = category
+                _field_result(diagnostics, "intent_resolution", "accepted",
+                              "unique_task_family_from_grounded_direct_object",
+                              object=obj, operation=operation, value=intent)
     evidence = Fact.span(text, message_id)
     observation = Observation(entities=entities, unknown_facts=unknown_evidence,
         validation_diagnostics=diagnostics,

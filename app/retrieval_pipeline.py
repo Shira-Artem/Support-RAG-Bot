@@ -361,6 +361,23 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
             and (any(term in task_folded for term in _TASK_TERMS["model_features"])
                  or "индикатор" in task_folded or "быстро выключ" in task_folded)):
         return "model_features"
+    # Understanding can correctly identify a diagnostic operation and cite a
+    # symptom while omitting the narrower intent label. Reuse the reviewed
+    # task-family vocabulary to recover a unique task category from the
+    # client's own task facts; never let an arbitrary top retrieval hit define
+    # the task.
+    if (state.intent == "unknown" and state.symptom
+            and state.operation in {"diagnose", "status", "check"}):
+        matches = []
+        for family, terms in _TASK_TERMS.items():
+            count = sum(term in task_folded for term in terms)
+            if count >= 2:
+                matches.append((count, family))
+        if matches:
+            highest = max(count for count, _ in matches)
+            winners = {family for count, family in matches if count == highest}
+            if len(winners) == 1:
+                return winners.pop()
     # Receipt wording has several intentionally strict subfamilies. Resolve
     # these before broad words such as «ФФД», «возврат» or «передача» can
     # pull the request into an unrelated technical family.

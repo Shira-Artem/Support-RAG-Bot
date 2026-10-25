@@ -1,0 +1,60 @@
+[
+  {
+    "text": "Привет! Помоги мне разобраться с кассами.",
+    "request_type": "information",
+    "relation": "new_task",
+    "intent": "unknown",
+    "operation": "explain",
+    "object": null,
+    "goal": "Помоги мне разобраться с кассами"
+  },
+  {
+    "text": "Что такое ОФД?",
+    "request_type": "information",
+    "relation": "new_task",
+    "intent": "unknown",
+    "operation": "explain",
+    "object": "ОФД",
+    "object_quote": "ОФД",
+    "goal": "Что такое ОФД?"
+  },
+  {
+    "text": "У меня Эвотор, чеки не отправляются в ОФД.",
+    "request_type": "information",
+    "relation": "new_task",
+    "intent": "unknown",
+    "operation": "diagnose",
+    "object": "чек",
+    "object_quote": "чеки",
+    "entities": [["manufacturer", "Эвотор", "Эвотор"]],
+    "symptom": "чеки не отправляются в ОФД"
+  },
+  {
+    "text": "А где проверить связь с ОФД?",
+    "request_type": "information",
+    "relation": "answer_to_clarification",
+    "intent": "unknown",
+    "operation": "diagnose",
+    "object": null,
+    "goal": "где проверить связь с ОФД"
+  },
+  {
+    "text": "Интернет работает, что ещё проверить?",
+    "request_type": "information",
+    "relation": "continue",
+    "intent": "unknown",
+    "operation": "diagnose",
+    "object": null,
+    "goal": "что ещё проверить"
+  },
+  {
+    "text": "А по номеру ФН можно найти чек?",
+    "request_type": "information",
+    "relation": "new_task",
+    "intent": "unknown",
+    "operation": "search",
+    "object": "чек",
+    "object_quote": "чек",
+    "goal": "найти чек"
+  }
+]

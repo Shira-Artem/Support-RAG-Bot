@@ -14,12 +14,35 @@ from app.source_first_service import (SourceFirstService, _sections, _source_sec
                                      _judge_information_relevance,
                                      _parse_information_relevance_judgment,
                                      _partial_information_composition,
+                                     _scoped_limitation_matches, _generic_preflight,
                                      _validate_information_composition)
 from app.dialogue_understanding import validate_response
 from app.response_grounding import content_terms
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_scoped_limitation_requires_direct_subject_and_no_procedure():
+    state = DialogueState(task_id="task:1", intent="receipt", operation="search", object="чек")
+    limitation = {"section": "Ограничения", "text":
+        "ФН не подтверждён как прямой фильтр чеков. Отсутствие поля в статье не доказывает отсутствие функции."}
+    assert _scoped_limitation_matches(limitation, "Можно найти чек по номеру ФН?", state)
+    assert not _scoped_limitation_matches(limitation, "Можно найти чек по номеру ФД?", state)
+    unsafe_mixture = {**limitation, "text": limitation["text"] +
+        " Откройте настройки кассы и измените порт подключения."}
+    assert not _scoped_limitation_matches(unsafe_mixture, "Можно найти чек по номеру ФН?", state)
+
+
+def test_unconfirmed_model_limits_partial_answer_to_independent_preflight():
+    state = DialogueManager().advance(DialogueState(),
+        "У меня Эвотор, чеки не отправляются в ОФД.", 1)
+    scope = {"manufacturer": "Эвотор"}
+    body = ("1. Выясните модель кассы.\n"
+            "2. На модели 7.3 откройте настройки и измените адрес оператора.")
+    assert _generic_preflight(body, state, scope) == "1. Выясните модель кассы."
+    assert _generic_preflight("1. На модели 7.3 откройте настройки.", state, scope) is None
+    assert _generic_preflight("1. Выясните модель и откройте меню настроек.", state, scope) is None
 
 
 def settings(tmp_path):
@@ -62,6 +85,19 @@ def test_incomplete_topic_with_domain_word_is_clarified_without_escalation(tmp_p
     message = "Привет! Помоги с ОФД"
     state = DialogueManager().advance(DialogueState(), message, 1)
     answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT).answer(message, state=state))
+    assert answer.scenario == "clarify"
+    assert answer.scenario_reason == "dialogue_state_task_incomplete"
+    assert answer.clarification_slot == "task"
+
+
+def test_broad_explanation_request_is_clarified_before_retrieval(tmp_path):
+    message = "Привет! Помоги мне разобраться с кассами."
+    state = DialogueState(task_id="task:1", intent="general", operation="explain",
+                          object="касса")
+    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT).answer(
+        message, state=state, history=[{"role": "user", "content": message,
+                                       "understanding": {"request_type": "information"},
+                                       "semantic_mode": True}]))
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "dialogue_state_task_incomplete"
     assert answer.clarification_slot == "task"
