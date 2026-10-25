@@ -293,6 +293,11 @@ def _content_terms(text: str) -> set[str]:
     return terms
 
 
+def content_terms(text: str) -> set[str]:
+    """Expose the validator's normalized content vocabulary for relevance gates."""
+    return _content_terms(text)
+
+
 _VERSION_RE = re.compile(r"(?<!\w)\d+\.\d+(?:\.\d+){1,2}(?!\w)")
 
 

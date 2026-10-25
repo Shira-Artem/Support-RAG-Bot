@@ -9,7 +9,8 @@ from app.dialogue_state import DialogueManager, DialogueState
 from app.llm_client import Generation
 from app.rag import SearchResult
 from app.retrieval_pipeline import EvaluatedDocument, Relevance, RetrievalResult
-from app.source_first_service import SourceFirstService, _sections, _source_sections
+from app.source_first_service import (SourceFirstService, _sections, _source_sections,
+                                     _validate_information_composition)
 from app.dialogue_understanding import validate_response
 
 
@@ -182,6 +183,9 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
     async def planner(messages, _settings):
         import json
         data = json.loads(messages[1]["content"])
+        if "candidate_sections" not in data:
+            return Generation("ОФД получает и обрабатывает фискальные документы от ККТ, а затем передаёт их в ФНС.",
+                              "openai/gpt-oss-20b", 80, 35, 115)
         candidate = next(x for x in data["candidate_sections"]
                          if x["section"] == "Что проверено по инструкции производителя")
         return Generation('{"mode":"select","section_id":"' + candidate["id"] +
@@ -196,8 +200,9 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
     assert answer.scenario == "answer"
     assert "По документации для области" in answer.text
     assert "АТОЛ Онлайн" in answer.text
-    assert "получает фискальные документы" in answer.text
-    assert "Область применения — облачные кассы АТОЛ Онлайн" in answer.text
+    assert "фискальные документы" in answer.text
+    assert "Область применения — облачные кассы АТОЛ Онлайн" not in answer.text
+    assert "действующий тариф" not in answer.text and "текущую очередь" not in answer.text
 
 
 def test_vendor_scoped_procedure_requests_service_before_planner(monkeypatch, tmp_path):
@@ -250,7 +255,7 @@ def test_rejected_entity_cannot_satisfy_vendor_scope_gate(monkeypatch, tmp_path)
     assert answer.clarification_slot in {"service", "manufacturer"}
 
 
-def test_information_planner_never_receives_question_only_chunk(monkeypatch, tmp_path):
+def test_information_followup_gets_grounded_answer_for_current_question(monkeypatch, tmp_path):
     import hashlib
     import json
     from app.llm_client import Generation
@@ -273,28 +278,89 @@ def test_information_planner_never_receives_question_only_chunk(monkeypatch, tmp
     monkeypatch.setattr("app.source_first_service._source_sections", lambda *_args: candidate_sections)
     retrieval = _retrieval(source, doc_id, "Вопрос пользователя", scope,
                            local_sections["Вопрос пользователя"])
-    text = "Объясни, что такое ОФД?"
-    raw = {"request_type": "information", "relation": "new_task", "intent": "general",
+    first_text = "Что такое ОФД?"
+    first_raw = {"request_type": "information", "relation": "new_task", "intent": "general",
         "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "ОФД"},
-        "goal": {"quote": text}, "symptom": None, "entities": [], "unknown_facts": [],
+        "goal": {"quote": first_text}, "symptom": None, "entities": [], "unknown_facts": [],
         "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
-    _, _, _, observation = validate_response(raw, text, 1)
-    state = DialogueManager().advance(DialogueState(), text, 1, observation=observation)
-    seen = {}
+    _, _, _, first_observation = validate_response(first_raw, first_text, 1)
+    manager = DialogueManager()
+    first_state = manager.advance(DialogueState(), first_text, 1, observation=first_observation)
+    seen = {"calls": 0, "planner_sections": [], "questions": []}
 
-    async def planner(messages, _settings):
+    async def generate_stub(messages, _settings):
         payload = json.loads(messages[-1]["content"])
-        seen["sections"] = [item["section"] for item in payload["candidate_sections"]]
-        chosen = next(item for item in payload["candidate_sections"]
-                      if item["section"] == "Что проверено по инструкции производителя")
-        return Generation(json.dumps({"mode": "select", "section_id": chosen["id"],
-            "applicability_confirmed": True, "order_confirmed": True, "reason": "grounded explanation"}),
-            "test-model", 100, 60, 160)
+        seen["calls"] += 1
+        if "candidate_sections" in payload:
+            planner_prompt = messages[0]["content"]
+            assert "Для чистого general/explain без шагов" in planner_prompt
+            assert "техническими действиями" in planner_prompt
+            seen["planner_sections"].append([item["section"] for item in payload["candidate_sections"]])
+            chosen = next(item for item in payload["candidate_sections"]
+                          if item["section"] == "Что проверено по инструкции производителя")
+            content = json.dumps({"mode": "select", "section_id": chosen["id"],
+                "applicability_confirmed": False, "order_confirmed": False,
+                "reason": "general explanation; no customer-specific procedure"})
+        else:
+            question = payload["current_question"]
+            seen["questions"].append(question)
+            content = ("ОФД получает и обрабатывает фискальные документы от ККТ, а затем передаёт их в ФНС."
+                       if question == first_text else
+                       "ОФД нужен кассе как посредник при передаче фискальных документов в ФНС: "
+                       "он получает их от ККТ, обрабатывает и передаёт дальше.")
+        return Generation(content, "test-model", 100, 60, 160)
 
-    monkeypatch.setattr("app.source_first_service.generate", planner)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
-                         .answer(text, state=state))
-    assert "Вопрос пользователя" not in seen["sections"]
-    assert "Что проверено по инструкции производителя" in seen["sections"]
-    assert answer.scenario == "answer" and answer.scenario_reason == "source_first_exact_section"
-    assert "ОФД получает фискальные документы" in answer.text
+    monkeypatch.setattr("app.source_first_service.generate", generate_stub)
+    service = SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    first_answer = asyncio.run(service.answer(first_text, state=first_state))
+
+    followup = "А зачем он нужен кассе?"
+    followup_raw = {"request_type": "information", "relation": "continuation", "intent": "general",
+        "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "он"},
+        "goal": {"quote": followup}, "symptom": None, "entities": [], "unknown_facts": [],
+        "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
+    _, _, _, followup_observation = validate_response(followup_raw, followup, 2)
+    followup_state = manager.advance(first_state, followup, 2, observation=followup_observation)
+    followup_answer = asyncio.run(service.answer(followup, state=followup_state,
+        history=[{"role": "user", "content": first_text},
+                 {"role": "assistant", "content": first_answer.text}]))
+
+    assert all("Вопрос пользователя" not in sections for sections in seen["planner_sections"])
+    assert all("Что проверено по инструкции производителя" in sections
+               for sections in seen["planner_sections"])
+    assert followup_state.task_id == first_state.task_id and followup_state.object == "ОФД"
+    assert first_answer.scenario_reason == "source_first_grounded_information_summary"
+    assert followup_answer.scenario_reason == "source_first_grounded_information_summary"
+    assert followup_answer.retrieval_diagnostics["planner"]["selection_policy"] == \
+        "informational_selected_section_claim_validation"
+    assert followup_answer.text != first_answer.text
+    assert "нужен кассе как посредник" in followup_answer.text
+    assert "тариф" not in followup_answer.text and "очередь передачи" not in followup_answer.text
+    assert seen["questions"] == [first_text, followup]
+    assert seen["calls"] == 4
+
+
+def test_information_composition_rejects_unsupported_claims_and_procedures():
+    source = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    evidence = dict(_sections(body))["Что проверено по инструкции производителя"]
+    grounded = ("ОФД нужен кассе как посредник при передаче фискальных документов в ФНС: "
+                "он получает их от ККТ, обрабатывает и передаёт дальше.")
+    accepted, reason = _validate_information_composition(
+        grounded, evidence, "Что проверено по инструкции производителя")
+    assert accepted == grounded and reason == "all_sentences_supported_by_selected_section"
+
+    unsupported, reason = _validate_information_composition(
+        "ОФД автоматически продлевает тариф кассы.", evidence,
+        "Что проверено по инструкции производителя")
+    assert unsupported is None and reason == "unsupported_information_claim"
+
+    procedural, reason = _validate_information_composition(
+        "Проверьте статус ККТ в ОФД и текущую очередь передачи.", evidence,
+        "Что проверено по инструкции производителя")
+    assert procedural is None and reason == "procedural_or_interface_content_in_information_answer"
+
+    repeated, reason = _validate_information_composition(
+        "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает их и передаёт в ФНС.",
+        evidence, "Что проверено по инструкции производителя", "А зачем он вообще нужен кассе?")
+    assert repeated is None and reason == "answer_does_not_address_current_question_terms"
