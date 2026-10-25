@@ -92,6 +92,7 @@ class TaskContext:
     transition: str = "new_task"
     analysis_required: bool = False
     unresolved: Fact | None = None
+    unknown_facts: list[str] = field(default_factory=list)
 
 
 def _fact(value):
@@ -380,6 +381,7 @@ class DialogueState:
                 "expected": asdict(t.expected) if t.expected else None, "relation": t.relation,
                 "confidence": t.confidence, "transition": t.transition,
                 "analysis_required": t.analysis_required, "unresolved": asdict(t.unresolved) if t.unresolved else None,
+                "unknown_facts": list(t.unknown_facts),
             }
         # Top-level compatibility projection remains available to existing consumers.
         return {
@@ -436,6 +438,7 @@ class DialogueState:
             "relation": "new_task" if raw.get("transition", "new_task") == "new_task" else "continue",
             "confidence": 0.7, "transition": raw.get("transition", "new_task"),
             "analysis_required": raw.get("analysis_required", False), "unresolved": raw.get("unresolved"),
+            "unknown_facts": raw.get("unknown_facts", []),
         }
         legacy_route = task_raw.get("active_route")
         return cls(revision=raw.get("revision", 0), session={
@@ -452,6 +455,12 @@ class Observation:
     one of RELATIONS. The reducer validates every span before applying it.
     """
     entities: dict[str, list[Fact]] = field(default_factory=dict)
+    # Explicit statements that the client does not know a requested value are
+    # facts too; each slot must point to an exact span in the current message.
+    unknown_facts: dict[str, Fact] = field(default_factory=dict)
+    # Per-field diagnostics from typed Understanding; informational only and
+    # never used as facts by the reducer.
+    validation_diagnostics: list[dict] = field(default_factory=list)
     intent: str = "unknown"
     operation: str = "unknown"
     object: str | None = None
@@ -998,17 +1007,22 @@ class DialogueManager:
     def __init__(self, analyzer: MessageAnalyzer | None = None):
         self.analyzer = analyzer or LexicalAnalyzer()
 
-    def advance(self, previous: DialogueState, text: str, message_id: int | str) -> DialogueState:
+    def advance(self, previous: DialogueState, text: str, message_id: int | str, *,
+                observation: Observation | None = None,
+                unknown_facts: list[str] | None = None) -> DialogueState:
         # Social/meta turns and requests without a task never establish task
         # facts. On an existing conversation they also leave the real task and
         # any pending clarification intact.
-        if classify_user_turn(text) in NON_TASK_TURN_KINDS:
+        if observation is None and classify_user_turn(text) in NON_TASK_TURN_KINDS:
             state = deepcopy(previous)
             state.revision = previous.revision + 1
             return state
-        obs = self.analyzer.analyze(text, message_id, deepcopy(previous))
+        # Semantic callers supply a validated observation. Do not run a second,
+        # lexical interpretation that could override the model's turn decision.
+        obs = observation if observation is not None else self.analyzer.analyze(text, message_id, deepcopy(previous))
         # Enforce the boundary even for a future model-backed analyser.
         facts = [f for values in obs.entities.values() for f in values]
+        facts += list(obs.unknown_facts.values())
         facts += [*obs.goals, *obs.constraints, *obs.details, *obs.parameters,
                   *([obs.intent_evidence] if obs.intent_evidence else []),
                   *([obs.object_evidence] if obs.object_evidence else []),
@@ -1061,7 +1075,7 @@ class DialogueManager:
                 for prefix in NEW_TOPIC if prefix != ("кстати",)
                 for index in range(max(1, min(len(tokens), 8)))
             )
-            if not explicit_reset and obs.operation != "explain" and not obs.entities:
+            if observation is None and not explicit_reset and obs.operation != "explain" and not obs.entities:
                 inherited_route = state.reusable_session_route(obs.intent)
                 if inherited_route:
                     state.task_context.active_route = deepcopy(inherited_route)
@@ -1180,12 +1194,23 @@ class DialogueManager:
             _append_unique(state.details, [obs.evidence])
         if previous.expected and relation == "answer_to_clarification":
             state.expected = None
-        if changed_entity and explicit_routes and relation != "new_task":
+        if changed_entity and explicit_routes and relation not in {"new_task", "answer_to_clarification"}:
             state.transition = "change_service" if "service" in explicit_routes else "change_parameter"
         elif obs.error and previous.error and obs.error.value != previous.error.value:
             state.transition = "change_parameter"
         if not state.analysis_required:
             state.unresolved = None
+        valid_unknown = ENTITY_SLOTS | {"goal", "details", "task"}
+        if unknown_facts is not None:
+            if any(slot not in valid_unknown for slot in unknown_facts):
+                raise ValueError("Unsupported unknown-fact slot")
+            if relation == "new_task":
+                state.task_context.unknown_facts = list(dict.fromkeys(unknown_facts))
+            else:
+                state.task_context.unknown_facts = list(dict.fromkeys(
+                    [*state.task_context.unknown_facts, *unknown_facts]))
+        for slot in obs.entities:
+            state.task_context.unknown_facts = [item for item in state.task_context.unknown_facts if item != slot]
         return state
 
     def observe_answer(self, previous: DialogueState, *, scenario: str | None,
@@ -1193,6 +1218,10 @@ class DialogueManager:
                        slot: str | None = None) -> DialogueState:
         """An assistant can open an expected slot, never write client facts."""
         state = deepcopy(previous)
+        # Provider failure and an explicit request for a human must not erase
+        # the customer's active task or unresolved clarification.
+        if reason in {"understanding_error", "client_requested_specialist"}:
+            return state
         if reason in NON_TASK_SCENARIO_REASONS and previous.task_id:
             return state
         if scenario == "clarify":

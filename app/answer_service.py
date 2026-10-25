@@ -556,6 +556,7 @@ class Answer:
     llm_call_attempted: bool = False
     response_repair: dict | None = None
     generation_error: dict | None = None
+    dialogue_understanding: dict | None = None
 
     def __post_init__(self):
         # Keep the former attribute as an alias for callers while storing the

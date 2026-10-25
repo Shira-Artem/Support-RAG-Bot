@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from app.answer_service import Answer
 from app.dialogue_state import DialogueManager, DialogueState
+from app.dialogue_understanding import observation_from_dict
 
 DEFAULT_DB = Path(__file__).resolve().parents[1] / "data/conversations.sqlite3"
 
@@ -181,7 +182,35 @@ class ConversationStore:
             if row['status'] != 'complete':
                 break
             if row['role'] == 'user':
-                state = manager.advance(state, row['content'], row['id'])
+                diagnostic = json.loads(row['diagnostics_json'] or '{}')
+                if diagnostic.get('semantic_mode'):
+                    semantic = diagnostic.get('understanding')
+                    if semantic:
+                        try:
+                            observation, summary = observation_from_dict(semantic, row['content'], row['id'])
+                        except (ValueError, TypeError, KeyError) as exc:
+                            # Corrupt or stale semantic evidence is a no-op,
+                            # never a reason to reinterpret the text lexically.
+                            diagnostic["understanding_error"] = {
+                                "type": "persisted_semantic_validation",
+                                "error_type": type(exc).__name__}
+                            db.execute('UPDATE messages SET diagnostics_json=? WHERE id=?',
+                                (json.dumps(diagnostic, ensure_ascii=False), row['id']))
+                            state.revision += 1
+                        else:
+                            if summary["request_type"] in {"greeting", "escalation"}:
+                                state.revision += 1
+                            else:
+                                state = manager.advance(state, row['content'], row['id'], observation=observation,
+                                                        unknown_facts=summary['unknown_facts'])
+                    else:
+                        # Understanding failed. Preserve prior task state and
+                        # advance the cursor exactly once; never reinterpret
+                        # this Source-first turn with lexical heuristics.
+                        state.revision += 1
+                else:
+                    # Historic turns and the legacy route retain their original reducer.
+                    state = manager.advance(state, row['content'], row['id'])
                 db.execute('INSERT OR IGNORE INTO dialogue_turns VALUES(?,?,?,?)',
                            (row['id'], conversation_id, state.topic_start_message_id,
                             json.dumps(state.to_dict(), ensure_ascii=False)))
@@ -283,9 +312,12 @@ class ConversationStore:
             return [dict(message_id=row['id'], role=row['role'], content=row['content'],
                          clarification_reply=row['role'] == 'user' and row['id'] != root,
                          **{k: v for k, v in json.loads(row['diagnostics_json'] or '{}').items()
-                            if k in {'scenario', 'scenario_reason', 'clarification_slot'}}) for row in rows]
+                            if k in {'scenario', 'scenario_reason', 'clarification_slot', 'understanding',
+                                     'understanding_error', 'semantic_mode'}}) for row in rows]
 
-    def begin(self, conversation_id: str, text: str, continuing: bool | None = None) -> int:
+    def begin(self, conversation_id: str, text: str, continuing: bool | None = None, *,
+              understanding: dict | None = None, understanding_error: str | None = None,
+              semantic_mode: bool = False) -> int:
         # continuing is retained for old callers, but no longer controls state.
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -293,9 +325,24 @@ class ConversationStore:
             if db.execute("SELECT 1 FROM messages WHERE conversation_id=? AND status='pending'", (conversation_id,)).fetchone():
                 raise RuntimeError('Complete or recover the pending turn before starting another')
             created = datetime.now(timezone.utc).isoformat()
-            db.execute("""INSERT INTO messages(conversation_id,role,content,created_at,continuation)
-                VALUES(?,'user',?,?,?)""", (conversation_id, text, created, 0))
+            user_diagnostics = ({"semantic_mode": True, "understanding": understanding,
+                                 "understanding_error": understanding_error}
+                                if semantic_mode else {})
+            db.execute("""INSERT INTO messages(conversation_id,role,content,created_at,continuation,diagnostics_json)
+                VALUES(?,'user',?,?,?,?)""", (conversation_id, text, created, 0,
+                    json.dumps(user_diagnostics, ensure_ascii=False)))
             user_id = db.execute('SELECT last_insert_rowid()').fetchone()[0]
+            if user_diagnostics.get("understanding"):
+                def bind_source_id(value):
+                    if isinstance(value, dict):
+                        return {key: (user_id if key == "message_id"
+                                      else bind_source_id(child)) for key, child in value.items()}
+                    if isinstance(value, list):
+                        return [bind_source_id(child) for child in value]
+                    return value
+                user_diagnostics["understanding"] = bind_source_id(user_diagnostics["understanding"])
+                db.execute('UPDATE messages SET diagnostics_json=? WHERE id=?',
+                           (json.dumps(user_diagnostics, ensure_ascii=False), user_id))
             state = self._sync_state(db, conversation_id)
             db.execute('UPDATE messages SET continuation=? WHERE id=?', (int(state.transition != 'new_task'), user_id))
             return db.execute("""INSERT INTO messages(conversation_id,role,content,created_at,status)

@@ -16,6 +16,7 @@ from app.config import get_settings, should_use_source_first
 from app.expert_store import ExpertStore
 from app.expert_telegram import ExpertTelegram
 from app.source_first_service import SourceFirstService
+from app.dialogue_understanding import UnderstandingError, understand_message, understanding_to_dict
 from qdrant_client import QdrantClient
 
 
@@ -203,10 +204,33 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await update.message.chat.send_action(ChatAction.TYPING)
 
     conversation_id = state["conversation_id"] or conversations.new(user_id, chat_id)
-    message_id = conversations.begin(conversation_id, user_text)
+    use_source_first = should_use_source_first(settings, user_id)
+    if use_source_first:
+        previous_state = conversations.dialogue_state(conversation_id)
+        previous_history = conversations.history(conversation_id)
+        understanding = None
+        understanding_error = None
+        try:
+            understanding = await understand_message(user_text, "current", previous_history,
+                                                     previous_state, settings)
+        except UnderstandingError as exc:
+            understanding_error = {"type": type(exc).__name__, "message": str(exc),
+                "http_status": exc.http_status, "tokens": exc.tokens,
+                "duration_ms": exc.duration_ms, "model": exc.model,
+                "structured_response": exc.structured_response,
+                "field_diagnostics": exc.field_diagnostics,
+                "provider_error": exc.provider_error}
+        # Persist the typed result on the user event before state replay. This
+        # makes reducer updates idempotent across restarts and prevents a
+        # second lexical interpretation of the current Source-first turn.
+        message_id = conversations.begin(conversation_id, user_text, semantic_mode=True,
+            understanding=understanding_to_dict(understanding) if understanding else None,
+            understanding_error=understanding_error)
+    else:
+        message_id = conversations.begin(conversation_id, user_text)
     dialogue_state = conversations.dialogue_state(conversation_id)
     try:
-        if should_use_source_first(settings, user_id):
+        if use_source_first:
             answer = await source_first_service.answer(
                 user_text, state=dialogue_state, history=conversations.history(conversation_id))
         else:
@@ -214,7 +238,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     except Exception as exc:
         logger.error("Free generation failed: %s", type(exc).__name__)
         answer = Answer("Не удалось обработать вопрос. Повторите попытку позже.",
-                        rag_engine="source_first" if should_use_source_first(settings, user_id) else "legacy",
+                        rag_engine="source_first" if use_source_first else "legacy",
                         generation_status="error", generation_reason=f"unexpected_exception:{type(exc).__name__}",
                         scenario="escalate", scenario_reason="unexpected_exception",
                         provider=settings.llm_provider,
