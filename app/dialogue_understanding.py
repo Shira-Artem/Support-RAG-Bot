@@ -47,6 +47,19 @@ RELATION_ALIASES = {"new_topic": "new_task", "topic_change": "new_task",
     "clarification_answer": "answer_to_clarification", "parameter_change": "parameter_update",
     "constraint_change": "constraint_update", "conflict": "contradiction"}
 
+_CONCEPT_DEFINITION_REQUEST = re.compile(
+    r"\b(?:что\s+(?:такое|значит|означает)|что\s+представляет\s+собой|"
+    r"what\s+is|define)\b", re.I)
+_EXPLICIT_LOOKUP_ACTION = re.compile(
+    r"\b(?:найти|найдите|находить|ищу|ищем|ищут|искать|поищи|поищите|"
+    r"поискать|разыскать|отыскать|find|search\s+for|look\s+up)\b", re.I)
+
+
+def _is_concept_definition_request(text: str) -> bool:
+    """Recognize explicit concept-definition wording without binding it to an entity."""
+    return bool(_CONCEPT_DEFINITION_REQUEST.search(text)
+                and not _EXPLICIT_LOOKUP_ACTION.search(text))
+
 
 class UnderstandingError(ValueError):
     """Provider or validation error; callers must not fall back to lexical state."""
@@ -366,6 +379,19 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
                   "normalized_semantic_alias" if value != "unknown" and aliases.get(normalized_input) == value else
                   "unsupported_value_defaulted_to_unknown")
         _field_result(diagnostics, field_name, status, reason, value=value)
+    if (kind == "information" and operation in {"search", "unknown"}
+            and _is_concept_definition_request(text)):
+        previous_operation = operation
+        previous_intent = intent
+        intent = "general"
+        operation = "explain"
+        _field_result(diagnostics, "operation_resolution", "accepted",
+                      "explicit_concept_definition_request", raw_normalized_operation=previous_operation,
+                      value=operation)
+        if previous_intent != "general":
+            _field_result(diagnostics, "intent_resolution", "accepted",
+                          "concept_definition_is_general_information",
+                          raw_normalized_intent=previous_intent, value=intent)
     raw_obj = data["object"]
     if isinstance(raw_obj, str):
         normalized_obj = OBJECT_ALIASES.get(raw_obj.strip().casefold(), raw_obj.strip())

@@ -270,23 +270,25 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
              "operations": ["explain_ofd"], "manufacturer": "АТОЛ",
              "model": "АТОЛ Онлайн — облачная ККТ"}
     candidate_sections = [{"id": f"{doc_id}::{heading}", "document_id": doc_id,
-        "section": heading, "text": local_sections[heading], "source": source,
+        "section": heading, "text": local_sections[heading],
+        "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных", "source": source,
         "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "scope": scope,
         "qdrant_scope": scope}
         for heading in ("Вопрос пользователя", "Что проверено по инструкции производителя",
                         "Важное ограничение / передача специалисту")]
     monkeypatch.setattr("app.source_first_service._source_sections", lambda *_args: candidate_sections)
+    monkeypatch.setattr("app.source_first_service._append_composer_rejection", lambda *_args: None)
     retrieval = _retrieval(source, doc_id, "Вопрос пользователя", scope,
                            local_sections["Вопрос пользователя"])
     first_text = "Что такое ОФД?"
-    first_raw = {"request_type": "information", "relation": "new_task", "intent": "general",
-        "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "ОФД"},
+    first_raw = {"request_type": "question", "relation": "new_task", "intent": "information",
+        "operation": "lookup", "object": "OFD", "object_evidence": {"quote": "ОФД"},
         "goal": {"quote": first_text}, "symptom": None, "entities": [], "unknown_facts": [],
         "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
     _, _, _, first_observation = validate_response(first_raw, first_text, 1)
     manager = DialogueManager()
     first_state = manager.advance(DialogueState(), first_text, 1, observation=first_observation)
-    seen = {"calls": 0, "planner_sections": [], "questions": []}
+    seen = {"calls": 0, "planner_sections": [], "questions": [], "repair_questions": []}
 
     async def generate_stub(messages, _settings):
         payload = json.loads(messages[-1]["content"])
@@ -301,13 +303,25 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
             content = json.dumps({"mode": "select", "section_id": chosen["id"],
                 "applicability_confirmed": False, "order_confirmed": False,
                 "reason": "general explanation; no customer-specific procedure"})
+        elif "rejected_claims" in payload:
+            seen["repair_questions"].append(payload["current_question"])
+            assert len(payload["rejected_claims"]) == 1
+            assert payload["exact_approved_evidence"] == local_sections[
+                "Что проверено по инструкции производителя"]
+            assert "тариф" not in json.dumps(payload["rejected_claims"], ensure_ascii=False)
+            content = ("ОФД — оператор фискальных данных. Он получает фискальные документы от "
+                       "зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате."
+                       if payload["current_question"] == first_text else
+                       "ОФД нужен кассе для передачи фискальных документов в ФНС: он получает их от "
+                       "зарегистрированной ККТ, обрабатывает и передаёт в предусмотренном формате.")
         else:
             question = payload["current_question"]
             seen["questions"].append(question)
-            content = ("ОФД получает и обрабатывает фискальные документы от ККТ, а затем передаёт их в ФНС."
+            content = ("ОФД – оператор фискальных данных, который получает фискальные документы от "
+                       "зарегистрированной ККТ, обрабатывает их и передаёт в ФНС в предусмотренном формате."
                        if question == first_text else
-                       "ОФД нужен кассе как посредник при передаче фискальных документов в ФНС: "
-                       "он получает их от ККТ, обрабатывает и передаёт дальше.")
+                       "ОФД нужен для того, чтобы получать фискальные документы от зарегистрированной ККТ, "
+                       "обрабатывать их и передавать в ФНС в предусмотренном формате.")
         return Generation(content, "test-model", 100, 60, 160)
 
     monkeypatch.setattr("app.source_first_service.generate", generate_stub)
@@ -334,10 +348,17 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
     assert followup_answer.retrieval_diagnostics["planner"]["selection_policy"] == \
         "informational_selected_section_claim_validation"
     assert followup_answer.text != first_answer.text
-    assert "нужен кассе как посредник" in followup_answer.text
+    assert "нужен кассе для передачи фискальных документов" in followup_answer.text
     assert "тариф" not in followup_answer.text and "очередь передачи" not in followup_answer.text
     assert seen["questions"] == [first_text, followup]
-    assert seen["calls"] == 4
+    assert seen["repair_questions"] == [first_text, followup]
+    assert seen["calls"] == 6
+    for answer in (first_answer, followup_answer):
+        diagnostics = answer.retrieval_diagnostics["answer_composer"]
+        assert diagnostics["initial_check"]["validation"] == "rejected"
+        assert diagnostics["initial_check"]["reason"] == "unsupported_information_claim"
+        assert diagnostics["repair"]["attempted"] is True
+        assert diagnostics["repair"]["validation"] == "accepted"
 
 
 def test_information_composition_rejects_unsupported_claims_and_procedures():
@@ -364,3 +385,67 @@ def test_information_composition_rejects_unsupported_claims_and_procedures():
         "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает их и передаёт в ФНС.",
         evidence, "Что проверено по инструкции производителя", "А зачем он вообще нужен кассе?")
     assert repeated is None and reason == "answer_does_not_address_current_question_terms"
+
+
+def test_information_composer_repair_rejects_fabricated_claim(monkeypatch, tmp_path):
+    import hashlib
+    import json
+    from app.llm_client import Generation
+    from app.dialogue_understanding import validate_response
+
+    source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    doc_id = "atol-online-11256-what-is-ofd"
+    path = ROOT / source
+    body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    sections = {heading: text for heading, text in _sections(body)}
+    scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
+             "operations": ["explain_ofd"], "manufacturer": "АТОЛ",
+             "model": "АТОЛ Онлайн — облачная ККТ"}
+    candidates = [{"id": f"{doc_id}::{heading}", "document_id": doc_id,
+        "section": heading, "text": sections[heading],
+        "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных", "source": source,
+        "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "scope": scope, "qdrant_scope": scope}
+        for heading in ("Вопрос пользователя", "Что проверено по инструкции производителя",
+                        "Важное ограничение / передача специалисту")]
+    monkeypatch.setattr("app.source_first_service._source_sections", lambda *_args: candidates)
+    monkeypatch.setattr("app.source_first_service._append_composer_rejection", lambda *_args: None)
+    retrieval = _retrieval(source, doc_id, "Вопрос пользователя", scope,
+                           sections["Вопрос пользователя"])
+    question = "А зачем он нужен кассе?"
+    raw = {"request_type": "information", "relation": "new_task", "intent": "general",
+        "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "ОФД"},
+        "goal": {"quote": question}, "symptom": None, "entities": [], "unknown_facts": [],
+        "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
+    _, _, _, observation = validate_response(raw, question, 1)
+    state = DialogueManager().advance(DialogueState(), question, 1, observation=observation)
+
+    async def generate_stub(messages, _settings):
+        payload = json.loads(messages[-1]["content"])
+        if "candidate_sections" in payload:
+            chosen = next(item for item in payload["candidate_sections"]
+                          if item["section"] == "Что проверено по инструкции производителя")
+            content = json.dumps({"mode": "select", "section_id": chosen["id"],
+                "applicability_confirmed": False, "order_confirmed": False,
+                "reason": "general explanation"})
+        elif "rejected_claims" in payload:
+            assert payload["rejected_claims"]
+            assert payload["exact_approved_evidence"] == sections[
+                "Что проверено по инструкции производителя"]
+            content = "ОФД автоматически возвращает комиссию по тарифу."
+        else:
+            content = ("ОФД нужен для того, чтобы получать фискальные документы от зарегистрированной ККТ, "
+                       "обрабатывать их и передавать в ФНС в предусмотренном формате.")
+        return Generation(content, "test-model", 10, 10, 20)
+
+    monkeypatch.setattr("app.source_first_service.generate", generate_stub)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+                         .answer(question, state=state))
+    assert answer.scenario == "escalate"
+    assert answer.scenario_reason == "information_composition_unverified"
+    diagnostics = answer.retrieval_diagnostics["answer_composer"]
+    assert diagnostics["initial_check"]["reason"] == "unsupported_information_claim"
+    assert diagnostics["repair"]["attempted"] is True
+    assert diagnostics["repair"]["validation"] == "rejected"
+    assert diagnostics["repair"]["reason"] == "unsupported_information_claim"
+    assert "автоматически возвращает комиссию" not in answer.text

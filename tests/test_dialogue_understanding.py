@@ -55,6 +55,44 @@ def test_information_is_explain_and_separates_ofd_from_manufacturer():
     assert state.entity("manufacturer") is None and state.entity("ofd") is None
 
 
+def test_definition_wording_overrides_lookup_label_without_object_specific_rules():
+    examples = (
+        ("Что такое ОФД?", "ОФД"),
+        ("Что такое ФН?", "ФН"),
+        ("Объясни, что такое ККТ", "ККТ"),
+    )
+    for text, subject in examples:
+        raw = payload(text, kind="question", intent="information", operation="lookup",
+                      obj="понятие", object_quote=subject, relation="new_task")
+        kind, _, _, observation = validate_response(raw, text, 77)
+        state = DialogueManager().advance(DialogueState(), text, 77, observation=observation)
+        assert kind == "information"
+        assert observation.intent == "general" and observation.operation == "explain"
+        assert state.operation == "explain"
+        assert any(item.get("reason") == "explicit_concept_definition_request"
+                   for item in observation.validation_diagnostics)
+
+    # Deterministic replay of the saved live provider fields: raw `lookup`
+    # was normalized to `search` before this generic phrasing rule resolves it.
+    text = "Что такое ОФД?"
+    saved_replay = payload(text, kind="question", intent="information", operation="lookup",
+        obj="OFD", object_quote="ОФД", relation="new_task")
+    kind, _, _, observation = validate_response(saved_replay, text, "smoke-1")
+    state = DialogueManager().advance(DialogueState(), text, "smoke-1", observation=observation)
+    assert kind == "information" and observation.operation == state.operation == "explain"
+
+
+def test_explicit_receipt_lookup_stays_search_when_concept_rule_is_present():
+    text = "Как найти чек по ФД?"
+    raw = payload(text, kind="question", intent="information", operation="lookup",
+                  obj="receipt", object_quote="чек", relation="new_task", goal=text)
+    kind, _, _, observation = validate_response(raw, text, 78)
+    state = DialogueManager().advance(DialogueState(), text, 78, observation=observation)
+    assert kind == "information"
+    assert observation.intent == "receipt" and observation.operation == "search"
+    assert state.intent == "receipt" and state.operation == "search"
+
+
 def test_unique_registered_object_is_grounded_when_model_omits_it():
     text = "Привет! Объясни простыми словами, что такое ОФД?"
     data = payload(text, kind="information", intent="general", operation="explain",
