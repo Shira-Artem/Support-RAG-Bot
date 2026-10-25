@@ -10,8 +10,10 @@ from app.llm_client import Generation
 from app.rag import SearchResult
 from app.retrieval_pipeline import EvaluatedDocument, Relevance, RetrievalResult
 from app.source_first_service import (SourceFirstService, _sections, _source_sections,
+                                     _information_evidence_fragments,
                                      _judge_information_relevance,
                                      _parse_information_relevance_judgment,
+                                     _partial_information_composition,
                                      _validate_information_composition)
 from app.dialogue_understanding import validate_response
 from app.response_grounding import content_terms
@@ -187,12 +189,12 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
         import json
         data = json.loads(messages[1]["content"])
         if "candidate_answer" in data:
+            fact = next(item for item in data["approved_evidence_fragments"]
+                        if "ОФД получает фискальные документы от зарегистрированной ККТ" in item["text"])
             return Generation(json.dumps({
                 "verdict": "relevant",
                 "answers_current_question": True,
-                "supporting_evidence_quote": (
-                    "ОФД получает фискальные документы от зарегистрированной ККТ, "
-                    "обрабатывает и передаёт их в ФНС в предусмотренном формате.")
+                "supporting_evidence_ids": [fact["id"]]
             }, ensure_ascii=False), "offline-judge")
         if "candidate_sections" not in data:
             return Generation("ОФД получает и обрабатывает фискальные документы от ККТ, а затем передаёт их в ФНС.",
@@ -330,14 +332,12 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
             assert payload["active_task"]["object"] == "ОФД"
             assert payload["selected_approved_source_title"] == \
                 "Для чего АТОЛ Онлайн нужен оператор фискальных данных"
-            assert payload["exact_selected_approved_evidence"].find(
-                "ОФД получает фискальные документы от зарегистрированной ККТ") >= 0
+            evidence_fragment = next(item for item in payload["approved_evidence_fragments"]
+                if "ОФД получает фискальные документы от зарегистрированной ККТ" in item["text"])
             content = json.dumps({
                 "verdict": "relevant",
                 "answers_current_question": True,
-                "supporting_evidence_quote": (
-                    "ОФД получает фискальные документы от зарегистрированной ККТ, "
-                    "обрабатывает и передаёт их в ФНС в предусмотренном формате.")
+                "supporting_evidence_ids": [evidence_fragment["id"]]
             }, ensure_ascii=False)
         else:
             question = payload["current_question"]
@@ -440,28 +440,87 @@ def test_semantic_relevance_replays_saved_composer_answer_with_current_task_and_
              "task": {"value": "Что такое ОФД?"},
              "goals": [{"value": question}]}
     seen = {}
+    source_path = "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    source_sha256 = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
 
     async def relevant_stub(messages, _settings):
         payload = json.loads(messages[-1]["content"])
         seen.update(payload)
         seen["system_prompt"] = messages[0]["content"]
+        fragment = next(item for item in payload["approved_evidence_fragments"]
+                        if "ОФД получает фискальные документы" in item["text"])
         return Generation(json.dumps({
             "verdict": "relevant",
             "answers_current_question": True,
-            "supporting_evidence_quote": (
-                "ОФД получает фискальные документы от зарегистрированной ККТ, "
-                "обрабатывает и передаёт их в ФНС в предусмотренном формате.")
+            "supporting_evidence_ids": [fragment["id"]]
         }, ensure_ascii=False), "offline-judge")
 
     monkeypatch.setattr("app.source_first_service.generate", relevant_stub)
     accepted, reason, diagnostics, _ = asyncio.run(_judge_information_relevance(
-        supported, question, state, title, section, evidence, settings(tmp_path)))
+        supported, question, state, title, section, evidence, settings(tmp_path),
+        evidence_body=selected_body, evidence_source=source_path,
+        evidence_sha256=source_sha256))
     assert accepted and reason == "semantic_relevance_accepted"
-    assert diagnostics["quote_present_in_selected_approved_evidence"] is True
+    assert diagnostics["supporting_evidence_ids"]
     assert seen["current_question"] == question
     assert seen["active_task"] == state
-    assert seen["exact_selected_approved_evidence"] == evidence
+    assert all("?" not in item["text"] for item in seen["approved_evidence_fragments"])
+    assert all(title not in item["text"] and section not in item["text"]
+               for item in seen["approved_evidence_fragments"])
+    assert "exact_selected_approved_evidence" not in seen
     assert "Одного совпадения слов недостаточно" in seen["system_prompt"]
+
+
+def test_saved_q1_quote_omitting_the_word_they_is_accepted_by_source_fragment_id(monkeypatch, tmp_path):
+    import asyncio
+    import hashlib
+    import json
+    from app.llm_client import Generation
+
+    fixture = json.loads((ROOT / "tests/fixtures/source_first_q1_quote_mismatch_20261025.json")
+                         .read_text(encoding="utf-8"))
+    assert 'обрабатывает и передаёт в ФНС' in fixture["old_judge_output"]
+    assert 'обрабатывает и передаёт их в ФНС' not in fixture["old_judge_output"]
+    source_text = (ROOT / fixture["source"]).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    section_body = dict(_sections(source_text))[fixture["section"]]
+    evidence = "\n".join(("Для чего АТОЛ Онлайн нужен оператор фискальных данных",
+                          fixture["section"], section_body))
+    fragments = _information_evidence_fragments(
+        section_body, fixture["source"], fixture["source_sha256"], fixture["section"])
+    exact_fact_id = next(fragment_id for fragment_id, text in fragments.items()
+                         if "обрабатывает и передаёт их в ФНС" in text)
+    observed = {}
+
+    async def id_judge(messages, _settings):
+        payload = json.loads(messages[-1]["content"])
+        observed.update(payload)
+        return Generation(json.dumps({"verdict": "relevant", "answers_current_question": True,
+            "supporting_evidence_ids": [exact_fact_id]}, ensure_ascii=False), "offline-id-judge")
+
+    monkeypatch.setattr("app.source_first_service.generate", id_judge)
+    accepted, reason, diagnostics, _ = asyncio.run(_judge_information_relevance(
+        fixture["candidate_answer"], fixture["question"], {"object": "ОФД", "operation": "explain"},
+        "Для чего АТОЛ Онлайн нужен оператор фискальных данных", fixture["section"], evidence,
+        settings(tmp_path), evidence_body=section_body, evidence_source=fixture["source"],
+        evidence_sha256=fixture["source_sha256"]))
+    assert accepted and reason == "semantic_relevance_accepted"
+    assert diagnostics["supporting_evidence_ids"] == [exact_fact_id]
+    assert exact_fact_id in {item["id"] for item in observed["approved_evidence_fragments"]}
+
+
+def test_evidence_fragment_builder_excludes_title_question_and_section_heading():
+    import hashlib
+    source = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    section = "Что проверено по инструкции производителя"
+    fragments = _information_evidence_fragments(
+        dict(_sections(body))[section], "data/knowledge/atol_online/ofd/what-is-ofd.md",
+        hashlib.sha256(source.read_bytes()).hexdigest(), section)
+    assert fragments
+    assert all(not text.endswith("?") for text in fragments.values())
+    assert all("Что проверено по инструкции производителя" not in text for text in fragments.values())
+    assert all("Для чего АТОЛ Онлайн нужен оператор фискальных данных" not in text
+               for text in fragments.values())
 
 
 def test_semantic_relevance_rejects_definition_and_other_fact_from_same_article(monkeypatch, tmp_path):
@@ -482,10 +541,14 @@ def test_semantic_relevance_rejects_definition_and_other_fact_from_same_article(
     )
     judgments = (
         {"verdict": "irrelevant", "answers_current_question": False,
-         "supporting_evidence_quote": ""},
+         "supporting_evidence_ids": []},
         {"verdict": "irrelevant", "answers_current_question": False,
-         "supporting_evidence_quote": ""},
+         "supporting_evidence_ids": []},
     )
+
+    import hashlib
+    source_path = "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    source_sha256 = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
     for candidate, judgment in zip(candidates, judgments):
         grounded, _ = _validate_information_composition(candidate, evidence, section)
         assert grounded == candidate  # Same article alone does not make it responsive.
@@ -496,20 +559,36 @@ def test_semantic_relevance_rejects_definition_and_other_fact_from_same_article(
         monkeypatch.setattr("app.source_first_service.generate", judge_stub)
         accepted, reason, diagnostics, _ = asyncio.run(_judge_information_relevance(
             candidate, question, {"object": "ОФД", "operation": "explain"},
-            title, section, evidence, settings(tmp_path)))
+            title, section, evidence, settings(tmp_path), evidence_body=selected_body,
+            evidence_source=source_path, evidence_sha256=source_sha256))
         assert not accepted
         assert reason == "answer_does_not_address_current_question_semantically"
         assert diagnostics["verdict"] == "irrelevant"
 
 
-def test_relevance_judgment_quote_must_be_in_selected_source_and_existing_gates_still_block(monkeypatch):
+def test_relevance_judgment_rejects_unknown_ids_and_text_quotes(monkeypatch):
     import json
     source = "ОФД получает документы от ККТ и передает их в ФНС."
     accepted, reason, _ = _parse_information_relevance_judgment(json.dumps({
         "verdict": "relevant", "answers_current_question": True,
+        "supporting_evidence_ids": ["title-only-or-unknown-id"]
+    }, ensure_ascii=False), {"valid-id": source})
+    assert not accepted and reason == "relevance_evidence_id_not_in_selected_approved_source"
+    quote_only, quote_reason, _ = _parse_information_relevance_judgment(json.dumps({
+        "verdict": "relevant", "answers_current_question": True,
         "supporting_evidence_quote": "ОФД возвращает кассе комиссию"
-    }, ensure_ascii=False), source)
-    assert not accepted and reason == "relevance_quote_not_in_selected_approved_evidence"
+    }, ensure_ascii=False), {"valid-id": source})
+    assert not quote_only and quote_reason == "relevance_judgment_invalid_schema"
+    uncertain, uncertain_reason, _ = _parse_information_relevance_judgment(json.dumps({
+        "verdict": "uncertain", "answers_current_question": False,
+        "supporting_evidence_ids": ["valid-id"]
+    }, ensure_ascii=False), {"valid-id": source})
+    assert not uncertain and uncertain_reason == "answer_does_not_address_current_question_semantically"
+    invalid, invalid_reason, _ = _parse_information_relevance_judgment(json.dumps({
+        "verdict": "maybe", "answers_current_question": True,
+        "supporting_evidence_ids": ["valid-id"]
+    }, ensure_ascii=False), {"valid-id": source})
+    assert not invalid and invalid_reason == "relevance_judgment_invalid_schema"
 
     grounded, reason = _validate_information_composition(
         "ОФД автоматически возвращает комиссию кассе.", source, "Что проверено")
@@ -519,6 +598,13 @@ def test_relevance_judgment_quote_must_be_in_selected_source_and_existing_gates_
         "При отсутствии чеков в налоговой стоит отдельно проверить статус ККТ в ОФД "
         "и текущую очередь передачи.", "Что проверить")
     assert procedural is None and reason == "procedural_or_interface_content_in_information_answer"
+
+    unsafe_partial, reason, _ = _partial_information_composition(
+        "ОФД получает документы от ККТ. Проверьте, что очередь передачи пуста.",
+        source, "Что проверено")
+    assert unsafe_partial is None
+    assert reason in {"instruction_in_information_answer",
+                      "procedural_or_interface_content_in_information_answer"}
 
 
 def test_information_composer_repair_rejects_fabricated_claim(monkeypatch, tmp_path):
@@ -583,3 +669,133 @@ def test_information_composer_repair_rejects_fabricated_claim(monkeypatch, tmp_p
     assert diagnostics["repair"]["validation"] == "rejected"
     assert diagnostics["repair"]["reason"] == "unsupported_information_claim"
     assert "автоматически возвращает комиссию" not in answer.text
+
+
+def _run_saved_partial_q2(monkeypatch, tmp_path, *, judge_verdict="relevant", repair_output=None):
+    import hashlib
+    import json
+    from app.dialogue_understanding import validate_response
+
+    fixture_path = ROOT / "tests/fixtures/source_first_q2_partial_20261025.json"
+    fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+    source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    doc_id = "atol-online-11256-what-is-ofd"
+    path = ROOT / source
+    body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    sections = {heading: text for heading, text in _sections(body)}
+    scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
+             "operations": ["explain_ofd"], "manufacturer": "АТОЛ",
+             "model": "АТОЛ Онлайн — облачная ККТ"}
+    candidates = [{"id": f"{doc_id}::{heading}", "document_id": doc_id,
+        "section": heading, "text": text,
+        "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных", "source": source,
+        "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "scope": scope, "qdrant_scope": scope}
+        for heading, text in sections.items()]
+    monkeypatch.setattr("app.source_first_service._source_sections", lambda *_args: candidates)
+    monkeypatch.setattr("app.source_first_service._append_composer_rejection", lambda *_args: None)
+    retrieval = _retrieval(source, doc_id, "Вопрос пользователя", scope,
+                           sections["Вопрос пользователя"])
+    first_question = "Что такое ОФД?"
+    question = fixture["question"]
+    manager = DialogueManager()
+    first_raw = {"request_type": "information", "relation": "new_task", "intent": "general",
+        "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "ОФД"},
+        "goal": {"quote": first_question}, "symptom": None, "entities": [], "unknown_facts": [],
+        "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
+    _, _, _, first_observation = validate_response(first_raw, first_question, 1)
+    first_state = manager.advance(DialogueState(), first_question, 1, observation=first_observation)
+    followup_raw = {"request_type": "information", "relation": "continuation", "intent": "general",
+        "operation": "explain", "object": "ОФД", "object_evidence": {"quote": "он"},
+        "goal": {"quote": question}, "symptom": None, "entities": [], "unknown_facts": [],
+        "specialist_requested": False, "specialist_evidence": None, "confidence": .9}
+    _, _, _, followup_observation = validate_response(followup_raw, question, 2)
+    state = manager.advance(first_state, question, 2, observation=followup_observation)
+    seen = {"calls": [], "judge_payloads": []}
+    output_repair = fixture["repair_output"] if repair_output is None else repair_output
+
+    async def generate_stub(messages, _settings):
+        payload = json.loads(messages[-1]["content"])
+        if "candidate_sections" in payload:
+            chosen = next(item for item in payload["candidate_sections"]
+                          if item["section"] == "Что проверено по инструкции производителя")
+            stage = "planner"
+            content = json.dumps({"mode": "select", "section_id": chosen["id"],
+                "applicability_confirmed": True, "order_confirmed": False,
+                "reason": "general explanation"})
+        elif "rejected_claims" in payload:
+            stage = "repair"
+            content = output_repair
+        elif "candidate_answer" in payload:
+            stage = "semantic_judge"
+            seen["judge_payloads"].append(payload)
+            if judge_verdict == "relevant":
+                evidence_fragment = next(item for item in payload["approved_evidence_fragments"]
+                    if "ОФД получает фискальные документы от зарегистрированной ККТ" in item["text"])
+                content = json.dumps({"verdict": "relevant", "answers_current_question": True,
+                    "supporting_evidence_ids": [evidence_fragment["id"]]}, ensure_ascii=False)
+            else:
+                content = json.dumps({"verdict": judge_verdict, "answers_current_question": False,
+                    "supporting_evidence_ids": []}, ensure_ascii=False)
+        else:
+            stage = "composer"
+            content = fixture["composer_output"]
+        seen["calls"].append(stage)
+        return Generation(content, "offline-replay", 0, 0, 0)
+
+    monkeypatch.setattr("app.source_first_service.generate", generate_stub)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+        .answer(question, state=state, history=[{"role": "user", "content": first_question},
+                                               {"role": "assistant", "content": "ОФД передаёт документы."}]))
+    return answer, seen, fixture
+
+
+def test_saved_q2_partially_accepts_only_grounded_claim_after_semantic_judge(monkeypatch, tmp_path):
+    answer, seen, fixture = _run_saved_partial_q2(monkeypatch, tmp_path)
+
+    assert fixture["artifact"] == ".local/ofd-full-live-e2e-rate-controlled-20261025.json"
+    assert seen["calls"] == ["planner", "composer", "repair", "semantic_judge"]
+    assert len(seen["judge_payloads"]) == 1
+    partial = seen["judge_payloads"][0]["candidate_answer"]
+    assert partial == "ОФД получает фискальные документы от ККТ, обрабатывает их и передаёт в ФНС в предусмотренном формате."
+    assert answer.scenario == "answer"
+    assert "ОФД получает фискальные документы" in answer.text
+    assert "договор" not in answer.text and "тариф" not in answer.text
+    diagnostics = answer.retrieval_diagnostics["answer_composer"]
+    assert diagnostics["repair"]["validation"] == "partial"
+    assert diagnostics["repair"]["partial_acceptance"]["validation"] == "accepted"
+    assert diagnostics["relevance_check"]["verdict"] == "relevant"
+    assert diagnostics["repair"]["partial_acceptance"]["discarded_claims"] == [
+        {"text": "Для облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.",
+         "reason": "unsupported_information_claim"}]
+
+
+def test_partial_answer_does_not_detach_a_mandatory_condition():
+    evidence = ("ОФД передаёт документы в ФНС только при наличии действующего договора. "
+                "Договор определяет условия передачи данных.")
+    candidate = ("ОФД передаёт документы в ФНС только при наличии действующего договора. "
+                 "Для этого подходят любые кассы.")
+    partial, reason, _ = _partial_information_composition(
+        candidate, evidence, "Проверенные сведения")
+    assert partial is None
+    assert reason == "partial_answer_may_drop_cross_sentence_condition"
+
+
+def test_partial_answer_is_rejected_when_semantic_judge_says_irrelevant(monkeypatch, tmp_path):
+    answer, seen, _ = _run_saved_partial_q2(monkeypatch, tmp_path, judge_verdict="irrelevant")
+    assert len(seen["judge_payloads"]) == 1
+    assert "ОФД получает фискальные документы" in seen["judge_payloads"][0]["candidate_answer"]
+    assert answer.scenario == "escalate"
+    assert answer.scenario_reason == "information_composition_unverified"
+    assert answer.retrieval_diagnostics["answer_composer"]["relevance_check"]["verdict"] == "irrelevant"
+
+
+def test_fully_fabricated_repair_has_no_partial_answer_or_semantic_judge(monkeypatch, tmp_path):
+    answer, seen, _ = _run_saved_partial_q2(monkeypatch, tmp_path, repair_output=(
+        "ОФД автоматически возвращает комиссию. ОФД начисляет кешбэк за каждую операцию."))
+    assert answer.scenario == "escalate"
+    assert answer.scenario_reason == "information_composition_unverified"
+    assert seen["judge_payloads"] == []
+    partial = answer.retrieval_diagnostics["answer_composer"]["repair"]["partial_acceptance"]
+    assert partial["validation"] == "rejected"
+    assert partial["reason"] == "partial_answer_requires_supported_and_unsupported_claims"
