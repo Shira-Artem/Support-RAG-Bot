@@ -26,6 +26,8 @@ class Settings:
     groq_model: str = "openai/gpt-oss-20b"
     groq_reasoning_effort: str = "low"
     expert_telegram_ids: frozenset[int] = frozenset()
+    rag_engine: str = "legacy"
+    source_first_telegram_ids: frozenset[int] = frozenset()
 
 
 def _bool_env(name: str, default: bool = False) -> bool:
@@ -40,6 +42,18 @@ def get_settings() -> Settings:
     if provider not in {"openrouter", "groq"}:
         raise ValueError("LLM_PROVIDER must be openrouter or groq")
     ids = frozenset(int(item.strip()) for item in os.getenv("EXPERT_TELEGRAM_IDS", "").split(",") if item.strip())
+    engine = os.getenv("RAG_ENGINE", "legacy").strip().lower()
+    if engine not in {"legacy", "source_first"}:
+        raise ValueError("RAG_ENGINE must be legacy or source_first")
+    configured_source_ids = os.getenv("SOURCE_FIRST_TELEGRAM_IDS")
+    # User explicitly authorized reusing the existing Telegram ID list. The
+    # process can opt into it with only RAG_ENGINE=source_first; no ID is copied
+    # into code, documentation, or logs.
+    source_id_value = configured_source_ids if configured_source_ids is not None else (
+        os.getenv("EXPERT_TELEGRAM_IDS", "") if engine == "source_first" else "")
+    source_first_ids = frozenset(int(item.strip()) for item in source_id_value.split(",") if item.strip())
+    if engine == "source_first" and not source_first_ids:
+        raise ValueError("SOURCE_FIRST_TELEGRAM_IDS is required when RAG_ENGINE=source_first")
     return Settings(
         telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", "").strip(),
         openrouter_api_key=os.getenv("OPENROUTER_API_KEY", "").strip(),
@@ -53,4 +67,11 @@ def get_settings() -> Settings:
         groq_model=os.getenv("GROQ_MODEL", "openai/gpt-oss-20b").strip(),
         groq_reasoning_effort=os.getenv("GROQ_REASONING_EFFORT", "low").strip().lower(),
         expert_telegram_ids=ids,
+        rag_engine=engine,
+        source_first_telegram_ids=source_first_ids,
     )
+
+
+def should_use_source_first(settings: Settings, telegram_user_id: int) -> bool:
+    """The opt-in engine and explicit Telegram allowlist are both required."""
+    return settings.rag_engine == "source_first" and telegram_user_id in settings.source_first_telegram_ids

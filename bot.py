@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
@@ -11,9 +12,11 @@ from app.answer_service import Answer, AnswerService
 from app.bot_runtime import write_runtime_receipt
 from app.conversation_store import ConversationStore
 from app.compat import build_answer_rag
-from app.config import get_settings
+from app.config import get_settings, should_use_source_first
 from app.expert_store import ExpertStore
 from app.expert_telegram import ExpertTelegram
+from app.source_first_service import SourceFirstService
+from qdrant_client import QdrantClient
 
 
 logging.basicConfig(
@@ -26,8 +29,18 @@ for logger_name in ("httpx", "httpcore", "httpx2", "httpcore2"):
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
+if settings.rag_engine == "source_first":
+    if os.getenv("RAG_BACKEND", "qdrant").strip().lower() != "qdrant":
+        raise RuntimeError("Source-first requires the existing Qdrant backend")
+    qdrant_check = QdrantClient(url=os.getenv("QDRANT_URL", "http://127.0.0.1:6333"), timeout=15)
+    selected_collection = os.getenv("QDRANT_COLLECTION", "knowledge_v1")
+    if not qdrant_check.collection_exists(selected_collection):
+        raise RuntimeError("Configured Qdrant collection does not exist; refusing to create it")
+    if not (qdrant_check.get_collection(selected_collection).points_count or 0):
+        raise RuntimeError("Configured Qdrant collection is empty; refusing Source-first startup")
 rag = build_answer_rag(settings.docs_dir)
 answer_service = AnswerService(rag, settings)
+source_first_service = SourceFirstService(rag, settings, settings.docs_dir.parent.parent)
 expert_store = ExpertStore()
 expert = ExpertTelegram(settings, answer_service, expert_store)
 conversations = ConversationStore()
@@ -193,10 +206,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     message_id = conversations.begin(conversation_id, user_text)
     dialogue_state = conversations.dialogue_state(conversation_id)
     try:
-        answer = await answer_service.answer(user_text, state=dialogue_state)
+        if should_use_source_first(settings, user_id):
+            answer = await source_first_service.answer(
+                user_text, state=dialogue_state, history=conversations.history(conversation_id))
+        else:
+            answer = await answer_service.answer(user_text, state=dialogue_state)
     except Exception as exc:
         logger.error("Free generation failed: %s", type(exc).__name__)
         answer = Answer("Не удалось обработать вопрос. Повторите попытку позже.",
+                        rag_engine="source_first" if should_use_source_first(settings, user_id) else "legacy",
                         generation_status="error", generation_reason=f"unexpected_exception:{type(exc).__name__}",
                         scenario="escalate", scenario_reason="unexpected_exception",
                         provider=settings.llm_provider,
@@ -257,8 +275,8 @@ def main() -> None:
 
     logger.info("Bot started. Docs: %s, chunks: %s", settings.docs_dir, len(rag.chunks))
     runtime = write_runtime_receipt(settings, rag)
-    logger.info("Bot runtime: pid=%s collection=%s provider=%s model=%s reasoning=%s",
-                runtime['pid'], runtime['collection'], runtime['provider'], runtime['model'], runtime['reasoning_effort'])
+    logger.info("Bot runtime: pid=%s engine=%s collection=%s provider=%s model=%s reasoning=%s source_first_users=%s",
+                runtime['pid'], runtime['rag_engine'], runtime['collection'], runtime['provider'], runtime['model'], runtime['reasoning_effort'], runtime['source_first_user_count'])
 
     try:
         asyncio.get_event_loop()

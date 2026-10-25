@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from hashlib import sha256
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -25,6 +26,11 @@ def write_runtime_receipt(settings, rag, path: Path | None = None) -> dict:
         provider=settings.llm_provider,
         model=settings.groq_model if settings.llm_provider == 'groq' else settings.openrouter_model,
         reasoning_effort=settings.groq_reasoning_effort if settings.llm_provider == 'groq' else None,
+        rag_engine=getattr(settings, 'rag_engine', 'legacy'),
+        source_first_user_count=len(getattr(settings, 'source_first_telegram_ids', ())),
+        source_first_user_ids_sha256=hashlib.sha256(
+            ','.join(str(value) for value in sorted(getattr(settings, 'source_first_telegram_ids', ()))).encode()
+        ).hexdigest() if getattr(settings, 'source_first_telegram_ids', ()) else None,
         commit=head, source_sha256=hashes, phase='runtime_initialized_before_polling')
     target = path or ROOT/'.local/bot-runtime.json'
     target.parent.mkdir(parents=True, exist_ok=True)

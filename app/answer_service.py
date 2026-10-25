@@ -523,6 +523,7 @@ def _safe_alternative(answer: str, issue: str, question: str, *, context: str = 
 @dataclass
 class Answer:
     text: str
+    rag_engine: str = "legacy"
     results: list[SearchResult] = field(default_factory=list)
     used_model: bool = False
     generation_status: str = "unavailable"
