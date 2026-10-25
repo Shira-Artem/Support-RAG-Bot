@@ -37,7 +37,7 @@
 
 Перед запуском активного прежнего Python worker не было; запущен один процесс `python -u bot.py`, `Application started`.
 
-**Runtime receipt:** `.local/bot-runtime.json` — PID `35844`, engine `source_first`, allowlist count 3 и SHA-256 списка (ID не сохраняются в receipt), commit `86a86404ddd50efa88ba2b7ba69c8cc6fdef26a7`, Groq / `openai/gpt-oss-20b` / reasoning effort `medium`, Qdrant `knowledge_organized_stage2_20261022`, 934 points. Receipt покрывает 26 файлов `bot.py` и `app/*.py`; после запуска проверено, что текущие SHA совпадают, PID активен, в Windows работает один Python процесс, а commit совпадает с HEAD. Qdrant REST status `green`. Worker ждёт обращений; живых пользовательских LLM вызовов пока нет. Команды запуска/остановки/rollback и экспорта — в [README](README.md).
+**Runtime receipt:** `.local/bot-runtime.json` — PID `35844`, engine `source_first`, allowlist count 3 и SHA-256 списка (ID не сохраняются в receipt), стартовый commit `86a86404ddd50efa88ba2b7ba69c8cc6fdef26a7`, Groq / `openai/gpt-oss-20b` / reasoning effort `medium`, Qdrant `knowledge_organized_stage2_20261022`, 934 points. Receipt покрывает 26 файлов `bot.py` и `app/*.py`; при запуске commit совпадал с HEAD. Затем эти исходники опубликованы в `33eadc0df6a63314ea2842faab48f1c18f85c4d0`, SHA файлов в receipt совпадают с опубликованной версией. PID активен, в Windows работает один Python процесс. Qdrant REST status `green`. Worker ждёт обращений; живых пользовательских LLM вызовов пока нет. Команды запуска/остановки/rollback и экспорта — в [README](README.md).
 
 ## Остающиеся ограничения
 
@@ -46,4 +46,4 @@
 - Planner использует LLM только для выбора раздела/уточнения/эскалации; оценки причины модели диагностические, технический текст Planner пользователю не показывается.
 - Кнопка специалиста сохраняет запрос в существующей локальной очереди; подтверждённой реальной доставки сотрудникам нет. Интерфейс старого callback явно сообщает, что доставка не настроена.
 - Пилот сохраняет трассы в прежней SQLite, где уже есть история, а экспорт делает отдельный локальный обезличенный JSONL. Не включайте сырой файл базы или исходные логи в Git.
-- Текущие незакоммиченные изменения включают подготовленный ранее `experiments/telegram_source_first_pilot/`; он не запускается и не используется как runtime. Commit/push не выполнялись.
+- Подготовленный ранее `experiments/telegram_source_first_pilot/` не запускается, не используется как runtime и не включён в публикацию. Интеграция отправлена в `main`: `33eadc0df6a63314ea2842faab48f1c18f85c4d0`.
