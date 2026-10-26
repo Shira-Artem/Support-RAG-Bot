@@ -280,3 +280,9 @@ Reviewed code was pushed as `5210c5cb0d82f9939b6e07ff254bcbef80e61f15`. The thre
 7. «Спасибо, вопрос решён.»
 
 After each turn inspect private `.local/conversational-understanding.jsonl` for raw/validated provider output and `.local/groq-rate-limit.jsonl` for status, usage, headers and latency; `data/conversations.sqlite3` stores reducer state, CoordinatorDecision, retrieval, answer and ProgressLedger diagnostics. Never publish raw user traces or secrets. A useful live multi-turn result has not yet been demonstrated; B2 A/B and production release remain NO-GO.
+
+### Credential rotation and second worker start (2026-10-26)
+
+At the user's direct request, the ignored `.env` `GROQ_API_KEY` value was replaced. Authenticated `GET /models` returned HTTP 200 and listed the requested GPT-OSS model; this call checked authentication only. No secret value is recorded. The exact old PID 26496 was stopped; new sole worker PID **30004** started at 17:34:28 Moscow from current main `a4375e536f73c6d625a15852f05c66eb39e33172`; runtime receipt shows all 31 source hashes match, the same medium reasoning and allowlist, Source-first/coordinator on, selector/handoff off, Stage3 green/934 points. Polling reports `Application started`; no webhook, pending update, second worker or Telegram error. SQLite quick check passed.
+
+Eight messages from non-allowlisted accounts arrived during the first pilot interval and were served by the legacy route; only row metadata was checked, and their text/IDs were not read. No agent-initiated Telegram or Groq generation test occurred. The pilot remains available for the allowlisted owner; live usefulness is awaiting user-authored scenarios.
