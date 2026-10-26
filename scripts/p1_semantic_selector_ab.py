@@ -32,7 +32,8 @@ from app.retrieval import Retriever
 from app.semantic_evidence_selector import (SelectorDecisionError, build_evidence_units,
     select_evidence, validate_selected_units)
 from app.source_first_service import (_focused_approved_sentence, _source_sections,
-                                      _question_only_section, _validate_information_composition)
+                                      _section_has_answer_bearing_content,
+                                      _validate_information_composition)
 from app.vector_store import QdrantStore
 from qdrant_client import QdrantClient
 from app.response_grounding import evidence_kind, instruction_issue, statements, unsafe_operation_issue
@@ -159,7 +160,7 @@ async def _run(settings, progress: dict, *, resume: bool = False) -> dict:
                         scenario="escalate", scenario_reason="selector_ab_retrieval_insufficient"))
                     continue
                 sections = _source_sections(rag, result, root)
-                sections = [item for item in sections if not _question_only_section(item)]
+                sections = [item for item in sections if _section_has_answer_bearing_content(item)]
                 focus = decision.current_subgoal or question
                 lexical_start = perf_counter()
                 lexical_match = _focused_approved_sentence(sections, focus)

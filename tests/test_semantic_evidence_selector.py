@@ -13,7 +13,8 @@ from app.semantic_evidence_selector import (build_evidence_units, parse_decision
                                              validate_selected_units, EvidenceDecision,
                                              MAX_EVIDENCE_TOKENS)
 from app.llm_client import Generation
-from app.source_first_service import SourceFirstService
+from app.source_first_service import (SourceFirstService, _focused_approved_sentence,
+                                     _section_has_answer_bearing_content)
 import app.semantic_evidence_selector as selector_module
 
 
@@ -43,7 +44,69 @@ def test_evidence_ids_are_stable_and_procedure_is_indivisible(tmp_path):
     assert [unit.id for unit in first] == [unit.id for unit in again]
     assert len(first) == 1
     assert first[0].kind == "procedure_block"
+    assert first[0].role == "procedure_block"
     assert "1. Откройте" in first[0].text and "2. Выберите" in first[0].text
+
+
+def test_questions_and_markdown_headers_never_become_selectable_answers(tmp_path):
+    body = ("Что такое услуга?\n"
+            "Сервис обрабатывает переданные документы.\n"
+            "Как найти чек\n"
+            "### Краткий ответ\n"
+            "Чек ищут по дате его пробития.\n"
+            "Что касается срока, он указан в договоре.")
+    _, _, units = _fixture(tmp_path, body)
+    assert [unit.text for unit in units] == [
+        "Сервис обрабатывает переданные документы.",
+        "Чек ищут по дате его пробития.",
+        "Что касается срока, он указан в договоре.",
+    ]
+    assert [unit.position for unit in units] == [2, 5, 6]
+    assert all(unit.role == "fact" for unit in units)
+
+
+def test_question_only_faq_creates_no_evidence_ids(tmp_path):
+    _, _, units = _fixture(tmp_path, "Как проверить статус документа?")
+    assert units == []
+
+
+def test_context_fragment_requires_a_fact_and_can_be_kept_with_it(tmp_path):
+    _, _, units = _fixture(tmp_path,
+        "Примечание:\nДля изменения расписания необходим доступ администратора.")
+    assert [unit.role for unit in units] == ["context", "fact"]
+    context_only = EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "test")
+    selected, reason = validate_selected_units(context_only, units, _state(), tmp_path,
+                                               informational=True)
+    assert selected == []
+    assert reason == "context_requires_answer_bearing_fact"
+    combined = EvidenceDecision("select", tuple(unit.id for unit in units), None,
+                                "direct_evidence", "test")
+    selected, reason = validate_selected_units(combined, units, _state(), tmp_path,
+                                               informational=True)
+    assert reason is None
+    assert [unit.role for unit in selected] == ["context", "fact"]
+
+
+def test_source_first_lexical_selector_ignores_question_only_snippet():
+    sections = [{"text": "Как отправить документы?\n"
+                         "Документы передаются через канал обмена."}]
+    match = _focused_approved_sentence(sections, "Как отправить документы?")
+    assert match is not None
+    assert match[1] == "Документы передаются через канал обмена."
+    assert not _section_has_answer_bearing_content({"text": "Как отправить документы?"})
+    assert _section_has_answer_bearing_content(sections[0])
+
+
+def test_local_validation_rejects_a_question_role_even_if_id_is_known(tmp_path):
+    from dataclasses import replace
+
+    _, _, units = _fixture(tmp_path, "Сервис обрабатывает документы.")
+    question = replace(units[0], role="question")
+    decision = EvidenceDecision("select", (question.id,), None, "direct_evidence", "test")
+    selected, reason = validate_selected_units(decision, [question], _state(), tmp_path,
+                                               informational=True)
+    assert selected == []
+    assert reason == "non_answer_bearing_unit"
 
 
 def test_evidence_token_budget_omits_whole_oversized_section(tmp_path):
@@ -125,6 +188,40 @@ def test_saved_dev_cassette_selects_multiple_ids_in_canonical_source_order():
         outputs.append([(u.id, u.text) for u in selected])
     assert outputs.count(outputs[0]) == len(outputs)
     assert [u.position for u in (u for u in units if u.id in selected_ids)] == [1, 2]
+
+
+def test_frozen_question_only_selection_is_removed_and_compared_to_source_first():
+    from dataclasses import replace
+
+    root = ROOT / "experiments/architecture_recovery_audit"
+    dev = json.loads((root / "p1_semantic_selector_dev_cassettes_20261026.json").read_text(encoding="utf-8"))
+    trace = json.loads((root / "p1_semantic_selector_diagnostic_20261026.json").read_text(encoding="utf-8"))
+    case = next(item for item in dev["cases"] if item["scenario"] == "D1")
+    turn = next(item for item in trace["turns"] if item["split"] == "HOLDOUT"
+                and len(item.get("decision", {}).get("selected_ids", [])) > 1)
+    original = [selector_module.EvidenceUnit(**item) for item in case["evidence_units"]]
+    old_ids = turn["decision"]["selected_ids"]
+    roles = {unit.id: selector_module.evidence_role(unit.text) for unit in original}
+    removed = {unit_id for unit_id in old_ids if roles[unit_id] in {"question", "header"}}
+    kept = [replace(unit, role=roles[unit.id]) for unit in original
+            if roles[unit.id] in {"fact", "context"}]
+    assert len(removed) == 1
+    with pytest.raises(ValueError, match="unknown_id"):
+        parse_decision(turn["decision"]["raw_json"], kept)
+
+    eligible_selected = [unit_id for unit_id in old_ids if unit_id not in removed]
+    replay = EvidenceDecision("select", tuple(eligible_selected), None, "direct_evidence", "frozen")
+    validated, rejection = validate_selected_units(replay, kept,
+        DialogueState.from_dict(case["state_after"]), ROOT, informational=True)
+    assert rejection is None
+    assert validated and all(unit.role == "fact" for unit in validated)
+
+    # Both arms use the same frozen section snapshot. The previous lexical
+    # choice is reproduced without another provider call and differs from the
+    # answer-bearing fact the selector retained.
+    baseline = _focused_approved_sentence([case["lexical"]["selected_section"]], turn["question"])
+    assert baseline is not None
+    assert baseline[1] != validated[0].text
 
 
 def test_saved_procedure_cassette_cannot_detach_route_or_conditions():

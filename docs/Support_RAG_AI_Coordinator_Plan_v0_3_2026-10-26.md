@@ -2,7 +2,7 @@
 
 **Версия:** 0.3 · 26 октября 2026 г. · обновлено по трём параллельным результатам A/C/D и проверке опубликованных GitHub-веток.
 
-**Статус:** D2 и handoff integration проверены офлайн; интеграция fast-forward merged в `main` на `5a8f9929fced459a6dbbc13c386d2bd74b70b687`, post-merge full suite — 443 passed, 5 xfailed, 0 failed. Следующая запрошенная задача — исправить общую evidence eligibility Semantic Selector. D2 offline DONE; handoff offline DONE только с fake transport; live BLOCKED/не запускался; production NO-GO. Не команда выполнять все этапы сразу. `docs/RAG_MASTER_PLAN.md` остаётся **единственным каноническим планом репозитория**. Этот файл — операционная детализация. После согласования Codex вносит в master только изменения статусов и ссылки, не создавая конкурирующую дорожную карту.
+**Статус:** D2 и handoff integration проверены офлайн; интеграция fast-forward merged в `main` на `5a8f9929fced459a6dbbc13c386d2bd74b70b687`, post-merge full suite — 443 passed, 5 xfailed, 0 failed. Этап 2 offline eligibility correction выполнен: вопросы/заголовки исключены, context-only не проходит отдельно, procedural blocks остаются цельными; targeted 44 passed, full 449 passed / 5 xfailed. B2 по-прежнему NO-GO; следующий запрошенный этап — ограниченная коррекция Retrieval по четырём случаям аудита C. D2 offline DONE; handoff offline DONE только с fake transport; live BLOCKED/не запускался; production NO-GO. Не команда выполнять все этапы сразу. `docs/RAG_MASTER_PLAN.md` остаётся **единственным каноническим планом репозитория**. Этот файл — операционная детализация. После согласования Codex вносит в master только изменения статусов и ссылки, не создавая конкурирующую дорожную карту.
 
 ## 1. Продуктовая цель
 
@@ -91,6 +91,8 @@ Reducer + Coordinator (подтверждённые факты, риск и до
 ### A. Семантический выбор evidence [ЭКСПЕРИМЕНТ ВЫПОЛНЕН, B2 NO-GO]
 
 **Сделано:** ID-only selector за выключенным флагом; проверка SHA/approved/safety; сохранение порядка нескольких ID; детальная диагностика HTTP/status/429; полный pytest 420 passed / 6 xfailed на `main`; 3 содержательно полезных ответа из 4 Decision attempts в диагностическом прогоне. На D1.3 LLM выбрала и factual evidence, и соседний FAQ-вопрос: происхождение source подтверждено, но вопрос не является answer-bearing unit. D3.1 остался без ответа из-за 429.
+
+**Offline eligibility correction (2026-10-26):** универсально отсекаются question/header units; context labels нельзя выбрать без answer-bearing fact; Source-first lexical путь использует ту же eligibility; целый procedural block сохраняет порядок/предупреждения. Frozen D1.3 replay подтверждает механизм исправления, но не считается независимым holdout. См. [отчёт](../experiments/architecture_recovery_audit/p1_semantic_eligibility_20261026.md). B2 остаётся OFF/NO-GO.
 
 **Следующий A-шаг не раньше согласованного общего E2E после B:**
 

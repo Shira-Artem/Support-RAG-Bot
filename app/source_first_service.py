@@ -21,6 +21,7 @@ from app.answer_service import Answer
 from app.config import Settings
 from app.dialogue_state import DialogueState, classify_user_turn, is_resolution_turn
 from app.llm_client import GenerationError, generate
+from app.semantic_evidence_selector import evidence_role
 from app.rag_query import QueryNeedsClarification, build_rag_query
 from app.retrieval_pipeline import normalize_metadata
 from app.response_grounding import (claim_supported, content_terms, evidence_kind,
@@ -58,11 +59,14 @@ def _sections(body: str) -> list[tuple[str, str]]:
     return rows
 
 
-def _question_only_section(item: dict) -> bool:
-    """A heading chunk that only repeats a client question is not answer evidence."""
-    text = str(item.get("text") or "").strip()
-    return (len(text) <= 360 and text.endswith("?") and text.count("?") == 1
-            and "\n" not in text and not any(mark in text[:-1] for mark in (".", "!")))
+def _section_has_answer_bearing_content(item: dict) -> bool:
+    """Keep factual sentences and complete procedures; filter retrieval-only labels."""
+    text = str(item.get("text") or "")
+    parts = statements(text)
+    if any(evidence_kind(part, str(item.get("section") or "")) in {"procedure", "interface"}
+           for part in parts):
+        return True
+    return any(evidence_role(part) == "fact" for part in parts)
 
 
 _FOCUS_STOPWORDS = {
@@ -92,6 +96,8 @@ def _focused_approved_sentence(sections: list[dict], focus: str) -> tuple[dict, 
     ranked = []
     for section_index, item in enumerate(sections):
         for sentence_index, sentence in enumerate(statements(item["text"])):
+            if evidence_role(sentence) != "fact":
+                continue
             sentence_terms = _focus_terms(sentence)
             overlap = len(focus_terms & sentence_terms)
             if overlap:
@@ -1032,15 +1038,17 @@ class SourceFirstService:
                 return self._escalate("Не нашёл подтверждённый источник для указанного сервиса или оборудования. Не буду переносить инструкцию другого производителя; запросите специалиста.",
                                       "source_scope_mismatch", "retrieved_source_scope_conflicts_with_confirmed_client_facts", started, **base)
         if informational:
-            question_only = [item for item in sections if _question_only_section(item)]
-            if question_only:
-                sections = [item for item in sections if not _question_only_section(item)]
+            non_answer_sections = [item for item in sections
+                                   if not _section_has_answer_bearing_content(item)]
+            if non_answer_sections:
+                sections = [item for item in sections
+                            if _section_has_answer_bearing_content(item)]
                 base.setdefault("retrieval_diagnostics", {})["planner_input_filter"] = {
-                    "reason": "question_only_chunks_are_not_answer_evidence",
-                    "removed_count": len(question_only)}
+                    "reason": "non_answer_bearing_units_are_not_answer_evidence",
+                    "removed_count": len(non_answer_sections)}
             if not sections:
                 return self._escalate("В approved-источниках не нашёл раздела с подтверждённым объяснением. Не буду выдавать заголовок-вопрос за ответ; запросите специалиста.",
-                    "no_answer_bearing_information_source", "approved_retrieval_returned_only_question_chunks", started, **base)
+                    "no_answer_bearing_information_source", "approved_retrieval_returned_only_non_answer_units", started, **base)
             if decision and decision.get("route") == "grounded_information":
                 base["history"] = history or []
                 return await self._coordinated_information_answer(
