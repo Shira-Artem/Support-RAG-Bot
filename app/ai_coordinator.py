@@ -50,7 +50,16 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
                             if isinstance(item, dict) and item.get("value")), None)
 
     operation = state.operation
-    if request_type in {"greeting", "feedback", "escalation"}:
+    current_quote = ((observation.get("evidence") or {}).get("quote")
+                     if isinstance(observation.get("evidence"), dict) else None)
+    reports_check = bool(current_quote and state.active_task and any(
+        (item.get("result_span") or {}).get("quote") == current_quote
+        and (item.get("result_span") or {}).get("message_id") ==
+            (observation.get("evidence") or {}).get("message_id")
+        for item in state.active_task.checks))
+    if request_type == "resolved":
+        route, action, rationale = "conversation", "close_resolved_task", "client_reports_resolution"
+    elif request_type in {"greeting", "feedback", "escalation"} and not reports_check:
         route: Route = "conversation"
         action = "respond_or_handoff"
         rationale = "social_or_handoff_turn"

@@ -93,6 +93,16 @@ class TaskContext:
     analysis_required: bool = False
     unresolved: Fact | None = None
     unknown_facts: list[str] = field(default_factory=list)
+    # Additive ProgressLedger. Units are copied only from a verified approved
+    # answer; outcomes are written only by DialogueManager from client spans.
+    procedure_id: str | None = None
+    shown_units: list[dict] = field(default_factory=list)
+    eligible_units: list[dict] = field(default_factory=list)
+    checks: list[dict] = field(default_factory=list)
+    open_question: str | None = None
+    current_subgoal: Fact | None = None
+    clarification_repeats: dict[str, int] = field(default_factory=dict)
+    closed: bool = False
 
 
 def _fact(value):
@@ -121,7 +131,7 @@ def _task_from(value: TaskContext | dict) -> TaskContext:
     raw["entities"] = _facts_by_slot(raw.get("entities", {}))
     for key in ("parameters", "goals", "constraints", "details", "superseded_facts"):
         raw[key] = [_fact(f) for f in raw.get(key, [])]
-    for key in ("object_reference", "task_fact", "operation_evidence", "symptom", "error", "unresolved"):
+    for key in ("object_reference", "task_fact", "operation_evidence", "symptom", "error", "unresolved", "current_subgoal"):
         raw[key] = _fact(raw.get(key))
     if raw.get("expected") and not isinstance(raw["expected"], ExpectedClarification):
         raw["expected"] = ExpectedClarification(**raw["expected"])
@@ -382,6 +392,11 @@ class DialogueState:
                 "confidence": t.confidence, "transition": t.transition,
                 "analysis_required": t.analysis_required, "unresolved": asdict(t.unresolved) if t.unresolved else None,
                 "unknown_facts": list(t.unknown_facts),
+                "procedure_id": t.procedure_id, "shown_units": deepcopy(t.shown_units),
+                "eligible_units": deepcopy(t.eligible_units),
+                "checks": deepcopy(t.checks), "open_question": t.open_question,
+                "current_subgoal": asdict(t.current_subgoal) if t.current_subgoal else None,
+                "clarification_repeats": dict(t.clarification_repeats), "closed": t.closed,
             }
         # Top-level compatibility projection remains available to existing consumers.
         return {
@@ -524,6 +539,18 @@ def _remove_turn_prefixes(tokens: list[str], prefixes: tuple[tuple[str, ...], ..
     return remaining, removed
 
 
+def is_resolution_turn(text: str) -> bool:
+    """Recognize a conversational close from ordinary completion language."""
+    normalized = " ".join(words(text))
+    if not normalized:
+        return False
+    completion = r"(?:решен\w*|помог\w*|получил\w*|получилось|сработал\w*|готов\w*|вопрос\s+закрыт\w*)"
+    gratitude = r"(?:спасибо|благодарю|благодарность)"
+    return bool(re.search(gratitude + r".*\b" + completion + r"\b", normalized)
+                or re.search(r"\b" + completion + r"\b.*" + gratitude, normalized)
+                or re.fullmatch(gratitude + r" (?:пока )?(?:все|на сегодня все)", normalized))
+
+
 def classify_user_turn(text: str) -> str:
     """Classify only turns that are safe to answer without retrieval.
 
@@ -531,6 +558,8 @@ def classify_user_turn(text: str) -> str:
     stripped only at the edges, so a concrete request such as
     ``привет, как найти чек?`` remains a normal task.
     """
+    if is_resolution_turn(text):
+        return "resolved"
     tokens = words(text)
     if not tokens:
         return "vague_help"
@@ -1014,6 +1043,13 @@ class DialogueManager:
         # Social/meta turns and requests without a task never establish task
         # facts. On an existing conversation they also leave the real task and
         # any pending clarification intact.
+        if is_resolution_turn(text):
+            state = deepcopy(previous)
+            if state.task_context:
+                state.task_context.closed = True
+                state.task_context.open_question = None
+            state.revision = previous.revision + 1
+            return state
         if observation is None and classify_user_turn(text) in NON_TASK_TURN_KINDS:
             state = deepcopy(previous)
             state.revision = previous.revision + 1
@@ -1043,7 +1079,7 @@ class DialogueManager:
             raise ValueError("Analyser returned an unsupported message relation")
         known_task = obs.intent != "unknown" and obs.operation != "unknown"
         relation = obs.relation
-        if not previous.task_id:
+        if not previous.task_id or (previous.task_context and previous.task_context.closed):
             relation = "new_task"
         # A model may label any follow-up as an answer to the last question.
         # Keep a slot clarification active until the client supplies that
@@ -1268,11 +1304,74 @@ class DialogueManager:
                     [*state.task_context.unknown_facts, *unknown_facts]))
         for slot in obs.entities:
             state.task_context.unknown_facts = [item for item in state.task_context.unknown_facts if item != slot]
+        state.task_context.closed = False
+        progress_changed = self._reduce_progress(state, text, message_id)
+        if progress_changed and state.expected and state.expected.slot in {"details", "goal"}:
+            state.expected = None
+            state.task_context.open_question = None
+        if obs.goals:
+            state.task_context.current_subgoal = obs.goals[-1]
         return state
+
+    @staticmethod
+    def _reduce_progress(state: DialogueState, text: str, message_id: int | str) -> bool:
+        """Apply only explicitly reported client outcomes to shown checks."""
+        task = state.task_context
+        if not task or not (task.eligible_units or task.shown_units):
+            return False
+        changed = False
+        normalized = text.casefold().replace("ё", "е")
+        for unit in (task.eligible_units or task.shown_units):
+            label = str(unit.get("label") or "")
+            # Content terms are derived from the exact approved unit, with a
+            # bounded prefix form to tolerate Russian inflection.
+            terms = [token for token in re.findall(r"[а-яa-z0-9]+", label.casefold().replace("ё", "е"))
+                     if len(token) >= 4 and token not in {"проверьте", "проверить", "проверка", "проверить"}]
+            if not terms or not any(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*", normalized)
+                                    for term in terms):
+                continue
+            matched = re.search(r"[^,;.!?]+", text)
+            if not matched:
+                continue
+            quote = matched.group(0).strip()
+            start = text.find(quote)
+            quote_normalized = quote.casefold().replace("ё", "е")
+            if re.search(r"\b(?:не\s+(?:знаю|уверен\w*|понятно)|не\s+провер\w*|пока\s+не\s+провер\w*)\b", quote_normalized):
+                status = "unknown" if re.search(r"\bне\s+(?:знаю|уверен\w*|понятно)\b", quote_normalized) else "not_done"
+            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+отправля\w*|истек\w*|законч\w*)\b", quote_normalized):
+                status = "failed"
+            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*)\b", quote_normalized):
+                status = "passed"
+            elif re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", quote_normalized):
+                status = "unknown"
+            else:
+                continue
+            check = next((item for item in task.checks if item.get("unit_id") == unit.get("unit_id")), None)
+            if check is None:
+                check = {"unit_id": unit.get("unit_id"), "status": status,
+                    "result_span": {"message_id": message_id, "quote": quote,
+                                    "start": start, "end": start + len(quote)}}
+                task.checks.append(check)
+            else:
+                previous_status = check.get("status")
+                if {previous_status, status} == {"passed", "failed"}:
+                    check["contradictions"] = [check.get("result_span"),
+                        {"message_id": message_id, "quote": quote,
+                         "start": start, "end": start + len(quote)}]
+                    check["status"] = "unknown"
+                else:
+                    check["status"] = status
+                    check["result_span"] = {"message_id": message_id, "quote": quote,
+                                            "start": start, "end": start + len(quote)}
+            if check.get("status") != "unknown" or "contradictions" not in check:
+                check["result_span"] = {"message_id": message_id, "quote": quote,
+                                        "start": start, "end": start + len(quote)}
+            changed = True
+        return changed
 
     def observe_answer(self, previous: DialogueState, *, scenario: str | None,
                        reason: str | None, question: str, message_id: int | str | None = None,
-                       slot: str | None = None) -> DialogueState:
+                       slot: str | None = None, progress_update: dict | None = None) -> DialogueState:
         """An assistant can open an expected slot, never write client facts."""
         state = deepcopy(previous)
         # Provider failure and an explicit request for a human must not erase
@@ -1281,13 +1380,48 @@ class DialogueManager:
             return state
         if reason in NON_TASK_SCENARIO_REASONS and previous.task_id:
             return state
+        if progress_update and state.task_context:
+            if isinstance(progress_update.get("procedure_id"), str):
+                state.task_context.procedure_id = progress_update["procedure_id"]
+            for unit in progress_update.get("shown_units", []):
+                if (isinstance(unit, dict) and isinstance(unit.get("unit_id"), str)
+                        and isinstance(unit.get("label"), str) and unit.get("unit_id")
+                        and unit.get("source_verified") is True):
+                    if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.shown_units}:
+                        state.task_context.shown_units.append({k: unit[k] for k in
+                            ("unit_id", "label", "source", "section")})
+                    if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.checks}:
+                        state.task_context.checks.append({"unit_id": unit["unit_id"], "status": "asked"})
+            for unit in progress_update.get("eligible_units", []):
+                if (isinstance(unit, dict) and isinstance(unit.get("unit_id"), str)
+                        and isinstance(unit.get("label"), str) and unit.get("source_verified") is True
+                        and unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.eligible_units}):
+                    state.task_context.eligible_units.append({k: unit[k] for k in
+                        ("unit_id", "label", "source", "section")})
+            if isinstance(progress_update.get("open_question"), str):
+                key = progress_update["open_question"]
+                if key == state.task_context.open_question:
+                    state.task_context.clarification_repeats[key] = state.task_context.clarification_repeats.get(key, 0) + 1
+                else:
+                    state.task_context.open_question = key
+                    state.task_context.clarification_repeats[key] = 1
+        elif scenario == "clarify" and slot and state.task_context:
+            if state.task_context.open_question == slot:
+                state.task_context.clarification_repeats[slot] = state.task_context.clarification_repeats.get(slot, 0) + 1
+            else:
+                state.task_context.open_question = slot
+                state.task_context.clarification_repeats[slot] = 1
         if scenario == "clarify":
             if slot not in CLARIFICATION_SLOTS:
                 slot = ("service" if reason in {"service_not_confirmed", "service_unknown", "service_ambiguous", "missing_service"}
                         else "equipment" if reason == "error_product_missing" else "details")
             state.expected = ExpectedClarification(slot, question, message_id, reason)
         else:
-            state.expected = None
+            pending = previous.expected
+            supplied = bool(pending and (
+                pending.slot in state.task_context.entities and state.task_context.entities[pending.slot]
+                or pending.slot in state.task_context.unknown_facts)) if state.task_context else False
+            state.expected = pending if pending and pending.slot in ENTITY_SLOTS and not supplied else None
         return state
 
 

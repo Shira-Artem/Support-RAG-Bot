@@ -19,7 +19,7 @@ import yaml
 
 from app.answer_service import Answer
 from app.config import Settings
-from app.dialogue_state import DialogueState, classify_user_turn
+from app.dialogue_state import DialogueState, classify_user_turn, is_resolution_turn
 from app.llm_client import GenerationError, generate
 from app.rag_query import QueryNeedsClarification, build_rag_query
 from app.retrieval_pipeline import normalize_metadata
@@ -713,6 +713,12 @@ class SourceFirstService:
             # Compatibility for direct non-Telegram callers/tests. The
             # allowlisted Telegram route always persists semantic_mode=True.
             turn_kind = classify_user_turn(user_message)
+        decision = (coordinator_decision.to_dict()
+                    if hasattr(coordinator_decision, "to_dict") else coordinator_decision)
+        if is_resolution_turn(user_message):
+            return Answer("Рад, что вопрос решён. Если появится новая проблема, напишите.",
+                scenario="answer", scenario_reason="client_closed_resolved_task",
+                generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
         if understanding and understanding.get("specialist_requested"):
             return self._escalate("Конечно. Нажмите кнопку «Позвать специалиста» ниже, чтобы оформить заявку. Она сохраняется локально; доставка сотруднику пока не настроена.",
                 "client_requested_specialist", "explicit_specialist_request", started, **base)
@@ -725,7 +731,11 @@ class SourceFirstService:
                           generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
         if turn_kind == "feedback":
             observed = (understanding or {}).get("observation") or {}
-            has_new_evidence = bool(observed.get("symptom") or observed.get("goals") or observed.get("entities"))
+            reported_check = bool(state.active_task and any(
+                (item.get("result_span") or {}).get("quote") == user_message
+                for item in state.active_task.checks))
+            has_new_evidence = bool(reported_check or observed.get("symptom") or
+                                    observed.get("goals") or observed.get("entities"))
             if not has_new_evidence:
                 return Answer("Понял. Что именно осталось нерешённым или изменилось?", scenario="clarify",
                     scenario_reason="client_feedback_needs_progress_detail", clarification_slot="details",
@@ -762,6 +772,41 @@ class SourceFirstService:
             return Answer(question, scenario="clarify", scenario_reason="dialogue_state_task_incomplete",
                           clarification_slot=state.expected.slot if state.expected else "task",
                           generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
+        if (decision and decision.get("route") == "technical_action" and state.expected
+                and state.expected.slot in {"equipment", "model"} and state.task_context
+                and state.task_context.procedure_id and state.task_context.checks):
+            confirmed = [item.get("result_span", {}).get("quote") for item in state.task_context.checks
+                         if item.get("status") == "passed" and item.get("result_span", {}).get("quote")]
+            unresolved_results = [item for item in state.task_context.checks
+                if item.get("status") in {"unknown", "not_done"}
+                and item.get("result_span", {}).get("quote")]
+            unresolved_summary = " ".join(
+                (f"Результат проверки «{item['result_span']['quote']}» пока не подтверждён."
+                 if item.get("status") == "unknown" else
+                 f"Проверка «{item['result_span']['quote']}» пока не выполнена.")
+                for item in unresolved_results)
+            latest_user = next((item for item in reversed(history or []) if item.get("role") == "user"), {})
+            latest_understanding = latest_user.get("understanding") or {}
+            current_evidence = (latest_understanding.get("observation") or {}).get("evidence") or {}
+            new_check_report = any((item.get("result_span") or {}).get("message_id") == current_evidence.get("message_id")
+                                   for item in state.task_context.checks)
+            already_waiting = any(item.get("role") == "assistant"
+                and item.get("scenario_reason") == "progress_ledger_waiting_for_model"
+                for item in (history or [])[:-1])
+            if already_waiting and not new_check_report:
+                return Answer((unresolved_summary + " " if unresolved_summary else "") +
+                    "Результаты сохранены. Без подтверждённой модели безопасно выбрать следующий шаг нельзя. "
+                    "К этой диагностике можно вернуться, когда модель станет известна.",
+                    scenario="answer", scenario_reason="progress_ledger_waiting_for_model",
+                    generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
+            summary = ("Учитываю подтверждённые результаты: " + "; ".join(f"«{quote}»" for quote in confirmed) + ". ") if confirmed else ""
+            return Answer(summary + (unresolved_summary + " " if unresolved_summary else "") +
+                "Следующая применимая проверка зависит от точной модели оборудования. "
+                "Пока модель не подтверждена, не буду приводить модельное меню или действия. "
+                "Когда модель станет известна, продолжу по инструкции.",
+                scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
+                clarification_slot="equipment", generation_status="clarification",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         try:
             query = build_rag_query(state)
         except QueryNeedsClarification as exc:
@@ -1312,6 +1357,28 @@ class SourceFirstService:
                 validation_status = "exact_source_preflight" if preflight else "exact_source_copy"
                 scenario_reason = ("source_first_safe_preflight" if preflight
                                    else "source_first_exact_section")
+                # Record only action units visible in the exact, locally
+                # reverified approved text. This records what was shown, not
+                # whether the client performed it.
+                def units_in(source_text):
+                    result = []
+                    for line in source_text.splitlines():
+                        match = re.match(r"\s*(?:\d+[.)]|[-*])\s+(.+?)\s*$", line)
+                        if not match:
+                            continue
+                        label = match.group(1).strip()
+                        unit_id = sha256((selected["source"] + "\0" + selected["section"] + "\0" + label)
+                                         .encode("utf-8")).hexdigest()[:20]
+                        result.append({"unit_id": unit_id, "label": label,
+                            "source": selected["source"], "section": selected["section"],
+                            "source_verified": True})
+                    return result
+                visible_units = units_in(exact_render)
+                eligible_units = units_in(body)
+                if (decision and decision.get("route") == "technical_action"
+                        and (visible_units or eligible_units)):
+                    base["progress_update"] = {"procedure_id": selected["document_id"],
+                        "shown_units": visible_units, "eligible_units": eligible_units}
                 if any(item.get("role") == "assistant" and item.get("content") == text
                        for item in (history or [])):
                     # The planner selects an approved section, while this

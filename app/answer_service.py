@@ -558,6 +558,7 @@ class Answer:
     generation_error: dict | None = None
     dialogue_understanding: dict | None = None
     coordinator_decision: dict | None = None
+    progress_update: dict | None = None
 
     def __post_init__(self):
         # Keep the former attribute as an alias for callers while storing the

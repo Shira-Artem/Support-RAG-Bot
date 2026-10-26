@@ -519,7 +519,6 @@ def test_p0_gate_d33_uses_approved_month_guidance(monkeypatch, tmp_path):
     assert "дат" in answer["final_reply"].casefold()
 
 
-@pytest.mark.xfail(strict=True, reason="thanks/closure is treated as unresolved feedback")
 def test_p0_gate_d14_closes_without_clarification(monkeypatch, tmp_path):
     cases = json.loads(GATE_FIXTURE.read_text(encoding="utf-8"))["dialogue"][:4]
     trace = _run_replay(monkeypatch, tmp_path, cases, sources=GATE_DIALOGUE_SOURCES)
@@ -586,3 +585,124 @@ def test_p1_coordinator_keeps_independent_safety_stops(monkeypatch, tmp_path, ca
     else:
         assert answer["reason"] in {"insufficient_applicable_evidence", "source_scope_mismatch"}
         assert "IP-адрес" not in answer["final_reply"]
+
+
+def _progress_cases():
+    return [
+        {"id": "PL1", "text": "Эвотор, чеки не уходят", "request_type": "diagnosis",
+         "relation": "new_task", "intent": "receipt", "operation": "diagnose",
+         "object": "чек", "object_quote": "чеки", "symptom": "чеки не уходят",
+         "entities": [("manufacturer", "Эвотор", "Эвотор")]},
+        {"id": "PL2", "text": "Интернет работает", "request_type": "feedback",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "PL3", "text": "Оплату проверил", "request_type": "feedback",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "PL4", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+    ]
+
+
+def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat(monkeypatch, tmp_path):
+    cases = _progress_cases()
+    legacy = _run_replay(monkeypatch, tmp_path / "legacy", cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=False)
+    ledger = _run_replay(monkeypatch, tmp_path / "ledger", cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
+    assert legacy[0]["final_reply"] == ledger[0]["final_reply"]
+    assert legacy[-1]["state_after_sqlite_reopen"]["task_context"]["checks"] == []
+    assert legacy[-1]["reason"] != ledger[-1]["reason"]
+    task = ledger[-1]["state_after_sqlite_reopen"]["task_context"]
+    assert {item["status"] for item in ledger[0]["state_after_sqlite_reopen"]["task_context"]["checks"]} == {"asked"}
+    assert task["procedure_id"] == "evotor-ofd-error-not-connected-20261019"
+    assert len(task["checks"]) == 2
+    assert {item["status"] for item in task["checks"]} == {"passed", "unknown"}
+    payment_check = next(item for item in task["checks"]
+                         if item["result_span"]["quote"] == "Оплату проверил")
+    assert payment_check["status"] == "unknown"
+    user_by_id = {1 + 2 * index: case["text"] for index, case in enumerate(cases)}
+    for check in task["checks"]:
+        if check["status"] != "asked":
+            result = check["result_span"]
+            assert result["quote"] in user_by_id[result["message_id"]]
+    final = ledger[-1]["final_reply"].casefold()
+    assert "\u043c\u043e\u0434\u0435\u043b" in final
+    assert "\u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" not in final
+    assert ledger[-1]["reason"] == "progress_ledger_waiting_for_model"
+    assert ledger[-1]["coordinator_decision"]["route"] == "technical_action"
+    assert ledger[2]["final_reply"] != ledger[3]["final_reply"]
+    assert ledger[-1]["route"] == "answer"
+    if output_dir := os.environ.get("P1_PROGRESS_OUTPUT_DIR"):
+        target = Path(output_dir).resolve()
+        assert target == (ROOT / "experiments/architecture_recovery_audit").resolve()
+        (target / "p1_progress_ledger_trace_20261026.json").write_text(
+            json.dumps({"legacy": legacy, "progress_ledger": ledger},
+                       ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    assert "результат проверки «оплату проверил» пока не подтверждён" in ledger[2]["final_reply"].casefold()
+
+
+def test_progress_ledger_accepts_explicit_positive_payment_result(monkeypatch, tmp_path):
+    cases = _progress_cases()
+    cases[2] = {**cases[2], "text": "Оплата прошла"}
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
+    task = trace[-1]["state_after_sqlite_reopen"]["task_context"]
+    payment_check = next(item for item in task["checks"]
+                         if item["result_span"]["quote"] == "Оплата прошла")
+    assert payment_check["status"] == "passed"
+
+
+@pytest.mark.parametrize(("report", "expected"), [
+    ("Интернет не работает", "failed"),
+    ("Интернет не знаю", "unknown"),
+    ("Интернет пока не проверял", "not_done"),
+    ("Интернет не работает", "unknown"),
+])
+def test_progress_ledger_outcomes_use_exact_client_quotes_and_keep_conflicts(
+        monkeypatch, tmp_path, report, expected):
+    cases = _progress_cases()[:2]
+    cases[1] = {**cases[1], "text": report}
+    if expected == "unknown" and report == "Интернет не работает":
+        cases.append({"id": "PL3", "text": "Интернет работает", "request_type": "feedback",
+            "relation": "continue", "intent": "unknown", "operation": "unknown"})
+    else:
+        cases.append({"id": "PL3", "text": "Что дальше?", "request_type": "information",
+            "relation": "continue", "intent": "unknown", "operation": "unknown"})
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
+    task = trace[-1]["state_after_sqlite_reopen"]["task_context"]
+    internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
+                       if "интернет" in unit["label"].casefold())
+    result = next(item for item in task["checks"] if item["unit_id"] == internet_id)
+    assert result["status"] == expected
+    if expected == "unknown" and "contradictions" in result:
+        assert len(result["contradictions"]) == 2
+        for span in result["contradictions"]:
+            assert span["quote"] in {case["text"] for case in cases}
+    else:
+        assert result["result_span"]["quote"] in {case["text"] for case in cases}
+
+
+def test_progress_ledger_closes_task_and_new_topic_starts_cleanly(monkeypatch, tmp_path):
+    cases = _progress_cases()[:1] + [
+        {"id": "PL-close", "text": "Спасибо, всё решено", "request_type": "feedback",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "PL-new", "text": "Другой вопрос: где найти банковскую выписку в 1С?",
+         "request_type": "information", "relation": "new_task", "intent": "bank_statement",
+         "operation": "search", "object": "банковская выписка", "object_quote": "банковскую выписку",
+         "entities": [("software", "1С", "1С")]},
+    ]
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
+    closed = trace[1]["state_after_sqlite_reopen"]["task_context"]
+    restarted = trace[2]["state_after_sqlite_reopen"]["task_context"]
+    assert closed["closed"] is True
+    assert trace[1]["route"] == "answer"
+    assert trace[1]["retrieval_called"] is False
+    assert restarted["closed"] is False
+    assert restarted["task_id"] != closed["task_id"]
+    assert restarted["intent"] == "bank_statement"
+    assert restarted["checks"] == []
+    assert restarted["shown_units"] == []
+    assert restarted["eligible_units"] == []
+    assert restarted["procedure_id"] is None
+    assert restarted["open_question"] is None

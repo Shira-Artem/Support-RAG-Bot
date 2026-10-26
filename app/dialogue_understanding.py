@@ -14,11 +14,11 @@ from typing import Any
 import httpx
 
 from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS, RELATIONS,
-                                DialogueState, Fact, Observation)
+                                DialogueState, Fact, Observation, is_resolution_turn)
 from app.config import Settings
 
 
-TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "unknown"}
+TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
 UNKNOWN_SLOTS = ENTITY_SLOTS | {"goal", "details", "task"}
 INTENTS = {name for name, _, _ in OBJECTS} | {"general", "unknown"}
 OBJECT_VALUES = {obj for _, obj, _ in OBJECTS} | {"понятие"}
@@ -367,6 +367,9 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
     else:
         kind_reason = ("valid_turn_classification" if raw_kind.strip().casefold().replace("-", "_").replace(" ", "_") == kind
                        else "normalized_turn_type_alias")
+    if is_resolution_turn(text):
+        kind = "resolved"
+        kind_reason = "client_explicitly_reports_resolution"
     # `explain` is a task-family decision, not a client/product intent. Older
     # Understanding completions often left intent=unknown for plain questions
     # (e.g. “Что такое ОФД?”); Source-first then treated the answer as a scoped
@@ -565,7 +568,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
         object_evidence=object_ev, symptom=symptom,
         goals=[goal] if goal else [], relation=relation, confidence=float(confidence),
         intent_confidence=float(confidence), operation_confidence=float(confidence),
-        relation_confidence=float(confidence), feedback=kind == "feedback",
+        relation_confidence=float(confidence), feedback=kind in {"feedback", "resolved"},
         question=kind == "information")
     if kind == "information" and operation not in {"unknown", "explain"}:
         _field_result(diagnostics, "request_type_operation", "accepted",
@@ -713,6 +716,7 @@ def understanding_to_dict(value: Understanding) -> dict[str, Any]:
             "relation": obs.relation, "confidence": obs.confidence,
             "intent_evidence": fact(obs.intent_evidence), "operation_evidence": fact(obs.operation_evidence),
             "object_evidence": fact(obs.object_evidence), "relation_evidence": fact(obs.relation_evidence),
+            "evidence": fact(obs.evidence),
             "symptom": fact(obs.symptom), "goals": [fact(x) for x in obs.goals],
             "unknown_facts": {slot: fact(span) for slot, span in obs.unknown_facts.items()},
             "entities": {slot: [fact(x) for x in values] for slot, values in obs.entities.items()}}}
@@ -739,13 +743,13 @@ def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str
     unknown_evidence = {slot: parse(span) for slot, span in raw_unknown.items()}
     observation = Observation(entities=entities, unknown_facts=unknown_evidence,
         intent=raw["intent"], operation=raw["operation"],
-        object=raw.get("object"), evidence=Fact.span(text, message_id),
+        object=raw.get("object"), evidence=parse(raw.get("evidence")) or Fact.span(text, message_id),
         intent_evidence=parse(raw.get("intent_evidence")), operation_evidence=parse(raw.get("operation_evidence")),
         object_evidence=parse(raw.get("object_evidence")), relation_evidence=parse(raw.get("relation_evidence")),
         symptom=parse(raw.get("symptom")), goals=[parse(item) for item in raw.get("goals", [])],
         relation=raw["relation"], confidence=float(raw["confidence"]),
         intent_confidence=float(raw["confidence"]), operation_confidence=float(raw["confidence"]),
-        relation_confidence=float(raw["confidence"]), feedback=data.get("request_type") == "feedback",
+        relation_confidence=float(raw["confidence"]), feedback=data.get("request_type") in {"feedback", "resolved"},
         question=data.get("request_type") == "information")
     kind, specialist, unknown = data.get("request_type"), data.get("specialist_requested"), data.get("unknown_facts", [])
     if (kind not in TURN_TYPES or not isinstance(specialist, bool)

@@ -1,0 +1,2040 @@
+{
+  "legacy": [
+    {
+      "turn": 1,
+      "case_id": "PL1",
+      "user_text": "Эвотор, чеки не уходят",
+      "raw_provider_fixture": {
+        "request_type": "diagnosis",
+        "relation": "new_task",
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "object_evidence": {
+          "quote": "чеки"
+        },
+        "goal": null,
+        "symptom": {
+          "quote": "чеки не уходят"
+        },
+        "entities": [
+          {
+            "slot": "manufacturer",
+            "value": "Эвотор",
+            "evidence": {
+              "quote": "Эвотор"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "diagnosis",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": true,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "new_task",
+        "expected_slot": null,
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.91,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": null,
+          "current_subgoal": null,
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.91,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "source_first_safe_preflight",
+      "validation_status": "exact_source_preflight",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "selected_sources": [
+        {
+          "source": "evotor/ofd/ofd-unable-to-connect.md",
+          "document_id": "evotor-ofd-error-not-connected-20261019",
+          "section": null
+        }
+      ],
+      "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+      "coordinator_decision": null,
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [
+        "planner"
+      ],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 1,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [
+        {
+          "id": "evotor-ofd-error-not-connected-20261019::Безопасные проверки",
+          "section": "Безопасные проверки",
+          "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+        }
+      ],
+      "final_reply": "1. Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.\n\nДополнительное условие источника (Когда передавать специалисту):\nЕсли EoU отсутствует, не выполняйте самостоятельно технологическое обнуление или произвольные кассовые команды. Вендор описывает эти действия, но они требуют контролируемой диагностики. Если сеть, реквизиты ОФД и оплата в порядке, а чеки не уходят — направьте в поддержку кассы или ОФД.\n\nИсточник: data/knowledge/evotor/ofd/ofd-unable-to-connect.md — Безопасные проверки"
+    },
+    {
+      "turn": 2,
+      "case_id": "PL2",
+      "user_text": "Интернет работает",
+      "raw_provider_fixture": {
+        "request_type": "feedback",
+        "relation": "continue",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "feedback",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "continue",
+        "expected_slot": "details",
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [
+          "Интернет работает"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [
+            {
+              "value": "Интернет работает",
+              "message_id": 3,
+              "quote": "Интернет работает",
+              "start": 0,
+              "end": 17
+            }
+          ],
+          "error": null,
+          "expected": {
+            "slot": "details",
+            "question": "Понял. Что именно осталось нерешённым или изменилось?",
+            "message_id": 4,
+            "reason": "client_feedback_needs_progress_detail"
+          },
+          "relation": "continue",
+          "confidence": 0.91,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": "details",
+          "current_subgoal": null,
+          "clarification_repeats": {
+            "details": 1
+          },
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет работает",
+            "message_id": 3,
+            "quote": "Интернет работает",
+            "start": 0,
+            "end": 17
+          }
+        ],
+        "error": null,
+        "expected": {
+          "slot": "details",
+          "question": "Понял. Что именно осталось нерешённым или изменилось?",
+          "message_id": 4,
+          "reason": "client_feedback_needs_progress_detail"
+        },
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "clarify",
+      "reason": "client_feedback_needs_progress_detail",
+      "validation_status": "not_run",
+      "retrieval_reason": null,
+      "selected_sources": [],
+      "source_scope_reason": null,
+      "coordinator_decision": null,
+      "coordinator_evidence": null,
+      "retrieval_called": false,
+      "generation_stages": [],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 0,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [],
+      "final_reply": "Понял. Что именно осталось нерешённым или изменилось?"
+    },
+    {
+      "turn": 3,
+      "case_id": "PL3",
+      "user_text": "Оплату проверил",
+      "raw_provider_fixture": {
+        "request_type": "feedback",
+        "relation": "continue",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "feedback",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "continue",
+        "expected_slot": "details",
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [
+          "Интернет работает",
+          "Оплату проверил"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 3,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [
+            {
+              "value": "Интернет работает",
+              "message_id": 3,
+              "quote": "Интернет работает",
+              "start": 0,
+              "end": 17
+            },
+            {
+              "value": "Оплату проверил",
+              "message_id": 5,
+              "quote": "Оплату проверил",
+              "start": 0,
+              "end": 15
+            }
+          ],
+          "error": null,
+          "expected": {
+            "slot": "details",
+            "question": "Понял. Что именно осталось нерешённым или изменилось?",
+            "message_id": 6,
+            "reason": "client_feedback_needs_progress_detail"
+          },
+          "relation": "continue",
+          "confidence": 0.91,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": "details",
+          "current_subgoal": null,
+          "clarification_repeats": {
+            "details": 2
+          },
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет работает",
+            "message_id": 3,
+            "quote": "Интернет работает",
+            "start": 0,
+            "end": 17
+          },
+          {
+            "value": "Оплату проверил",
+            "message_id": 5,
+            "quote": "Оплату проверил",
+            "start": 0,
+            "end": 15
+          }
+        ],
+        "error": null,
+        "expected": {
+          "slot": "details",
+          "question": "Понял. Что именно осталось нерешённым или изменилось?",
+          "message_id": 6,
+          "reason": "client_feedback_needs_progress_detail"
+        },
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "clarify",
+      "reason": "client_feedback_needs_progress_detail",
+      "validation_status": "not_run",
+      "retrieval_reason": null,
+      "selected_sources": [],
+      "source_scope_reason": null,
+      "coordinator_decision": null,
+      "coordinator_evidence": null,
+      "retrieval_called": false,
+      "generation_stages": [],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 0,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [],
+      "final_reply": "Понял. Что именно осталось нерешённым или изменилось?"
+    },
+    {
+      "turn": 4,
+      "case_id": "PL4",
+      "user_text": "Что дальше?",
+      "raw_provider_fixture": {
+        "request_type": "information",
+        "relation": "continue",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "information",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "continue",
+        "expected_slot": "details",
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [
+          "Интернет работает",
+          "Оплату проверил"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 4,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [
+            {
+              "value": "Интернет работает",
+              "message_id": 3,
+              "quote": "Интернет работает",
+              "start": 0,
+              "end": 17
+            },
+            {
+              "value": "Оплату проверил",
+              "message_id": 5,
+              "quote": "Оплату проверил",
+              "start": 0,
+              "end": 15
+            }
+          ],
+          "error": null,
+          "expected": {
+            "slot": "details",
+            "question": "Понял. Что именно осталось нерешённым или изменилось?",
+            "message_id": 8,
+            "reason": "dialogue_state_task_incomplete"
+          },
+          "relation": "continue",
+          "confidence": 0.91,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": "details",
+          "current_subgoal": null,
+          "clarification_repeats": {
+            "details": 3
+          },
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет работает",
+            "message_id": 3,
+            "quote": "Интернет работает",
+            "start": 0,
+            "end": 17
+          },
+          {
+            "value": "Оплату проверил",
+            "message_id": 5,
+            "quote": "Оплату проверил",
+            "start": 0,
+            "end": 15
+          }
+        ],
+        "error": null,
+        "expected": {
+          "slot": "details",
+          "question": "Понял. Что именно осталось нерешённым или изменилось?",
+          "message_id": 8,
+          "reason": "dialogue_state_task_incomplete"
+        },
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "clarify",
+      "reason": "dialogue_state_task_incomplete",
+      "validation_status": "not_run",
+      "retrieval_reason": null,
+      "selected_sources": [],
+      "source_scope_reason": null,
+      "coordinator_decision": null,
+      "coordinator_evidence": null,
+      "retrieval_called": false,
+      "generation_stages": [],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 0,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [],
+      "final_reply": "Понял. Что именно осталось нерешённым или изменилось?"
+    }
+  ],
+  "progress_ledger": [
+    {
+      "turn": 1,
+      "case_id": "PL1",
+      "user_text": "Эвотор, чеки не уходят",
+      "raw_provider_fixture": {
+        "request_type": "diagnosis",
+        "relation": "new_task",
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "object_evidence": {
+          "quote": "чеки"
+        },
+        "goal": null,
+        "symptom": {
+          "quote": "чеки не уходят"
+        },
+        "entities": [
+          {
+            "slot": "manufacturer",
+            "value": "Эвотор",
+            "evidence": {
+              "quote": "Эвотор"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "diagnosis",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": true,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "new_task",
+        "expected_slot": null,
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.91,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": "evotor-ofd-error-not-connected-20261019",
+          "shown_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "746f318c26b2e2f8ac5f",
+              "label": "На модели 5, 5i, 7.2, 7.3, 10 или Power под администратором откройте «Настройки → Обслуживание кассы → Диагностика → Диагностический отчёт».",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "label": "Проверьте поля EoU, наличие выхода в интернет, адрес и порт ОФД. Сверяйте значения с действующими параметрами выбранного оператора.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "ed4eae06188bda5a073d",
+              "label": "Посмотрите очередь документов, ожидающих отправки: если после восстановления связи число уменьшается, передача возобновилась.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "checks": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "status": "asked"
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": null,
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.91,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "source_first_safe_preflight",
+      "validation_status": "exact_source_preflight",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "selected_sources": [
+        {
+          "source": "evotor/ofd/ofd-unable-to-connect.md",
+          "document_id": "evotor-ofd-error-not-connected-20261019",
+          "section": null
+        }
+      ],
+      "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+      "coordinator_decision": {
+        "request_type": "diagnosis",
+        "route": "technical_action",
+        "task_relation": "new_task",
+        "current_subgoal": null,
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [
+        "planner"
+      ],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 1,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [
+        {
+          "id": "evotor-ofd-error-not-connected-20261019::Безопасные проверки",
+          "section": "Безопасные проверки",
+          "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+        }
+      ],
+      "final_reply": "1. Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.\n\nДополнительное условие источника (Когда передавать специалисту):\nЕсли EoU отсутствует, не выполняйте самостоятельно технологическое обнуление или произвольные кассовые команды. Вендор описывает эти действия, но они требуют контролируемой диагностики. Если сеть, реквизиты ОФД и оплата в порядке, а чеки не уходят — направьте в поддержку кассы или ОФД.\n\nИсточник: data/knowledge/evotor/ofd/ofd-unable-to-connect.md — Безопасные проверки"
+    },
+    {
+      "turn": 2,
+      "case_id": "PL2",
+      "user_text": "Интернет работает",
+      "raw_provider_fixture": {
+        "request_type": "feedback",
+        "relation": "continue",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "feedback",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "continue",
+        "expected_slot": "equipment",
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [
+          "Интернет работает"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [
+            {
+              "value": "Интернет работает",
+              "message_id": 3,
+              "quote": "Интернет работает",
+              "start": 0,
+              "end": 17
+            }
+          ],
+          "error": null,
+          "expected": {
+            "slot": "equipment",
+            "question": "Этот раздел инструкции я уже привёл. Для следующей применимой проверки укажите точную модель оборудования.",
+            "message_id": 4,
+            "reason": "grounded_section_followup_scope_needed"
+          },
+          "relation": "continue",
+          "confidence": 0.91,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": "evotor-ofd-error-not-connected-20261019",
+          "shown_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "746f318c26b2e2f8ac5f",
+              "label": "На модели 5, 5i, 7.2, 7.3, 10 или Power под администратором откройте «Настройки → Обслуживание кассы → Диагностика → Диагностический отчёт».",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "label": "Проверьте поля EoU, наличие выхода в интернет, адрес и порт ОФД. Сверяйте значения с действующими параметрами выбранного оператора.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "ed4eae06188bda5a073d",
+              "label": "Посмотрите очередь документов, ожидающих отправки: если после восстановления связи число уменьшается, передача возобновилась.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "checks": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "status": "asked"
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "status": "passed",
+              "result_span": {
+                "message_id": 3,
+                "quote": "Интернет работает",
+                "start": 0,
+                "end": 17
+              }
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": null,
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет работает",
+            "message_id": 3,
+            "quote": "Интернет работает",
+            "start": 0,
+            "end": 17
+          }
+        ],
+        "error": null,
+        "expected": {
+          "slot": "equipment",
+          "question": "Этот раздел инструкции я уже привёл. Для следующей применимой проверки укажите точную модель оборудования.",
+          "message_id": 4,
+          "reason": "grounded_section_followup_scope_needed"
+        },
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "clarify",
+      "reason": "grounded_section_followup_scope_needed",
+      "validation_status": "not_run",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "selected_sources": [
+        {
+          "source": "evotor/ofd/ofd-unable-to-connect.md",
+          "document_id": "evotor-ofd-error-not-connected-20261019",
+          "section": null
+        }
+      ],
+      "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+      "coordinator_decision": {
+        "request_type": "feedback",
+        "route": "technical_action",
+        "task_relation": "continue",
+        "current_subgoal": null,
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [
+        "planner"
+      ],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 1,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [
+        {
+          "id": "evotor-ofd-error-not-connected-20261019::Безопасные проверки",
+          "section": "Безопасные проверки",
+          "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+        }
+      ],
+      "final_reply": "Этот раздел инструкции я уже привёл. Для следующей применимой проверки укажите точную модель оборудования."
+    },
+    {
+      "turn": 3,
+      "case_id": "PL3",
+      "user_text": "Оплату проверил",
+      "raw_provider_fixture": {
+        "request_type": "feedback",
+        "relation": "continue",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "feedback",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "continue",
+        "expected_slot": "equipment",
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [
+          "Интернет работает",
+          "Оплату проверил"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 3,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [
+            {
+              "value": "Интернет работает",
+              "message_id": 3,
+              "quote": "Интернет работает",
+              "start": 0,
+              "end": 17
+            },
+            {
+              "value": "Оплату проверил",
+              "message_id": 5,
+              "quote": "Оплату проверил",
+              "start": 0,
+              "end": 15
+            }
+          ],
+          "error": null,
+          "expected": {
+            "slot": "equipment",
+            "question": "Учитываю подтверждённые результаты: «Интернет работает». Результат проверки «Оплату проверил» пока не подтверждён. Следующая применимая проверка зависит от точной модели оборудования. Пока модель не подтверждена, не буду приводить модельное меню или действия. Когда модель станет известна, продолжу по инструкции.",
+            "message_id": 6,
+            "reason": "progress_ledger_waiting_for_model"
+          },
+          "relation": "continue",
+          "confidence": 0.91,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": "evotor-ofd-error-not-connected-20261019",
+          "shown_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "746f318c26b2e2f8ac5f",
+              "label": "На модели 5, 5i, 7.2, 7.3, 10 или Power под администратором откройте «Настройки → Обслуживание кассы → Диагностика → Диагностический отчёт».",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "label": "Проверьте поля EoU, наличие выхода в интернет, адрес и порт ОФД. Сверяйте значения с действующими параметрами выбранного оператора.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "ed4eae06188bda5a073d",
+              "label": "Посмотрите очередь документов, ожидающих отправки: если после восстановления связи число уменьшается, передача возобновилась.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "checks": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "status": "unknown",
+              "result_span": {
+                "message_id": 5,
+                "quote": "Оплату проверил",
+                "start": 0,
+                "end": 15
+              }
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "status": "passed",
+              "result_span": {
+                "message_id": 3,
+                "quote": "Интернет работает",
+                "start": 0,
+                "end": 17
+              }
+            }
+          ],
+          "open_question": "equipment",
+          "current_subgoal": null,
+          "clarification_repeats": {
+            "equipment": 1
+          },
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет работает",
+            "message_id": 3,
+            "quote": "Интернет работает",
+            "start": 0,
+            "end": 17
+          },
+          {
+            "value": "Оплату проверил",
+            "message_id": 5,
+            "quote": "Оплату проверил",
+            "start": 0,
+            "end": 15
+          }
+        ],
+        "error": null,
+        "expected": {
+          "slot": "equipment",
+          "question": "Учитываю подтверждённые результаты: «Интернет работает». Результат проверки «Оплату проверил» пока не подтверждён. Следующая применимая проверка зависит от точной модели оборудования. Пока модель не подтверждена, не буду приводить модельное меню или действия. Когда модель станет известна, продолжу по инструкции.",
+          "message_id": 6,
+          "reason": "progress_ledger_waiting_for_model"
+        },
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "clarify",
+      "reason": "progress_ledger_waiting_for_model",
+      "validation_status": "not_run",
+      "retrieval_reason": null,
+      "selected_sources": [],
+      "source_scope_reason": null,
+      "coordinator_decision": {
+        "request_type": "feedback",
+        "route": "technical_action",
+        "task_relation": "continue",
+        "current_subgoal": null,
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": false,
+      "generation_stages": [],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 0,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [],
+      "final_reply": "Учитываю подтверждённые результаты: «Интернет работает». Результат проверки «Оплату проверил» пока не подтверждён. Следующая применимая проверка зависит от точной модели оборудования. Пока модель не подтверждена, не буду приводить модельное меню или действия. Когда модель станет известна, продолжу по инструкции."
+    },
+    {
+      "turn": 4,
+      "case_id": "PL4",
+      "user_text": "Что дальше?",
+      "raw_provider_fixture": {
+        "request_type": "information",
+        "relation": "continue",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.91
+      },
+      "validated": {
+        "request_type": "information",
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "relation": "continue",
+        "expected_slot": "equipment",
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 0,
+        "client_details": [
+          "Интернет работает",
+          "Оплату проверил"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 4,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "operation": "diagnose",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Эвотор, чеки не уходят",
+            "message_id": 1,
+            "quote": "Эвотор, чеки не уходят",
+            "start": 0,
+            "end": 22
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.91,
+          "symptom": {
+            "value": "чеки не уходят",
+            "message_id": 1,
+            "quote": "чеки не уходят",
+            "start": 8,
+            "end": 22
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [
+            {
+              "value": "Интернет работает",
+              "message_id": 3,
+              "quote": "Интернет работает",
+              "start": 0,
+              "end": 17
+            },
+            {
+              "value": "Оплату проверил",
+              "message_id": 5,
+              "quote": "Оплату проверил",
+              "start": 0,
+              "end": 15
+            }
+          ],
+          "error": null,
+          "expected": {
+            "slot": "equipment",
+            "question": "Учитываю подтверждённые результаты: «Интернет работает». Результат проверки «Оплату проверил» пока не подтверждён. Следующая применимая проверка зависит от точной модели оборудования. Пока модель не подтверждена, не буду приводить модельное меню или действия. Когда модель станет известна, продолжу по инструкции.",
+            "message_id": 6,
+            "reason": "progress_ledger_waiting_for_model"
+          },
+          "relation": "continue",
+          "confidence": 0.91,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": "evotor-ofd-error-not-connected-20261019",
+          "shown_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "label": "Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "746f318c26b2e2f8ac5f",
+              "label": "На модели 5, 5i, 7.2, 7.3, 10 или Power под администратором откройте «Настройки → Обслуживание кассы → Диагностика → Диагностический отчёт».",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "label": "Проверьте поля EoU, наличие выхода в интернет, адрес и порт ОФД. Сверяйте значения с действующими параметрами выбранного оператора.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            },
+            {
+              "unit_id": "ed4eae06188bda5a073d",
+              "label": "Посмотрите очередь документов, ожидающих отправки: если после восстановления связи число уменьшается, передача возобновилась.",
+              "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+              "section": "Безопасные проверки"
+            }
+          ],
+          "checks": [
+            {
+              "unit_id": "2e93e63c10b06fa18a37",
+              "status": "unknown",
+              "result_span": {
+                "message_id": 5,
+                "quote": "Оплату проверил",
+                "start": 0,
+                "end": 15
+              }
+            },
+            {
+              "unit_id": "8d513ad7c7304681fe56",
+              "status": "passed",
+              "result_span": {
+                "message_id": 3,
+                "quote": "Интернет работает",
+                "start": 0,
+                "end": 17
+              }
+            }
+          ],
+          "open_question": "equipment",
+          "current_subgoal": null,
+          "clarification_repeats": {
+            "equipment": 1
+          },
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Эвотор, чеки не уходят",
+          "message_id": 1,
+          "quote": "Эвотор, чеки не уходят",
+          "start": 0,
+          "end": 22
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет работает",
+            "message_id": 3,
+            "quote": "Интернет работает",
+            "start": 0,
+            "end": 17
+          },
+          {
+            "value": "Оплату проверил",
+            "message_id": 5,
+            "quote": "Оплату проверил",
+            "start": 0,
+            "end": 15
+          }
+        ],
+        "error": null,
+        "expected": {
+          "slot": "equipment",
+          "question": "Учитываю подтверждённые результаты: «Интернет работает». Результат проверки «Оплату проверил» пока не подтверждён. Следующая применимая проверка зависит от точной модели оборудования. Пока модель не подтверждена, не буду приводить модельное меню или действия. Когда модель станет известна, продолжу по инструкции.",
+          "message_id": 6,
+          "reason": "progress_ledger_waiting_for_model"
+        },
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "progress_ledger_waiting_for_model",
+      "validation_status": "not_run",
+      "retrieval_reason": null,
+      "selected_sources": [],
+      "source_scope_reason": null,
+      "coordinator_decision": {
+        "request_type": "information",
+        "route": "technical_action",
+        "task_relation": "continue",
+        "current_subgoal": null,
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": false,
+      "generation_stages": [],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 0,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [],
+      "final_reply": "Результат проверки «Оплату проверил» пока не подтверждён. Результаты сохранены. Без подтверждённой модели безопасно выбрать следующий шаг нельзя. К этой диагностике можно вернуться, когда модель станет известна."
+    }
+  ]
+}

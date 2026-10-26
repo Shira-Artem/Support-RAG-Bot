@@ -220,7 +220,8 @@ class ConversationStore:
                 diagnostic = json.loads(row['diagnostics_json'] or '{}')
                 state = manager.observe_answer(state, scenario=diagnostic.get('scenario'),
                                                reason=diagnostic.get('scenario_reason'), question=row['content'],
-                                               message_id=row['id'], slot=diagnostic.get('clarification_slot'))
+                                               message_id=row['id'], slot=diagnostic.get('clarification_slot'),
+                                               progress_update=diagnostic.get('progress_update'))
             cursor = row['id']
         if snapshot is None or cursor != snapshot['processed_message_id']:
             db.execute('INSERT INTO dialogue_states_v2 VALUES(?,?,?) ON CONFLICT(conversation_id) '
