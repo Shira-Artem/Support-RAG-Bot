@@ -166,7 +166,7 @@ A/B на одинаковых версиях KB и source SHA, с одинако
 - Многоходовые технические примеры D2 Эвотор и продление ОФД; одна подтверждённая следующая проверка, а не повторная уже выполненная; точная применимость по model/service.
 - «Спасибо, всё решено» закрывает задачу без повторной диагностики; новый технический вопрос после закрытия открывает новую задачу; явная просьба специалиста не зависит от LLM.
 - Сначала офлайн E2E и negative gates, полный suite. **Никаких новых живых Groq/Telegram вызовов в этом этапе, без отдельного разрешения.**
-- **Результат:** SQLite-backed OLD vs LEDGER E2E, [report](../experiments/architecture_recovery_audit/p1_progress_ledger_20261026.md) и [trace](../experiments/architecture_recovery_audit/p1_progress_ledger_trace_20261026.json). Полный suite 428 passed / 5 xfailed / 13 warnings. «Оплату проверил» = `unknown`, отдельное «Оплата прошла» = `passed`; инструкция бота не считается выполнением. **Offline DONE; live BLOCKED (не запускался); production NO-GO.** Git SHA будет записан после публикации.
+- **Результат:** SQLite-backed OLD vs LEDGER E2E, [report](../experiments/architecture_recovery_audit/p1_progress_ledger_20261026.md) и [trace](../experiments/architecture_recovery_audit/p1_progress_ledger_trace_20261026.json). Полный suite 428 passed / 5 xfailed / 13 warnings. «Оплату проверил» = `unknown`, отдельное «Оплата прошла» = `passed`; инструкция бота не считается выполнением. **Offline DONE; live BLOCKED (не запускался); production NO-GO.** Published Git SHA: `4cdc21f5fb8699a937981e19695705e510de4933`.
 
 ### Шаг 2 — следующий активный этап: D / Handoff integration readiness (отдельный worktree)
 
@@ -201,6 +201,6 @@ A/B на одинаковых версиях KB и source SHA, с одинако
 ### 2026-10-26 — P1 D2 ProgressLedger
 
 - **Статус:** OFFLINE DONE в указанной тестовой вертикали; LIVE BLOCKED/не запускался; PRODUCTION NO-GO.
-- **Проверки:** targeted replay 8 passed; полный suite 428 passed, 5 xfailed, 13 warnings, 0 failed. Groq live: 0 вызовов; Qdrant network/write: 0; Telegram/worker: 0. SHA approved evidence: `f60e847bb28c5ee63346fd2fc1b5aa7ca4b19bce2eb478a8826db8dd02c5d651`.
+- **Проверки:** targeted replay 8 passed; полный suite 428 passed, 5 xfailed, 13 warnings, 0 failed. Groq live: 0 вызовов; Qdrant network/write: 0; Telegram/worker: 0. P1 D2 опубликован в `main`, commit `4cdc21f5fb8699a937981e19695705e510de4933`. SHA approved evidence: `f60e847bb28c5ee63346fd2fc1b5aa7ca4b19bce2eb478a8826db8dd02c5d651`.
 - **Смысловая коррекция:** «Оплату проверил» не доказывает успех оплаты и остаётся `unknown`; «Оплата прошла» даёт `passed`. Не включать рекомендацию ассистента в клиентские результаты.
 - **Следующий шаг:** после публикации D2 создать отдельный integration worktree от актуального main и интегрировать handoff MVP с read-only progress provider. Не переносить master/state/эту актуальную версию плана из старой handoff-ветки. Проверить дубли, ошибки доставки, allowlist и PII; fake transport only. Не делать live Telegram, production update, merge или push интеграции без отдельного разрешения.
