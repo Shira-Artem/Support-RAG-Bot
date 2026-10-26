@@ -1322,6 +1322,14 @@ class DialogueManager:
         changed = False
         normalized = text.casefold().replace("ё", "е")
         for unit in (task.eligible_units or task.shown_units):
+            model_value = unit.get("model_value")
+            if model_value:
+                equipment = " ".join(fact.value for fact in task.entities.get("equipment", []))
+                if not re.search(r"(?<!\w)" + re.escape(model_value) + r"(?!\w)",
+                                 equipment.casefold().replace("ё", "е")):
+                    # A result for a model-scoped step belongs only to the
+                    # model value confirmed when this unit became eligible.
+                    continue
             label = str(unit.get("label") or "")
             # Content terms are derived from the exact approved unit, with a
             # bounded prefix form to tolerate Russian inflection.
@@ -1389,7 +1397,8 @@ class DialogueManager:
                         and unit.get("source_verified") is True):
                     if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.shown_units}:
                         state.task_context.shown_units.append({k: unit[k] for k in
-                            ("unit_id", "label", "source", "section")})
+                            ("unit_id", "label", "source", "section", "model_scope", "model_value")
+                            if k in unit})
                     if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.checks}:
                         state.task_context.checks.append({"unit_id": unit["unit_id"], "status": "asked"})
             for unit in progress_update.get("eligible_units", []):
@@ -1397,7 +1406,8 @@ class DialogueManager:
                         and isinstance(unit.get("label"), str) and unit.get("source_verified") is True
                         and unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.eligible_units}):
                     state.task_context.eligible_units.append({k: unit[k] for k in
-                        ("unit_id", "label", "source", "section")})
+                        ("unit_id", "label", "source", "section", "model_scope", "model_value")
+                        if k in unit})
             if isinstance(progress_update.get("open_question"), str):
                 key = progress_update["open_question"]
                 if key == state.task_context.open_question:

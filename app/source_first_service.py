@@ -150,6 +150,71 @@ def _generic_preflight(body: str, state: DialogueState, scope: dict) -> str | No
     return first
 
 
+_MODEL_SCOPE_START = re.compile(r"\b(?:на|для|у)\s+модел(?:и|ях|ю)\s+", re.I)
+_MODEL_SCOPE_ACTION = re.compile(
+    r"\b(?:под|при|после|перед|откройте|перейдите|зайдите|нажмите|выберите|"
+    r"проверьте|сверьте|посмотрите|введите|установите|используйте)\w*\b", re.I)
+
+
+def _model_identity(equipment: str | None, manufacturer: str | None = None) -> str | None:
+    """Normalize a reducer-confirmed equipment value to its non-brand model part."""
+    value = str(equipment or "").strip().casefold().replace("ё", "е")
+    brand = str(manufacturer or "").strip().casefold().replace("ё", "е")
+    if brand:
+        value = re.sub(r"(?<!\w)" + re.escape(brand) + r"(?!\w)", " ", value)
+    value = re.sub(r"\b(?:модель|модели|оборудование|касса|терминал)\b", " ", value)
+    value = re.sub(r"[^a-zа-я0-9.,]+", " ", value).strip()
+    return value or None
+
+
+def _line_model_scope(line: str) -> list[str] | None:
+    """Read an explicit Russian model list from a source unit, without vendor rules."""
+    match = _MODEL_SCOPE_START.search(line)
+    if not match:
+        return None
+    tail = line[match.end():]
+    action = _MODEL_SCOPE_ACTION.search(tail)
+    listed = tail[:action.start()] if action else tail
+    candidates = []
+    for raw in re.split(r"\s*,\s*|\s+(?:или|либо|и)\s+", listed, flags=re.I):
+        normalized = re.sub(r"[^a-zа-я0-9.,]+", " ", raw.casefold().replace("ё", "е")).strip()
+        if normalized and normalized not in candidates:
+            candidates.append(normalized)
+    return candidates or None
+
+
+def _model_matches_scope(model: str | None, candidates: list[str] | None) -> bool:
+    if not model or not candidates:
+        return False
+    normalized_model = model.casefold().replace("ё", "е")
+    return any(re.search(r"(?<!\w)" + re.escape(candidate) + r"(?!\w)", normalized_model)
+               for candidate in candidates)
+
+
+def _approved_check_units(text: str, source: str, section: str, *,
+                          equipment: str | None = None, manufacturer: str | None = None) -> list[dict]:
+    """Extract ordered approved checks and tag explicit per-unit model scope."""
+    units = []
+    model_value = _model_identity(equipment, manufacturer)
+    for line in text.splitlines():
+        match = re.match(r"\s*(?:\d+[.)]|[-*])\s+(.+?)\s*$", line)
+        if not match:
+            continue
+        label = match.group(1).strip()
+        model_scope = _line_model_scope(label)
+        applicable_model = (model_value if model_scope and _model_matches_scope(model_value, model_scope)
+                            else None)
+        unit_seed = source + "\0" + section + "\0" + label
+        if applicable_model:
+            # A model-scoped check on a different device is a distinct ledger unit.
+            unit_seed += "\0model:" + applicable_model
+        unit_id = sha256(unit_seed.encode("utf-8")).hexdigest()[:20]
+        units.append({"unit_id": unit_id, "label": label, "line": line.strip(),
+                      "source": source, "section": section, "source_verified": True,
+                      "model_scope": model_scope, "model_value": applicable_model})
+    return units
+
+
 def _validate_information_composition(candidate: str, evidence: str,
                                       section: str) -> tuple[str | None, str]:
     """Accept only a short, non-procedural answer whose every sentence is grounded."""
@@ -1046,14 +1111,33 @@ class SourceFirstService:
                                       "source_section_changed", selected["source"], started, **base,
                                       generation_status="error")
             preflight = _generic_preflight(body, state, selected["scope"])
-            missing_manufacturer_model = (not informational
-                and selected["scope"].get("manufacturer")
-                and state.task_entity("manufacturer")
-                and not state.task_entity("equipment"))
-            if (missing_manufacturer_model and not preflight
+            source_units = _approved_check_units(body, selected["source"], selected["section"],
+                equipment=state.task_entity("equipment"), manufacturer=state.task_entity("manufacturer"))
+            first_model_scoped = next((unit for unit in source_units if unit["model_scope"]), None)
+            confirmed_model = _model_identity(state.task_entity("equipment"),
+                                              state.task_entity("manufacturer"))
+            selected_model = _model_identity(selected["scope"].get("model"))
+            if (not informational and selected_model and confirmed_model
+                    and not _model_matches_scope(confirmed_model, [selected_model])):
+                return self._escalate(
+                    "Не нашёл подтверждения, что этот approved-раздел подходит для указанной модели оборудования. "
+                    "Не буду выдавать этот порядок; запросите проверку специалиста.",
+                    "source_model_scope_not_applicable", "selected_document_model_scope_mismatch", started, **base)
+            if (not informational and first_model_scoped and confirmed_model
+                    and not first_model_scoped["model_value"]):
+                return self._escalate(
+                    "Не нашёл подтверждения, что этот approved-раздел подходит для указанной модели оборудования. "
+                    "Не буду выдавать этот порядок; запросите проверку специалиста.",
+                    "source_model_scope_not_applicable", "selected_check_model_scope_mismatch", started, **base)
+            missing_manufacturer_model = (selected["scope"].get("manufacturer")
+                and state.task_entity("manufacturer") and not state.task_entity("equipment"))
+            missing_model_scope = (not informational
+                and (first_model_scoped is not None or selected_model or missing_manufacturer_model)
+                and confirmed_model is None)
+            if (missing_model_scope and not preflight
                     and evidence_kind(body, "") in {"procedure", "interface"}):
                 return Answer("Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
-                    scenario="clarify", scenario_reason="source_model_scope_missing",
+                    scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
                     clarification_slot="equipment", generation_status="clarification",
                     duration_ms=round((perf_counter()-started)*1000), **base)
             rendered_sections = [preflight or body]
@@ -1081,6 +1165,54 @@ class SourceFirstService:
             if unsafe_operation_issue(exact_render):
                 return self._escalate("В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
                                       "unsafe_source_section", "unsafe_operation_in_selected_source", started, **base)
+            if (not informational and decision and decision.get("route") == "technical_action"
+                    and state.task_context and state.task_context.procedure_id == selected["document_id"]
+                    and state.task_context.shown_units):
+                matching_shown = [unit for unit in state.task_context.shown_units
+                    if unit.get("source") == selected["source"] and unit.get("section") == selected["section"]]
+                if matching_shown:
+                    last_shown = matching_shown[-1]
+                    last_result = next((item for item in state.task_context.checks
+                        if item.get("unit_id") == last_shown.get("unit_id")), None)
+                    if last_result and last_result.get("status") == "passed":
+                        shown_ids = {unit.get("unit_id") for unit in matching_shown}
+                        next_unit = next((unit for unit in source_units
+                            if unit["unit_id"] not in shown_ids), None)
+                        if next_unit and next_unit["model_scope"] and not confirmed_model:
+                            already_asked_model = any(item.get("role") == "assistant"
+                                and item.get("scenario_reason") == "progress_ledger_waiting_for_model"
+                                for item in (history or [])[:-1])
+                            if already_asked_model:
+                                return Answer(
+                                    "Результаты сохранены. Без подтверждённой модели безопасно выбрать следующий шаг нельзя. "
+                                    "К этой диагностике можно вернуться, когда модель станет известна.",
+                                    scenario="answer", scenario_reason="progress_ledger_waiting_for_model",
+                                    generation_status="generated",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
+                            return Answer(
+                                "Укажите точную модель оборудования, чтобы проверить применимость следующего шага.",
+                                scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
+                                clarification_slot="equipment", generation_status="clarification",
+                                duration_ms=round((perf_counter()-started)*1000), **base)
+                        if next_unit and next_unit["model_scope"] and not next_unit["model_value"]:
+                            return self._escalate(
+                                "Не нашёл подтверждения, что следующий шаг подходит для указанной модели оборудования. "
+                                "Не буду рекомендовать его; запросите проверку специалиста.",
+                                "source_model_scope_not_applicable", "next_check_model_scope_mismatch", started, **base)
+                        if next_unit and not unsafe_operation_issue(next_unit["line"]):
+                            base["progress_update"] = {
+                                "procedure_id": selected["document_id"],
+                                "shown_units": [next_unit],
+                                "eligible_units": [unit for unit in source_units
+                                    if not unit["model_scope"] or unit["model_value"]],
+                            }
+                            next_text = (f"{next_unit['line']}\n\n"
+                                         f"Источник: {selected['source']} — {selected['section']}")
+                            return Answer(next_text, scenario="answer",
+                                scenario_reason="progress_ledger_next_approved_check",
+                                validation_status="exact_approved_next_check",
+                                generation_status="generated",
+                                duration_ms=round((perf_counter()-started)*1000), **base)
             attribution = ""
             if informational and any(selected["scope"].get(field) for field in ("service", "manufacturer", "model")):
                 scope_text = ", ".join(f"{label}: {selected['scope'][field]}" for field, label in
@@ -1360,21 +1492,10 @@ class SourceFirstService:
                 # Record only action units visible in the exact, locally
                 # reverified approved text. This records what was shown, not
                 # whether the client performed it.
-                def units_in(source_text):
-                    result = []
-                    for line in source_text.splitlines():
-                        match = re.match(r"\s*(?:\d+[.)]|[-*])\s+(.+?)\s*$", line)
-                        if not match:
-                            continue
-                        label = match.group(1).strip()
-                        unit_id = sha256((selected["source"] + "\0" + selected["section"] + "\0" + label)
-                                         .encode("utf-8")).hexdigest()[:20]
-                        result.append({"unit_id": unit_id, "label": label,
-                            "source": selected["source"], "section": selected["section"],
-                            "source_verified": True})
-                    return result
-                visible_units = units_in(exact_render)
-                eligible_units = units_in(body)
+                visible_units = _approved_check_units(exact_render, selected["source"], selected["section"],
+                    equipment=state.task_entity("equipment"), manufacturer=state.task_entity("manufacturer"))
+                eligible_units = [unit for unit in source_units
+                                  if not unit["model_scope"] or unit["model_value"]]
                 if (decision and decision.get("route") == "technical_action"
                         and (visible_units or eligible_units)):
                     base["progress_update"] = {"procedure_id": selected["document_id"],

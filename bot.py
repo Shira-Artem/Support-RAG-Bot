@@ -18,6 +18,7 @@ from app.expert_store import ExpertStore
 from app.expert_telegram import ExpertTelegram
 from app.source_first_service import SourceFirstService
 from app.dialogue_understanding import UnderstandingError, understand_message, understanding_to_dict
+from app.handoff import HandoffService, HandoffSettings, TelegramBotApiTransport, specialist_request
 from qdrant_client import QdrantClient
 
 
@@ -46,6 +47,10 @@ source_first_service = SourceFirstService(rag, settings, settings.docs_dir.paren
 expert_store = ExpertStore()
 expert = ExpertTelegram(settings, answer_service, expert_store)
 conversations = ConversationStore()
+handoff_settings = HandoffSettings.from_env()
+handoff_service = HandoffService(handoff_settings,
+    TelegramBotApiTransport(handoff_settings.bot_token) if handoff_settings.ready else None,
+    progress_provider=conversations.progress_summary)
 MENU = ReplyKeyboardMarkup([["Свободный диалог", "Экспертное тестирование"]], resize_keyboard=True)
 FREE_MENU = ReplyKeyboardMarkup([["Новый диалог", "В меню"]], resize_keyboard=True)
 EXPERT_MENU = ReplyKeyboardMarkup([["В меню"]], resize_keyboard=True)
@@ -119,28 +124,70 @@ async def free_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
             return
         if family != 'sp':
             raise ValueError('Unknown action')
+        if action == 'retry':
+            bundle = conversations.handoff_bundle(answer_id, user_id, chat_id)
+            delivery = await handoff_service.deliver(bundle, retry=True)
+            await query.answer()
+            await query.message.reply_text(_handoff_user_message(delivery),
+                reply_markup=(InlineKeyboardMarkup([[InlineKeyboardButton(
+                    'Повторить отправку', callback_data=f'sp:retry:{answer_id}')]])
+                    if delivery['status'] == 'failed' and handoff_settings.ready else None))
+            return
         status = conversations.support_request(answer_id, user_id, chat_id, action)
         await query.answer()
         if action == 'ask':
             if status == 'pending_confirmation':
                 await query.message.reply_text(
                     'Сохранить заявку специалисту по этому вопросу и ответу? '
-                    'Доставка специалисту пока не настроена.',
+                    'Уведомление об отправке появится только после подтверждения Telegram.',
                     reply_markup=InlineKeyboardMarkup([[
                         InlineKeyboardButton('Подтвердить', callback_data=f'sp:confirm:{answer_id}'),
                         InlineKeyboardButton('Отмена', callback_data=f'sp:cancel:{answer_id}')]]))
             else:
-                await query.message.reply_text('Заявка уже сохранена. Доставка специалисту пока не настроена.')
+                bundle = conversations.handoff_bundle(answer_id, user_id, chat_id)
+                delivery = handoff_service.outbox.get(bundle['ticket_id'])
+                if delivery:
+                    await query.message.reply_text(_handoff_user_message(
+                        {'ticket_id': bundle['ticket_id'], **delivery}),
+                        reply_markup=(InlineKeyboardMarkup([[InlineKeyboardButton(
+                            'Повторить отправку', callback_data=f'sp:retry:{answer_id}')]])
+                            if delivery.get('status') == 'failed' and handoff_settings.ready else None))
+                else:
+                    await query.message.reply_text(
+                        f"Заявка {bundle['ticket_id']} уже сохранена. Подтвердите отправку, чтобы передать её.",
+                        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(
+                            'Подтвердить отправку', callback_data=f'sp:confirm:{answer_id}')]]))
         elif action == 'confirm':
-            await query.message.reply_text('Заявка сохранена вместе с вопросом и ответом. '
-                                           'Доставка специалисту пока не настроена.')
+            if status in {'saved', 'delivered'}:
+                bundle = conversations.handoff_bundle(answer_id, user_id, chat_id)
+                delivery = await handoff_service.deliver(bundle)
+                await query.message.reply_text(_handoff_user_message(delivery),
+                    reply_markup=(InlineKeyboardMarkup([[InlineKeyboardButton(
+                        'Повторить отправку', callback_data=f'sp:retry:{answer_id}')]])
+                        if delivery['status'] == 'failed' and handoff_settings.ready else None))
         else:
             await query.message.reply_text(
-                'Заявка уже сохранена; доставка специалисту пока не настроена.'
+                'Заявка уже сохранена. Отмена не меняет подтверждённую заявку.'
                 if status in {'saved', 'delivered'} else
                 'Передача не подтверждена. Можете продолжить диалог.')
     except (ValueError, TypeError):
         await query.answer('Не удалось связать действие с ответом.', show_alert=True)
+
+
+def _handoff_user_message(delivery: dict) -> str:
+    ticket_id = delivery.get('ticket_id', 'заявка')
+    if delivery.get('status') == 'delivered':
+        return f"Заявка {ticket_id}: Telegram подтвердил отправку специалистам."
+    if delivery.get('status') == 'pending':
+        return f"Заявка {ticket_id} готовится к отправке. Уведомление ещё не подтверждено."
+    if delivery.get('error') == 'handoff_disabled':
+        return f"Заявка {ticket_id} сохранена. Специалист не уведомлён: передача пока отключена."
+    if delivery.get('error') == 'specialist_chat_not_configured':
+        return f"Заявка {ticket_id} сохранена. Специалист не уведомлён: чат специалистов не настроен."
+    if delivery.get('error') == 'specialist_chat_not_approved':
+        return f"Заявка {ticket_id} сохранена. Специалист не уведомлён: получатель не совпадает с одобренным чатом."
+    return (f"Заявка {ticket_id} сохранена, но Telegram не подтвердил отправку. "
+            "Специалист пока не уведомлён.")
 
 
 async def sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -200,6 +247,32 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     if conversations.save_feedback_comment(user_id, chat_id, user_text):
         await update.message.reply_text('Комментарий к ответу сохранён.', reply_markup=FREE_MENU)
+        return
+
+    if specialist_request(user_text):
+        conversation_id = state['conversation_id']
+        recent = conversations.history(conversation_id) if conversation_id else []
+        previous_answer = next((item for item in reversed(recent) if item['role'] == 'assistant'), None)
+        if previous_answer is None:
+            await update.message.reply_text(
+                'Чтобы оформить заявку, сначала напишите вопрос в этом диалоге.', reply_markup=FREE_MENU)
+            return
+        status = conversations.support_request(previous_answer['message_id'], user_id, chat_id, 'ask')
+        if status == 'pending_confirmation':
+            await update.message.reply_text(
+                'Сохранить заявку специалисту по последнему вопросу и ответу?',
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton('Подтвердить', callback_data=f"sp:confirm:{previous_answer['message_id']}"),
+                    InlineKeyboardButton('Отмена', callback_data=f"sp:cancel:{previous_answer['message_id']}")]]))
+        else:
+            bundle = conversations.handoff_bundle(previous_answer['message_id'], user_id, chat_id)
+            delivery = handoff_service.outbox.get(bundle['ticket_id'])
+            if delivery:
+                await update.message.reply_text(_handoff_user_message(
+                    {'ticket_id': bundle['ticket_id'], **delivery}), reply_markup=FREE_MENU)
+            else:
+                await update.message.reply_text(
+                    f"Заявка {bundle['ticket_id']} уже сохранена. Она ещё не отправлялась.", reply_markup=FREE_MENU)
         return
 
     await update.message.chat.send_action(ChatAction.TYPING)

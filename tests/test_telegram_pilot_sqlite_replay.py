@@ -131,7 +131,7 @@ def _safe_state(state, prior_task_id):
 
 
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
-                injected_candidate=None, coordinator_enabled=False):
+                injected_candidate=None, coordinator_enabled=False, after_dialogue=None):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)
     rag = LocalRag(sources, injected_candidate)
@@ -279,6 +279,10 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                 })
 
         asyncio.run(run_dialogue())
+        if after_dialogue is not None:
+            conversation_id = store.state(42, 42)["conversation_id"]
+            asyncio.run(after_dialogue(bot, store, conversation_id, message, update, reply,
+                                       provider_calls, cases, trace))
         assert len(provider_calls) == len(trace) == len(cases)
         with store.connect() as db:
             counts = db.execute("SELECT role,status,COUNT(*) FROM messages GROUP BY role,status").fetchall()
@@ -706,3 +710,262 @@ def test_progress_ledger_closes_task_and_new_topic_starts_cleanly(monkeypatch, t
     assert restarted["eligible_units"] == []
     assert restarted["procedure_id"] is None
     assert restarted["open_question"] is None
+
+
+
+def test_handoff_combined_with_progress_ledger_through_real_bot_handler(monkeypatch, tmp_path):
+    from app.handoff import HandoffService, HandoffSettings
+
+    class FakeHandoffTransport:
+        def __init__(self):
+            self.calls = []
+        async def send_message(self, chat_id, text):
+            self.calls.append((chat_id, text))
+            return SimpleNamespace(message_id=51, chat_id=int(chat_id))
+
+    cases = [
+        {"id": "HPL1", "text": "Эвотор, чеки не уходят", "request_type": "diagnosis",
+         "relation": "new_task", "intent": "receipt", "operation": "diagnose",
+         "object": "чек", "object_quote": "чеки", "symptom": "чеки не уходят",
+         "entities": [("manufacturer", "Эвотор", "Эвотор")]},
+        {"id": "HPL2", "text": "Интернет работает", "request_type": "feedback",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "HPL3", "text": "Оплата прошла", "request_type": "feedback",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "HPL4", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "HPL5", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "HPL6", "text": "Модель Эвотор 5i", "request_type": "feedback",
+         "relation": "answer_to_clarification", "intent": "unknown", "operation": "unknown",
+         "entities": [("equipment", "Эвотор 5i", "Эвотор 5i")]},
+        {"id": "HPL7", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+    ]
+    transport = FakeHandoffTransport()
+
+    async def request_and_confirm(bot, store, cid, message, update, reply, provider_calls, cases, trace):
+        next_check = trace[-1]
+        assert next_check["reason"] == "progress_ledger_next_approved_check"
+        assert trace[3]["reason"] == "progress_ledger_waiting_for_model"
+        assert "без подтверждённой модели" in trace[3]["final_reply"].casefold()
+        assert trace[4]["reason"] == "progress_ledger_waiting_for_model"
+        assert "укажите точную модель" not in trace[4]["final_reply"].casefold()
+        assert "на модели 5, 5i" not in trace[3]["final_reply"].casefold()
+        assert "на модели 5, 5i" not in trace[4]["final_reply"].casefold()
+        assert sum("укажите точную модель" in item["final_reply"].casefold() for item in trace) == 1
+        assert trace[5]["state_after_sqlite_reopen"]["task_context"]["entities"]["equipment"][0]["value"] == "Эвотор 5i"
+        assert "2. На модели 5, 5i" in next_check["final_reply"]
+        assert "3. Проверьте поля EoU" not in next_check["final_reply"]
+        assert next_check["state_after_sqlite_reopen"]["task_context"]["shown_units"][-1]["label"].startswith(
+            "На модели 5, 5i")
+        bot.handoff_settings = HandoffSettings(True, "fake-token", "-100123", tmp_path / "outbox.json",
+                                               approved_chat_id="-100123")
+        bot.handoff_service = HandoffService(bot.handoff_settings, transport,
+                                             progress_provider=store.progress_summary)
+        message.text = "Позови специалиста"
+        reply.reset_mock()
+        await bot.handle_message(update, None)
+        assert "Сохранить заявку специалисту" in reply.await_args.args[0]
+        assert len(provider_calls) == 7
+        markup = reply.await_args.kwargs["reply_markup"]
+        callback_data = markup.inline_keyboard[0][0].callback_data
+        query = SimpleNamespace(data=callback_data, answer=AsyncMock(),
+                                message=SimpleNamespace(reply_text=AsyncMock()))
+        callback_update = SimpleNamespace(callback_query=query,
+            effective_user=update.effective_user, effective_chat=update.effective_chat)
+        await bot.free_callback(callback_update, None)
+        bundle = bot.conversations.handoff_bundle(int(callback_data.rsplit(':', 1)[1]), 42, 42)
+        assert query.message.reply_text.await_args.args[0] == (
+            f"Заявка {bundle['ticket_id']}: Telegram подтвердил отправку специалистам.")
+        assert len(transport.calls) == 1
+        payload = transport.calls[0][1]
+        assert "Результаты проверок:" in payload
+        assert "Интернет работает" in payload and "Оплата прошла" in payload
+        assert '"status":"passed"' in payload
+        assert "unknown" not in payload
+        assert bundle["conversation_id"] == cid
+        assert bundle["task"]["task_id"] == trace[-1]["state_after_sqlite_reopen"]["task_id"]
+        assert bundle["ticket_id"].startswith(f"SR-{bundle['request_id']:07d}-")
+        # Repeated confirmation is idempotent at the delivery boundary.
+        await bot.free_callback(callback_update, None)
+        assert len(transport.calls) == 1
+        assert "task_id" not in payload and "conversation_id" not in payload
+
+        restarted_transport = FakeHandoffTransport()
+        restarted = HandoffService(bot.handoff_settings, restarted_transport,
+                                   progress_provider=store.progress_summary)
+        delivered_after_restart = await restarted.deliver(bundle)
+        assert delivered_after_restart["status"] == "delivered"
+        assert restarted_transport.calls == []
+
+        post_handoff = [
+            {"id": "HPL-topic", "text": "Другой вопрос: где найти банковскую выписку в 1С?",
+             "request_type": "information", "relation": "new_task", "intent": "bank_statement",
+             "operation": "search", "object": "банковская выписка", "object_quote": "банковскую выписку",
+             "entities": [("software", "1С", "1С")]},
+            {"id": "HPL-closed", "text": "Спасибо, всё решено", "request_type": "feedback",
+             "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        ]
+        cases.extend(post_handoff)
+        old_task_id = trace[-1]["state_after_sqlite_reopen"]["task_id"]
+        for case in post_handoff[:1]:
+            before = store.dialogue_state(cid)
+            message.text = case["text"]
+            reply.reset_mock()
+            await bot.handle_message(update, None)
+            with store.connect() as db:
+                rows = db.execute("SELECT role,content,diagnostics_json FROM messages "
+                    "WHERE conversation_id=? ORDER BY id DESC LIMIT 2", (cid,)).fetchall()
+            assistant, user = rows
+            user_diag = json.loads(user["diagnostics_json"])
+            answer_diag = json.loads(assistant["diagnostics_json"])
+            reopened = ConversationStore(store.path).dialogue_state(cid)
+            assert reopened.to_dict() == store.dialogue_state(cid).to_dict()
+            trace.append({"turn": len(trace) + 1, "case_id": case["id"], "user_text": case["text"],
+                "state_after_sqlite_reopen": reopened.to_dict(), "final_reply": assistant["content"],
+                "route": answer_diag.get("scenario"), "reason": answer_diag.get("scenario_reason"),
+                "validated": {"request_type": user_diag["understanding"]["request_type"],
+                              "intent": reopened.intent, "operation": reopened.operation},
+                "state": _safe_state(reopened, before.task_id)})
+
+        topic_task_id = trace[-1]["state_after_sqlite_reopen"]["task_id"]
+        no_chat_transport = FakeHandoffTransport()
+        no_chat_settings = HandoffSettings(True, "fake-token", "", tmp_path / "outbox.json")
+        bot.handoff_settings = no_chat_settings
+        bot.handoff_service = HandoffService(no_chat_settings, no_chat_transport,
+                                             progress_provider=store.progress_summary)
+        message.text = "Позови специалиста"
+        reply.reset_mock()
+        calls_before_request = len(provider_calls)
+        await bot.handle_message(update, None)
+        assert len(provider_calls) == calls_before_request
+        request_markup = reply.await_args.kwargs["reply_markup"]
+        topic_answer_id = int(request_markup.inline_keyboard[0][0].callback_data.rsplit(":", 1)[1])
+        confirm = SimpleNamespace(data=f"sp:confirm:{topic_answer_id}", answer=AsyncMock(),
+                                  message=SimpleNamespace(reply_text=AsyncMock()))
+        confirm_update = SimpleNamespace(callback_query=confirm,
+            effective_user=update.effective_user, effective_chat=update.effective_chat)
+        await bot.free_callback(confirm_update, None)
+        assert "чат специалистов не настроен" in confirm.message.reply_text.await_args.args[0]
+        assert no_chat_transport.calls == []
+        topic_bundle = bot.conversations.handoff_bundle(topic_answer_id, 42, 42)
+        assert topic_bundle["conversation_id"] == cid
+        assert topic_bundle["task"]["task_id"] == topic_task_id
+        assert topic_bundle["ticket_id"].startswith(f"SR-{topic_bundle['request_id']:07d}-")
+
+        configured = HandoffSettings(True, "fake-token", "-100123", tmp_path / "outbox.json",
+                                     approved_chat_id="-100123")
+        bot.handoff_settings = configured
+        bot.handoff_service = HandoffService(configured, None,
+                                             progress_provider=store.progress_summary)
+        # Reopen the service after the no-chat failure: it must retain failure and never auto-send.
+        restarted_failed = HandoffService(configured, None, progress_provider=store.progress_summary)
+        still_failed = await restarted_failed.deliver(topic_bundle)
+        assert still_failed["status"] == "failed"
+        assert still_failed["error"] == "specialist_chat_not_configured"
+        bot.handoff_settings = configured
+        bot.handoff_service = restarted_failed
+        ask_again = SimpleNamespace(data=f"sp:ask:{topic_answer_id}", answer=AsyncMock(),
+            message=SimpleNamespace(reply_text=AsyncMock()))
+        ask_again_update = SimpleNamespace(callback_query=ask_again,
+            effective_user=update.effective_user, effective_chat=update.effective_chat)
+        await bot.free_callback(ask_again_update, None)
+        retry_markup = ask_again.message.reply_text.await_args.kwargs["reply_markup"]
+        retry_data = retry_markup.inline_keyboard[0][0].callback_data
+        retry_missing_transport = SimpleNamespace(data=retry_data, answer=AsyncMock(),
+            message=SimpleNamespace(reply_text=AsyncMock()))
+        retry_update = SimpleNamespace(callback_query=retry_missing_transport,
+            effective_user=update.effective_user, effective_chat=update.effective_chat)
+        await bot.free_callback(retry_update, None)
+        assert "не подтвердил отправку" in retry_missing_transport.message.reply_text.await_args.args[0]
+        assert retry_missing_transport.data.startswith("sp:retry:")
+
+        retry_transport = FakeHandoffTransport()
+        bot.handoff_service = HandoffService(configured, retry_transport,
+                                             progress_provider=store.progress_summary)
+        await bot.free_callback(retry_update, None)
+        assert len(retry_transport.calls) == 1
+        assert "Telegram подтвердил отправку" in retry_missing_transport.message.reply_text.await_args.args[0]
+
+        case = post_handoff[1]
+        before = store.dialogue_state(cid)
+        message.text = case["text"]
+        reply.reset_mock()
+        await bot.handle_message(update, None)
+        with store.connect() as db:
+            rows = db.execute("SELECT role,content,diagnostics_json FROM messages "
+                "WHERE conversation_id=? ORDER BY id DESC LIMIT 2", (cid,)).fetchall()
+        assistant, user = rows
+        user_diag = json.loads(user["diagnostics_json"])
+        answer_diag = json.loads(assistant["diagnostics_json"])
+        reopened = ConversationStore(store.path).dialogue_state(cid)
+        assert reopened.to_dict() == store.dialogue_state(cid).to_dict()
+        trace.append({"turn": len(trace) + 1, "case_id": case["id"], "user_text": case["text"],
+            "state_after_sqlite_reopen": reopened.to_dict(), "final_reply": assistant["content"],
+            "route": answer_diag.get("scenario"), "reason": answer_diag.get("scenario_reason"),
+            "validated": {"request_type": user_diag["understanding"]["request_type"],
+                          "intent": reopened.intent, "operation": reopened.operation},
+            "state": _safe_state(reopened, before.task_id)})
+        assert trace[-2]["state_after_sqlite_reopen"]["task_id"] != old_task_id
+        assert trace[-2]["state_after_sqlite_reopen"]["task_context"]["checks"] == []
+        assert trace[-1]["state_after_sqlite_reopen"]["task_context"]["closed"] is True
+
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True,
+        after_dialogue=request_and_confirm)
+    checks = trace[-1]["state_after_sqlite_reopen"]["task_context"]["checks"]
+    # The latest task after the hook is the new 1C theme; inspect the original task's
+    # handoff payload assertions above and the pre-topic trace for ProgressLedger.
+    original_check = next(item for step in trace for item in
+        (step.get("state_after_sqlite_reopen", {}).get("task_context", {}).get("checks") or [])
+        if item.get("result_span", {}).get("quote") == "Оплата прошла")
+    assert original_check["status"] == "passed"
+
+
+def test_progress_ledger_blocks_model_scoped_check_for_unlisted_model(monkeypatch, tmp_path):
+    cases = _progress_cases() + [{"id": "PM-repeat", "text": "Что дальше?",
+        "request_type": "information", "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "PM-unknown-model", "text": "Модель Эвотор X500", "request_type": "feedback",
+         "relation": "answer_to_clarification", "intent": "unknown", "operation": "unknown",
+         "entities": [("equipment", "Эвотор X500", "Эвотор X500")]},
+        {"id": "PM-next", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+    ]
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
+    after_reopen = trace[-1]["state_after_sqlite_reopen"]
+    assert after_reopen["task_context"]["entities"]["equipment"][0]["value"] == "Эвотор X500"
+    assert trace[-2]["reason"] == "source_model_scope_not_applicable"
+    assert "не буду выдавать этот порядок" in trace[-2]["final_reply"].casefold()
+    assert "на модели 5, 5i" not in trace[-1]["final_reply"].casefold()
+    assert "настройки" not in trace[-1]["final_reply"].casefold()
+    assert any(item.get("result_span", {}).get("quote") == "Интернет работает"
+               for item in after_reopen["task_context"]["checks"])
+
+
+def test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen(monkeypatch, tmp_path):
+    cases = _progress_cases()
+    cases[2] = {**cases[2], "text": "Оплата прошла"}
+    cases += [{"id": "PM-repeat", "text": "Что дальше?",
+        "request_type": "information", "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "PM-supported", "text": "Модель Эвотор 5i", "request_type": "feedback",
+         "relation": "answer_to_clarification", "intent": "unknown", "operation": "unknown",
+         "entities": [("equipment", "Эвотор 5i", "Эвотор 5i")]},
+        {"id": "PM-next-supported", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+        {"id": "PM-switch", "text": "Модель Эвотор X500", "request_type": "feedback",
+         "relation": "continue", "intent": "unknown", "operation": "unknown",
+         "entities": [("equipment", "Эвотор X500", "Эвотор X500")]},
+        {"id": "PM-next-switched", "text": "Что дальше?", "request_type": "information",
+         "relation": "continue", "intent": "unknown", "operation": "unknown"},
+    ]
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
+    supported = trace[6]["state_after_sqlite_reopen"]["task_context"]
+    switched = trace[-1]["state_after_sqlite_reopen"]["task_context"]
+    assert trace[6]["reason"] == "progress_ledger_next_approved_check"
+    assert supported["shown_units"][-1]["model_value"] == "5i"
+    assert switched["entities"]["equipment"][0]["value"] == "Эвотор X500"
+    assert trace[-2]["reason"] == "source_model_scope_not_applicable"
+    assert "настройки" not in trace[-1]["final_reply"].casefold()
