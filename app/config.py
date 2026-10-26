@@ -28,6 +28,7 @@ class Settings:
     expert_telegram_ids: frozenset[int] = frozenset()
     rag_engine: str = "legacy"
     source_first_telegram_ids: frozenset[int] = frozenset()
+    ai_coordinator_enabled: bool = False
 
 
 def _bool_env(name: str, default: bool = False) -> bool:
@@ -69,9 +70,15 @@ def get_settings() -> Settings:
         expert_telegram_ids=ids,
         rag_engine=engine,
         source_first_telegram_ids=source_first_ids,
+        ai_coordinator_enabled=_bool_env("AI_COORDINATOR_ENABLED", False),
     )
 
 
 def should_use_source_first(settings: Settings, telegram_user_id: int) -> bool:
     """The opt-in engine and explicit Telegram allowlist are both required."""
     return settings.rag_engine == "source_first" and telegram_user_id in settings.source_first_telegram_ids
+
+
+def should_use_ai_coordinator(settings: Settings, telegram_user_id: int) -> bool:
+    """Coordinator is an opt-in variant of the existing Source-first route."""
+    return bool(settings.ai_coordinator_enabled and should_use_source_first(settings, telegram_user_id))

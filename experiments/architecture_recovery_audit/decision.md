@@ -30,3 +30,8 @@
 - Не доказано, что текущий `claim_supported` имеет достаточный recall/precision для всех русских парафразов; у V1.1 есть опасные FP, у Typed replay — чрезмерные FN. Нельзя просто удалить Judge или Grounding.
 - Не доказана актуальность всех внешних статей или полнота approved KB. Этот аудит их не менял и Qdrant не переиндексировал.
 - Не принято переключение живого worker PID 46544: его receipt SHA отличается от рабочего файла. Новый runtime допускается только после ворот в плане и отдельного разрешённого задания.
+
+
+## Реализация P1 D1 — 2026-10-26
+
+Первая opt-in реализация варианта B находится в [`p1_d1_implementation_20261026.md`](p1_d1_implementation_20261026.md): typed coordinator поверх validated Understanding/reducer state, route-флаг за текущей Source-first allowlist, точный approved-information slice и serialized decision diagnostics. D1 offline проходит на реальном application path; Source-first A остаётся при флаге off. Это не меняет NO-GO P0 quality gate и не разрешает production/live/worker switch. Следующий разработческий slice — D2 task progress и безопасный следующий технический шаг.

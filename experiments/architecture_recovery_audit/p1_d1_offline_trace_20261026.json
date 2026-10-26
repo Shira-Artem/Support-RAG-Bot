@@ -1,0 +1,352 @@
+[
+  {
+    "turn": 1,
+    "case_id": "D1.2",
+    "user_text": "Что такое ОФД?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "unknown",
+      "operation": "explain",
+      "object": "ОФД",
+      "object_evidence": {
+        "quote": "ОФД"
+      },
+      "goal": {
+        "quote": "Что такое ОФД?"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "general",
+      "operation": "explain"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "state_after_sqlite_reopen": {
+      "schema_version": 2,
+      "revision": 1,
+      "session": {
+        "entities": {},
+        "active_route": null
+      },
+      "task_context": {
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "general",
+        "operation": "explain",
+        "object": "ОФД",
+        "entities": {},
+        "active_route": null,
+        "parameters": [],
+        "object_reference": null,
+        "task_fact": {
+          "value": "Что такое ОФД?",
+          "message_id": 1,
+          "quote": "Что такое ОФД?",
+          "start": 0,
+          "end": 14
+        },
+        "operation_evidence": null,
+        "operation_confidence": 0.91,
+        "symptom": null,
+        "superseded_facts": [],
+        "goals": [
+          {
+            "value": "Что такое ОФД?",
+            "message_id": 1,
+            "quote": "Что такое ОФД?",
+            "start": 0,
+            "end": 14
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.91,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null,
+        "unknown_facts": []
+      },
+      "task_id": "task:1",
+      "topic_start_message_id": 1,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "entities": {},
+      "routing_slot": null,
+      "parameters": [],
+      "object_reference": null,
+      "task": {
+        "value": "Что такое ОФД?",
+        "message_id": 1,
+        "quote": "Что такое ОФД?",
+        "start": 0,
+        "end": 14
+      },
+      "operation_evidence": null,
+      "goals": [
+        {
+          "value": "Что такое ОФД?",
+          "message_id": 1,
+          "quote": "Что такое ОФД?",
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "constraints": [],
+      "details": [],
+      "error": null,
+      "expected": null,
+      "relation": "new_task",
+      "confidence": 0.91,
+      "transition": "new_task",
+      "analysis_required": false,
+      "unresolved": null
+    },
+    "route": "answer",
+    "reason": "ai_coordinator_grounded_information",
+    "validation_status": "exact_approved_sentence",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "document_id": "atol-online-11256-what-is-ofd",
+        "section": null
+      }
+    ],
+    "source_scope_reason": null,
+    "coordinator_decision": {
+      "request_type": "information",
+      "route": "grounded_information",
+      "task_relation": "new_task",
+      "current_subgoal": "Что такое ОФД?",
+      "required_action": "retrieve_and_quote_focused_approved_evidence",
+      "rationale": "grounded_explanation_requires_scoped_evidence"
+    },
+    "coordinator_evidence": {
+      "document_id": "atol-online-11256-what-is-ofd",
+      "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+      "section": "Что проверено по инструкции производителя",
+      "sentence": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.",
+      "focus": "Что такое ОФД?",
+      "selection": "generic_content_term_overlap",
+      "source_sha256_verified": true
+    },
+    "retrieval_called": true,
+    "generation_stages": [],
+    "stage_call_counts": {
+      "understanding": 1,
+      "actual_provider_calls": 0,
+      "planner": 0,
+      "composer_or_repair": 0,
+      "judge": 0,
+      "provider_usage_units": 0
+    },
+    "planner_choices": [],
+    "final_reply": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.\n\nОбласть источника: АТОЛ Онлайн, АТОЛ, АТОЛ Онлайн — облачная ККТ.\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя"
+  },
+  {
+    "turn": 2,
+    "case_id": "D1.3",
+    "user_text": "А зачем он нужен кассе?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "continue",
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "object_evidence": {
+        "quote": "он"
+      },
+      "goal": {
+        "quote": "зачем он нужен кассе"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "general",
+      "operation": "explain"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "relation": "continue",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 2,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "state_after_sqlite_reopen": {
+      "schema_version": 2,
+      "revision": 2,
+      "session": {
+        "entities": {},
+        "active_route": null
+      },
+      "task_context": {
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "general",
+        "operation": "explain",
+        "object": "ОФД",
+        "entities": {},
+        "active_route": null,
+        "parameters": [],
+        "object_reference": null,
+        "task_fact": {
+          "value": "Что такое ОФД?",
+          "message_id": 1,
+          "quote": "Что такое ОФД?",
+          "start": 0,
+          "end": 14
+        },
+        "operation_evidence": null,
+        "operation_confidence": 0.91,
+        "symptom": null,
+        "superseded_facts": [],
+        "goals": [
+          {
+            "value": "Что такое ОФД?",
+            "message_id": 1,
+            "quote": "Что такое ОФД?",
+            "start": 0,
+            "end": 14
+          },
+          {
+            "value": "зачем он нужен кассе",
+            "message_id": 3,
+            "quote": "зачем он нужен кассе",
+            "start": 2,
+            "end": 22
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.91,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null,
+        "unknown_facts": []
+      },
+      "task_id": "task:1",
+      "topic_start_message_id": 1,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "entities": {},
+      "routing_slot": null,
+      "parameters": [],
+      "object_reference": null,
+      "task": {
+        "value": "Что такое ОФД?",
+        "message_id": 1,
+        "quote": "Что такое ОФД?",
+        "start": 0,
+        "end": 14
+      },
+      "operation_evidence": null,
+      "goals": [
+        {
+          "value": "Что такое ОФД?",
+          "message_id": 1,
+          "quote": "Что такое ОФД?",
+          "start": 0,
+          "end": 14
+        },
+        {
+          "value": "зачем он нужен кассе",
+          "message_id": 3,
+          "quote": "зачем он нужен кассе",
+          "start": 2,
+          "end": 22
+        }
+      ],
+      "constraints": [],
+      "details": [],
+      "error": null,
+      "expected": null,
+      "relation": "continue",
+      "confidence": 0.91,
+      "transition": "continue_task",
+      "analysis_required": false,
+      "unresolved": null
+    },
+    "route": "answer",
+    "reason": "ai_coordinator_grounded_information",
+    "validation_status": "exact_approved_sentence",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "document_id": "atol-online-11256-what-is-ofd",
+        "section": null
+      }
+    ],
+    "source_scope_reason": null,
+    "coordinator_decision": {
+      "request_type": "information",
+      "route": "grounded_information",
+      "task_relation": "continue",
+      "current_subgoal": "зачем он нужен кассе",
+      "required_action": "retrieve_and_quote_focused_approved_evidence",
+      "rationale": "grounded_explanation_requires_scoped_evidence"
+    },
+    "coordinator_evidence": {
+      "document_id": "atol-online-11256-what-is-ofd",
+      "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+      "section": "Что проверено по инструкции производителя",
+      "sentence": "Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.",
+      "focus": "зачем он нужен кассе",
+      "selection": "generic_content_term_overlap",
+      "source_sha256_verified": true
+    },
+    "retrieval_called": true,
+    "generation_stages": [],
+    "stage_call_counts": {
+      "understanding": 1,
+      "actual_provider_calls": 0,
+      "planner": 0,
+      "composer_or_repair": 0,
+      "judge": 0,
+      "provider_usage_units": 0
+    },
+    "planner_choices": [],
+    "final_reply": "Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.\n\nОбласть источника: АТОЛ Онлайн, АТОЛ, АТОЛ Онлайн — облачная ККТ.\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя"
+  }
+]

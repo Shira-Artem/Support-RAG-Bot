@@ -12,7 +12,8 @@ from app.answer_service import Answer, AnswerService
 from app.bot_runtime import write_runtime_receipt
 from app.conversation_store import ConversationStore
 from app.compat import build_answer_rag
-from app.config import get_settings, should_use_source_first
+from app.config import get_settings, should_use_ai_coordinator, should_use_source_first
+from app.ai_coordinator import coordinate
 from app.expert_store import ExpertStore
 from app.expert_telegram import ExpertTelegram
 from app.source_first_service import SourceFirstService
@@ -205,6 +206,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     conversation_id = state["conversation_id"] or conversations.new(user_id, chat_id)
     use_source_first = should_use_source_first(settings, user_id)
+    use_ai_coordinator = should_use_ai_coordinator(settings, user_id)
     if use_source_first:
         previous_state = conversations.dialogue_state(conversation_id)
         previous_history = conversations.history(conversation_id)
@@ -230,10 +232,16 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     else:
         message_id = conversations.begin(conversation_id, user_text)
     dialogue_state = conversations.dialogue_state(conversation_id)
+    coordinator_decision = None
+    if use_ai_coordinator:
+        current_event = next((item for item in reversed(conversations.history(conversation_id))
+                              if item.get("role") == "user" and item.get("content") == user_text), {})
+        coordinator_decision = coordinate(current_event.get("understanding"), dialogue_state)
     try:
         if use_source_first:
             answer = await source_first_service.answer(
-                user_text, state=dialogue_state, history=conversations.history(conversation_id))
+                user_text, state=dialogue_state, history=conversations.history(conversation_id),
+                coordinator_decision=coordinator_decision)
         else:
             answer = await answer_service.answer(user_text, state=dialogue_state)
     except Exception as exc:

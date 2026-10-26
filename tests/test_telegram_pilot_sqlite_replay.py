@@ -131,7 +131,7 @@ def _safe_state(state, prior_task_id):
 
 
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
-                injected_candidate=None):
+                injected_candidate=None, coordinator_enabled=False):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)
     rag = LocalRag(sources, injected_candidate)
@@ -142,7 +142,8 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
         show_sources=True, docs_dir=ROOT / "data/docs", llm_provider="groq",
         groq_api_key="offline-key", groq_model="offline-model",
         groq_reasoning_effort="low", rag_engine="source_first",
-        source_first_telegram_ids=frozenset({42}))
+        source_first_telegram_ids=frozenset({42}),
+        ai_coordinator_enabled=coordinator_enabled)
 
     class ReadOnlyQdrantCheck:
         def __init__(self, **_kwargs):
@@ -251,16 +252,28 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                     "validated": {"request_type": user_diagnostic["understanding"]["request_type"],
                                   "intent": after.intent, "operation": after.operation},
                     "state": _safe_state(after, before.task_id),
+                    "state_after_sqlite_reopen": restarted.dialogue_state(cid).to_dict(),
                     "route": answer_diagnostic.get("scenario"),
                     "reason": answer_diagnostic.get("scenario_reason"),
+                    "validation_status": answer_diagnostic.get("validation_status"),
                     "retrieval_reason": retrieval.get("insufficiency_reason"),
                     "selected_sources": [{"source": item.get("source"),
                                           "document_id": item.get("document_id"),
                                           "section": item.get("section")}
                                          for item in retrieval.get("selected", [])],
                     "source_scope_reason": (retrieval.get("source_scope_gate") or {}).get("reason"),
+                    "coordinator_decision": answer_diagnostic.get("coordinator_decision"),
+                    "coordinator_evidence": retrieval.get("coordinator_evidence"),
                     "retrieval_called": len(rag.source.searches) > search_start,
                     "generation_stages": generation_calls[generation_start:],
+                    "stage_call_counts": {
+                        "understanding": 1,
+                        "actual_provider_calls": 0,
+                        "planner": generation_calls[generation_start:].count("planner"),
+                        "composer_or_repair": generation_calls[generation_start:].count("composer_or_repair"),
+                        "judge": generation_calls[generation_start:].count("judge"),
+                        "provider_usage_units": 0,
+                    },
                     "planner_choices": planner_choices[planner_start:],
                     "final_reply": assistant["content"],
                 })
@@ -286,6 +299,11 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                 label = "dialogue" if len(cases) == 13 else cases[0]["id"]
                 (target_dir / f"p0_gate_{label.lower()}_20261026.json").write_text(
                     json.dumps(trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if coordinator_enabled and (output_dir := os.environ.get("P1_COORDINATOR_OUTPUT_DIR")):
+            target_dir = Path(output_dir).resolve()
+            assert target_dir == (ROOT / "experiments/architecture_recovery_audit").resolve()
+            (target_dir / "p1_d1_offline_trace_20261026.json").write_text(
+                json.dumps(trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
         return trace
     finally:
@@ -527,3 +545,44 @@ def test_p0_gate_s5_retrieved_candidate_injection_through_bot_sqlite(monkeypatch
     assert "закры" not in answer["final_reply"].casefold()
     assert "archive" not in answer["final_reply"].casefold()
     assert "→" not in answer["final_reply"]
+
+
+def test_p1_coordinator_d1_grounded_followup_through_bot_sqlite(monkeypatch, tmp_path):
+    cases = json.loads(GATE_FIXTURE.read_text(encoding="utf-8"))["dialogue"][1:3]
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("atol_online/ofd/what-is-ofd.md",), coordinator_enabled=True)
+    first, second = trace
+    assert first["coordinator_decision"]["route"] == "grounded_information"
+    assert first["coordinator_decision"]["task_relation"] == "new_task"
+    assert second["coordinator_decision"]["route"] == "grounded_information"
+    assert second["coordinator_decision"]["task_relation"] == "continue"
+    assert second["coordinator_decision"]["current_subgoal"] == "зачем он нужен кассе"
+    assert first["route"] == second["route"] == "answer"
+    assert first["final_reply"] != second["final_reply"]
+    assert "ОФД получает фискальные документы" in first["final_reply"]
+    assert "договор и действующий тариф ОФД" in second["final_reply"]
+    assert "approved" in first["reason"] or first["reason"] == "ai_coordinator_grounded_information"
+    assert first["generation_stages"] == second["generation_stages"] == []
+    assert first["selected_sources"][0]["source"] == "atol_online/ofd/what-is-ofd.md"
+    assert second["selected_sources"][0]["source"] == "atol_online/ofd/what-is-ofd.md"
+    assert first["validation_status"] == second["validation_status"] == "exact_approved_sentence"
+    assert first["coordinator_evidence"]["source_sha256_verified"]
+    assert second["coordinator_evidence"]["source_sha256_verified"]
+    assert first["stage_call_counts"]["actual_provider_calls"] == 0
+    assert second["stage_call_counts"]["actual_provider_calls"] == 0
+
+
+@pytest.mark.parametrize("case_id", ["S1", "S4", "S5"])
+def test_p1_coordinator_keeps_independent_safety_stops(monkeypatch, tmp_path, case_id):
+    case = next(row for row in json.loads(GATE_FIXTURE.read_text(encoding="utf-8"))["safety"]
+                if row["id"] == case_id)
+    answer = _run_replay(monkeypatch, tmp_path, [case],
+        sources=GATE_SAFETY_SOURCES[case_id], coordinator_enabled=True)[0]
+    assert answer["coordinator_decision"]["route"] == "technical_action"
+    if case_id in {"S1", "S5"}:
+        assert answer["reason"] == "unsafe_operation"
+        assert not answer["retrieval_called"]
+        assert "→" not in answer["final_reply"]
+    else:
+        assert answer["reason"] in {"insufficient_applicable_evidence", "source_scope_mismatch"}
+        assert "IP-адрес" not in answer["final_reply"]
