@@ -27,6 +27,10 @@
 | P0.5 — обязательное E2E-сравнение старого пути | **PLANNED** | Не завершено; связка с V1.4/V2 описана ниже. |
 | P1 — минимальная разговорная архитектура B | **IN_PROGRESS — D1 offline vertical slice PASS; live gate prepared, not run** | Реализован opt-in typed Coordinator на существующих Store/reducer/RAG/Source-first gates. D1.2→D1.3 проходит offline E2E с точной approved evidence и SQLite reopen; полный suite 404 passed / 6 xfailed. D2 technical progress ещё не реализован. Общий P0 gate и live/worker остаются NO-GO. См. [P1 D1 implementation report](../experiments/architecture_recovery_audit/p1_d1_implementation_20261026.md). |
 
+### Изолированная параллельная задача: handoff MVP
+
+**DONE только в границе offline прототипа**: в отдельном worktree `codex/support-rag-handoff-mvp` добавлен default-off handoff adapter поверх существующих `free_callback`, `ConversationStore` и подтверждённых заявок. Транспорт проверяет Telegram receipt и destination; delivery states хранятся в отдельном `.local` sidecar, SQLite не мигрировалась. Fake-transport tests проходят. Реальный чат не согласован, сообщения не отправлялись; Telegram connection, worker rollout и production readiness остаются **NO-GO** до отдельного одобрения и bounded acceptance send. См. [handoff MVP report](handoff_mvp.md). P1 status and sequencing are unchanged.
+
 ## V1.1 — аудит существующего Grounding
 
 - **Цель / статус:** проверить все claim-level метки 30 сохранённых ответов против точного переданного approved evidence и функций `app/response_grounding.py`, `app/answer_service.py`, `app/retrieval_pipeline.py`; `DONE` только в границе изолированного аудита по решению пользователя от 2026-10-24.

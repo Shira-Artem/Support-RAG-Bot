@@ -17,6 +17,28 @@ from app.dialogue_understanding import observation_from_dict
 DEFAULT_DB = Path(__file__).resolve().parents[1] / "data/conversations.sqlite3"
 
 
+def _handoff_facts(dialogue: dict, task: dict) -> list[dict]:
+    """Return only reducer facts with exact client-authored evidence spans."""
+    facts = []
+    for scope, source in (("session", dialogue.get("session") or {}), ("task", task)):
+        for slot, values in (source.get("entities") or {}).items():
+            for fact in values:
+                if isinstance(fact, dict) and fact.get("quote"):
+                    facts.append({'scope': scope, 'slot': slot, 'value': fact.get('value'),
+                                  'quote': fact.get('quote')})
+        for slot in ('parameters', 'goals', 'constraints', 'details'):
+            for fact in source.get(slot) or []:
+                if isinstance(fact, dict) and fact.get("quote"):
+                    facts.append({'scope': scope, 'slot': slot, 'value': fact.get('value'),
+                                  'quote': fact.get('quote')})
+        for slot in ('task_fact', 'operation_evidence', 'symptom', 'error'):
+            fact = source.get(slot)
+            if isinstance(fact, dict) and fact.get("quote"):
+                facts.append({'scope': scope, 'slot': slot, 'value': fact.get('value'),
+                              'quote': fact.get('quote')})
+    return facts
+
+
 class ConversationStore:
     def __init__(self, path: Path = DEFAULT_DB, *, manager: DialogueManager | None = None):
         self.path = Path(path)
@@ -491,6 +513,55 @@ class ConversationStore:
                     (cid,answer_id,event_type,now,d.get('scenario'),d.get('generation_status'),
                      d.get('generation_reason'),retrieval,d.get('retrieval_collection'),status,basis))
             return status
+
+    def handoff_bundle(self, answer_id: int, user_id: int, chat_id: int) -> dict:
+        """Build a read-only specialist packet from an already confirmed request.
+
+        Delivery state lives in the isolated handoff outbox; this accessor does
+        not alter the existing request/event schema or claim that delivery happened.
+        """
+        with self.connect() as db:
+            row = db.execute('''SELECT r.id AS request_id,r.status,r.basis,r.created_at,
+                    r.confirmed_at,r.conversation_id,r.question_message_id,r.answer_message_id,
+                    c.user_id,c.chat_id,q.content AS question,a.content AS answer,a.diagnostics_json
+                FROM support_requests r
+                JOIN conversations c ON c.id=r.conversation_id
+                JOIN messages q ON q.id=r.question_message_id
+                JOIN messages a ON a.id=r.answer_message_id
+                WHERE r.answer_message_id=?''', (answer_id,)).fetchone()
+            if row is None or row['user_id'] != user_id or row['chat_id'] != chat_id:
+                raise ValueError('Support request does not belong to this user and chat')
+            if row['status'] not in {'saved', 'delivered'}:
+                raise ValueError('Support request must be confirmed before delivery')
+            diagnostic = json.loads(row['diagnostics_json'] or '{}')
+            dialogue = diagnostic.get('dialogue_state') or {}
+            task = dialogue.get('task_context') or {}
+
+        history = self.history(row['conversation_id'])
+        # Limit the packet to a concise, task-relevant tail; the Q/A that created
+        # this ticket is kept even if it falls outside the tail.
+        relevant = history[-8:]
+        for item in ({'role': 'user', 'content': row['question']},
+                     {'role': 'assistant', 'content': row['answer']}):
+            if not any(entry['role'] == item['role'] and entry['content'] == item['content']
+                       for entry in relevant):
+                relevant.append(item)
+        return {
+            'ticket_id': f"SR-{row['request_id']:07d}",
+            'request_id': row['request_id'],
+            'conversation_id': row['conversation_id'],
+            'task': {'task_id': task.get('task_id'), 'intent': task.get('intent'), 'operation': task.get('operation'),
+                     'object': task.get('object'), 'task': (task.get('task_fact') or {}).get('value')},
+            'confirmed_facts': _handoff_facts(dialogue, task),
+            'messages': [{'role': item['role'], 'text': item['content']}
+                         for item in relevant if item['role'] in {'user', 'assistant'}],
+            'escalation_reason': row['basis'],
+            'diagnostic_summary': {
+                'scenario': diagnostic.get('scenario'),
+                'reason': diagnostic.get('scenario_reason') or diagnostic.get('generation_reason'),
+            },
+            'status': row['status'],
+        }
 
     def previous_unresolved(self, conversation_id: str, answer_id: int, state: DialogueState) -> bool:
         if state.transition == 'new_task':
