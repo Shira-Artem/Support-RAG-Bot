@@ -12,6 +12,34 @@ from app.dialogue_understanding import (Understanding, UnderstandingError, respo
 from app.source_first_service import SourceFirstService
 
 
+def test_understanding_429_is_bounded_and_provider_body_is_not_persisted(monkeypatch, tmp_path):
+    import app.dialogue_understanding as module
+    import httpx
+    from types import SimpleNamespace
+    from app.groq_rate_limit import GroqRateLimiter
+
+    class FakeClient:
+        async def __aenter__(self): return self
+        async def __aexit__(self, *_args): return False
+        def __init__(self, *_args, **_kwargs): pass
+        async def post(self, *_args, **_kwargs):
+            return httpx.Response(429, json={"error": {"message": "SENSITIVE_PROVIDER_ECHO"}},
+                headers={"retry-after": "3"}, request=httpx.Request("POST", "https://api.groq.com"))
+
+    monkeypatch.setattr(module.httpx, "AsyncClient", FakeClient)
+    monkeypatch.setattr(module, "groq_rate_limiter", GroqRateLimiter(minimum_interval=0, maximum_wait=0))
+    monkeypatch.setattr("app.groq_rate_limit._TRACE", tmp_path / "quota.jsonl")
+    monkeypatch.setattr(module, "_append_local_trace", lambda **data: captured.append(data))
+    captured = []
+    settings = SimpleNamespace(llm_provider="groq", groq_api_key="test-key",
+        groq_model="openai/gpt-oss-20b", groq_reasoning_effort="medium")
+    with pytest.raises(UnderstandingError) as raised:
+        asyncio.run(module.understand_message("Что такое ОФД?", "current", [], DialogueState(), settings))
+    assert raised.value.http_status == 429
+    assert raised.value.retry_after_seconds == 3
+    assert "SENSITIVE_PROVIDER_ECHO" not in str(captured)
+
+
 def payload(text, *, kind="diagnosis", relation="new_task", intent="receipt", operation="diagnose",
             obj="чек", entities=(), unknown=(), specialist=False, specialist_quote=None,
             intent_quote=None, operation_quote=None, object_quote=None, relation_quote=None,
@@ -53,6 +81,16 @@ def test_information_is_explain_and_separates_ofd_from_manufacturer():
     state = DialogueManager().advance(DialogueState(), text, 77, observation=obs)
     assert kind == "information" and state.intent == "general" and state.operation == "explain"
     assert state.entity("manufacturer") is None and state.entity("ofd") is None
+
+
+def test_transliterated_model_name_is_recovered_from_known_brand_alias():
+    text = "АТОЛ 30Ф не передаёт чеки"
+    raw = payload(text, entities=[("Atol 30F", "Atol 30F", "АТОЛ 30Ф")])
+    _, _, _, observation = validate_response(raw, text, 77)
+    equipment = observation.entities.get("equipment", [])
+    assert len(equipment) == 1
+    assert equipment[0].value == "АТОЛ 30Ф"
+    assert equipment[0].quote == "АТОЛ 30Ф"
 
 
 def test_explanation_operation_supplies_generic_intent_when_model_omits_it():

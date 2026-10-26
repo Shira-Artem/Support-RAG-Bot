@@ -218,6 +218,43 @@ def _approved_check_units(text: str, source: str, section: str, *,
         units.append({"unit_id": unit_id, "label": label, "line": line.strip(),
                       "source": source, "section": section, "source_verified": True,
                       "model_scope": model_scope, "model_value": applicable_model})
+    if not units:
+        # Approved procedures are not always formatted as numbered lists.
+        # Bundle each action with all intervening source sentences: conditions
+        # and warnings before an action travel with it; trailing caveats stay
+        # attached to the final action. This preserves order and prevents a
+        # sentence-level ledger unit from stripping its source preconditions.
+        pending_context = []
+        for sentence in statements(text):
+            actionable = (evidence_kind(sentence, section) in {"procedure", "interface"}
+                and re.search(
+                    r"\b(?:откройте|перейдите|зайдите|нажмите|выберите|проверьте|сверьте|"
+                    r"посмотрите|напечатайте|введите|установите|восстановите|передайте|"
+                    r"открой|перейди|зайди|нажми|выбери|проверь|сверь|посмотри)\b",
+                    sentence, re.I))
+            if not actionable:
+                pending_context.append(sentence)
+                continue
+            bundled_text = " ".join([*pending_context, sentence]).strip()
+            pending_context.clear()
+            model_scope = _line_model_scope(bundled_text)
+            applicable_model = (model_value if model_scope and _model_matches_scope(model_value, model_scope)
+                                else None)
+            unit_seed = source + "\0" + section + "\0" + bundled_text
+            if applicable_model:
+                unit_seed += "\0model:" + applicable_model
+            units.append({"unit_id": sha256(unit_seed.encode("utf-8")).hexdigest()[:20],
+                          "label": bundled_text, "line": bundled_text, "source": source,
+                          "section": section, "source_verified": True,
+                          "model_scope": model_scope, "model_value": applicable_model})
+        if pending_context and units:
+            # Keep a source warning after the final action with that action.
+            units[-1]["line"] += " " + " ".join(pending_context)
+            units[-1]["label"] = units[-1]["line"]
+            unit_seed = source + "\0" + section + "\0" + units[-1]["line"]
+            if units[-1]["model_value"]:
+                unit_seed += "\0model:" + units[-1]["model_value"]
+            units[-1]["unit_id"] = sha256(unit_seed.encode("utf-8")).hexdigest()[:20]
     return units
 
 
@@ -590,6 +627,12 @@ class SourceFirstService:
                                         started: float, base: dict) -> Answer:
         """Return one question-focused sentence copied from an approved section."""
         focus = str(decision.get("current_subgoal") or user_message)
+        # A short generic goal such as «что происходит» describes the speech
+        # act, not its subject. Use the exact current message as the evidence
+        # focus in that case; it remains user-provided text and is not promoted
+        # into dialogue facts.
+        if len(content_terms(focus)) < 2:
+            focus = user_message
         history = base.pop("history", [])
         if self.settings.semantic_evidence_selector_enabled:
             from app.semantic_evidence_selector import (
@@ -824,14 +867,23 @@ class SourceFirstService:
         # request to help. Only explicit definition/explanation questions are
         # retrieval-ready; do not convert “help me figure out cash registers”
         # into a technical search or a false evidence failure.
-        broad_explanation = (state.intent == "general" and state.operation == "explain"
+        coordinator_route = decision.get("route") if isinstance(decision, dict) else None
+        coordinator_selected_retrieval = coordinator_route in {"grounded_information", "technical_action"}
+        broad_explanation = (not coordinator_selected_retrieval
+            and state.intent == "general" and state.operation == "explain"
             and not re.search(r"\b(?:что такое|кто такой|что означает|зачем|почему|для чего|как работает|"
                               r"объясни(?:те)?|расскажи(?:те)?)\b",
                               user_message, re.I))
-        incomplete_task = (broad_explanation
-                           or (state.expected and state.expected.slot in {"task", "goal", "details"})
-                           or state.analysis_required
-                           or state.operation == "unknown")
+        # Coordinator is the sole readiness decision when enabled. Rechecking
+        # the same task with SourceFirst's older wording/uncertainty heuristics
+        # created contradictory routes (e.g. coordinator says retrieve while
+        # the service asks for a task). Safety, approved-source and
+        # applicability gates still run after retrieval.
+        incomplete_task = (not coordinator_selected_retrieval and (
+                            broad_explanation
+                            or (state.expected and state.expected.slot in {"task", "goal", "details"})
+                            or state.analysis_required
+                            or state.operation == "unknown"))
         if incomplete_task:
             prior_clarifications = sum(1 for item in (history or [])[:-1]
                 if item.get("role") == "assistant" and item.get("scenario") == "clarify"
@@ -1073,7 +1125,8 @@ class SourceFirstService:
             selected = next((item for item in sections if item["id"] == plan.get("section_id")), None) if isinstance(plan, dict) else None
         except GenerationError as exc:
             error = _generation_error(exc)
-            return self._escalate("Не удалось проверить подходящий раздел источника из-за ошибки модели. Повторите позже или запросите специалиста.",
+            return self._escalate(_provider_unavailable_message(exc,
+                                  "Не удалось проверить подходящий раздел источника из-за ошибки модели. Повторите позже или запросите специалиста."),
                                   "planner_error", json.dumps(error, ensure_ascii=False), started, **base,
                                   generation_status="error", llm_call_attempted=True,
                                   generation_error=error)
@@ -1124,7 +1177,8 @@ class SourceFirstService:
             first_model_scoped = next((unit for unit in source_units if unit["model_scope"]), None)
             confirmed_model = _model_identity(state.task_entity("equipment"),
                                               state.task_entity("manufacturer"))
-            selected_model = _model_identity(selected["scope"].get("model"))
+            selected_model = _model_identity(selected["scope"].get("model"),
+                                             selected["scope"].get("manufacturer"))
             if (not informational and selected_model and confirmed_model
                     and not _model_matches_scope(confirmed_model, [selected_model])):
                 return self._escalate(
@@ -1173,6 +1227,21 @@ class SourceFirstService:
             if unsafe_operation_issue(exact_render):
                 return self._escalate("В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
                                       "unsafe_source_section", "unsafe_operation_in_selected_source", started, **base)
+            # In a reducer-backed technical task, expose one complete
+            # approved check at a time. This keeps preconditions and sentence
+            # order intact while allowing the next turn to record the result
+            # and select the next source-derived check. Non-list prose gets
+            # sentence units from the exact approved section above.
+            prior_units = (state.task_context.shown_units if state.task_context else [])
+            has_shown_for_section = any(unit.get("source") == selected["source"]
+                and unit.get("section") == selected["section"] for unit in prior_units)
+            if (not informational and decision and decision.get("route") == "technical_action"
+                    and source_units and not has_shown_for_section):
+                first_unit = source_units[0]
+                if unsafe_operation_issue(first_unit["line"]):
+                    return self._escalate("Первый проверочный шаг не прошёл safety gate. Запросите специалиста.",
+                        "unsafe_source_check_unit", "first_approved_check_failed_safety", started, **base)
+                exact_render = first_unit["line"]
             if (not informational and decision and decision.get("route") == "technical_action"
                     and state.task_context and state.task_context.procedure_id == selected["document_id"]
                     and state.task_context.shown_units):
@@ -1221,6 +1290,18 @@ class SourceFirstService:
                                 validation_status="exact_approved_next_check",
                                 generation_status="generated",
                                 duration_ms=round((perf_counter()-started)*1000), **base)
+                    if not last_result or last_result.get("status") in {"asked", "unknown", "not_done"}:
+                        model_question = (" и точную модель оборудования"
+                            if selected["scope"].get("manufacturer")
+                            and state.task_entity("manufacturer")
+                            and not state.task_entity("equipment") else "")
+                        return Answer(
+                            "Учитываю новую информацию. Чтобы выбрать следующий шаг по инструкции, уточните, "
+                            "удалось ли выполнить показанную проверку и каков её результат" +
+                            model_question + ".",
+                            scenario="clarify", scenario_reason="progress_ledger_check_result_needed",
+                            clarification_slot="details", generation_status="clarification",
+                            duration_ms=round((perf_counter()-started)*1000), **base)
             attribution = ""
             if informational and any(selected["scope"].get(field) for field in ("service", "manufacturer", "model")):
                 scope_text = ", ".join(f"{label}: {selected['scope'][field]}" for field, label in
@@ -1256,7 +1337,8 @@ class SourceFirstService:
                 except GenerationError as exc:
                     error = _generation_error(exc)
                     return self._escalate(
-                        "Не удалось подготовить краткий ответ по подтверждённому источнику. Повторите позже или запросите специалиста.",
+                        _provider_unavailable_message(exc,
+                            "Не удалось подготовить краткий ответ по подтверждённому источнику. Повторите позже или запросите специалиста."),
                         "information_composition_error", json.dumps(error, ensure_ascii=False), started, **base,
                         generation_status="error", generation_error=error)
                 evidence_text = "\n".join((selected.get("title", ""), selected["section"], body))
@@ -1558,4 +1640,11 @@ class SourceFirstService:
 
 def _generation_error(exc: GenerationError) -> dict:
     return {"stage": exc.stage, "http_status": exc.http_status, "error_type": exc.error_type,
-            "retry_after_seconds": exc.retry_after_seconds, "cause_message": exc.cause_message}
+            "retry_after_seconds": exc.retry_after_seconds, "cause_message": exc.cause_message,
+            "rate_limit_headers": exc.rate_limit_headers}
+
+
+def _provider_unavailable_message(exc: GenerationError, fallback: str) -> str:
+    if exc.http_status == 429 or exc.error_type == "GroqQuotaDeferred":
+        return "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже."
+    return fallback

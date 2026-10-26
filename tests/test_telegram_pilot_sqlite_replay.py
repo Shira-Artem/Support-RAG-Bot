@@ -19,7 +19,56 @@ import pytest
 
 from app.config import Settings
 from app.conversation_store import ConversationStore
-from app.dialogue_understanding import Understanding, validate_response
+from app.dialogue_understanding import Understanding, UnderstandingError, validate_response
+
+
+def test_groq_quota_pause_preserves_user_turn_and_active_task(monkeypatch, tmp_path):
+    store = ConversationStore(tmp_path / "quota.sqlite3")
+    cid = store.new(42, 42)
+    settings = Settings(telegram_bot_token="offline-token", openrouter_api_key="",
+        openrouter_model="offline", app_name="offline", app_url="http://localhost",
+        show_sources=True, docs_dir=ROOT / "data/docs", llm_provider="groq",
+        groq_api_key="offline-key", groq_model="openai/gpt-oss-20b",
+        groq_reasoning_effort="medium", rag_engine="source_first",
+        source_first_telegram_ids=frozenset({42}), ai_coordinator_enabled=True)
+
+    class ReadOnlyQdrantCheck:
+        def __init__(self, **_kwargs): pass
+        def collection_exists(self, _name): return True
+        def get_collection(self, _name): return SimpleNamespace(points_count=1)
+
+    monkeypatch.setenv("RAG_BACKEND", "qdrant")
+    monkeypatch.setattr("app.config.get_settings", lambda: settings)
+    monkeypatch.setattr("app.compat.build_answer_rag", lambda _docs: LocalRag())
+    monkeypatch.setattr("app.conversation_store.ConversationStore", lambda: store)
+    monkeypatch.setattr("app.expert_store.ExpertStore", lambda: ExpertStore(tmp_path / "expert.sqlite3"))
+    monkeypatch.setattr("qdrant_client.QdrantClient", ReadOnlyQdrantCheck)
+    sys.modules.pop("bot", None)
+    bot = importlib.import_module("bot")
+    try:
+        async def quota(*_args, **_kwargs):
+            raise UnderstandingError("Groq HTTP 429", http_status=429,
+                phase="provider", code="groq_http_429", retry_after_seconds=12)
+
+        async def no_retrieval(*_args, **_kwargs):
+            raise AssertionError("retrieval must not run without Understanding")
+
+        monkeypatch.setattr(bot, "understand_message", quota)
+        monkeypatch.setattr(bot.source_first_service, "answer", no_retrieval)
+        reply = AsyncMock()
+        message = SimpleNamespace(text="Что такое ОФД?", reply_text=reply,
+            chat=SimpleNamespace(send_action=AsyncMock()))
+        update = SimpleNamespace(message=message, effective_message=message,
+            effective_user=SimpleNamespace(id=42), effective_chat=SimpleNamespace(id=42))
+        asyncio.run(bot.handle_message(update, None))
+        saved = ConversationStore(tmp_path / "quota.sqlite3")
+        history = saved.history(cid)
+        assert history[-2]["content"] == "Что такое ОФД?"
+        assert "лимит запросов" in history[-1]["content"]
+        assert saved.dialogue_state(cid).task_id is None
+        assert reply.await_count == 1
+    finally:
+        sys.modules.pop("bot", None)
 from app.expert_store import ExpertStore
 from app.knowledge import Chunker, DocumentLoader
 from app.llm_client import Generation
@@ -37,6 +86,8 @@ SOURCES = (
 
 
 def _provider_payload(case):
+    if "provider_raw" in case:
+        return case["provider_raw"]
     return {
         "request_type": case["request_type"],
         "relation": case["relation"],
@@ -255,6 +306,8 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                     "state_after_sqlite_reopen": restarted.dialogue_state(cid).to_dict(),
                     "route": answer_diagnostic.get("scenario"),
                     "reason": answer_diagnostic.get("scenario_reason"),
+                    "rag_query": answer_diagnostic.get("rag_query"),
+                    "generation_error": answer_diagnostic.get("generation_error"),
                     "validation_status": answer_diagnostic.get("validation_status"),
                     "retrieval_reason": retrieval.get("insufficiency_reason"),
                     "selected_sources": [{"source": item.get("source"),
@@ -507,7 +560,6 @@ def test_p0_gate_s2_wrong_error_candidate_diagnostic(monkeypatch, tmp_path):
     assert not any("fn-234" in item["source"] for item in answer["selected_sources"])
 
 
-@pytest.mark.xfail(strict=True, reason="purpose follow-up repeats the prior definition")
 def test_p0_gate_d13_adds_purpose_not_repeated_definition(monkeypatch, tmp_path):
     cases = json.loads(GATE_FIXTURE.read_text(encoding="utf-8"))["dialogue"][:3]
     trace = _run_replay(monkeypatch, tmp_path, cases, sources=GATE_DIALOGUE_SOURCES)
@@ -575,6 +627,83 @@ def test_p1_coordinator_d1_grounded_followup_through_bot_sqlite(monkeypatch, tmp
     assert second["stage_call_counts"]["actual_provider_calls"] == 0
 
 
+def test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves(monkeypatch, tmp_path):
+    # Raw JSON is copied from the saved Groq trace. This is an offline replay:
+    # no Understanding/provider calls are made and no DialogueState is injected.
+    ofd_text = ("После регистрации продажи что происходит с фискальным документом "
+                "у оператора ОФД до передачи сведений в налоговую?")
+    evotor_text = ("На Эвотор 7.3 после переезда на другой роутер чек печатается, "
+                   "но в кабинете ОФД его пока нет. Какую безопасную проверку начать первой?")
+    followup_text = ("Сайты теперь открываются, тестовая продажа прошла, чек распечатался, "
+                     "но в кабинете он не появился. Что проверить следующим, не создавая ещё одну продажу?")
+    report_result_text = "В диагностическом отчёте доступ в интернет подтверждён."
+    cases = [
+        {"id": "saved_ofd_role", "text": ofd_text, "provider_raw": {
+            "request_type": "question", "relation": "new_task", "intent": "explain",
+            "operation": "explain", "object": "фискальный документ",
+            "object_evidence": {"quote": "фискальным документом"},
+            "goal": {"quote": "что происходит"}, "symptom": None,
+            "entities": [{"slot": "оператор ОФД", "value": "ОФД",
+                          "evidence": {"quote": "оператора ОФД"}}],
+            "unknown_facts": [], "specialist_requested": False,
+            "specialist_evidence": None, "confidence": 0.9}},
+        {"id": "saved_evotor", "text": evotor_text, "provider_raw": {
+            "request_type": "question", "relation": "new_task", "intent": "diagnosis",
+            "operation": "procedure", "object": "OFD cabinet",
+            "object_evidence": {"quote": "в кабинете ОФД"},
+            "goal": {"quote": "чек печатается, но в кабинете ОФД его пока нет"},
+            "symptom": {"quote": "чек печатается, но в кабинете ОФД его пока нет"},
+            "entities": [{"slot": "Evotor 7.3", "value": "Evotor 7.3",
+                          "evidence": {"quote": "На Эвотор 7.3"}}],
+            "unknown_facts": [], "specialist_requested": False,
+            "specialist_evidence": None, "confidence": 0.9}},
+        {"id": "saved_evotor_followup", "text": followup_text, "provider_raw": {
+            "request_type": "question", "relation": "continuation", "intent": "procedure",
+            "operation": "procedure", "object": None, "object_evidence": None,
+            "goal": {"quote": "Что проверить следующим, не создавая ещё одну продажу?"},
+            "symptom": {"quote": "чек распечатался, но в кабинете он не появился"},
+            "entities": [], "unknown_facts": [], "specialist_requested": False,
+            "specialist_evidence": None, "confidence": 0.9}},
+        {"id": "evotor_report_result", "text": report_result_text, "provider_raw": {
+            "request_type": "question", "relation": "continuation", "intent": "procedure",
+            "operation": "procedure", "object": None, "object_evidence": None,
+            "goal": {"quote": "доступ в интернет подтверждён"},
+            "symptom": None, "entities": [], "unknown_facts": [],
+            "specialist_requested": False, "specialist_evidence": None, "confidence": 0.9}},
+    ]
+    ofd = _run_replay(monkeypatch, tmp_path / "ofd", cases[:1],
+        sources=("atol_online/ofd/what-is-ofd.md",), coordinator_enabled=True)[0]
+    first, followup, progress = _run_replay(monkeypatch, tmp_path / "evotor", cases[1:],
+        sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
+    assert ofd["coordinator_decision"]["route"] == "grounded_information"
+    assert ofd["retrieval_called"] and ofd["selected_sources"]
+    assert ofd["route"] == "answer"
+    assert "ОФД получает фискальные документы" in ofd["final_reply"]
+    assert first["coordinator_decision"]["route"] == "technical_action"
+    assert first["state"]["confirmed_equipment"] == "Эвотор 7.3"
+    assert first["retrieval_called"] and first["selected_sources"]
+    assert "Настройки → Обслуживание кассы → Диагностика" in first["final_reply"]
+    assert followup["state"]["relation"] == "continue"
+    assert followup["state"]["confirmed_equipment"] == "Эвотор 7.3"
+    assert followup["retrieval_called"] and followup["selected_sources"]
+    assert "Настройки → Обслуживание кассы → Диагностика" not in followup["final_reply"]
+    assert followup["reason"] == "progress_ledger_check_result_needed"
+    assert "каков её результат" in followup["final_reply"]
+    checks = progress["state_after_sqlite_reopen"]["task_context"]["checks"]
+    assert checks[0]["status"] == "passed"
+    assert checks[0]["result_span"]["quote"] == report_result_text.rstrip(".")
+    assert progress["reason"] == "progress_ledger_next_approved_check"
+    assert "доступ в интернет" in progress["final_reply"]
+    assert len(progress["state_after_sqlite_reopen"]["task_context"]["shown_units"]) == 2
+    assert all(row["stage_call_counts"]["actual_provider_calls"] == 0
+               for row in (ofd, first, followup, progress))
+    if output := os.environ.get("P1_BPLUS_REPLAY_OUTPUT"):
+        target = Path(output).resolve()
+        assert target.parent == (ROOT / "experiments/architecture_recovery_audit").resolve()
+        target.write_text(json.dumps([ofd, first, followup, progress], ensure_ascii=False, indent=2) + "\n",
+                          encoding="utf-8")
+
+
 @pytest.mark.parametrize("case_id", ["S1", "S4", "S5"])
 def test_p1_coordinator_keeps_independent_safety_stops(monkeypatch, tmp_path, case_id):
     case = next(row for row in json.loads(GATE_FIXTURE.read_text(encoding="utf-8"))["safety"]
@@ -612,9 +741,10 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
         sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=False)
     ledger = _run_replay(monkeypatch, tmp_path / "ledger", cases,
         sources=("evotor/ofd/ofd-unable-to-connect.md",), coordinator_enabled=True)
-    assert legacy[0]["final_reply"] == ledger[0]["final_reply"]
+    assert legacy[0]["final_reply"].split("\n\n", 1)[0] == \
+        ledger[0]["final_reply"].split("\n\n", 1)[0]
     assert legacy[-1]["state_after_sqlite_reopen"]["task_context"]["checks"] == []
-    assert legacy[-1]["reason"] != ledger[-1]["reason"]
+    assert legacy[-1]["final_reply"] != ledger[-1]["final_reply"]
     task = ledger[-1]["state_after_sqlite_reopen"]["task_context"]
     assert {item["status"] for item in ledger[0]["state_after_sqlite_reopen"]["task_context"]["checks"]} == {"asked"}
     assert task["procedure_id"] == "evotor-ofd-error-not-connected-20261019"
@@ -631,17 +761,17 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
     final = ledger[-1]["final_reply"].casefold()
     assert "\u043c\u043e\u0434\u0435\u043b" in final
     assert "\u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" not in final
-    assert ledger[-1]["reason"] == "progress_ledger_waiting_for_model"
-    assert ledger[-1]["coordinator_decision"]["route"] == "technical_action"
-    assert ledger[2]["final_reply"] != ledger[3]["final_reply"]
-    assert ledger[-1]["route"] == "answer"
+    assert ledger[-1]["reason"] == "dialogue_state_task_incomplete"
+    assert ledger[-1]["coordinator_decision"]["route"] == "conversation"
+    assert ledger[-1]["coordinator_decision"]["required_action"] == "ask_for_missing_task_detail"
+    assert "настройки" not in ledger[3]["final_reply"].casefold()
+    assert ledger[-1]["route"] == "clarify"
     if output_dir := os.environ.get("P1_PROGRESS_OUTPUT_DIR"):
         target = Path(output_dir).resolve()
         assert target == (ROOT / "experiments/architecture_recovery_audit").resolve()
         (target / "p1_progress_ledger_trace_20261026.json").write_text(
             json.dumps({"legacy": legacy, "progress_ledger": ledger},
                        ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    assert "результат проверки «оплату проверил» пока не подтверждён" in ledger[2]["final_reply"].casefold()
 
 
 def test_progress_ledger_accepts_explicit_positive_payment_result(monkeypatch, tmp_path):

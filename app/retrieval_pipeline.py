@@ -329,6 +329,11 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     task_facts = [*([state.task] if state.task else []), *state.goals,
                   *state.constraints, *state.details, *state.parameters]
     task_folded = " ".join(f.value for f in task_facts).casefold().replace("ё", "е")
+    # Explanations are read-only concept questions. They still require
+    # approved, exact evidence, but no service/model/task-category label is a
+    # prerequisite for retrieving a relevant definition.
+    if state.intent == "general" and state.operation == "explain":
+        return None
     if state.object == "ОФД" and state.operation == "explain":
         return "ofd_connection"
     # Resolve the task family from positive subject/context evidence before
@@ -419,6 +424,17 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
         if any(term in task_folded for term in _TASK_TERMS["receipt_transmission"]):
             return "receipt_transmission"
         return None
+    if (state.operation in {"diagnose", "status", "check"}
+            and state.task_entity("manufacturer")
+            and any(term in task_folded for term in ("чек", "фискальный документ"))
+            and any(term in task_folded for term in ("офд", "кабинет оператора", "оператор"))
+            and any(term in task_folded for term in (
+                "не появился", "не поступ", "не отображ", "отсутств", "не дошел", "не дошёл", "нет",
+            ))):
+        # A missing receipt in the operator cabinet is a transmission/status
+        # task. A generic "receipt + search" fallback incorrectly classifies
+        # this diagnostic as receipt_search and rejects transmission guides.
+        return "receipt_transmission"
     explicit_error_code = bool(re.search(r"\b(?:фн|код)\s*-?\d{2,}", task_folded))
     if ((explicit_error_code or ("ошибк" in task_folded and re.search(r"\b\d{2,}\b", task_folded)))
             and state.intent != "receipt"):
@@ -875,8 +891,10 @@ class RetrievalPipeline:
                     and not diagnostic_version_compatible(query, meta)):
                 reasons.append("version_below_reviewed_minimum")
             operation_match = operation_status == "match"
+            explanation_lookup = (expected_task is None and state.intent == "general"
+                                  and state.operation == "explain")
             unscoped_match = (expected_task is None and state.intent != "unknown"
-                              and lexical_overlap >= 0.50)
+                              and lexical_overlap >= (0.25 if explanation_lookup else 0.50))
             unresolved_fallback = False
             if expected_task is None:
                 unresolved_fallback = _unresolved_task_fallback(

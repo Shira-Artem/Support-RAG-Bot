@@ -27,6 +27,9 @@ def write_runtime_receipt(settings, rag, path: Path | None = None) -> dict:
         model=settings.groq_model if settings.llm_provider == 'groq' else settings.openrouter_model,
         reasoning_effort=settings.groq_reasoning_effort if settings.llm_provider == 'groq' else None,
         rag_engine=getattr(settings, 'rag_engine', 'legacy'),
+        ai_coordinator_enabled=bool(getattr(settings, 'ai_coordinator_enabled', False)),
+        semantic_evidence_selector_enabled=bool(getattr(settings, 'semantic_evidence_selector_enabled', False)),
+        handoff_enabled=os.getenv('HANDOFF_ENABLED', '').strip().lower() in {'1', 'true', 'yes'},
         source_first_user_count=len(getattr(settings, 'source_first_telegram_ids', ())),
         source_first_user_ids_sha256=hashlib.sha256(
             ','.join(str(value) for value in sorted(getattr(settings, 'source_first_telegram_ids', ()))).encode()

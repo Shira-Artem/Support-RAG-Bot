@@ -1,6 +1,6 @@
 # Последовательная программа восстановления
 
-Дата: 2026-10-25. Этот документ фиксирует следующий план, **не запускает реализацию**. Статусы этапов сохраняются в [RAG_MASTER_PLAN](../../docs/RAG_MASTER_PLAN.md). Порядок: P0 → ограниченный diagnostic gate → P1 → P2 → P3. Для каждого шага хранить raw/final ответ, stage route/reason, токены и SHA без персональных данных. Сравнивать одинаковые диалоги, а не отдельную фразу об ОФД.
+Дата: 2026-10-25; историческая программа с результатами продолжений до 2026-10-26. Этот документ не является отдельной дорожной картой: статусы и следующий шаг задаются [RAG_MASTER_PLAN](../../docs/RAG_MASTER_PLAN.md), а операционные условия P1 — существующим [v0.3 планом](../../docs/Support_RAG_AI_Coordinator_Plan_v0_3_2026-10-26.md). Порядок: P0 → ограниченный diagnostic gate → P1 → P2 → P3. Для каждого шага хранить raw/final ответ, stage route/reason, токены и SHA без персональных данных. Сравнивать одинаковые диалоги, а не отдельную фразу об ОФД.
 
 > **Обновление 2026-10-26:** после P1.0 ниже прежний P1 план заменён окончательным зависимым планом варианта B. Секции P0/P2/P3 выше сохранены как историческое планирование; актуальные P1 границы, задачи, тесты и критерии — в [P1.0 causal experiment and final P1 plan](p1_0_causal_experiment_20261026.md).
 
@@ -45,3 +45,19 @@
 3. Разделить `information limitation` и `technical procedure` в applicability: дать ответ с явной областью источника и безопасную частичную диагностику Эвотор, не выдавая настройки или модели без подтверждения. Сравнить тот же набор до/после.
 
 **Кратчайший безопасный путь к следующему ручному Telegram-пилоту:** эти три задачи в P0 → полный offline suite + SQLite E2E + отрицательные safety cases → ровно один bounded live-path прогон с лимитом вызовов/токенов → сверка PID/receipt/source SHA/allowlist/коллекции и единственный switch worker только по отдельному разрешённому заданию → ручной пилот на D1–D3 с записью usefulness и safety отдельно. При безопасном, но малополезном результате не заявлять успех; P1 уже выбран как дальнейшее направление.
+
+
+### Stage 4B continuation — result and decision (2026-10-26)
+
+This existing v0.3 plan remains the working plan; no new plan was created. Stage 4B used a new frozen independent holdout plus rubric before model calls, real Groq Understanding, and read-only Stage3 Qdrant. It stopped at 4/8 HTTP attempts due to live TPM quota (1,324 remaining vs 3,092 estimated for the next request). Four Understanding HTTP 200; no decision/planner Groq calls. The trace has local retrieval candidates on two Evotor turns and one selected candidate on the quota-blocked receipt-period turn; Useful 0; QUALITY FAIL 3; SAFETY FAIL 0; provider-blocked 1; destructive safety case unrun. B2/lexical paired quality comparison was incomplete: the Evotor turns had no selected evidence, and the quota-blocked receipt-period turn did not complete downstream evaluation. Usage 3,757 prompt + 4,546 completion = 8,303 tokens; nominal uncached published-rate estimate $0.00165. No retries or 429. Full suite **451 passed, 5 xfailed**. B2 remains off and Telegram pilot NO-GO. Report, trace, rubric and exact next step are in [Stage 4B report](p1_unified_live_gate_20261026b.md), [trace](p1_unified_live_gate_trace_20261026b.json), and [rubric](p1_unified_live_gate_holdout_20261026b.md).
+
+Next work stays within P1: offline diagnose Understanding/coordinator readiness for general information and applicable Evotor next-check behavior on independent fixtures; keep procedures whole and all provenance/safety gates strict. Freeze a new holdout only after offline changes settle; repeat a bounded live gate only with sufficient verified Groq capacity. No B2 production activation, worker switch, or manual Telegram pilot until live usefulness, source checks, and negative safety case pass.
+
+
+### B+ offline continuation synchronized with v0.3 (2026-10-26)
+
+This existing file remains a historical execution program and is subordinate to the canonical master and v0.3; it is not a competing implementation plan. The Stage 4B sentence above was corrected from “no retrieval”: saved `retrieval_diagnostics` confirm local Qdrant search in three turns, but no Evidence Decision/planner/composer Groq request or source SHA validation.
+
+The approved v0.3 continuation [records the B+ route/applicability repair](../../docs/Support_RAG_AI_Coordinator_Plan_v0_3_2026-10-26.md). Root causes: SourceFirst overrode a coordinator-selected information route; Understanding rejected generic diagnosis/procedure aliases and model-as-slot evidence; receipt-search fallback then excluded transmission articles. Fixes make Coordinator the readiness authority on retrieval routes, normalize generic operation aliases, recover models only from exact current-message evidence using the shared brand alias registry, map confirmed missing-receipt operator-cabinet diagnostics to transmission/status, and preserve exact ordered ProgressLedger procedure steps. Independent safety, approved-source, source-integrity and applicability gates remain active.
+
+Saved raw Understanding payloads replayed through `bot.handle_message` and temporary SQLite without Groq. B+ report: [OLD/FIXED causal analysis](p1_bplus_offline_replay_20261026.md); JSON: [fixed replay](p1_bplus_offline_replay_20261026.json). Full suite after final code change: **454 passed, 4 xfailed, 13 warnings**. Live calls remain unrun and unauthorized; B2 remains default-off; live/worker/production NO-GO. Next live proposal and TPM stop rule are in v0.3.

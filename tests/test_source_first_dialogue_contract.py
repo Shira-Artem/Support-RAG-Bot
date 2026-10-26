@@ -15,7 +15,8 @@ from app.source_first_service import (SourceFirstService, _sections, _source_sec
                                      _parse_information_relevance_judgment,
                                      _partial_information_composition,
                                      _scoped_limitation_matches, _generic_preflight,
-                                     _validate_information_composition)
+                                     _validate_information_composition,
+                                     _approved_check_units)
 from app.dialogue_understanding import validate_response
 from app.response_grounding import content_terms
 
@@ -32,6 +33,26 @@ def test_scoped_limitation_requires_direct_subject_and_no_procedure():
     unsafe_mixture = {**limitation, "text": limitation["text"] +
         " Откройте настройки кассы и измените порт подключения."}
     assert not _scoped_limitation_matches(unsafe_mixture, "Можно найти чек по номеру ФН?", state)
+
+
+def test_unlisted_procedure_units_keep_conditions_warnings_and_source_order():
+    source_sentences = [
+        "Перед печатью убедитесь, что крышка принтера закрыта.",
+        "Если на экране показана ошибка, остановитесь и обратитесь к специалисту.",
+        "Откройте меню «Диагностика».",
+        "Затем выберите «Диагностический отчёт».",
+        "Если отчёт не сформирован, не повторяйте продажу и сообщите специалисту.",
+    ]
+    units = _approved_check_units(" ".join(source_sentences), "source.md", "Порядок проверки")
+    assert len(units) == 2
+    assert units[0]["line"] == " ".join(source_sentences[:3])
+    assert units[1]["line"] == " ".join(source_sentences[3:])
+    flattened = " ".join(unit["line"] for unit in units)
+    cursor = 0
+    for sentence in source_sentences:
+        position = flattened.find(sentence, cursor)
+        assert position >= cursor
+        cursor = position + len(sentence)
 
 
 def test_unconfirmed_model_limits_partial_answer_to_independent_preflight():

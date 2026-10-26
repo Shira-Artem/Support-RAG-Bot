@@ -8,6 +8,13 @@ import httpx
 import pytest
 
 import app.llm_client as client
+from app.groq_rate_limit import GroqRateLimiter
+
+
+@pytest.fixture(autouse=True)
+def isolated_groq_quota(monkeypatch, tmp_path):
+    monkeypatch.setattr(client, "groq_rate_limiter", GroqRateLimiter(minimum_interval=0, maximum_wait=0))
+    monkeypatch.setattr("app.groq_rate_limit._TRACE", tmp_path / "groq.jsonl")
 
 
 class _Client:
@@ -47,6 +54,31 @@ def test_success_reports_latency_and_actual_provider_usage(monkeypatch):
     result = asyncio.run(client.generate([], _settings()))
     assert result.duration_ms is not None and result.duration_ms >= 0
     assert (result.prompt_tokens, result.completion_tokens, result.total_tokens) == (11, 7, 18)
+    assert _Client.requests == 1
+
+
+def test_missing_headers_allow_one_bounded_generation_and_next_call(monkeypatch):
+    _Client.requests = 0
+    _Client.response = _response(200, {"choices": [{"message": {"content": "ok"}}],
+                                 "usage": {"prompt_tokens": 2, "completion_tokens": 1, "total_tokens": 3}})
+    monkeypatch.setattr(client.httpx, "AsyncClient", _Client)
+    asyncio.run(client.generate([], _settings()))
+    asyncio.run(client.generate([], _settings()))
+    assert _Client.requests == 2
+
+
+def test_observed_tpm_blocks_next_call_without_http_retry(monkeypatch):
+    _Client.requests = 0
+    _Client.response = _response(200, {"choices": [{"message": {"content": "ok"}}],
+                                 "usage": {"prompt_tokens": 2, "completion_tokens": 1, "total_tokens": 3}},
+                                {"x-ratelimit-remaining-tokens": "2",
+                                 "x-ratelimit-reset-tokens": "30s"})
+    monkeypatch.setattr(client.httpx, "AsyncClient", _Client)
+    asyncio.run(client.generate([], _settings()))
+    with pytest.raises(client.GenerationError) as raised:
+        asyncio.run(client.generate([], _settings()))
+    assert raised.value.error_type == "GroqQuotaDeferred"
+    assert raised.value.retry_after_seconds >= 20
     assert _Client.requests == 1
 
 

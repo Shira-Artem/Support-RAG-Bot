@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,7 @@ import httpx
 from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS, RELATIONS,
                                 DialogueState, Fact, Observation, is_resolution_turn)
 from app.config import Settings
+from app.groq_rate_limit import GroqQuotaDeferred, estimate_tokens, groq_rate_limiter
 
 
 TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
@@ -37,7 +39,8 @@ INTENT_ALIASES = {"definition": "general", "concept": "general",
     "information": "general", "information_request": "general", "provide_info": "general",
     "explain": "general", "explain_operation": "general"}
 OPERATION_ALIASES = {"explanation": "explain", "explain_operation": "explain",
-    "diagnosis": "diagnose", "status_check": "status", "find_receipt": "search",
+    "diagnosis": "diagnose", "procedure": "diagnose", "procedural": "diagnose",
+    "status_check": "status", "find_receipt": "search",
     "search_receipt": "search", "receipt_search": "search", "lookup_receipt": "search",
     "lookup": "search"}
 OBJECT_ALIASES = {"receipt": "чек", "receipts": "чек", "fiscal_receipt": "чек",
@@ -69,7 +72,9 @@ class UnderstandingError(ValueError):
                  structured_response: dict[str, Any] | None = None,
                  field_diagnostics: list[dict[str, Any]] | None = None,
                  provider_error: str | None = None,
-                 phase: str = "validation", code: str = "understanding_error"):
+                 phase: str = "validation", code: str = "understanding_error",
+                 retry_after_seconds: float | None = None,
+                 rate_limit_headers: dict[str, str] | None = None):
         super().__init__(message)
         self.tokens, self.duration_ms, self.model = tokens, duration_ms, model
         self.http_status = http_status
@@ -77,6 +82,8 @@ class UnderstandingError(ValueError):
         self.field_diagnostics = field_diagnostics or []
         self.provider_error = provider_error
         self.phase, self.code = phase, code
+        self.retry_after_seconds = retry_after_seconds
+        self.rate_limit_headers = rate_limit_headers
 
 
 def _fatal_validation(message: str, diagnostics: list[dict[str, Any]], code: str) -> None:
@@ -119,7 +126,15 @@ def _append_local_trace(*, model: str | None, status: str, structured_output: An
         "phase": phase, "error_code": error_code}
     try:
         with path.open("a", encoding="utf-8") as stream:
-            stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+            serialized = json.dumps(record, ensure_ascii=False, default=str)
+            for name in ("GROQ_API_KEY", "TELEGRAM_BOT_TOKEN", "OPENROUTER_API_KEY"):
+                secret = os.getenv(name, "")
+                if len(secret) >= 8:
+                    serialized = serialized.replace(secret, "[REDACTED_SECRET]")
+            serialized = re.sub(r"(?i)(?:gsk_[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{20,}|"
+                r"\d{6,}:[A-Za-z0-9_-]{20,}|Bearer\s+[^\s,;]+)",
+                "[REDACTED_SECRET]", serialized)
+            stream.write(serialized + "\n")
             stream.flush()
     except OSError as exc:
         raise UnderstandingError("local Understanding diagnostic trace is unavailable") from exc
@@ -502,7 +517,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             _field_result(diagnostics, field, "rejected", "invalid_entity_claim_shape")
             continue
         slot, value = item["slot"], item["value"]
-        if not isinstance(slot, str) or slot not in ENTITY_SLOTS or not isinstance(value, str) or not value.strip():
+        if not isinstance(slot, str) or not isinstance(value, str) or not value.strip():
             _field_result(diagnostics, field, "rejected", "invalid_entity_slot_or_value")
             continue
         try:
@@ -510,23 +525,64 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
         except (UnderstandingError, AttributeError, TypeError) as exc:
             _field_result(diagnostics, field, "rejected", str(exc), slot=slot)
             continue
+        # Understanding providers sometimes emit a model as a named entity
+        # (for example slot="Evotor 7.3") rather than using the typed
+        # equipment slot. Accept only a value grounded in the current message;
+        # downstream model applicability still has to match approved metadata.
+        normalized_slot = slot.strip().casefold().replace("-", "_").replace(" ", "_")
+        equipment_claim = (slot in ENTITY_SLOTS and slot == "equipment") or (
+            normalized_slot in {"model", "device", "terminal", "equipment"}
+            or (normalized_slot == value.strip().casefold().replace(" ", "_")
+                and re.search(r"\d", value)))
+        effective_slot = "equipment" if equipment_claim else slot
+        if effective_slot not in ENTITY_SLOTS:
+            _field_result(diagnostics, field, "rejected", "invalid_entity_slot_or_value")
+            continue
         if not _entity_mention_is_asserted(text, evidence):
             _field_result(diagnostics, field, "rejected", "entity_mention_is_negated_or_uncertain",
                           slot=slot, claimed=value, start=evidence.start, end=evidence.end)
             continue
-        if slot == "equipment":
-            canonical = evidence.quote if value.casefold() in evidence.quote.casefold() else None
+        if effective_slot == "equipment":
+            value_match = re.search(re.escape(value.strip()), evidence.quote, re.I)
+            if value_match:
+                canonical = value_match.group(0)
+                equipment_span = _find_span(text, canonical, message_id)
+            else:
+                # Preserve a localized exact model mention when the provider
+                # transliterated its value. Resolve the manufacturer through
+                # the shared alias registry; never infer a model from text
+                # outside this current-message evidence span.
+                localized_model = None
+                for entity_type, canonical_brand, aliases in ENTITY_NAMES:
+                    if entity_type != "manufacturer":
+                        continue
+                    alias_pattern = "(?:" + "|".join(
+                        sorted((re.escape(alias) for alias in aliases), key=len, reverse=True)
+                    ) + ")"
+                    match = re.search(
+                        rf"({alias_pattern})\s+([0-9]+(?:[.,][0-9]+)*[a-zа-яё]?)",
+                        evidence.quote, re.I)
+                    if match:
+                        localized_model = (canonical_brand, match.group(2))
+                        break
+                if localized_model:
+                    brand, model_number = localized_model
+                    canonical = f"{brand} {model_number}"
+                    equipment_span = _find_span(text, canonical, message_id)
+                else:
+                    canonical, equipment_span = None, None
         else:
-            canonical = _canonical_entity_from_quote(slot, evidence.quote)
+            canonical = _canonical_entity_from_quote(effective_slot, evidence.quote)
+            equipment_span = evidence
         if canonical is None:
             _field_result(diagnostics, field, "rejected", "entity_not_supported_by_source_alias",
                           slot=slot, claimed=value, start=evidence.start, end=evidence.end)
             continue
         reason = "exact_source_value" if canonical == value else "normalized_to_known_alias_from_source"
-        entities.setdefault(slot, []).append(Fact.span(text, message_id, evidence.start, evidence.end,
-                                                        value=canonical))
-        _field_result(diagnostics, field, "accepted", reason, slot=slot,
-                      value=canonical, start=evidence.start, end=evidence.end)
+        entities.setdefault(effective_slot, []).append(Fact.span(text, message_id,
+            equipment_span.start, equipment_span.end, value=canonical))
+        _field_result(diagnostics, field, "accepted", reason, slot=effective_slot,
+                      value=canonical, start=equipment_span.start, end=equipment_span.end)
 
     _extract_known_entities(text, message_id, entities, diagnostics)
 
@@ -622,10 +678,27 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
         "messages": [{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
         "response_format": {"type": "json_schema", "json_schema": schema}}
     try:
+        await groq_rate_limiter.before_request(estimate_tokens(request))
+    except GroqQuotaDeferred as exc:
+        _append_local_trace(model=settings.groq_model, status="quota_deferred",
+            structured_output=None, field_diagnostics=[{"field": "$", "status": "rejected",
+                "reason": exc.reason}], tokens=None,
+            duration_ms=round((perf_counter()-started)*1000),
+            request_payload=request, phase="quota", error_code="groq_quota_deferred")
+        raise UnderstandingError("Groq quota temporarily unavailable", model=settings.groq_model,
+            duration_ms=round((perf_counter()-started)*1000), phase="quota",
+            code="groq_quota_deferred", retry_after_seconds=exc.retry_after_seconds) from exc
+    observed = False
+    response = None
+    try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(45, connect=15)) as client:
             response = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=request)
         if response.status_code >= 400:
-            provider_error = response.text[:2000]
+            rate_headers = groq_rate_limiter.observe(response.headers, status=response.status_code,
+                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000))
+            observed = True
+            # The provider body may echo user input or credentials. Retain only typed status.
+            provider_error = f"HTTP {response.status_code}"
             diagnostics = [{"field": "$", "status": "rejected",
                             "reason": f"groq_http_{response.status_code}"}]
             _append_local_trace(model=settings.groq_model, status="provider_http_error",
@@ -636,9 +709,16 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
             raise UnderstandingError(f"Groq HTTP {response.status_code}", duration_ms=round((perf_counter()-started)*1000),
                                      model=settings.groq_model, http_status=response.status_code,
                                      field_diagnostics=diagnostics, provider_error=provider_error,
-                                     phase="provider", code=f"groq_http_{response.status_code}")
+                                     phase="provider", code=f"groq_http_{response.status_code}",
+                                     retry_after_seconds=float(rate_headers["retry-after"])
+                                     if rate_headers.get("retry-after", "").replace(".", "", 1).isdigit() else None,
+                                     rate_limit_headers=rate_headers)
         result = response.json()
         usage = result.get("usage") or {}
+        groq_rate_limiter.observe(response.headers, status=response.status_code,
+            usage=usage if isinstance(usage, dict) else None, stage="understanding",
+            duration_ms=round((perf_counter()-started)*1000))
+        observed = True
         tokens = {key: usage.get(source) for key, source in (("prompt_tokens", "prompt_tokens"),
                   ("completion_tokens", "completion_tokens"), ("total_tokens", "total_tokens"))}
         content = result["choices"][0]["message"]["content"]
@@ -674,6 +754,9 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
     except UnderstandingError:
         raise
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
+        if response is not None and not observed:
+            groq_rate_limiter.observe(response.headers, status=response.status_code,
+                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000))
         phase = "transport" if isinstance(exc, httpx.HTTPError) else "provider_response"
         code = "transport_error" if isinstance(exc, httpx.HTTPError) else "provider_response_malformed"
         diagnostics = [{"field": "$", "status": "rejected", "reason": code}]
@@ -686,6 +769,9 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
             model=locals().get("result", {}).get("model", settings.groq_model),
             field_diagnostics=diagnostics, phase=phase, code=code) from exc
     except Exception as exc:
+        if response is not None and not observed:
+            groq_rate_limiter.observe(response.headers, status=response.status_code,
+                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000))
         diagnostics = [{"field": "$", "status": "rejected", "reason": "unexpected_internal_exception",
                         "error_type": type(exc).__name__}]
         _append_local_trace(model=settings.groq_model, status="internal_error",

@@ -122,3 +122,24 @@ def test_chunker_preserves_explicit_software_and_routing_metadata():
     assert hit.metadata["service"] == "aQsi Online"
     assert hit.metadata["software"] == "1С:УНФ"
     assert hit.metadata["task_category"] == "integration"
+
+
+def test_neighboring_check_routes_remain_distinct_after_bplus_fixes():
+    cabinet = DialogueManager().advance(DialogueState(),
+        "В личном кабинете Платформа ОФД нужно найти чек за вчера", 1)
+    assert _state_task_category(cabinet,
+        "оператор: Платформа ОФД — поиск чека за вчера") == "receipt_search"
+
+    transmission = DialogueManager().advance(DialogueState(),
+        "На Эвотор 7.3 чек печатается, но не передается в ОФД", 2)
+    assert _state_task_category(transmission,
+        "производитель: Эвотор — диагностика: чек не передается в кабинет ОФД") == "receipt_transmission"
+
+    cash_register = DialogueManager().advance(DialogueState(),
+        "Касса не включается и не печатает чеки", 3)
+    assert _state_task_category(cash_register,
+        "диагностика кассы не включается и не печатает") == "error_diagnosis"
+
+    information = DialogueState(intent="general", operation="explain")
+    assert _state_task_category(information,
+        "Что происходит с чеком после регистрации продажи в ОФД?") is None

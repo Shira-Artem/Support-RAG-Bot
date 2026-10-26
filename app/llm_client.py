@@ -8,6 +8,7 @@ import traceback
 import httpx
 
 from app.config import Settings
+from app.groq_rate_limit import GroqQuotaDeferred, estimate_tokens, groq_rate_limiter
 
 
 class GenerationError(RuntimeError):
@@ -18,7 +19,7 @@ class GenerationError(RuntimeError):
                  provider_error_code: str | None = None,
                  provider_error_param: str | None = None,
                  provider_usage: dict | None = None, request_id: str | None = None,
-                 schema_error: str | None = None):
+                 schema_error: str | None = None, rate_limit_headers: dict | None = None):
         super().__init__(message)
         self.http_status = http_status
         self.error_type = error_type
@@ -32,6 +33,7 @@ class GenerationError(RuntimeError):
         self.provider_usage = provider_usage
         self.request_id = request_id
         self.schema_error = schema_error
+        self.rate_limit_headers = rate_limit_headers
 
 
 @dataclass(frozen=True)
@@ -46,13 +48,14 @@ class Generation:
     api_call_id: str | None = None
     finish_reason: str | None = None
     duration_ms: int | None = None
+    rate_limit_headers: dict | None = None
 
 
 def _optional_int(value) -> int | None:
     return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
 
 
-async def generate(messages: list[dict], settings: Settings) -> Generation:
+async def generate(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
     if settings.llm_provider == "groq":
         key, model = settings.groq_api_key, settings.groq_model
         url = "https://api.groq.com/openai/v1/chat/completions"
@@ -71,14 +74,20 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
     if not key:
         raise GenerationError("LLM API key is not configured")
     headers["Authorization"] = f"Bearer {key}"
+    request = {"model": model, "messages": messages, "temperature": 0.2, **token_limit}
+    if settings.llm_provider == "groq":
+        try:
+            await groq_rate_limiter.before_request(estimate_tokens(request))
+        except GroqQuotaDeferred as exc:
+            raise GenerationError("Groq quota temporarily unavailable", error_type=type(exc).__name__,
+                                  retry_after_seconds=exc.retry_after_seconds, stage=call_stage,
+                                  cause_message=exc.reason) from exc
     stage = "provider_request"
     started = perf_counter()
     response = None
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=15)) as client:
-            response = await client.post(url, headers=headers, json={
-                "model": model, "messages": messages, "temperature": 0.2, **token_limit,
-            })
+            response = await client.post(url, headers=headers, json=request)
         stage = "http_status"
         response.raise_for_status()
         stage = "decode_json"
@@ -102,6 +111,11 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
             prompt_details = {}
         if not isinstance(completion_details, dict):
             completion_details = {}
+        rate_headers = (groq_rate_limiter.observe(getattr(response, "headers", {}),
+                        status=getattr(response, "status_code", None),
+                        usage=usage, stage=call_stage,
+                        duration_ms=round((perf_counter() - started) * 1000))
+                        if settings.llm_provider == "groq" else None)
         return Generation(
             text=content.strip(), model=data.get("model") or model,
             prompt_tokens=_optional_int(usage.get("prompt_tokens")),
@@ -112,6 +126,7 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
             api_call_id=data.get("id") if isinstance(data.get("id"), str) else None,
             finish_reason=choice.get("finish_reason") if isinstance(choice.get("finish_reason"), str) else None,
             duration_ms=round((perf_counter() - started) * 1000),
+            rate_limit_headers=rate_headers,
         )
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
         # Provider response bodies may contain sensitive data; never expose them.
@@ -119,6 +134,9 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
         status = getattr(response, "status_code", None) if response is not None else None
         retry_after = None
         response_headers = getattr(response, "headers", {}) if response is not None else {}
+        rate_headers = (groq_rate_limiter.observe(response_headers, status=status, usage=None,
+                        stage=call_stage, duration_ms=round((perf_counter() - started) * 1000))
+                        if settings.llm_provider == "groq" else None)
         if response_headers:
             try:
                 value = float(response_headers.get('retry-after', ''))
@@ -173,4 +191,5 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
             provider_usage=provider_usage,
             request_id=(response_headers.get("x-request-id") or response_headers.get("request-id")) if response_headers else None,
             schema_error=schema_error,
+            rate_limit_headers=rate_headers,
         ) from exc

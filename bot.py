@@ -280,6 +280,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     conversation_id = state["conversation_id"] or conversations.new(user_id, chat_id)
     use_source_first = should_use_source_first(settings, user_id)
     use_ai_coordinator = should_use_ai_coordinator(settings, user_id)
+    understanding_error = None
     if use_source_first:
         previous_state = conversations.dialogue_state(conversation_id)
         previous_history = conversations.history(conversation_id)
@@ -293,6 +294,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 "http_status": exc.http_status, "tokens": exc.tokens,
                 "duration_ms": exc.duration_ms, "model": exc.model,
                 "phase": exc.phase, "error_code": exc.code,
+                "retry_after_seconds": exc.retry_after_seconds,
+                "rate_limit_headers": exc.rate_limit_headers,
                 "structured_response": exc.structured_response,
                 "field_diagnostics": exc.field_diagnostics,
                 "provider_error": exc.provider_error}
@@ -306,12 +309,27 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         message_id = conversations.begin(conversation_id, user_text)
     dialogue_state = conversations.dialogue_state(conversation_id)
     coordinator_decision = None
-    if use_ai_coordinator:
+    quota_deferred = bool(understanding_error and (
+        understanding_error.get("http_status") == 429 or
+        understanding_error.get("error_code") == "groq_quota_deferred"))
+    if use_ai_coordinator and not quota_deferred:
         current_event = next((item for item in reversed(conversations.history(conversation_id))
                               if item.get("role") == "user" and item.get("content") == user_text), {})
         coordinator_decision = coordinate(current_event.get("understanding"), dialogue_state)
     try:
-        if use_source_first:
+        if quota_deferred:
+            answer = Answer(
+                "Сейчас достигнут лимит запросов к модели. Переписка сохранена; "
+                "повторите вопрос немного позже.", rag_engine="source_first",
+                generation_status="error", generation_reason="groq_quota_deferred",
+                scenario="clarify", scenario_reason="groq_quota_deferred",
+                provider="groq", model=settings.groq_model,
+                dialogue_state=dialogue_state.to_dict(),
+                generation_error={"stage": "understanding",
+                    "http_status": understanding_error.get("http_status"),
+                    "retry_after_seconds": understanding_error.get("retry_after_seconds"),
+                    "rate_limit_headers": understanding_error.get("rate_limit_headers")})
+        elif use_source_first:
             answer = await source_first_service.answer(
                 user_text, state=dialogue_state, history=conversations.history(conversation_id),
                 coordinator_decision=coordinator_decision)

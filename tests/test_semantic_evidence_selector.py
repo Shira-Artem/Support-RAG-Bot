@@ -73,6 +73,23 @@ def test_informational_units_split_facts_from_procedure_but_keep_procedure_intac
     assert "1. Откройте" in procedural[0].text and "2. Сохраните" in procedural[0].text
 
 
+def test_exact_section_validation_accepts_markdown_soft_line_breaks(tmp_path):
+    source, item, _ = _fixture(tmp_path,
+        "ОФД получает документы от\nзарегистрированной ККТ и передаёт их в ФНС.")
+    digest = sha256(source.read_bytes()).hexdigest()
+    unit = selector_module.EvidenceUnit(
+        id="ev-markdown-wrap", document_id="demo-doc", source="approved.md",
+        source_sha256=digest, section="Раздел", position=1,
+        text="ОФД получает документы от зарегистрированной ККТ и передаёт их в ФНС.",
+        kind="sentence", scope={"status": "approved", "service": "Платформа ОФД"},
+        approved=True, role="fact")
+    decision = EvidenceDecision("select", (unit.id,), None, "direct_evidence", "test")
+    selected, reason = validate_selected_units(decision, [unit], _state(),
+                                               tmp_path, informational=True)
+    assert reason is None
+    assert selected == [unit]
+
+
 def test_questions_and_markdown_headers_never_become_selectable_answers(tmp_path):
     body = ("Что такое услуга?\n"
             "Сервис обрабатывает переданные документы.\n"
@@ -265,11 +282,16 @@ def test_saved_procedure_cassette_cannot_detach_route_or_conditions():
 
 
 def test_feature_flagged_source_first_renders_only_verified_selected_sentence(monkeypatch, tmp_path):
-    source, item, units = _fixture(tmp_path, "ОФД получает фискальные документы и передаёт их в ФНС.", service="АТОЛ Онлайн")
+    source, item, _ = _fixture(tmp_path,
+        "ОФД получает фискальные документы, обрабатывает их и передаёт в ФНС.\n"
+        "Для обычных сценариев облачной кассы нужен договор и действующий тариф ОФД.\n"
+        "При отсутствии чеков проверьте статус ККТ и очередь передачи.",
+        service="АТОЛ Онлайн")
+    units = build_evidence_units([item], informational=True)
     async def fake_select(question, state, history, candidates, settings, *, current_subgoal=None):
         assert question == "Какова роль оператора?"
         assert current_subgoal == "Какова роль оператора?"
-        assert len(candidates) == len(units)
+        assert [unit.kind for unit in candidates] == ["sentence", "sentence"]
         return (EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "{}"),
                 Generation("{}", "offline", 2, 3, 5))
     monkeypatch.setattr(selector_module, "select_evidence", fake_select)
@@ -280,6 +302,8 @@ def test_feature_flagged_source_first_renders_only_verified_selected_sentence(mo
         {"retrieval_diagnostics": {}}))
     assert result.validation_status == "verified_approved_evidence_ids"
     assert "ОФД получает фискальные документы" in result.text
+    assert "проверьте статус" not in result.text
+    assert result.retrieval_diagnostics["semantic_evidence_selector"]["selected_ids_verified"] == [units[0].id]
     assert "Область источника: АТОЛ Онлайн." in result.text
     assert result.llm_call_attempted is True
     assert result.retrieval_diagnostics["semantic_evidence_selector"]["source_sha_verified"] is True

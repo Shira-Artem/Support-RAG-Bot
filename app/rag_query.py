@@ -96,7 +96,24 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
     if state.constraints:
         parts.append("ограничения: " + "; ".join(f.value for f in state.constraints))
     if state.details:
-        parts.append("уточнение клиента: " + "; ".join(f.value for f in state.details))
+        # Reducer facts can overlap when one provider span is recorded both as
+        # a whole reply and as its narrower goal/lead-in. Keep the longest
+        # exact spans once; repeated history must not push an otherwise valid
+        # follow-up over the retrieval character budget.
+        detail_values = list(dict.fromkeys(f.value for f in state.details))
+        normalized_details = [re.sub(r"\s+", " ", value).casefold().replace("ё", "е").strip()
+                              for value in detail_values]
+        anchors = [re.sub(r"\s+", " ", fact.value).casefold().replace("ё", "е").strip()
+                   for fact in [*([state.task] if state.task else []), *state.goals,
+                                *state.constraints, *state.parameters]]
+        retained_details = [value for index, value in enumerate(detail_values)
+            if not any(index != other and normalized_details[index] in normalized_details[other]
+                       and normalized_details[index] != normalized_details[other]
+                       for other in range(len(detail_values)))
+            and not any(anchor in normalized_details[index] or normalized_details[index] in anchor
+                        for anchor in anchors)]
+        if retained_details:
+            parts.append("уточнение клиента: " + "; ".join(retained_details))
     if state.parameters:
         label = "параметры текущего поиска" if state.operation == "search" else "параметры клиента"
         parts.append(label + ": " + "; ".join(f.value for f in state.parameters))

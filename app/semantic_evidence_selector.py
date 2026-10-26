@@ -52,6 +52,11 @@ def _markdown_sections(body: str) -> list[tuple[str, str]]:
     return sections
 
 
+def _whitespace_normalized(text: str) -> str:
+    """Normalize Markdown line wrapping without relaxing source-text matching."""
+    return re.sub(r"\s+", " ", text).strip()
+
+
 @dataclass(frozen=True)
 class EvidenceUnit:
     id: str
@@ -230,7 +235,8 @@ def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit
             return [], "source_not_approved"
         section_body = next((text for heading, text in _markdown_sections(body)
                              if heading == unit.section), None)
-        if not section_body or unit.text not in section_body:
+        if (not section_body
+                or _whitespace_normalized(unit.text) not in _whitespace_normalized(section_body)):
             return [], "selected_text_not_in_exact_section"
         if not informational:
             for field, slot in (("service", "service"), ("manufacturer", "manufacturer"),
