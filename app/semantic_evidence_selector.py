@@ -126,7 +126,7 @@ def evidence_role(text: str) -> Literal["fact", "question", "header", "context"]
     return "fact"
 
 
-def build_evidence_units(sections: list[dict]) -> list[EvidenceUnit]:
+def build_evidence_units(sections: list[dict], *, informational: bool = False) -> list[EvidenceUnit]:
     """Make stable IDs from immutable source identity and sentence position.
 
     A section containing procedural/interface steps is emitted as one ordered
@@ -145,13 +145,22 @@ def build_evidence_units(sections: list[dict]) -> list[EvidenceUnit]:
         sentences = [re.sub(r"\s+", " ", s).strip() for s in statements(body)]
         sentences = [(position, sentence, evidence_role(sentence))
                      for position, sentence in enumerate((s for s in sentences if s), start=1)]
-        # Treat every procedural section as an indivisible evidence block.
-        procedural = any(role in {"fact", "context"}
-                         and evidence_kind(sentence, section) in {"procedure", "interface"}
-                         for _, sentence, role in sentences)
-        parts = [(1, "procedure_block", "procedure_block", body.strip())] if procedural else [
-            (position, "sentence", role, sentence)
-            for position, sentence, role in sentences if role in {"fact", "context"}]
+        if informational:
+            # Information answers can select exact fact/limitation sentences
+            # from mixed sections. Never turn a procedure or UI instruction
+            # into a detachable sentence just because adjacent facts are useful.
+            parts = [(position, "sentence", role, sentence)
+                     for position, sentence, role in sentences
+                     if role in {"fact", "context"}
+                     and evidence_kind(sentence, section) not in {"procedure", "interface"}]
+        else:
+            # Treat every procedural section as an indivisible evidence block.
+            procedural = any(role in {"fact", "context"}
+                             and evidence_kind(sentence, section) in {"procedure", "interface"}
+                             for _, sentence, role in sentences)
+            parts = [(1, "procedure_block", "procedure_block", body.strip())] if procedural else [
+                (position, "sentence", role, sentence)
+                for position, sentence, role in sentences if role in {"fact", "context"}]
         section_units = []
         for position, kind, role, text in parts:
             digest_input = "\0".join((source_hash, doc_id, section, str(position), kind))

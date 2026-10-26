@@ -48,6 +48,31 @@ def test_evidence_ids_are_stable_and_procedure_is_indivisible(tmp_path):
     assert "1. Откройте" in first[0].text and "2. Выберите" in first[0].text
 
 
+def test_informational_units_split_facts_from_procedure_but_keep_procedure_intact(tmp_path):
+    text = ("ОФД получает документы и передаёт их в ФНС.\n"
+            "Важно: статус очереди не подтверждает успешную передачу.\n"
+            "При отсутствии чеков проверьте статус очереди передачи.\n"
+            "1. Откройте раздел диагностики.\n2. Сохраните отчёт.")
+    _, item, _ = _fixture(tmp_path, text)
+    informational = build_evidence_units([item], informational=True)
+    assert [unit.text for unit in informational] == [
+        "ОФД получает документы и передаёт их в ФНС.",
+        "Важно: статус очереди не подтверждает успешную передачу.",
+    ]
+    assert all(unit.kind == "sentence" for unit in informational)
+    decision = EvidenceDecision("select", (informational[0].id,), None,
+                                "direct_evidence", "test")
+    selected, reason = validate_selected_units(decision, informational, _state(),
+                                               tmp_path, informational=True)
+    assert reason is None
+    assert [unit.text for unit in selected] == [informational[0].text]
+
+    procedural = build_evidence_units([item])
+    assert len(procedural) == 1
+    assert procedural[0].kind == "procedure_block"
+    assert "1. Откройте" in procedural[0].text and "2. Сохраните" in procedural[0].text
+
+
 def test_questions_and_markdown_headers_never_become_selectable_answers(tmp_path):
     body = ("Что такое услуга?\n"
             "Сервис обрабатывает переданные документы.\n"

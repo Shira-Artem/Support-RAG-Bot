@@ -594,7 +594,7 @@ class SourceFirstService:
         if self.settings.semantic_evidence_selector_enabled:
             from app.semantic_evidence_selector import (
                 build_evidence_units, select_evidence, validate_selected_units)
-            units = build_evidence_units(sections)
+            units = build_evidence_units(sections, informational=True)
             if not units:
                 return self._escalate("В найденном approved-разделе нет проверяемых фрагментов ответа. Запросите специалиста.",
                     "semantic_selector_no_evidence_units", "no_bounded_evidence_units", started, **base)

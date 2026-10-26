@@ -174,7 +174,8 @@ async def _run(settings, progress: dict, *, resume: bool = False) -> dict:
                 lexical_match = _focused_approved_sentence(sections, focus)
                 lexical_text = lexical_match[1] if lexical_match else None
                 lexical_ms = round((perf_counter() - lexical_start) * 1000)
-                units = build_evidence_units(sections)
+                informational = state.intent == "general" and state.operation == "explain"
+                units = build_evidence_units(sections, informational=informational)
                 groq_calls += 1
                 selector_calls += 1
                 progress.update(groq_calls=groq_calls, selector_calls=selector_calls)
@@ -228,7 +229,6 @@ async def _run(settings, progress: dict, *, resume: bool = False) -> dict:
                     if isinstance(getattr(generation, attr), int):
                         usage[key] += getattr(generation, attr)
                 progress.update(usage=usage)
-                informational = state.intent == "general" and state.operation == "explain"
                 selected, rejection = validate_selected_units(semantic_decision, units, state, root,
                                                                 informational=informational)
                 semantic_text = " ".join(unit.text for unit in selected) if selected else None
