@@ -1,0 +1,15 @@
+{
+  "raw_rrf_score": "unchanged current hybrid RRF",
+  "task_category": "match +0.020; unlabeled -0.004; explicit mismatch -0.012",
+  "operation": "match +0.012; unlabeled/incompatible but not explicit -0.003; explicit mismatch -0.010",
+  "hard_rejects": [
+    "status != approved",
+    "unsafe query",
+    "explicit service conflict",
+    "explicit manufacturer conflict",
+    "explicit model conflict",
+    "procedure_service conflict",
+    "exact code/version conflict"
+  ],
+  "notes": "Fixed analytic weights selected before outcomes; not tuned; no production pipeline changes."
+}

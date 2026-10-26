@@ -1,0 +1,222 @@
+{
+  "access": {
+    "n_turns": 25,
+    "n_answerable": 13,
+    "raw": {
+      "n_answerable": 13,
+      "R@1": 0.23076923076923078,
+      "R@3": 0.6153846153846154,
+      "R@5": 0.6153846153846154
+    },
+    "filtered": {
+      "n_answerable": 13,
+      "R@1": 0.7692307692307693,
+      "R@3": 0.9230769230769231,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 13,
+      "R@1": 0.6923076923076923,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "cash_list": {
+    "n_turns": 4,
+    "n_answerable": 1,
+    "raw": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "receipt_search": {
+    "n_turns": 4,
+    "n_answerable": 4,
+    "raw": {
+      "n_answerable": 4,
+      "R@1": 0.5,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 4,
+      "R@1": 0.75,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 4,
+      "R@1": 0.75,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "fiscal_drive_search": {
+    "n_turns": 1,
+    "n_answerable": 1,
+    "raw": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 0.0
+    },
+    "filtered": {
+      "n_answerable": 1,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 0.0
+    }
+  },
+  "error_diagnosis": {
+    "n_turns": 4,
+    "n_answerable": 3,
+    "raw": {
+      "n_answerable": 3,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 3,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 3,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "cash_reports": {
+    "n_turns": 8,
+    "n_answerable": 7,
+    "raw": {
+      "n_answerable": 7,
+      "R@1": 0.8571428571428571,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 7,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 7,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "cash_search": {
+    "n_turns": 1,
+    "n_answerable": 1,
+    "raw": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 0.0
+    },
+    "filtered": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 0.0
+    },
+    "soft": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "<unclassified>": {
+    "n_turns": 4,
+    "n_answerable": 2,
+    "raw": {
+      "n_answerable": 2,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 2,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "soft": {
+      "n_answerable": 2,
+      "R@1": 1.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "bank_statement": {
+    "n_turns": 2,
+    "n_answerable": 2,
+    "raw": {
+      "n_answerable": 2,
+      "R@1": 0.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 2,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 0.0
+    },
+    "soft": {
+      "n_answerable": 2,
+      "R@1": 0.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    }
+  },
+  "model_features": {
+    "n_turns": 1,
+    "n_answerable": 1,
+    "raw": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 1.0,
+      "R@5": 1.0
+    },
+    "filtered": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 0.0
+    },
+    "soft": {
+      "n_answerable": 1,
+      "R@1": 0.0,
+      "R@3": 0.0,
+      "R@5": 1.0
+    }
+  }
+}

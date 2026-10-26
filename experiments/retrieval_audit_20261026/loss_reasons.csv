@@ -1,0 +1,5 @@
+﻿query_id,question,gold_document_id,raw_rank,filtered_rank,cause,filter_reasons,gold_section
+m0113,У меня есть только номер ФН кассы. Получится найти чек напрямую по нему?,platformaofd-lkk-receipt-search,8,,filtered_by_task,task_mismatch:receipt_search!=cash_search,Ограничения
+m0119,У нас 1С:Бухгалтерия 8 редакция 3.0.150 и подключён 1С:ДиректБанк. Можно загружать выписки сразу по нескольким счетам?,batch-20261013-bank-directbank-all-accounts,2,,filtered_by_operation,operation_mismatch:connect,Подтверждённая возможность
+m0121,Где вообще находится список банковских выписок?,batch-20261013-bank-directbank-all-accounts,2,,filtered_by_operation,operation_mismatch:connect,Безопасная диагностика
+m0125,"Касса Эвотор, но точную модель и версию модуля пока не знаю. Что тебе нужно сообщить?",evotor-tspiot-localmodule-20261019,2,,filtered_by_task,task_mismatch:tspiot!=model_features,Безопасная проверка

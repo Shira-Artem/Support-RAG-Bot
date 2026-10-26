@@ -1,0 +1,24 @@
+{
+  "audit_date": "2026-10-26",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "endpoint": "http://127.0.0.1:6333",
+  "collection_status": "green",
+  "points_count": 934,
+  "documents_count": 269,
+  "vector_size": 384,
+  "distance": "Cosine",
+  "status_point_counts": {
+    "approved": 672,
+    "draft": 262
+  },
+  "effective_dotenv_collection": "knowledge_organized_stage2_20261022",
+  "target_collection_explicit_override": true,
+  "qdrant_operations": [
+    "get_collection",
+    "count",
+    "scroll"
+  ],
+  "qdrant_writes": 0,
+  "groq_calls": 0,
+  "embedding_network_access": "disabled for subsequent local embedding run"
+}

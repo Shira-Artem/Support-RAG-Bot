@@ -1,0 +1,153 @@
+{
+  "gold_file_sha256": "e10d518bd6ccc40f94fa1ed767cb1856b0678ce4f204d0ad179fc63eaf285633",
+  "n_query_turns": 54,
+  "n_distinct_exact_question_strings": 45,
+  "gold_answerable_rows": 35,
+  "no_approved_evidence_rows": 19,
+  "metrics": [
+    {
+      "method": "raw",
+      "turn_level": {
+        "R@1": 0.45714285714285713,
+        "R@3": 0.7714285714285715,
+        "R@5": 0.8,
+        "n_answerable": 35
+      },
+      "exact_text_unique": {
+        "R@1": 0.4482758620689655,
+        "R@3": 0.7241379310344828,
+        "R@5": 0.7586206896551724,
+        "n_answerable": 29
+      },
+      "question_state_unique": {
+        "n_answerable": 29,
+        "R@1": 0.4482758620689655,
+        "R@3": 0.7241379310344828,
+        "R@5": 0.7586206896551724
+      }
+    },
+    {
+      "method": "filtered",
+      "turn_level": {
+        "R@1": 0.7428571428571429,
+        "R@3": 0.8571428571428571,
+        "R@5": 0.8857142857142857,
+        "n_answerable": 35
+      },
+      "exact_text_unique": {
+        "R@1": 0.7241379310344828,
+        "R@3": 0.8275862068965517,
+        "R@5": 0.8620689655172413,
+        "n_answerable": 29
+      },
+      "question_state_unique": {
+        "n_answerable": 29,
+        "R@1": 0.7241379310344828,
+        "R@3": 0.8275862068965517,
+        "R@5": 0.8620689655172413
+      }
+    },
+    {
+      "method": "soft",
+      "turn_level": {
+        "R@1": 0.6857142857142857,
+        "R@3": 0.9428571428571428,
+        "R@5": 0.9714285714285714,
+        "n_answerable": 35
+      },
+      "exact_text_unique": {
+        "R@1": 0.6551724137931034,
+        "R@3": 0.9310344827586207,
+        "R@5": 0.9655172413793104,
+        "n_answerable": 29
+      },
+      "question_state_unique": {
+        "n_answerable": 29,
+        "R@1": 0.6551724137931034,
+        "R@3": 0.9310344827586207,
+        "R@5": 0.9655172413793104
+      }
+    }
+  ],
+  "section_metrics": [
+    {
+      "method": "raw",
+      "turn_level": {
+        "R@1": 0.34285714285714286,
+        "R@3": 0.7142857142857143,
+        "R@5": 0.7428571428571429,
+        "n_answerable": 35
+      },
+      "exact_text_unique": {
+        "R@1": 0.3448275862068966,
+        "R@3": 0.6896551724137931,
+        "R@5": 0.7241379310344828,
+        "n_answerable": 29
+      }
+    },
+    {
+      "method": "filtered",
+      "turn_level": {
+        "R@1": 0.45714285714285713,
+        "R@3": 0.6857142857142857,
+        "R@5": 0.7714285714285715,
+        "n_answerable": 35
+      },
+      "exact_text_unique": {
+        "R@1": 0.41379310344827586,
+        "R@3": 0.6551724137931034,
+        "R@5": 0.7586206896551724,
+        "n_answerable": 29
+      }
+    },
+    {
+      "method": "soft",
+      "turn_level": {
+        "R@1": 0.5142857142857142,
+        "R@3": 0.6571428571428571,
+        "R@5": 0.6571428571428571,
+        "n_answerable": 35
+      },
+      "exact_text_unique": {
+        "R@1": 0.4827586206896552,
+        "R@3": 0.6551724137931034,
+        "R@5": 0.6551724137931034,
+        "n_answerable": 29
+      }
+    }
+  ],
+  "raw_section_recall_at5": 0.7428571428571429,
+  "qdrant_collection": "knowledge_stage3_retrieval_20261022",
+  "qdrant_point_count": 934,
+  "approved_only": true,
+  "qdrant_scroll_requests": 4,
+  "dense_query_requests": 54,
+  "qdrant_writes": 0,
+  "groq_calls": 0,
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_mode": "local / HF_HUB_OFFLINE=1",
+  "approved_metadata_point_coverage": {
+    "task_category_present": 672,
+    "operations_present": 672,
+    "service_present": 672,
+    "software_missing": 574,
+    "manufacturer_present": 593,
+    "model_present": 539,
+    "procedure_service_missing": 666,
+    "software_present": 98,
+    "manufacturer_missing": 79,
+    "model_missing": 133,
+    "procedure_service_present": 6
+  },
+  "status_document_counts": {
+    "approved": 206,
+    "draft": 63
+  },
+  "filter_rejection_reasons": {
+    "task_mismatch:receipt_search!=cash_search": 1,
+    "operation_mismatch:connect": 2,
+    "task_mismatch:tspiot!=model_features": 1
+  },
+  "method": "Current app.Retriever (top100 approved, exact identifiers and brand/model guards) + current RetrievalPipeline; soft ranking is analytic and preserves all hard safety/applicability/entity/code gates.",
+  "n_unique_question_state_tuples": 45
+}
