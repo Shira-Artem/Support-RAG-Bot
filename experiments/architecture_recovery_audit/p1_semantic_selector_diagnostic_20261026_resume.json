@@ -1,0 +1,313 @@
+{
+  "status": "COMPLETED",
+  "created_at_utc": "2026-10-26T06:19:58.360639+00:00",
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "source_trace": "experiments/architecture_recovery_audit/p1_semantic_selector_ab_20261026.json",
+  "dev_cassette": "experiments/architecture_recovery_audit/p1_semantic_selector_dev_cassettes_20261026.json",
+  "holdout_cassette": "experiments/architecture_recovery_audit/p1_semantic_selector_holdout_cassettes_20261026.json",
+  "understanding_calls": 0,
+  "qdrant_writes": 0,
+  "automatic_retries": 0,
+  "decision_call_limit": 4,
+  "decision_calls": 1,
+  "start_case_index": 3,
+  "usage": {
+    "prompt_tokens": 2530,
+    "completion_tokens": 203,
+    "total_tokens": 2733
+  },
+  "turns": [
+    {
+      "split": "HOLDOUT",
+      "question": "А за прошлый месяц?",
+      "understanding_raw": {
+        "request_type": "clarification",
+        "relation": "clarification_answer",
+        "intent": "search",
+        "operation": "search",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "understanding_validated": {
+        "request_type": "instruction",
+        "specialist_requested": false,
+        "unknown_facts": [],
+        "tokens": {
+          "prompt_tokens": 984,
+          "completion_tokens": 1131,
+          "total_tokens": 2115
+        },
+        "model": "openai/gpt-oss-20b",
+        "duration_ms": 1707,
+        "validation_diagnostics": [
+          {
+            "field": "relation",
+            "status": "accepted",
+            "reason": "normalized_semantic_alias",
+            "value": "answer_to_clarification"
+          },
+          {
+            "field": "intent",
+            "status": "rejected",
+            "reason": "unsupported_value_defaulted_to_unknown",
+            "value": "unknown"
+          },
+          {
+            "field": "operation",
+            "status": "accepted",
+            "reason": "valid_semantic_classification",
+            "value": "search"
+          },
+          {
+            "field": "confidence",
+            "status": "accepted",
+            "reason": "valid_confidence",
+            "value": 0.9
+          },
+          {
+            "field": "request_type",
+            "status": "accepted",
+            "reason": "derived_from_valid_task_operation",
+            "value": "instruction",
+            "raw_value": "clarification"
+          },
+          {
+            "field": "unknown_facts",
+            "status": "omitted",
+            "reason": "no_unknown_slots_claimed"
+          },
+          {
+            "field": "object_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "object",
+            "status": "omitted",
+            "reason": "no_object_claimed"
+          },
+          {
+            "field": "specialist_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "specialist_requested",
+            "status": "accepted",
+            "reason": "not_requested"
+          },
+          {
+            "field": "entities",
+            "status": "omitted",
+            "reason": "no_entity_claims"
+          },
+          {
+            "field": "goal",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "symptom",
+            "status": "omitted",
+            "reason": "not_claimed"
+          }
+        ],
+        "observation": {
+          "intent": "unknown",
+          "operation": "search",
+          "object": null,
+          "relation": "answer_to_clarification",
+          "confidence": 0.9,
+          "intent_evidence": null,
+          "operation_evidence": null,
+          "object_evidence": null,
+          "relation_evidence": null,
+          "symptom": null,
+          "goals": [],
+          "unknown_facts": {},
+          "entities": {}
+        }
+      },
+      "coordinator_decision": null,
+      "state": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "ofd": [
+              {
+                "value": "Платформа ОФД",
+                "message_id": 1,
+                "quote": "Платформе ОФД",
+                "start": 12,
+                "end": 25
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "ofd",
+            "fact": {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "operation": "search",
+          "object": null,
+          "entities": {
+            "ofd": [
+              {
+                "value": "Платформа ОФД",
+                "message_id": 1,
+                "quote": "Платформе ОФД",
+                "start": 12,
+                "end": 25
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "ofd",
+            "fact": {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Найти чек в Платформе ОФД.",
+            "message_id": 1,
+            "quote": "Найти чек в Платформе ОФД.",
+            "start": 0,
+            "end": 26
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": []
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "operation": "search",
+        "object": null,
+        "entities": {
+          "ofd": [
+            {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          ]
+        },
+        "routing_slot": "ofd",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Найти чек в Платформе ОФД.",
+          "message_id": 1,
+          "quote": "Найти чек в Платформе ОФД.",
+          "start": 0,
+          "end": 26
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Найти чек в Платформе ОФД."
+        },
+        {
+          "role": "assistant",
+          "content": "Период задаётся датами пробития, а не поступления в ОФД."
+        }
+      ],
+      "evidence_ids": [
+        "ev-fb137281c08dcb924aca7d5f",
+        "ev-9b5e2da998dedce0d27b7567",
+        "ev-fe40067d5f4da94df174d27c",
+        "ev-fa4bb70bc6fdd425b07f613a",
+        "ev-94722c9b39f289506f62bf3c",
+        "ev-f5cfef35a7b75c9d116bcd21",
+        "ev-5001843bcedb488e70e5614d",
+        "ev-695326307d2ba74bf1aafd86"
+      ],
+      "source_hashes": [
+        "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c"
+      ],
+      "decision": {
+        "mode": "select",
+        "selected_ids": [
+          "ev-fb137281c08dcb924aca7d5f"
+        ],
+        "clarification_slot": null,
+        "reason_code": "direct_evidence",
+        "raw_json": "{\"mode\":\"select\",\"selected_ids\":[\"ev-fb137281c08dcb924aca7d5f\"],\"clarification_slot\":null,\"reason_code\":\"direct_evidence\"}"
+      },
+      "selected_ids_verified": [
+        "ev-fb137281c08dcb924aca7d5f"
+      ],
+      "selected_text": "Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.",
+      "safety_passed": true,
+      "validation_rejection": null,
+      "latency_ms": 976,
+      "usage": {
+        "prompt_tokens": 2530,
+        "completion_tokens": 203,
+        "total_tokens": 2733
+      },
+      "model": "openai/gpt-oss-20b",
+      "api_call_id": "chatcmpl-a3056ed0-3459-4cb7-9f90-65842f9fd4fa"
+    }
+  ],
+  "prompt_frozen_for_holdout": true,
+  "qdrant_preflight": {
+    "url_host": "127.0.0.1:6333",
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points_count": 934,
+    "status": "green",
+    "mode": "read-only get_collection"
+  },
+  "stop_reason": "requested_decision_calls_completed"
+}

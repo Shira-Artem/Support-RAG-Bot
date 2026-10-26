@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "status": "BLOCKED",
+  "gate_result": "NO-GO",
+  "decision_attempts": 4,
+  "decision_successes": 3,
+  "provider_errors": 1,
+  "automatic_retries": 0,
+  "fresh_understanding_calls": 0,
+  "fresh_retrieval_turns": 0,
+  "qdrant_writes": 0,
+  "qdrant_preflight": {
+    "url_host": "127.0.0.1:6333",
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "points_count": 934,
+    "status": "green",
+    "mode": "read-only get_collection"
+  },
+  "provider_reported_usage_successes": {
+    "prompt_tokens": 7129,
+    "completion_tokens": 941,
+    "total_tokens": 8070
+  },
+  "failed_call_usage": "unknown; provider returned no usage",
+  "dev_holdout_prompt_changed": false,
+  "attempts": [
+    {
+      "source_trace": "p1_semantic_selector_diagnostic_20261026.json",
+      "split": "DEV",
+      "question": "Что такое ОФД?",
+      "selected_ids": [
+        "ev-bd63d4ae34736e3385ba0c08"
+      ],
+      "selected_text": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.",
+      "safety_passed": true,
+      "manual_quality": {
+        "useful": true,
+        "reason": "Объясняет роль оператора и передачу фискальных документов в ФНС."
+      },
+      "latency_ms": 1325,
+      "usage": {
+        "prompt_tokens": 2233,
+        "completion_tokens": 486,
+        "total_tokens": 2719
+      },
+      "provider_error": null
+    },
+    {
+      "source_trace": "p1_semantic_selector_diagnostic_20261026.json",
+      "split": "HOLDOUT",
+      "question": "А зачем он нужен кассе?",
+      "selected_ids": [
+        "ev-60f3062ca335287d2e522747",
+        "ev-bd63d4ae34736e3385ba0c08"
+      ],
+      "selected_text": "Что такое ОФД и почему без него касса не передаёт чеки в ФНС? ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.",
+      "safety_passed": true,
+      "manual_quality": {
+        "useful": true,
+        "reason": "Раскрывает назначение через передачу документов; выбранный вопросный snippet добавляет шум и сам не является доказательством."
+      },
+      "latency_ms": 1205,
+      "usage": {
+        "prompt_tokens": 2366,
+        "completion_tokens": 252,
+        "total_tokens": 2618
+      },
+      "provider_error": null
+    },
+    {
+      "source_trace": "p1_semantic_selector_diagnostic_20261026.json",
+      "split": "DEV",
+      "question": "Найти чек в Платформе ОФД.",
+      "selected_ids": null,
+      "selected_text": null,
+      "safety_passed": null,
+      "manual_quality": {
+        "useful": null,
+        "reason": "Ответа нет: provider rate limit до получения Decision."
+      },
+      "latency_ms": 360,
+      "usage": null,
+      "provider_error": {
+        "error_type": "GenerationError",
+        "phase": "http_status",
+        "http_status": 429,
+        "provider_error_type": "tokens",
+        "provider_error_code": "rate_limit_exceeded",
+        "retry_after_seconds": 12.0,
+        "provider_usage": null
+      }
+    },
+    {
+      "source_trace": "p1_semantic_selector_diagnostic_20261026_resume.json",
+      "split": "HOLDOUT",
+      "question": "А за прошлый месяц?",
+      "selected_ids": [
+        "ev-fb137281c08dcb924aca7d5f"
+      ],
+      "selected_text": "Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.",
+      "safety_passed": true,
+      "manual_quality": {
+        "useful": true,
+        "reason": "Сохраняет поиск чека и задаёт календарные даты пробития за прошлый месяц."
+      },
+      "latency_ms": 976,
+      "usage": {
+        "prompt_tokens": 2530,
+        "completion_tokens": 203,
+        "total_tokens": 2733
+      },
+      "provider_error": null
+    }
+  ],
+  "source_traces": [
+    "p1_semantic_selector_diagnostic_20261026.json",
+    "p1_semantic_selector_diagnostic_20261026_resume.json"
+  ]
+}

@@ -1,0 +1,1027 @@
+{
+  "schema_version": 1,
+  "source_trace": "experiments/architecture_recovery_audit/p1_semantic_selector_ab_20261026.json",
+  "split": "holdout",
+  "split_rule": "Sealed holdout cassette: prior provider failures; never use these cases to tune selector prompts.",
+  "cases": [
+    {
+      "scenario": "D1",
+      "question": "А зачем он нужен кассе?",
+      "understanding_raw": {
+        "request_type": "question",
+        "relation": "clarification_answer",
+        "intent": "general",
+        "operation": "explain",
+        "object": "ОФД",
+        "object_evidence": null,
+        "goal": {
+          "quote": "А зачем он нужен кассе?"
+        },
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.95
+      },
+      "understanding_validated": {
+        "request_type": "information",
+        "specialist_requested": false,
+        "unknown_facts": [],
+        "tokens": {
+          "prompt_tokens": 978,
+          "completion_tokens": 976,
+          "total_tokens": 1954
+        },
+        "model": "openai/gpt-oss-20b",
+        "duration_ms": 1774,
+        "validation_diagnostics": [
+          {
+            "field": "relation",
+            "status": "accepted",
+            "reason": "normalized_semantic_alias",
+            "value": "answer_to_clarification"
+          },
+          {
+            "field": "intent",
+            "status": "accepted",
+            "reason": "valid_semantic_classification",
+            "value": "general"
+          },
+          {
+            "field": "operation",
+            "status": "accepted",
+            "reason": "valid_semantic_classification",
+            "value": "explain"
+          },
+          {
+            "field": "confidence",
+            "status": "accepted",
+            "reason": "valid_confidence",
+            "value": 0.95
+          },
+          {
+            "field": "request_type",
+            "status": "accepted",
+            "reason": "normalized_turn_type_alias",
+            "value": "information",
+            "raw_value": "question"
+          },
+          {
+            "field": "unknown_facts",
+            "status": "omitted",
+            "reason": "no_unknown_slots_claimed"
+          },
+          {
+            "field": "object_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "object",
+            "status": "rejected",
+            "reason": "object_value_not_grounded_by_evidence",
+            "claimed": "ОФД",
+            "span": null
+          },
+          {
+            "field": "specialist_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "specialist_requested",
+            "status": "accepted",
+            "reason": "not_requested"
+          },
+          {
+            "field": "entities",
+            "status": "omitted",
+            "reason": "no_entity_claims"
+          },
+          {
+            "field": "goal",
+            "status": "accepted",
+            "reason": "exact_current_message_span",
+            "start": 0,
+            "end": 23
+          },
+          {
+            "field": "symptom",
+            "status": "omitted",
+            "reason": "not_claimed"
+          }
+        ],
+        "observation": {
+          "intent": "general",
+          "operation": "explain",
+          "object": null,
+          "relation": "answer_to_clarification",
+          "confidence": 0.95,
+          "intent_evidence": null,
+          "operation_evidence": null,
+          "object_evidence": null,
+          "relation_evidence": null,
+          "symptom": null,
+          "goals": [
+            {
+              "value": "А зачем он нужен кассе?",
+              "message_id": "current",
+              "quote": "А зачем он нужен кассе?",
+              "start": 0,
+              "end": 23
+            }
+          ],
+          "unknown_facts": {},
+          "entities": {}
+        }
+      },
+      "state_before": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "general",
+          "operation": "explain",
+          "object": "ОФД",
+          "entities": {},
+          "active_route": null,
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Что такое ОФД?",
+            "message_id": 1,
+            "quote": "Что такое ОФД?",
+            "start": 0,
+            "end": 14
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Что такое ОФД?",
+              "message_id": 1,
+              "quote": "Что такое ОФД?",
+              "start": 0,
+              "end": 14
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": []
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "general",
+        "operation": "explain",
+        "object": "ОФД",
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Что такое ОФД?",
+          "message_id": 1,
+          "quote": "Что такое ОФД?",
+          "start": 0,
+          "end": 14
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Что такое ОФД?",
+            "message_id": 1,
+            "quote": "Что такое ОФД?",
+            "start": 0,
+            "end": 14
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "general",
+          "operation": "explain",
+          "object": "ОФД",
+          "entities": {},
+          "active_route": null,
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Что такое ОФД?",
+            "message_id": 1,
+            "quote": "Что такое ОФД?",
+            "start": 0,
+            "end": 14
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.95,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Что такое ОФД?",
+              "message_id": 1,
+              "quote": "Что такое ОФД?",
+              "start": 0,
+              "end": 14
+            },
+            {
+              "value": "А зачем он нужен кассе?",
+              "message_id": 3,
+              "quote": "А зачем он нужен кассе?",
+              "start": 0,
+              "end": 23
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.95,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": []
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "general",
+        "operation": "explain",
+        "object": "ОФД",
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Что такое ОФД?",
+          "message_id": 1,
+          "quote": "Что такое ОФД?",
+          "start": 0,
+          "end": 14
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Что такое ОФД?",
+            "message_id": 1,
+            "quote": "Что такое ОФД?",
+            "start": 0,
+            "end": 14
+          },
+          {
+            "value": "А зачем он нужен кассе?",
+            "message_id": 3,
+            "quote": "А зачем он нужен кассе?",
+            "start": 0,
+            "end": 23
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.95,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "candidate_units": [
+        {
+          "id": "ev-60f3062ca335287d2e522747",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "section": "Вопрос пользователя",
+          "position": 1,
+          "text": "Что такое ОФД и почему без него касса не передаёт чеки в ФНС?",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-bd63d4ae34736e3385ba0c08",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "section": "Что проверено по инструкции производителя",
+          "position": 1,
+          "text": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-d28d34756a04c94b1f6f1046",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "section": "Что проверено по инструкции производителя",
+          "position": 2,
+          "text": "Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-a1980c4dcceea45f1a6e17eb",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "section": "Что проверено по инструкции производителя",
+          "position": 3,
+          "text": "При отсутствии чеков в налоговой стоит отдельно проверить статус ККТ в ОФД и текущую очередь передачи.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-41bafd1cfb9495dc2c268b68",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "section": "Важное ограничение / передача специалисту",
+          "position": 1,
+          "text": "Не путать оплату аренды облачной кассы АТОЛ Онлайн с оплатой договора ОФД.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-44526d7569ded7e15c309816",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "section": "Важное ограничение / передача специалисту",
+          "position": 2,
+          "text": "> Область применения — облачные кассы АТОЛ Онлайн, если не указано иное.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-e7bceccbb44c685935d6ebc3",
+          "document_id": "aqsi-online-ofd-taxcom-account",
+          "source": "data/knowledge/aqsi_online/ofd/taxcom-account.md",
+          "source_sha256": "9ba9afe1960b20027f9992965bfaabc4dff583cf7dfd94bc202cc510e1e4b4ee",
+          "section": "Вопрос клиента",
+          "position": 1,
+          "text": "Как зарегистрировать облачную ККТ aQsi в Такском ОФД?",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "aQsi Online",
+            "task_category": "ofd_connection",
+            "manufacturer": "aQsi",
+            "model": "aQsi Online (облачная касса)",
+            "procedure_service": null
+          },
+          "approved": true
+        }
+      ],
+      "provider_failure": {
+        "status": "unknown_not_recorded_by_initial_runner",
+        "stage": "semantic_selector Groq request (GenerationError)",
+        "retry_after": "unknown"
+      },
+      "semantic_status": "decision_call_failed_no_retry",
+      "lexical": {
+        "answer": "Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.",
+        "selected_section": {
+          "id": "atol-online-11256-what-is-ofd::Что проверено по инструкции производителя",
+          "document_id": "atol-online-11256-what-is-ofd",
+          "title": "",
+          "section": "Что проверено по инструкции производителя",
+          "text": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате. Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД. При отсутствии чеков в налоговой стоит отдельно проверить статус ККТ в ОФД и текущую очередь передачи. ",
+          "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+          "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+          "scope": {
+            "status": "approved",
+            "service": "АТОЛ Онлайн",
+            "task_category": "ofd_connection",
+            "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн — облачная ККТ",
+            "procedure_service": null
+          }
+        },
+        "reconstructed_offline_from_saved_same_evidence": true,
+        "manual_quality": {
+          "useful": false,
+          "criterion": "purpose: receive/transmit fiscal documents; contract/tariff alone fails"
+        }
+      }
+    },
+    {
+      "scenario": "D3",
+      "question": "А за прошлый месяц?",
+      "understanding_raw": {
+        "request_type": "clarification",
+        "relation": "clarification_answer",
+        "intent": "search",
+        "operation": "search",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "understanding_validated": {
+        "request_type": "instruction",
+        "specialist_requested": false,
+        "unknown_facts": [],
+        "tokens": {
+          "prompt_tokens": 984,
+          "completion_tokens": 1131,
+          "total_tokens": 2115
+        },
+        "model": "openai/gpt-oss-20b",
+        "duration_ms": 1707,
+        "validation_diagnostics": [
+          {
+            "field": "relation",
+            "status": "accepted",
+            "reason": "normalized_semantic_alias",
+            "value": "answer_to_clarification"
+          },
+          {
+            "field": "intent",
+            "status": "rejected",
+            "reason": "unsupported_value_defaulted_to_unknown",
+            "value": "unknown"
+          },
+          {
+            "field": "operation",
+            "status": "accepted",
+            "reason": "valid_semantic_classification",
+            "value": "search"
+          },
+          {
+            "field": "confidence",
+            "status": "accepted",
+            "reason": "valid_confidence",
+            "value": 0.9
+          },
+          {
+            "field": "request_type",
+            "status": "accepted",
+            "reason": "derived_from_valid_task_operation",
+            "value": "instruction",
+            "raw_value": "clarification"
+          },
+          {
+            "field": "unknown_facts",
+            "status": "omitted",
+            "reason": "no_unknown_slots_claimed"
+          },
+          {
+            "field": "object_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "object",
+            "status": "omitted",
+            "reason": "no_object_claimed"
+          },
+          {
+            "field": "specialist_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "specialist_requested",
+            "status": "accepted",
+            "reason": "not_requested"
+          },
+          {
+            "field": "entities",
+            "status": "omitted",
+            "reason": "no_entity_claims"
+          },
+          {
+            "field": "goal",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "symptom",
+            "status": "omitted",
+            "reason": "not_claimed"
+          }
+        ],
+        "observation": {
+          "intent": "unknown",
+          "operation": "search",
+          "object": null,
+          "relation": "answer_to_clarification",
+          "confidence": 0.9,
+          "intent_evidence": null,
+          "operation_evidence": null,
+          "object_evidence": null,
+          "relation_evidence": null,
+          "symptom": null,
+          "goals": [],
+          "unknown_facts": {},
+          "entities": {}
+        }
+      },
+      "state_before": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "ofd": [
+              {
+                "value": "Платформа ОФД",
+                "message_id": 1,
+                "quote": "Платформе ОФД",
+                "start": 12,
+                "end": 25
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "ofd",
+            "fact": {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "operation": "search",
+          "object": null,
+          "entities": {
+            "ofd": [
+              {
+                "value": "Платформа ОФД",
+                "message_id": 1,
+                "quote": "Платформе ОФД",
+                "start": 12,
+                "end": 25
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "ofd",
+            "fact": {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Найти чек в Платформе ОФД.",
+            "message_id": 1,
+            "quote": "Найти чек в Платформе ОФД.",
+            "start": 0,
+            "end": 26
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": []
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "operation": "search",
+        "object": null,
+        "entities": {
+          "ofd": [
+            {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          ]
+        },
+        "routing_slot": "ofd",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Найти чек в Платформе ОФД.",
+          "message_id": 1,
+          "quote": "Найти чек в Платформе ОФД.",
+          "start": 0,
+          "end": 26
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "ofd": [
+              {
+                "value": "Платформа ОФД",
+                "message_id": 1,
+                "quote": "Платформе ОФД",
+                "start": 12,
+                "end": 25
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "ofd",
+            "fact": {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "operation": "search",
+          "object": null,
+          "entities": {
+            "ofd": [
+              {
+                "value": "Платформа ОФД",
+                "message_id": 1,
+                "quote": "Платформе ОФД",
+                "start": 12,
+                "end": 25
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "ofd",
+            "fact": {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Найти чек в Платформе ОФД.",
+            "message_id": 1,
+            "quote": "Найти чек в Платформе ОФД.",
+            "start": 0,
+            "end": 26
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": []
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "operation": "search",
+        "object": null,
+        "entities": {
+          "ofd": [
+            {
+              "value": "Платформа ОФД",
+              "message_id": 1,
+              "quote": "Платформе ОФД",
+              "start": 12,
+              "end": 25
+            }
+          ]
+        },
+        "routing_slot": "ofd",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Найти чек в Платформе ОФД.",
+          "message_id": 1,
+          "quote": "Найти чек в Платформе ОФД.",
+          "start": 0,
+          "end": 26
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "candidate_units": [
+        {
+          "id": "ev-fb137281c08dcb924aca7d5f",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Поиск чеков",
+          "position": 1,
+          "text": "Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.",
+          "kind": "procedure_block",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-9b5e2da998dedce0d27b7567",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Дополнительные условия",
+          "position": 1,
+          "text": "Можно отбирать по номеру смены, диапазону суммы, полному или частичному имени кассира, способу оплаты, признаку расчёта и статусу ФНС.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-fe40067d5f4da94df174d27c",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Дополнительные условия",
+          "position": 2,
+          "text": "Для дополнительного тега задаётся его значение; пустое значение отбирает документы с заполненным выбранным тегом.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-fa4bb70bc6fdd425b07f613a",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Дополнительные условия",
+          "position": 3,
+          "text": "Проверка маркировки доступна при активном тарифе УМ.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-94722c9b39f289506f62bf3c",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Ограничения",
+          "position": 1,
+          "text": "ФН не подтверждён как прямой фильтр чеков.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-f5cfef35a7b75c9d116bcd21",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Ограничения",
+          "position": 2,
+          "text": "Не подменяйте ФН номером ФД или ФП.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-5001843bcedb488e70e5614d",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Ограничения",
+          "position": 3,
+          "text": "Поиск кассы по ФН описан отдельно.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        },
+        {
+          "id": "ev-695326307d2ba74bf1aafd86",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "section": "Ограничения",
+          "position": 4,
+          "text": "Отсутствие поля в статье не доказывает отсутствие функции в сервисе.",
+          "kind": "sentence",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          },
+          "approved": true
+        }
+      ],
+      "provider_failure": {
+        "http_status": 429,
+        "error_type": "HTTPStatusError",
+        "retry_after_seconds": 11.0,
+        "stage": "http_status",
+        "cause_message": "Client error '429 Too Many Requests' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+      },
+      "semantic_status": "decision_call_failed_no_retry",
+      "lexical": {
+        "answer": "Для прошлого месяца выберите календарные границы нужного месяца.",
+        "selected_section": {
+          "id": "platformaofd-lkk-receipt-search::Поиск чеков",
+          "document_id": "platformaofd-lkk-receipt-search",
+          "title": "",
+          "section": "Поиск чеков",
+          "text": "Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека. ",
+          "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+          "source_sha256": "500cb603915289abe98cf590acf18db7acf902ddc57fb9284db70c098c85767c",
+          "scope": {
+            "status": "approved",
+            "service": "Платформа ОФД",
+            "task_category": "receipt_search",
+            "manufacturer": null,
+            "model": null,
+            "procedure_service": null
+          }
+        },
+        "reconstructed_offline_from_saved_same_evidence": true,
+        "manual_quality": {
+          "useful": true,
+          "criterion": "prior-month date range within receipt-search task"
+        }
+      }
+    }
+  ]
+}

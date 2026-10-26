@@ -29,6 +29,7 @@ class Settings:
     rag_engine: str = "legacy"
     source_first_telegram_ids: frozenset[int] = frozenset()
     ai_coordinator_enabled: bool = False
+    semantic_evidence_selector_enabled: bool = False
 
 
 def _bool_env(name: str, default: bool = False) -> bool:
@@ -71,6 +72,7 @@ def get_settings() -> Settings:
         rag_engine=engine,
         source_first_telegram_ids=source_first_ids,
         ai_coordinator_enabled=_bool_env("AI_COORDINATOR_ENABLED", False),
+        semantic_evidence_selector_enabled=_bool_env("SEMANTIC_EVIDENCE_SELECTOR_ENABLED", False),
     )
 
 

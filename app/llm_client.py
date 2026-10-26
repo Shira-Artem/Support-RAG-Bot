@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from time import perf_counter
 import traceback
 
 import httpx
@@ -13,7 +14,11 @@ class GenerationError(RuntimeError):
     def __init__(self, message: str, *, http_status: int | None = None,
                  error_type: str | None = None, retry_after_seconds: float | None = None,
                  stage: str | None = None, cause_message: str | None = None,
-                 traceback_text: str | None = None):
+                 traceback_text: str | None = None, duration_ms: int | None = None,
+                 provider_error_code: str | None = None,
+                 provider_error_param: str | None = None,
+                 provider_usage: dict | None = None, request_id: str | None = None,
+                 schema_error: str | None = None):
         super().__init__(message)
         self.http_status = http_status
         self.error_type = error_type
@@ -21,6 +26,12 @@ class GenerationError(RuntimeError):
         self.stage = stage
         self.cause_message = cause_message
         self.traceback_text = traceback_text
+        self.duration_ms = duration_ms
+        self.provider_error_code = provider_error_code
+        self.provider_error_param = provider_error_param
+        self.provider_usage = provider_usage
+        self.request_id = request_id
+        self.schema_error = schema_error
 
 
 @dataclass(frozen=True)
@@ -34,6 +45,7 @@ class Generation:
     cached_tokens: int | None = None
     api_call_id: str | None = None
     finish_reason: str | None = None
+    duration_ms: int | None = None
 
 
 def _optional_int(value) -> int | None:
@@ -60,6 +72,8 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
         raise GenerationError("LLM API key is not configured")
     headers["Authorization"] = f"Bearer {key}"
     stage = "provider_request"
+    started = perf_counter()
+    response = None
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=15)) as client:
             response = await client.post(url, headers=headers, json={
@@ -97,21 +111,66 @@ async def generate(messages: list[dict], settings: Settings) -> Generation:
             cached_tokens=_optional_int(prompt_details.get("cached_tokens")),
             api_call_id=data.get("id") if isinstance(data.get("id"), str) else None,
             finish_reason=choice.get("finish_reason") if isinstance(choice.get("finish_reason"), str) else None,
+            duration_ms=round((perf_counter() - started) * 1000),
         )
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
         # Provider response bodies may contain sensitive data; never expose them.
-        status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
+        response = exc.response if isinstance(exc, httpx.HTTPStatusError) else response
+        status = getattr(response, "status_code", None) if response is not None else None
         retry_after = None
-        if isinstance(exc, httpx.HTTPStatusError):
+        response_headers = getattr(response, "headers", {}) if response is not None else {}
+        if response_headers:
             try:
-                value = float(exc.response.headers.get('retry-after', ''))
+                value = float(response_headers.get('retry-after', ''))
                 if 0 <= value <= 86400:
                     retry_after = value
             except ValueError:
                 pass
+        provider_error_code = provider_error_param = provider_error_type = None
+        provider_usage = None
+        schema_error = None
+        if response is not None and callable(getattr(response, "json", None)):
+            # Keep only bounded, typed diagnostics. Never retain the provider body,
+            # which can echo prompts or other user supplied data.
+            try:
+                payload = response.json()
+            except (ValueError, TypeError):
+                payload = None
+            if isinstance(payload, dict):
+                error = payload.get("error")
+                if isinstance(error, dict):
+                    for name, value in (("code", "provider_error_code"),
+                                        ("param", "provider_error_param"),
+                                        ("type", "provider_error_type")):
+                        field = error.get(name)
+                        if isinstance(field, str) and len(field) <= 100:
+                            if name == "code": provider_error_code = field
+                            elif name == "param": provider_error_param = field
+                            else: provider_error_type = field
+                usage = payload.get("usage")
+                if isinstance(usage, dict):
+                    provider_usage = {key: _optional_int(usage.get(key)) for key in
+                                      ("prompt_tokens", "completion_tokens", "total_tokens")}
+            if status == 400 and (provider_error_code == "json_validate_failed"
+                                  or provider_error_param in {"response_format", "messages"}):
+                schema_error = "provider_rejected_request_schema"
+        # Parsing/shape failures are distinguished from transport and HTTP failures.
+        if not isinstance(exc, httpx.HTTPError):
+            schema_error = schema_error or {
+                "decode_json": "invalid_provider_json",
+                "validate_payload": "invalid_provider_payload",
+                "extract_choice": "missing_or_invalid_choice",
+                "validate_content": "empty_or_invalid_content",
+                "extract_usage": "invalid_provider_usage",
+            }.get(stage)
         raise GenerationError(
             "LLM request failed", http_status=status,
-            error_type=type(exc).__name__, retry_after_seconds=retry_after,
-            stage=stage, cause_message=str(exc)[:240],
-            traceback_text=traceback.format_exc(),
+            error_type=provider_error_type or type(exc).__name__, retry_after_seconds=retry_after,
+            stage=stage, cause_message=(type(exc).__name__ if isinstance(exc, httpx.HTTPStatusError)
+                                        else str(exc)[:160]),
+            traceback_text=traceback.format_exc(), duration_ms=round((perf_counter() - started) * 1000),
+            provider_error_code=provider_error_code, provider_error_param=provider_error_param,
+            provider_usage=provider_usage,
+            request_id=(response_headers.get("x-request-id") or response_headers.get("request-id")) if response_headers else None,
+            schema_error=schema_error,
         ) from exc

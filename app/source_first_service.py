@@ -514,11 +514,122 @@ class SourceFirstService:
     def __init__(self, rag, settings: Settings, root: Path):
         self.rag, self.settings, self.root = rag, settings, root
 
-    def _coordinated_information_answer(self, user_message: str, state: DialogueState,
+    async def _coordinated_information_answer(self, user_message: str, state: DialogueState,
                                         sections: list[dict], decision: dict,
                                         started: float, base: dict) -> Answer:
         """Return one question-focused sentence copied from an approved section."""
         focus = str(decision.get("current_subgoal") or user_message)
+        history = base.pop("history", [])
+        if self.settings.semantic_evidence_selector_enabled:
+            from app.semantic_evidence_selector import (
+                build_evidence_units, select_evidence, validate_selected_units)
+            units = build_evidence_units(sections)
+            if not units:
+                return self._escalate("В найденном approved-разделе нет проверяемых фрагментов ответа. Запросите специалиста.",
+                    "semantic_selector_no_evidence_units", "no_bounded_evidence_units", started, **base)
+            try:
+                generated_started = perf_counter()
+                selected_decision, generated = await select_evidence(
+                    user_message, state, history, units, self.settings,
+                    current_subgoal=focus)
+                selected, rejection = validate_selected_units(
+                    selected_decision, units, state, self.root, informational=True)
+            except Exception as exc:
+                failed_generation = getattr(exc, "generation", None)
+                diagnostics = base.get("retrieval_diagnostics") or {}
+                diagnostics["semantic_evidence_selector_error"] = {
+                    "error_type": type(exc).__name__,
+                    "http_status": getattr(exc, "http_status", None),
+                    "provider_error_type": getattr(exc, "error_type", None),
+                    "provider_error_code": getattr(exc, "provider_error_code", None),
+                    "provider_error_param": getattr(exc, "provider_error_param", None),
+                    "retry_after_seconds": getattr(exc, "retry_after_seconds", None),
+                    "stage": getattr(exc, "stage", None),
+                    "duration_ms": getattr(exc, "duration_ms", None),
+                    "schema_error": getattr(exc, "schema_error", None),
+                    "provider_usage": getattr(exc, "provider_usage", None),
+                    "request_id": getattr(exc, "request_id", None),
+                    "raw_decision": failed_generation.text if failed_generation else None,
+                    "usage": ({"prompt_tokens": failed_generation.prompt_tokens,
+                        "completion_tokens": failed_generation.completion_tokens,
+                        "total_tokens": failed_generation.total_tokens} if failed_generation else None),
+                }
+                base["retrieval_diagnostics"] = diagnostics
+                if failed_generation:
+                    base.update(model=failed_generation.model, used_model=True,
+                        prompt_tokens=failed_generation.prompt_tokens,
+                        completion_tokens=failed_generation.completion_tokens,
+                        total_tokens=failed_generation.total_tokens,
+                        reasoning_tokens=failed_generation.reasoning_tokens,
+                        cached_tokens=failed_generation.cached_tokens,
+                        api_call_id=failed_generation.api_call_id, raw_model_text=failed_generation.text)
+                return self._escalate("Не удалось проверить выбор evidence. Запросите специалиста.",
+                    "semantic_selector_failed_closed", type(exc).__name__, started, **base,
+                    generation_status="error", llm_call_attempted=True,
+                    generation_error={"stage": getattr(exc, "stage", None) or "semantic_evidence_selector",
+                        "error_type": getattr(exc, "error_type", None) or type(exc).__name__,
+                        "http_status": getattr(exc, "http_status", None),
+                        "provider_error_code": getattr(exc, "provider_error_code", None),
+                        "provider_error_param": getattr(exc, "provider_error_param", None),
+                        "duration_ms": getattr(exc, "duration_ms", None),
+                        "schema_error": getattr(exc, "schema_error", None),
+                        "provider_usage": getattr(exc, "provider_usage", None),
+                        "retry_after_seconds": getattr(exc, "retry_after_seconds", None)})
+            base.update(model=generated.model, used_model=True, llm_call_attempted=True,
+                prompt_tokens=generated.prompt_tokens, completion_tokens=generated.completion_tokens,
+                total_tokens=generated.total_tokens, reasoning_tokens=generated.reasoning_tokens,
+                cached_tokens=generated.cached_tokens, api_call_id=generated.api_call_id,
+                raw_model_text=generated.text)
+            diagnostics = base.get("retrieval_diagnostics") or {}
+            diagnostics["semantic_evidence_selector"] = {
+                "decision": {"mode": selected_decision.mode,
+                    "selected_ids": list(selected_decision.selected_ids),
+                    "clarification_slot": selected_decision.clarification_slot,
+                    "reason_code": selected_decision.reason_code,
+                    "raw_json": selected_decision.raw_json},
+                "candidate_ids": [unit.public_dict() for unit in units],
+                "selected_ids_verified": [unit.id for unit in selected],
+                "rejection_reason": rejection,
+                "latency_ms": round((perf_counter() - generated_started) * 1000),
+                "source_sha_verified": rejection is None and bool(selected),
+            }
+            base["retrieval_diagnostics"] = diagnostics
+            if rejection:
+                return self._escalate("Выбранный фрагмент не прошёл независимые проверки. Запросите специалиста.",
+                    "semantic_selector_validation_rejected", rejection, started, **base)
+            if selected_decision.mode == "clarify":
+                questions = {"service": "Какой сервис используется?", "manufacturer": "Какой производитель оборудования?",
+                    "model": "Уточните модель оборудования.", "period": "За какой период нужен поиск?",
+                    "task": "Уточните, что именно нужно найти?"}
+                return Answer(questions[selected_decision.clarification_slot], scenario="clarify",
+                    scenario_reason="semantic_selector_clarification", clarification_slot=selected_decision.clarification_slot,
+                    generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
+            if selected_decision.mode == "no_evidence":
+                return self._escalate("В найденных approved-источниках нет подтверждённого ответа именно на этот вопрос. Запросите специалиста.",
+                    "semantic_selector_no_evidence", selected_decision.reason_code, started, **base)
+            text_body = " ".join(unit.text for unit in selected)
+            evidence = "\n".join(f"{unit.section}\n{unit.text}" for unit in selected)
+            if (any(unit.kind == "procedure_block" for unit in selected)
+                    or evidence_kind(text_body, "") in {"procedure", "interface"}
+                    or unsafe_operation_issue(text_body) or instruction_issue(text_body, evidence)
+                    or not all(claim_supported(sentence, evidence) for sentence in statements(text_body))):
+                return self._escalate("Выбранный текст не прошёл независимую проверку информационного ответа. Запросите специалиста.",
+                    "semantic_selector_safety_rejected", "information_answer_policy_rejected", started, **base)
+            source_labels = list(dict.fromkeys(unit.source for unit in selected))
+            source_names = list(dict.fromkeys(f"{unit.section}" for unit in selected))
+            diagnostics["coordinator_evidence"] = {"selection": "llm_id_only",
+                "selected_ids": [unit.id for unit in selected], "sources": source_labels,
+                "sections": source_names, "source_sha256_verified": True}
+            scope_labels = list(dict.fromkeys(str(unit.scope[key]) for unit in selected
+                for key in ("service", "manufacturer", "model") if unit.scope.get(key)))
+            scope_prefix = ("Область источника: " + ", ".join(scope_labels) + ".\n"
+                            if scope_labels else "")
+            text = scope_prefix + text_body + "\n\nИсточник: " + "; ".join(
+                f"{unit.source} — {unit.section}" for unit in selected)
+            return Answer(text, scenario="answer", scenario_reason="ai_coordinator_grounded_information_semantic_ids",
+                generation_status="generated", validation_status="verified_approved_evidence_ids",
+                validation_reason="ID membership, approved status, SHA, section text, grounding and safety verified",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         match = _focused_approved_sentence(sections, focus)
         if not match:
             return self._escalate(
@@ -821,7 +932,8 @@ class SourceFirstService:
                 return self._escalate("В approved-источниках не нашёл раздела с подтверждённым объяснением. Не буду выдавать заголовок-вопрос за ответ; запросите специалиста.",
                     "no_answer_bearing_information_source", "approved_retrieval_returned_only_question_chunks", started, **base)
             if decision and decision.get("route") == "grounded_information":
-                return self._coordinated_information_answer(
+                base["history"] = history or []
+                return await self._coordinated_information_answer(
                     user_message, state, sections, decision, started, base)
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
                   "Не выбирай раздел, который только повторяет вопрос пользователя и не содержит объяснения или подтверждённой инструкции. "

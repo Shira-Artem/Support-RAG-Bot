@@ -1,6 +1,6 @@
 # P1 D1 — AI Coordinator: реализация первого vertical slice
 
-Дата: 2026-10-26. Статус: **offline vertical slice PASS; limited live gate подготовлен, не запускался**.
+Дата: 2026-10-26. Статус: **offline vertical slice PASS; follow-up live run выполнен, semantic quality NO-GO**. Подробная хронология — в [live experiment report](p1_d1_live_experiment_20261026.md).
 
 ## Что изменено
 
@@ -24,13 +24,23 @@
 - Отдельный offline trace test: **1 passed**; SQLite reopened between both turns and round-tripped state. Exact SHA/status/sentence gates passed; source stayed `atol_online/ofd/what-is-ofd.md`.
 - В offline E2E: **0 реальных Groq calls / 0 tokens; 0 реальных Qdrant requests/writes**. Два Understanding вызова были saved fixtures; два retrieval прохода использовали локально загруженный approved документ через настоящую RetrievalPipeline. B провёл **0 Planner/Composer/Repair/Judge calls**.
 - Negative safety: coordinator-enabled S1 (опасное закрытие архива ФН) и S5 (retrieved instruction injection) остановлены до retrieval; S4 (чужая aQsi IP-инструкция для Эвотор) остановлена applicability gate. **Ни одного ослабления source-first safety gate.**
-- Live gate runner `scripts/p1_d1_live_gate.py` прошёл только `preflight_only` с placeholders: `will_make_network_calls=false`, лимит 2 Groq calls. Сам live gate **не запускался**. Бюджет и stop conditions — [`p1_d1_live_gate_20261026.md`](p1_d1_live_gate_20261026.md).
+- На момент подготовки исходного implementation report был выполнен только `preflight_only`; этот статус заменён последующим ограниченным live run ниже. Бюджет и stop conditions — [`p1_d1_live_gate_20261026.md`](p1_d1_live_gate_20261026.md).
 
 ## Риски и следующий шаг
 
-- Это не проверяет фактическое понимание Groq, Qdrant ranking или межмодельную полезность; для этого подготовлен, но не запущен отдельный ограниченный gate.
+- Live gate проверил настоящее понимание Groq и Qdrant ranking в пределах двух ходов; он выявил семантический сбой sentence ranker на D1.3. Это не доказывает качество остальных grounded-information запросов.
 - Exact quote renderer полезен для атомарных facts, но ограничивает связные объяснения и несколько зависимых evidence-фрагментов. Прогресс процедурной задачи и next-action selection пока не реализованы — это следующий P1 D2 slice.
-- Generic overlap ranker может ошибиться на парафразе с низким lexical overlap; в таком случае он закрывает ответ, не генерируя догадку. Не добавлять локальные правила под ОФД.
+- Generic overlap ranker может выбрать лексически совпадающее, но нерелевантное предложение даже из правильного документа. Не добавлять локальные правила под ОФД; исправление требует общего решения о фокусе/релевантности и regression coverage.
 - **GO:** продолжить P1 offline к D2 technical-action progress/next step с текущими независимыми gates. **NO-GO:** live/Telegram/worker rollout и заявление о production usefulness. P1 D1 не закрывает общий P0 dialogue quality gate.
 
 Production SQLite, Qdrant, KB, `.env`, worker и Telegram polling не изменялись. Commit/push не выполнялись.
+
+## Follow-up: limited live D1 gate — 2026-10-26
+
+После безопасного старта существующего Qdrant container с тем же volume выполнен один bounded run на последней успешно использовавшейся `knowledge_stage3_retrieval_20261022`: 2 Groq Understanding calls, 2 retrieval turns, 3,572 tokens, без retries. Approved source hashes/scope согласованы; оба exact-quote ответы прошли independent safety. D1.2 корректно объяснил роль ОФД. D1.3 выбрал точную tariff/contract фразу из правильной top-ranked approved статьи, но не объяснил назначение ОФД для передачи фискальных документов. **Семантический quality gate NO-GO**, несмотря на mechanical PASS в runner. Причина — общий generic sentence overlap, не retrieval miss. См. [run 2 trace](p1_d1_live_trace_20261026_run2.json), [отчёт](p1_d1_live_experiment_20261026.md); первоначальная остановка до Groq и erratum `knowledge_v1` — в [run 1 trace](p1_d1_live_trace_20261026.json).
+
+Решение: **NO-GO расширению grounded-information; GO только к offline P1 D2** под неизменными safety/applicability gates. Live D2, worker/Telegram и production rollout остаются NO-GO.
+
+## Follow-up: LLM Evidence Selector A/B
+
+После этого отчёта отдельным выключенным по умолчанию feature flag добавлен ID-only semantic selector. Он не переписывает прежний D1 путь и сохраняет lexical и Source-first варианты. Bounded A/B использовал одинаковые Understanding/state/retrieval snapshots и исчерпал лимит 8 Groq attempts / 4 retrieval turns. Две завершённые пары после офлайн-коррекции lexical harness показали semantic 2/2 полезных и lexical 1/2; D1.2 arms совпали, D3.1 semantic лучше показал маршрут поиска. Оба follow-up решения не завершились из-за ошибок API; gate остаётся **NO-GO/incomplete**. Решение и стоимость подробно записаны в [selector A/B report](p1_semantic_selector_ab_20261026.md), трасса — [JSON](p1_semantic_selector_ab_20261026.json). Следующий разрешённый этап — **offline P1 D2 с ProgressLedger**, без grounded-information rollout.
