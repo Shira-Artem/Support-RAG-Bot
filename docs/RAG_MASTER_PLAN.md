@@ -29,7 +29,7 @@
 
 ### Изолированная параллельная задача: handoff MVP
 
-**DONE только в границе offline прототипа**: в отдельном worktree `codex/support-rag-handoff-mvp` добавлен default-off handoff adapter поверх существующих `free_callback`, `ConversationStore` и подтверждённых заявок. Транспорт проверяет Telegram receipt и destination; delivery states хранятся в отдельном `.local` sidecar, SQLite не мигрировалась. Fake-transport tests проходят. Реальный чат не согласован, сообщения не отправлялись; Telegram connection, worker rollout и production readiness остаются **NO-GO** до отдельного одобрения и bounded acceptance send. См. [handoff MVP report](handoff_mvp.md). P1 status and sequencing are unchanged.
+**DONE только в границе offline прототипа**: в отдельном worktree `codex/support-rag-handoff-mvp` добавлен default-off handoff adapter поверх существующих `free_callback`, `ConversationStore` и подтверждённых заявок. Транспорт проверяет Telegram receipt и destination; delivery states хранятся в отдельном `.local` sidecar, SQLite не мигрировалась. Fake-transport tests проходят. Реальный чат не согласован, сообщения не отправлялись; Telegram connection, worker rollout и production readiness остаются **NO-GO** до отдельного одобрения и bounded acceptance send. См. [handoff MVP report](handoff_mvp.md) и [commit `6ed4015`](https://github.com/Shira-Artem/Support-RAG-Bot/commit/6ed4015edbf33dc43948ee9aa474bb9075bde604). Branch опубликована отдельно, без merge; P1 status and sequencing are unchanged.
 
 ## V1.1 — аудит существующего Grounding
 
