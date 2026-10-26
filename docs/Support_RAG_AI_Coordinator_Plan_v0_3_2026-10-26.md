@@ -264,3 +264,19 @@ The user explicitly authorized checked code publication and one controlled pilot
 The failed quota preflight came from demanding TPM headers on `GET /models`. The application now uses a shared bounded rate limiter for real Groq Understanding and generation calls: an unknown first quota permits one paced request, then actual TPM/RPD/reset/Retry-After headers and usage guide further calls; maximum local wait is 8 seconds, without HTTP retry loops. A deferred request produces a clear saved-context reply. Model `openai/gpt-oss-20b`, `medium` reasoning and structured Understanding output remain unchanged. See [Groq's rate-limit contract](https://console.groq.com/docs/rate-limits). The historical C script was corrected for future use; no fresh C calls were made.
 
 Pre-publication full pytest: **463 passed, 4 xfailed, 13 warnings**; safety/model-scope negatives passed. Read-only Stage3 is green, 934 points, with 206 local approved documents and a matching Qdrant approved sample. No active bot worker or webhook was found. Existing allowlist count/hash are 3 / `a769696dc284d3ca09ef096a08f59a838bbe09f23f671ab794d1cb573910b7e7`; process overrides will use this exact existing list while all other IDs keep legacy behavior. Production SQLite has a verified private SQLite backup under `.local/backups/`. Three stale pending Telegram messages belonged to allowlisted users; acknowledge only those before starting polling to avoid answering old inputs. Next is explicit commit/push, one hidden worker start, runtime hash and polling verification, then user-authored manual scenarios. Specialist delivery stays disabled.
+
+### Closed pilot startup and manual script (2026-10-26)
+
+Reviewed code was pushed as `5210c5cb0d82f9939b6e07ff254bcbef80e61f15`. The three old allowlisted pending updates were acknowledged without a reply. Exactly one worker PID **26496** started at 17:03:10 Moscow; the 17:03:55 runtime receipt matches all 31 application source hashes. It reports Groq `openai/gpt-oss-20b` / `medium`, Source-first/coordinator on, B2/handoff off, Stage3 934 points, unchanged verified allowlist hash/count 3. `Application started` appears in the log; no webhook, pending queue or competing poller is present. SQLite quick check passed before and after startup with 318 messages; private SQLite backup is under `.local/backups/`. The agent did not send a Telegram message or make a Groq generation call.
+
+**GO for the allowlisted owner's manual diagnostic pilot only.** Send one message at a time and note whether each answer helped:
+
+1. «Что делает ОФД после получения чека от кассы?»
+2. «Эвотор 7.3 печатает чеки, но они не появляются у ОФД. С чего начать проверку?» Затем сообщить точный результат предложенной проверки.
+3. Нажать «Новый диалог», затем: «Чеки не доходят до ОФД, модель кассы пока не знаю. Что проверить?» Если бот уточнит модель, ответить: «Это Эвотор 7.3».
+4. «Как найти чек в личном кабинете ОФД?»
+5. «Теперь другой вопрос: что такое фискальный накопитель?»
+6. «Позовите специалиста по последнему вопросу.» Если подтвердить заявку, бот должен честно сказать, что специалист не уведомлён: реальная доставка выключена.
+7. «Спасибо, вопрос решён.»
+
+After each turn inspect private `.local/conversational-understanding.jsonl` for raw/validated provider output and `.local/groq-rate-limit.jsonl` for status, usage, headers and latency; `data/conversations.sqlite3` stores reducer state, CoordinatorDecision, retrieval, answer and ProgressLedger diagnostics. Never publish raw user traces or secrets. A useful live multi-turn result has not yet been demonstrated; B2 A/B and production release remain NO-GO.
