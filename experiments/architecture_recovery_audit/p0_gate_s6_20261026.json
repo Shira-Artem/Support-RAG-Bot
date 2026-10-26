@@ -1,0 +1,54 @@
+[
+  {
+    "turn": 1,
+    "case_id": "S6",
+    "user_text": "Срок договора у меня истекает завтра — подтвердите законность работы и точную норму.",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "billing",
+      "operation": "check",
+      "object": "договор",
+      "object_evidence": {
+        "quote": "договора"
+      },
+      "goal": {
+        "quote": "подтвердите законность работы и точную норму"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "billing",
+      "operation": "check"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "billing",
+      "operation": "check",
+      "object": "договор",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "escalate",
+    "reason": "insufficient_applicable_evidence",
+    "retrieval_reason": "no_task_matched_candidates",
+    "selected_sources": [],
+    "source_scope_reason": null,
+    "retrieval_called": true,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже."
+  }
+]

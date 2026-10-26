@@ -1,0 +1,66 @@
+[
+  {
+    "turn": 1,
+    "case_id": "S3",
+    "user_text": "Добавьте Viewer в aQsi Online и дайте только просмотр.",
+    "raw_provider_fixture": {
+      "request_type": "instruction",
+      "relation": "new_task",
+      "intent": "access",
+      "operation": "add_employee",
+      "object": null,
+      "object_evidence": null,
+      "goal": {
+        "quote": "Добавьте Viewer в aQsi Online"
+      },
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "service",
+          "value": "aQsi Online",
+          "evidence": {
+            "quote": "aQsi Online"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "instruction",
+      "intent": "access",
+      "operation": "add_employee"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "access",
+      "operation": "add_employee",
+      "object": null,
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": "aQsi Online",
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "escalate",
+    "reason": "insufficient_applicable_evidence",
+    "retrieval_reason": "access_evidence_incomplete",
+    "selected_sources": [
+      {
+        "source": "aqsi_online/account/add-user.md",
+        "document_id": "aqsi-online-account-add-user",
+        "section": null
+      }
+    ],
+    "source_scope_reason": null,
+    "retrieval_called": true,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже."
+  }
+]

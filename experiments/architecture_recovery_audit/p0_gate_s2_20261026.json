@@ -1,0 +1,76 @@
+[
+  {
+    "turn": 1,
+    "case_id": "S2",
+    "user_text": "Касса Эвотор, ошибка 235, а источник про ФН 234.",
+    "raw_provider_fixture": {
+      "request_type": "diagnosis",
+      "relation": "new_task",
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "object": "ФН",
+      "object_evidence": {
+        "quote": "ФН"
+      },
+      "goal": null,
+      "symptom": {
+        "quote": "ошибка 235"
+      },
+      "entities": [
+        {
+          "slot": "manufacturer",
+          "value": "Эвотор",
+          "evidence": {
+            "quote": "Эвотор"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "diagnosis",
+      "intent": "fiscal_drive",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "object": "ФН",
+      "relation": "new_task",
+      "expected_slot": "equipment",
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 0,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "clarify",
+    "reason": "source_model_scope_missing",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "evotor-fn-234-360005580254::Первое различение причины",
+        "section": "Первое различение причины",
+        "source": "data/knowledge/evotor/fn/fn-234.md"
+      }
+    ],
+    "final_reply": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки."
+  }
+]

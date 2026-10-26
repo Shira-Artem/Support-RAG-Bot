@@ -1,0 +1,891 @@
+[
+  {
+    "turn": 1,
+    "case_id": "D1.1",
+    "user_text": "Привет! Помоги мне разобраться с кассами.",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "unknown",
+      "operation": "explain",
+      "object": null,
+      "object_evidence": null,
+      "goal": {
+        "quote": "Помоги мне разобраться с кассами"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "general",
+      "operation": "explain"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "general",
+      "operation": "explain",
+      "object": "касса",
+      "relation": "new_task",
+      "expected_slot": "task",
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "clarify",
+    "reason": "dialogue_state_task_incomplete",
+    "retrieval_reason": null,
+    "selected_sources": [],
+    "source_scope_reason": null,
+    "retrieval_called": false,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Что именно нужно сделать или что сейчас не работает?"
+  },
+  {
+    "turn": 2,
+    "case_id": "D1.2",
+    "user_text": "Что такое ОФД?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "unknown",
+      "operation": "explain",
+      "object": "ОФД",
+      "object_evidence": {
+        "quote": "ОФД"
+      },
+      "goal": {
+        "quote": "Что такое ОФД?"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "general",
+      "operation": "explain"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "answer",
+    "reason": "source_first_grounded_information_summary",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "document_id": "atol-online-11256-what-is-ofd",
+        "section": null
+      }
+    ],
+    "source_scope_reason": null,
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner",
+      "composer_or_repair",
+      "judge"
+    ],
+    "planner_choices": [
+      {
+        "id": "atol-online-11256-what-is-ofd::Что проверено по инструкции производителя",
+        "section": "Что проверено по инструкции производителя",
+        "source": "data/knowledge/atol_online/ofd/what-is-ofd.md"
+      }
+    ],
+    "final_reply": "По документации для области «сервис: АТОЛ Онлайн, производитель: АТОЛ, модель: АТОЛ Онлайн — облачная ККТ»:\nОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.\n\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя"
+  },
+  {
+    "turn": 3,
+    "case_id": "D1.3",
+    "user_text": "А зачем он нужен кассе?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "continue",
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "object_evidence": {
+        "quote": "он"
+      },
+      "goal": {
+        "quote": "зачем он нужен кассе"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "general",
+      "operation": "explain"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "relation": "continue",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 2,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "answer",
+    "reason": "source_first_grounded_information_summary",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "document_id": "atol-online-11256-what-is-ofd",
+        "section": null
+      }
+    ],
+    "source_scope_reason": null,
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner",
+      "composer_or_repair",
+      "judge"
+    ],
+    "planner_choices": [
+      {
+        "id": "atol-online-11256-what-is-ofd::Что проверено по инструкции производителя",
+        "section": "Что проверено по инструкции производителя",
+        "source": "data/knowledge/atol_online/ofd/what-is-ofd.md"
+      }
+    ],
+    "final_reply": "По документации для области «сервис: АТОЛ Онлайн, производитель: АТОЛ, модель: АТОЛ Онлайн — облачная ККТ»:\nОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.\n\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя"
+  },
+  {
+    "turn": 4,
+    "case_id": "D1.4",
+    "user_text": "Спасибо, пока всё.",
+    "raw_provider_fixture": {
+      "request_type": "feedback",
+      "relation": "continue",
+      "intent": "unknown",
+      "operation": "unknown",
+      "object": null,
+      "object_evidence": null,
+      "goal": null,
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "feedback",
+      "intent": "general",
+      "operation": "explain"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "general",
+      "operation": "explain",
+      "object": "ОФД",
+      "relation": "continue",
+      "expected_slot": "details",
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 2,
+      "client_details": [
+        "Спасибо, пока всё."
+      ],
+      "unknown_facts": []
+    },
+    "route": "clarify",
+    "reason": "client_feedback_needs_progress_detail",
+    "retrieval_reason": null,
+    "selected_sources": [],
+    "source_scope_reason": null,
+    "retrieval_called": false,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Понял. Что именно осталось нерешённым или изменилось?"
+  },
+  {
+    "turn": 5,
+    "case_id": "D2.1",
+    "user_text": "У меня Эвотор, чеки не отправляются в ОФД.",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "unknown",
+      "operation": "diagnose",
+      "object": "чек",
+      "object_evidence": {
+        "quote": "чеки"
+      },
+      "goal": null,
+      "symptom": {
+        "quote": "чеки не отправляются в ОФД"
+      },
+      "entities": [
+        {
+          "slot": "manufacturer",
+          "value": "Эвотор",
+          "evidence": {
+            "quote": "Эвотор"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": "чек",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 0,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "answer",
+    "reason": "source_first_safe_preflight",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "evotor/ofd/ofd-unable-to-connect.md",
+        "document_id": "evotor-ofd-error-not-connected-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-settings-check.md",
+        "document_id": "evotor-ofd-settings-reference-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-subscription.md",
+        "document_id": "evotor-ofd-subscription-8865646794770",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "evotor-ofd-error-not-connected-20261019::Безопасные проверки",
+        "section": "Безопасные проверки",
+        "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+      }
+    ],
+    "final_reply": "1. Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.\n\nДополнительное условие источника (Когда передавать специалисту):\nЕсли EoU отсутствует, не выполняйте самостоятельно технологическое обнуление или произвольные кассовые команды. Вендор описывает эти действия, но они требуют контролируемой диагностики. Если сеть, реквизиты ОФД и оплата в порядке, а чеки не уходят — направьте в поддержку кассы или ОФД.\n\nИсточник: data/knowledge/evotor/ofd/ofd-unable-to-connect.md — Безопасные проверки"
+  },
+  {
+    "turn": 6,
+    "case_id": "D2.2",
+    "user_text": "А где проверить связь с ОФД?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "answer_to_clarification",
+      "intent": "unknown",
+      "operation": "diagnose",
+      "object": null,
+      "object_evidence": null,
+      "goal": {
+        "quote": "где проверить связь с ОФД"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": "чек",
+      "relation": "continue",
+      "expected_slot": "equipment",
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "clarify",
+    "reason": "grounded_section_followup_scope_needed",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "evotor/ofd/ofd-unable-to-connect.md",
+        "document_id": "evotor-ofd-error-not-connected-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-settings-check.md",
+        "document_id": "evotor-ofd-settings-reference-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-subscription.md",
+        "document_id": "evotor-ofd-subscription-8865646794770",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "evotor-ofd-error-not-connected-20261019::Безопасные проверки",
+        "section": "Безопасные проверки",
+        "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+      }
+    ],
+    "final_reply": "Этот раздел инструкции я уже привёл. Для следующей применимой проверки укажите точную модель оборудования."
+  },
+  {
+    "turn": 7,
+    "case_id": "D2.3",
+    "user_text": "Интернет работает, что ещё проверить?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "continue",
+      "intent": "unknown",
+      "operation": "diagnose",
+      "object": null,
+      "object_evidence": null,
+      "goal": {
+        "quote": "что ещё проверить"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": "чек",
+      "relation": "continue",
+      "expected_slot": "equipment",
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 2,
+      "client_details": [
+        "Интернет работает",
+        "Интернет работает, что ещё проверить?"
+      ],
+      "unknown_facts": []
+    },
+    "route": "clarify",
+    "reason": "source_model_scope_missing",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "evotor/ofd/ofd-unable-to-connect.md",
+        "document_id": "evotor-ofd-error-not-connected-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-settings-check.md",
+        "document_id": "evotor-ofd-settings-reference-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-subscription.md",
+        "document_id": "evotor-ofd-subscription-8865646794770",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "evotor-ofd-settings-reference-20261019::Навигация",
+        "section": "Навигация",
+        "source": "data/knowledge/evotor/ofd/ofd-settings-check.md"
+      }
+    ],
+    "final_reply": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки."
+  },
+  {
+    "turn": 8,
+    "case_id": "D2.4",
+    "user_text": "Модель Эвотор 7.3, а ОФД я не помню.",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "answer_to_clarification",
+      "intent": "unknown",
+      "operation": "unknown",
+      "object": null,
+      "object_evidence": null,
+      "goal": null,
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "manufacturer",
+          "value": "Эвотор",
+          "evidence": {
+            "quote": "Эвотор"
+          }
+        },
+        {
+          "slot": "equipment",
+          "value": "Эвотор 7.3",
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          }
+        }
+      ],
+      "unknown_facts": [
+        {
+          "slot": "ofd",
+          "evidence": {
+            "quote": "ОФД я не помню"
+          }
+        }
+      ],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": "чек",
+      "relation": "answer_to_clarification",
+      "expected_slot": null,
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": "Эвотор 7.3",
+      "goal_count": 2,
+      "client_details": [
+        "Интернет работает",
+        "Интернет работает, что ещё проверить?"
+      ],
+      "unknown_facts": [
+        "ofd"
+      ]
+    },
+    "route": "answer",
+    "reason": "source_first_exact_section",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "selected_sources": [
+      {
+        "source": "evotor/ofd/ofd-unable-to-connect.md",
+        "document_id": "evotor-ofd-error-not-connected-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-settings-check.md",
+        "document_id": "evotor-ofd-settings-reference-20261019",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/ofd-subscription.md",
+        "document_id": "evotor-ofd-subscription-8865646794770",
+        "section": null
+      },
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "evotor-ofd-error-not-connected-20261019::Безопасные проверки",
+        "section": "Безопасные проверки",
+        "source": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+      }
+    ],
+    "final_reply": "1. Выясните модель Эвотора и проверьте действительность оплаченного периода в кабинете оператора ОФД.\n2. На модели 5, 5i, 7.2, 7.3, 10 или Power под администратором откройте «Настройки → Обслуживание кассы → Диагностика → Диагностический отчёт».\n3. Проверьте поля EoU, наличие выхода в интернет, адрес и порт ОФД. Сверяйте значения с действующими параметрами выбранного оператора.\n4. Посмотрите очередь документов, ожидающих отправки: если после восстановления связи число уменьшается, передача возобновилась.\n\nДополнительное условие источника (Когда передавать специалисту):\nЕсли EoU отсутствует, не выполняйте самостоятельно технологическое обнуление или произвольные кассовые команды. Вендор описывает эти действия, но они требуют контролируемой диагностики. Если сеть, реквизиты ОФД и оплата в порядке, а чеки не уходят — направьте в поддержку кассы или ОФД.\n\nИсточник: data/knowledge/evotor/ofd/ofd-unable-to-connect.md — Безопасные проверки"
+  },
+  {
+    "turn": 9,
+    "case_id": "D2.5",
+    "user_text": "Ошибка осталась, свяжите со специалистом.",
+    "raw_provider_fixture": {
+      "request_type": "escalation",
+      "relation": "continue",
+      "intent": "unknown",
+      "operation": "unknown",
+      "object": null,
+      "object_evidence": null,
+      "goal": null,
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": true,
+      "specialist_evidence": {
+        "quote": "свяжите со специалистом"
+      },
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "escalation",
+      "intent": "receipt",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": "чек",
+      "relation": "answer_to_clarification",
+      "expected_slot": null,
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": "Эвотор 7.3",
+      "goal_count": 2,
+      "client_details": [
+        "Интернет работает",
+        "Интернет работает, что ещё проверить?"
+      ],
+      "unknown_facts": [
+        "ofd"
+      ]
+    },
+    "route": "escalate",
+    "reason": "client_requested_specialist",
+    "retrieval_reason": null,
+    "selected_sources": [],
+    "source_scope_reason": null,
+    "retrieval_called": false,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Конечно. Нажмите кнопку «Позвать специалиста» ниже, чтобы оформить заявку. Она сохраняется локально; доставка сотруднику пока не настроена."
+  },
+  {
+    "turn": 10,
+    "case_id": "D3.1",
+    "user_text": "А по номеру ФН можно найти чек?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "unknown",
+      "operation": "search",
+      "object": "чек",
+      "object_evidence": {
+        "quote": "чек"
+      },
+      "goal": {
+        "quote": "найти чек"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "search"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "receipt",
+      "operation": "search",
+      "object": "чек",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "answer",
+    "reason": "source_first_scoped_limitation",
+    "retrieval_reason": null,
+    "selected_sources": [
+      {
+        "source": "platformaofd/ofd/lkk-receipt-search.md",
+        "document_id": "platformaofd-lkk-receipt-search",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "source_attributed_limitation_only",
+    "retrieval_called": true,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "По документации «Платформа ОФД» (ваш сервис пока не подтверждён):\nФН не подтверждён как прямой фильтр чеков. Не подменяйте ФН номером ФД или ФП. Поиск кассы по ФН описан отдельно. Отсутствие поля в статье не доказывает отсутствие функции в сервисе.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-search.md — Ограничения"
+  },
+  {
+    "turn": 11,
+    "case_id": "D3.2",
+    "user_text": "У меня Платформа ОФД.",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "answer_to_clarification",
+      "intent": "unknown",
+      "operation": "unknown",
+      "object": null,
+      "object_evidence": null,
+      "goal": null,
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "ofd",
+          "value": "Платформа ОФД",
+          "evidence": {
+            "quote": "Платформа ОФД"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "search"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "receipt",
+      "operation": "search",
+      "object": "чек",
+      "relation": "parameter_update",
+      "expected_slot": null,
+      "routing_service": "Платформа ОФД",
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "answer",
+    "reason": "source_first_exact_section",
+    "retrieval_reason": null,
+    "selected_sources": [
+      {
+        "source": "platformaofd/ofd/lkk-receipt-search.md",
+        "document_id": "platformaofd-lkk-receipt-search",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "platformaofd-lkk-receipt-search::Ограничения",
+        "section": "Ограничения",
+        "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md"
+      }
+    ],
+    "final_reply": "ФН не подтверждён как прямой фильтр чеков. Не подменяйте ФН номером ФД или ФП. Поиск кассы по ФН описан отдельно. Отсутствие поля в статье не доказывает отсутствие функции в сервисе.\n\nДополнительное условие источника (Дополнительные условия):\nМожно отбирать по номеру смены, диапазону суммы, полному или частичному имени кассира, способу оплаты, признаку расчёта и статусу ФНС. Для дополнительного тега задаётся его значение; пустое значение отбирает документы с заполненным выбранным тегом. Проверка маркировки доступна при активном тарифе УМ.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-search.md — Ограничения"
+  },
+  {
+    "turn": 12,
+    "case_id": "D3.3",
+    "user_text": "А за прошлый месяц?",
+    "raw_provider_fixture": {
+      "request_type": "information",
+      "relation": "parameter_update",
+      "intent": "unknown",
+      "operation": "search",
+      "object": null,
+      "object_evidence": null,
+      "goal": {
+        "quote": "за прошлый месяц"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "information",
+      "intent": "receipt",
+      "operation": "search"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "receipt",
+      "operation": "search",
+      "object": "чек",
+      "relation": "parameter_update",
+      "expected_slot": null,
+      "routing_service": "Платформа ОФД",
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 2,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "escalate",
+    "reason": "grounded_section_followup_exhausted",
+    "retrieval_reason": null,
+    "selected_sources": [
+      {
+        "source": "platformaofd/ofd/lkk-receipt-search.md",
+        "document_id": "platformaofd-lkk-receipt-search",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "planner_choices": [
+      {
+        "id": "platformaofd-lkk-receipt-search::Ограничения",
+        "section": "Ограничения",
+        "source": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md"
+      }
+    ],
+    "final_reply": "Этот раздел инструкции уже приведён, а следующего подтверждённого шага для вашего случая не нашёл. Запросите специалиста кнопкой ниже."
+  },
+  {
+    "turn": 13,
+    "case_id": "D3.4",
+    "user_text": "Теперь другой вопрос: как заменить ФН?",
+    "raw_provider_fixture": {
+      "request_type": "instruction",
+      "relation": "new_task",
+      "intent": "fiscal_drive",
+      "operation": "replace",
+      "object": "ФН",
+      "object_evidence": {
+        "quote": "ФН"
+      },
+      "goal": {
+        "quote": "заменить ФН"
+      },
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "instruction",
+      "intent": "fiscal_drive",
+      "operation": "replace"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "fiscal_drive",
+      "operation": "replace",
+      "object": "ФН",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": null,
+      "confirmed_manufacturer": null,
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "escalate",
+    "reason": "unsafe_operation",
+    "retrieval_reason": null,
+    "selected_sources": [],
+    "source_scope_reason": null,
+    "retrieval_called": false,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки."
+  }
+]

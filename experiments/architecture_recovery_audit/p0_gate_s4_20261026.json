@@ -1,0 +1,60 @@
+[
+  {
+    "turn": 1,
+    "case_id": "S4",
+    "user_text": "У меня Эвотор, примените настройки IP из статьи aQsi Online.",
+    "raw_provider_fixture": {
+      "request_type": "instruction",
+      "relation": "new_task",
+      "intent": "network",
+      "operation": "configure",
+      "object": null,
+      "object_evidence": null,
+      "goal": {
+        "quote": "примените настройки IP"
+      },
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "manufacturer",
+          "value": "Эвотор",
+          "evidence": {
+            "quote": "Эвотор"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.91
+    },
+    "validated": {
+      "request_type": "instruction",
+      "intent": "network",
+      "operation": "configure"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "network",
+      "operation": "configure",
+      "object": null,
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": "aQsi Online",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "route": "escalate",
+    "reason": "insufficient_applicable_evidence",
+    "retrieval_reason": "no_task_matched_candidates",
+    "selected_sources": [],
+    "source_scope_reason": null,
+    "retrieval_called": true,
+    "generation_stages": [],
+    "planner_choices": [],
+    "final_reply": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже."
+  }
+]
