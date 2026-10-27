@@ -17,7 +17,8 @@ import httpx
 from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS, RELATIONS,
                                 DialogueState, Fact, Observation, is_resolution_turn)
 from app.config import Settings
-from app.groq_rate_limit import GroqQuotaDeferred, estimate_tokens, groq_rate_limiter
+from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_limiter,
+                                 retry_after_seconds)
 
 
 TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
@@ -33,16 +34,25 @@ TURN_TYPE_ALIASES = {"information_request": "information", "informational_reques
     "info_request": "information", "faq": "information", "explanation": "information",
     "explain": "information", "explain_operation": "information", "question": "information",
     "question_request": "information", "troubleshooting": "diagnosis",
+    "problem_report": "diagnosis", "diagnostic_request": "diagnosis",
     "procedural_instruction": "instruction", "human_escalation": "escalation"}
 INTENT_ALIASES = {"definition": "general", "concept": "general",
     "general_question": "general", "general_information": "general",
     "information": "general", "information_request": "general", "provide_info": "general",
-    "explain": "general", "explain_operation": "general"}
+    "explain": "general", "explain_operation": "general",
+    # These labels describe the task mode rather than its domain. Keep them
+    # valid while allowing the grounded object to resolve the domain below.
+    "diagnosis": "unknown", "troubleshooting": "unknown",
+    "error_explanation": "unknown", "error_diagnosis": "unknown",
+    "clarification": "unknown", "procedure": "unknown",
+    "ask": "unknown", "question": "unknown", "request_help": "unknown",
+    "help_request": "unknown"}
 OPERATION_ALIASES = {"explanation": "explain", "explain_operation": "explain",
     "diagnosis": "diagnose", "procedure": "diagnose", "procedural": "diagnose",
-    "status_check": "status", "find_receipt": "search",
-    "search_receipt": "search", "receipt_search": "search", "lookup_receipt": "search",
-    "lookup": "search"}
+    "troubleshooting": "diagnose", "troubleshoot": "diagnose",
+    "error_explanation": "diagnose", "error_diagnosis": "diagnose",
+    "diagnostic": "diagnose", "status_check": "status", "find_receipt": "search",
+    "search_receipt": "search", "receipt_search": "search", "lookup_receipt": "search"}
 OBJECT_ALIASES = {"receipt": "чек", "receipts": "чек", "fiscal_receipt": "чек",
                   "ofd": "ОФД", "fiscal_data_operator": "ОФД"}
 RELATION_ALIASES = {"new_topic": "new_task", "topic_change": "new_task",
@@ -55,7 +65,53 @@ _CONCEPT_DEFINITION_REQUEST = re.compile(
     r"what\s+is|define)\b", re.I)
 _EXPLICIT_LOOKUP_ACTION = re.compile(
     r"\b(?:найти|найдите|находить|ищу|ищем|ищут|искать|поищи|поищите|"
-    r"поискать|разыскать|отыскать|find|search\s+for|look\s+up)\b", re.I)
+    r"поискать|разыскать|отыскать|найден|поиск|find|search\s+for|look\s+up)\b", re.I)
+_ERROR_CONTEXT = re.compile(
+    r"\b(?:ошиб\w*|сбо\w*|error\w*|fault\w*|код\s+(?:ошибки|фн)|фн\s*[-№#]?\s*\d{2,})\b", re.I)
+
+_ENTITY_SLOT_ALIASES = {
+    "model": "equipment", "device": "equipment", "terminal": "equipment",
+    "machine": "equipment", "system": None, "platform": None,
+    "operator": None, "technical_component": "component", "hardware_component": "component",
+}
+
+
+def _contextual_operation(raw_operation: Any, raw_intent: Any, raw_kind: Any,
+                          entities: Any, text: str) -> str:
+    """Normalize an action label using its semantic class and exact user context.
+
+    ``lookup`` is intentionally not a global synonym for ``search``: it can
+    describe an explicit search, an explanation, or troubleshooting.
+    """
+    normalized = _normalize_label(raw_operation, OPERATIONS_ALLOWED, OPERATION_ALIASES)
+    if normalized != "unknown":
+        return normalized
+    operation_key = (raw_operation.strip().casefold().replace("-", "_").replace(" ", "_")
+                     if isinstance(raw_operation, str) else "")
+    intent_key = (raw_intent.strip().casefold().replace("-", "_").replace(" ", "_")
+                  if isinstance(raw_intent, str) else "")
+    kind_key = (raw_kind.strip().casefold().replace("-", "_").replace(" ", "_")
+                if isinstance(raw_kind, str) else "")
+    claimed_slots = {str(item.get("slot", "")).strip().casefold().replace("-", "_").replace(" ", "_")
+                     for item in entities if isinstance(item, dict)} if isinstance(entities, list) else set()
+    error_class = intent_key in {"diagnosis", "troubleshooting", "error_explanation", "error_diagnosis"}
+    error_evidence = bool(claimed_slots & {"error", "error_code", "error_type"}) or bool(_ERROR_CONTEXT.search(text))
+    if operation_key != "lookup":
+        if error_class or error_evidence:
+            return "diagnose"
+        return "unknown"
+    # A direct lookup/search action is stronger than a conflicting generic
+    # task-mode label. Error context only turns an ambiguous lookup into
+    # diagnosis when the client did not explicitly ask to find something.
+    if _EXPLICIT_LOOKUP_ACTION.search(text):
+        return "search"
+    if error_class or error_evidence:
+        return "diagnose"
+    # An information question with a grounded goal can safely enter retrieval;
+    # validate_response will keep the operation read-only.
+    if kind_key in {"question", "information", "information_request", "faq", "explanation"}:
+        return "unknown"
+    return "unknown"
 
 
 def _is_concept_definition_request(text: str) -> bool:
@@ -216,15 +272,53 @@ def _canonical_entity_from_quote(slot: str, quote: str) -> str | None:
     return next(iter(matches)) if len(matches) == 1 else None
 
 
+def _typed_entity_from_quote(quote: str) -> tuple[str, str] | None:
+    """Resolve one unambiguous known entity and its type from exact evidence."""
+    hits: list[tuple[int, int, str, str]] = []
+    for slot, canonical, aliases in ENTITY_NAMES:
+        for alias in aliases:
+            for match in re.finditer(re.escape(alias), quote, re.I):
+                hits.append((match.start(), match.end(), slot, canonical))
+    selected: list[tuple[int, int, str, str]] = []
+    for hit in sorted(hits, key=lambda item: (-(item[1] - item[0]), item[0])):
+        start, end, *_ = hit
+        if any(start < other_end and end > other_start
+               for other_start, other_end, *_ in selected):
+            continue
+        selected.append(hit)
+    identities = {(slot, canonical) for _, _, slot, canonical in selected}
+    return next(iter(identities)) if len(identities) == 1 else None
+
+
+def _entity_value_matches(value: str, slot: str, canonical: str, quote: str) -> bool:
+    if _fold(value) == _fold(canonical):
+        return True
+    return any(_fold(value) == _fold(alias) and _fold(alias) in _fold(quote)
+               for candidate_slot, _, aliases in ENTITY_NAMES
+               if candidate_slot == slot for alias in aliases)
+
+
 def _extract_known_entities(text: str, message_id: int | str,
                             entities: dict[str, list[Fact]],
                             diagnostics: list[dict[str, Any]]) -> None:
-    """Recover registered names the model omitted, using exact message spans only."""
+    """Recover known names and explicit brand/model pairs from exact spans."""
     candidates = []
     for slot, canonical, aliases in ENTITY_NAMES:
         for alias in aliases:
             for match in re.finditer(re.escape(alias), text, re.I):
                 candidates.append((match.start(), match.end(), slot, canonical, alias))
+    model_candidates: list[tuple[int, int, str, str]] = []
+    for slot, brand, aliases in ENTITY_NAMES:
+        if slot != "manufacturer":
+            continue
+        brand_pattern = "(?:" + "|".join(
+            sorted((re.escape(alias) for alias in aliases), key=len, reverse=True)
+        ) + ")"
+        for match in re.finditer(
+                rf"(?P<brand>{brand_pattern})\s+(?P<model>[0-9]+(?:[.,][0-9]+)*[a-zа-яё]?)",
+                text, re.I):
+            model_candidates.append((match.start(), match.end(), brand,
+                                     f"{brand} {match.group('model')}"))
     # Prefer full service names (for example, ATOL Online) over overlapping
     # manufacturer aliases, so a longer known alias cannot become a false route.
     selected: list[tuple[int, int, str, str, str]] = []
@@ -247,6 +341,20 @@ def _extract_known_entities(text: str, message_id: int | str,
         _field_result(diagnostics, f"entities.{slot}", "accepted",
                       "exact_known_alias_found_in_current_message", value=canonical,
                       start=start, end=end)
+    seen_equipment = {fact.value.casefold() for fact in entities.get("equipment", [])}
+    for start, end, _brand, model in model_candidates:
+        if model.casefold() in seen_equipment:
+            continue
+        fact = Fact.span(text, message_id, start, end, value=model)
+        if not _entity_mention_is_asserted(text, fact):
+            _field_result(diagnostics, "entities.equipment", "rejected",
+                          "known_model_mention_is_negated_or_uncertain", start=start, end=end)
+            continue
+        entities.setdefault("equipment", []).append(fact)
+        seen_equipment.add(model.casefold())
+        _field_result(diagnostics, "entities.equipment", "accepted",
+                      "exact_known_manufacturer_model_span", value=model,
+                      start=start, end=end)
 
 
 def _entity_mention_is_asserted(text: str, fact: Fact) -> bool:
@@ -267,8 +375,10 @@ def _entity_mention_is_asserted(text: str, fact: Fact) -> bool:
     if re.search(r"\bне\s+(?:используем|пользуемся|применяем|поддерживаем|работаем\s+с|наш\w*|этот|эта|это)\s*(?:[а-яa-z0-9-]+\s*){0,2}$|"
                  r"\b(?:нет|без)\s*(?:[а-яa-z0-9-]+\s*){0,1}$|\bне\s*$", prefix, re.I):
         return False
-    if re.search(r"\b(?:возможно|кажется|наверное|сомневаюсь|не\s+уверен\w*|не\s+знаю)\b[^,;.!?\n]{0,30}$",
-                 prefix, re.I):
+    sentence_start = max((before.rfind(mark) + 1 for mark in ".!?\n"), default=0)
+    uncertainty_context = before[max(sentence_start, len(before) - 60):]
+    if re.search(r"\b(?:возможно|кажется|наверное|сомневаюсь|не\s+уверен\w*|не\s+знаю)\b"
+                 r"\s*(?:[,;:]\s*)?(?:это\s+)?[^.!?\n]{0,30}$", uncertainty_context, re.I):
         return False
     return True
 
@@ -363,8 +473,19 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
     raw_relation, raw_intent, raw_operation = data["relation"], data["intent"], data["operation"]
     relation = _normalize_label(raw_relation, RELATIONS, RELATION_ALIASES)
     intent = _normalize_label(raw_intent, INTENTS, INTENT_ALIASES)
-    operation = _normalize_label(raw_operation, OPERATIONS_ALLOWED, OPERATION_ALIASES)
+    operation = _contextual_operation(raw_operation, raw_intent, raw_kind, data.get("entities"), text)
     kind = _normalize_label(raw_kind, TURN_TYPES, TURN_TYPE_ALIASES)
+    raw_kind_key = (raw_kind.strip().casefold().replace("-", "_").replace(" ", "_")
+                    if isinstance(raw_kind, str) else "")
+    if kind == "unknown" and raw_kind_key in {"request", "help_request", "support_request", "action_request"}:
+        if operation in {"diagnose", "status", "check"}:
+            kind, kind_reason = "diagnosis", "request_type_derived_from_diagnostic_operation"
+        elif operation == "explain":
+            kind, kind_reason = "information", "request_type_derived_from_explanation_operation"
+        elif operation != "unknown":
+            kind, kind_reason = "instruction", "request_type_derived_from_task_operation"
+        else:
+            kind_reason = "unsupported_value_preserved_as_unknown"
     if kind == "unknown":
         # Keep independently useful task labels. If none can establish a safe
         # route, preserve the turn as unknown so the dialogue layer can clarify.
@@ -379,7 +500,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             kind_reason = "derived_from_valid_task_operation"
         else:
             kind_reason = "unsupported_value_preserved_as_unknown"
-    else:
+    elif raw_kind_key not in {"request", "help_request", "support_request", "action_request"}:
         kind_reason = ("valid_turn_classification" if raw_kind.strip().casefold().replace("-", "_").replace(" ", "_") == kind
                        else "normalized_turn_type_alias")
     if is_resolution_turn(text):
@@ -401,9 +522,11 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
         normalized_input = raw_value.strip().casefold().replace("-", "_").replace(" ", "_") if isinstance(raw_value, str) else None
         valid_input = normalized_input in (RELATIONS if field_name == "relation" else
             INTENTS if field_name == "intent" else OPERATIONS_ALLOWED)
-        status = "accepted" if valid_input or aliases.get(normalized_input) == value else "rejected"
+        contextual_lookup = field_name == "operation" and normalized_input == "lookup" and value != "unknown"
+        status = "accepted" if valid_input or aliases.get(normalized_input) == value or contextual_lookup else "rejected"
         reason = ("valid_semantic_classification" if normalized_input == value else
-                  "normalized_semantic_alias" if value != "unknown" and aliases.get(normalized_input) == value else
+                  "contextual_lookup_operation" if contextual_lookup else
+                  "normalized_semantic_alias" if aliases.get(normalized_input) == value else
                   "unsupported_value_defaulted_to_unknown")
         _field_result(diagnostics, field_name, status, reason, value=value)
     if (kind == "information" and operation in {"search", "unknown"}
@@ -534,10 +657,17 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             normalized_slot in {"model", "device", "terminal", "equipment"}
             or (normalized_slot == value.strip().casefold().replace(" ", "_")
                 and re.search(r"\d", value)))
-        effective_slot = "equipment" if equipment_claim else slot
+        typed = _typed_entity_from_quote(evidence.quote)
+        effective_slot = "equipment" if equipment_claim else _ENTITY_SLOT_ALIASES.get(normalized_slot, slot)
+        retyped = False
         if effective_slot not in ENTITY_SLOTS:
-            _field_result(diagnostics, field, "rejected", "invalid_entity_slot_or_value")
-            continue
+            if (typed and _entity_value_matches(value, typed[0], typed[1], evidence.quote)):
+                effective_slot, _typed_value = typed
+                retyped = True
+            else:
+                _field_result(diagnostics, field, "rejected", "invalid_entity_slot_or_value",
+                              slot=slot, claimed=value)
+                continue
         if not _entity_mention_is_asserted(text, evidence):
             _field_result(diagnostics, field, "rejected", "entity_mention_is_negated_or_uncertain",
                           slot=slot, claimed=value, start=evidence.start, end=evidence.end)
@@ -574,11 +704,16 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
         else:
             canonical = _canonical_entity_from_quote(effective_slot, evidence.quote)
             equipment_span = evidence
+            if (canonical is None and typed and typed[0] != effective_slot
+                    and _entity_value_matches(value, typed[0], typed[1], evidence.quote)):
+                effective_slot, canonical, retyped = typed[0], typed[1], True
         if canonical is None:
             _field_result(diagnostics, field, "rejected", "entity_not_supported_by_source_alias",
                           slot=slot, claimed=value, start=evidence.start, end=evidence.end)
             continue
         reason = "exact_source_value" if canonical == value else "normalized_to_known_alias_from_source"
+        if retyped:
+            reason = "retyped_from_exact_source_alias"
         entities.setdefault(effective_slot, []).append(Fact.span(text, message_id,
             equipment_span.start, equipment_span.end, value=canonical))
         _field_result(diagnostics, field, "accepted", reason, slot=effective_slot,
@@ -677,8 +812,10 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
         "temperature": 0, "max_completion_tokens": 4096,
         "messages": [{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
         "response_format": {"type": "json_schema", "json_schema": schema}}
+    attempt_number = None
     try:
-        await groq_rate_limiter.before_request(estimate_tokens(request))
+        attempt_number = await groq_rate_limiter.before_request(
+            estimate_tokens(request), stage="understanding")
     except GroqQuotaDeferred as exc:
         _append_local_trace(model=settings.groq_model, status="quota_deferred",
             structured_output=None, field_diagnostics=[{"field": "$", "status": "rejected",
@@ -695,7 +832,8 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
             response = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=request)
         if response.status_code >= 400:
             rate_headers = groq_rate_limiter.observe(response.headers, status=response.status_code,
-                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000))
+                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000),
+                attempt_number=attempt_number)
             observed = True
             # The provider body may echo user input or credentials. Retain only typed status.
             provider_error = f"HTTP {response.status_code}"
@@ -710,14 +848,13 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
                                      model=settings.groq_model, http_status=response.status_code,
                                      field_diagnostics=diagnostics, provider_error=provider_error,
                                      phase="provider", code=f"groq_http_{response.status_code}",
-                                     retry_after_seconds=float(rate_headers["retry-after"])
-                                     if rate_headers.get("retry-after", "").replace(".", "", 1).isdigit() else None,
+                                     retry_after_seconds=retry_after_seconds(rate_headers),
                                      rate_limit_headers=rate_headers)
         result = response.json()
         usage = result.get("usage") or {}
         groq_rate_limiter.observe(response.headers, status=response.status_code,
             usage=usage if isinstance(usage, dict) else None, stage="understanding",
-            duration_ms=round((perf_counter()-started)*1000))
+            duration_ms=round((perf_counter()-started)*1000), attempt_number=attempt_number)
         observed = True
         tokens = {key: usage.get(source) for key, source in (("prompt_tokens", "prompt_tokens"),
                   ("completion_tokens", "completion_tokens"), ("total_tokens", "total_tokens"))}
@@ -756,7 +893,8 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
         if response is not None and not observed:
             groq_rate_limiter.observe(response.headers, status=response.status_code,
-                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000))
+                usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000),
+                attempt_number=attempt_number)
         phase = "transport" if isinstance(exc, httpx.HTTPError) else "provider_response"
         code = "transport_error" if isinstance(exc, httpx.HTTPError) else "provider_response_malformed"
         diagnostics = [{"field": "$", "status": "rejected", "reason": code}]

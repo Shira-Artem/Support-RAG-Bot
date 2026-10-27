@@ -49,6 +49,8 @@ _CONTEXTUAL_OPERATIONS = {
     ("fiscal_document_control", "diagnose"): "diagnose_fiscal_document",
     ("marking", "check"): "check_marking_code",
     ("marking", "diagnose"): "check_marking_code",
+    ("tspiot", "diagnose"): "diagnose_tspiot",
+    ("tspiot", "check"): "diagnose_tspiot",
     ("error_diagnosis", "diagnose"): "diagnose_error",
     ("error_diagnosis", "check"): "diagnose_error",
     ("receipt_transmission", "diagnose"): "check_transmission",

@@ -19,6 +19,7 @@ from app.expert_telegram import ExpertTelegram
 from app.source_first_service import SourceFirstService
 from app.dialogue_understanding import UnderstandingError, understand_message, understanding_to_dict
 from app.handoff import HandoffService, HandoffSettings, TelegramBotApiTransport, specialist_request
+from app.groq_rate_limit import allowlist_local_tpm_bypass
 from qdrant_client import QdrantClient
 
 
@@ -287,8 +288,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         understanding = None
         understanding_error = None
         try:
-            understanding = await understand_message(user_text, "current", previous_history,
-                                                     previous_state, settings)
+            with allowlist_local_tpm_bypass(use_source_first):
+                understanding = await understand_message(user_text, "current", previous_history,
+                                                         previous_state, settings)
         except UnderstandingError as exc:
             understanding_error = {"type": type(exc).__name__, "message": str(exc),
                 "http_status": exc.http_status, "tokens": exc.tokens,
@@ -330,9 +332,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     "retry_after_seconds": understanding_error.get("retry_after_seconds"),
                     "rate_limit_headers": understanding_error.get("rate_limit_headers")})
         elif use_source_first:
-            answer = await source_first_service.answer(
-                user_text, state=dialogue_state, history=conversations.history(conversation_id),
-                coordinator_decision=coordinator_decision)
+            with allowlist_local_tpm_bypass(use_source_first):
+                answer = await source_first_service.answer(
+                    user_text, state=dialogue_state, history=conversations.history(conversation_id),
+                    coordinator_decision=coordinator_decision)
         else:
             answer = await answer_service.answer(user_text, state=dialogue_state)
     except Exception as exc:

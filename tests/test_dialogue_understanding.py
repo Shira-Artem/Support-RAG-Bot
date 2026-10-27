@@ -514,6 +514,127 @@ def test_current_turn_symptom_is_null_or_exact_current_message_quote():
                for item in observation.validation_diagnostics)
 
 
+@pytest.mark.parametrize(("request_type", "intent", "operation", "expected_kind", "expected_operation"), [
+    ("request", "troubleshooting", "lookup", "diagnosis", "diagnose"),
+    ("diagnostic_request", "error_explanation", "lookup", "diagnosis", "diagnose"),
+])
+def test_semantic_aliases_are_normalized_with_context(
+        request_type, intent, operation, expected_kind, expected_operation):
+    text = "Подскажите, что означает ошибка 234?"
+    raw = payload(text, kind=request_type, intent=intent, operation=operation,
+                  obj="ошибка", goal="ошибка 234", symptom="ошибка 234")
+    kind, _, _, obs = validate_response(raw, text, "alias")
+    assert kind == expected_kind
+    assert obs.operation == expected_operation
+    assert obs.goals and obs.goals[0].quote == "ошибка 234"
+
+
+def test_explicit_receipt_lookup_stays_search():
+    text = "Найдите чек по номеру ФН в личном кабинете."
+    raw = payload(text, kind="question", intent="ask", operation="lookup", obj="чек",
+                  goal="Найдите чек по номеру ФН в личном кабинете")
+    kind, _, _, obs = validate_response(raw, text, "lookup")
+    assert kind == "information" and obs.operation == "search"
+    raw["intent"] = "troubleshooting"
+    kind, _, _, obs = validate_response(raw, text, "lookup")
+    assert kind == "information" and obs.operation == "search"
+
+
+def test_lookup_is_not_globally_mapped_to_search_and_still_requires_exact_grounding():
+    text = "Не могу войти, потому что пароль не принимается."
+    raw = payload(text, kind="request", intent="troubleshooting", operation="lookup",
+                  obj=None, goal="пароль не принимается", symptom="пароль не принимается")
+    kind, _, _, obs = validate_response(raw, text, "lookup")
+    assert kind == "diagnosis" and obs.operation == "diagnose"
+    raw["symptom"] = {"quote": "сайт заблокирован"}
+    _, _, _, obs = validate_response(raw, text, "lookup")
+    assert obs.symptom is None
+    assert any(d["field"] == "symptom" and d["status"] == "rejected"
+               for d in obs.validation_diagnostics)
+
+
+def test_tspiot_is_retyped_as_component_from_exact_span_not_ofd_or_service():
+    text = "На Эвотор 7.3 модуль ТС ПИоТ не запускается."
+    raw = payload(text, kind="diagnostic_request", intent="troubleshooting",
+        operation="diagnosis", obj="касса", object_quote="Эвотор 7.3",
+        goal="модуль ТС ПИоТ не запускается", symptom="не запускается",
+        entities=[("manufacturer", "Эвотор", "Эвотор"),
+                  ("system", "ТС ПИоТ", "ТС ПИоТ")])
+    kind, _, _, obs = validate_response(raw, text, "tspiot")
+    assert kind == "diagnosis"
+    assert obs.entities["manufacturer"][0].value == "Эвотор"
+    assert obs.entities["component"][0].value.casefold() == "ТС ПИоТ".casefold()
+    assert "ofd" not in obs.entities and "service" not in obs.entities
+    assert any(d["field"] == "entities[1]" and d["reason"] == "retyped_from_exact_source_alias"
+               for d in obs.validation_diagnostics)
+
+
+def test_unrelated_rejected_intent_does_not_drop_exact_symptom_or_clear_unmet_expected():
+    text = "Интернет проверен, но чеки всё ещё не передаются."
+    state = DialogueState(task_id="task:prior", intent="receipt", operation="diagnose")
+    state.expected = ExpectedClarification("details", "Что уже проверили?", "assistant")
+    raw = payload(text, kind="question", relation="continue", intent="some_unsupported_intent",
+        operation="some_unsupported_operation", obj=None, goal="чеки всё ещё не передаются",
+        symptom="чеки всё ещё не передаются")
+    _, _, _, obs = validate_response(raw, text, "followup")
+    updated = DialogueManager().advance(state, text, "followup", observation=obs)
+    assert obs.symptom is not None
+    assert updated.symptom and updated.symptom.quote == "чеки всё ещё не передаются"
+    assert updated.task_id == "task:prior"
+    assert updated.expected is None
+    assert any(f.value.startswith("Интернет проверен") for f in updated.details)
+
+
+def test_contradiction_keeps_expected_clarification_and_prior_symptom():
+    text = "Нет, это не Эвотор; речь о другой кассе."
+    state = DialogueState(task_id="task:prior", intent="receipt", operation="diagnose")
+    state.expected = ExpectedClarification("equipment", "Какая модель кассы?", "assistant")
+    state.symptom = Fact.span("Чеки не передаются.", "prior", 0, len("Чеки не передаются."))
+    raw = payload(text, relation="contradiction", intent="unknown", operation="unknown", obj=None,
+                  entities=[("manufacturer", "Эвотор", "Эвотор")])
+    _, _, _, obs = validate_response(raw, text, "contradiction")
+    updated = DialogueManager().advance(state, text, "contradiction", observation=obs)
+    assert updated.relation == "contradiction"
+    assert updated.expected is not None and updated.expected.slot == "equipment"
+    assert updated.symptom and updated.symptom.message_id == "prior"
+
+
+def test_tspiot_negation_does_not_create_component_entity():
+    text = "Мы не используем ТС ПИоТ; касса Эвотор не печатает чек."
+    raw = payload(text, entities=[("component", "ТС ПИоТ", "ТС ПИоТ"),
+                                  ("manufacturer", "Эвотор", "Эвотор")])
+    _, _, _, obs = validate_response(raw, text, "negative")
+    assert "component" not in obs.entities
+    assert obs.entities["manufacturer"][0].value == "Эвотор"
+    assert any(d["field"] == "entities[0]" and d["reason"] == "entity_mention_is_negated_or_uncertain"
+               for d in obs.validation_diagnostics)
+
+
+def test_explicit_manufacturer_model_pair_survives_wrong_object_and_entity_slots():
+    text = "После настройки на Эвотор 7.3 чек не передается в ОФД."
+    raw = payload(text, relation="new_task", intent="request_help", operation="troubleshooting",
+        obj="Эвотор 7.3", object_quote="Эвотор 7.3",
+        goal="чек не передается в ОФД", symptom="не передается",
+        entities=[("destination", "ОФД", "ОФД")])
+    _, _, _, obs = validate_response(raw, text, "model")
+    assert obs.entities["manufacturer"][0].value == "Эвотор"
+    assert obs.entities["equipment"][0].value == "Эвотор 7.3"
+    fact = obs.entities["equipment"][0]
+    assert text[fact.start:fact.end] == fact.quote == "Эвотор 7.3"
+    assert any(d["field"] == "entities.equipment"
+               and d["reason"] == "exact_known_manufacturer_model_span"
+               for d in obs.validation_diagnostics)
+
+
+@pytest.mark.parametrize("prefix", ["Мы не используем", "Возможно, это"])
+def test_model_pair_extraction_rejects_negated_or_uncertain_mentions(prefix):
+    text = f"{prefix} Эвотор 7.3."
+    raw = payload(text, kind="diagnosis", relation="new_task", intent="device",
+                  operation="diagnose", obj=None)
+    _, _, _, obs = validate_response(raw, text, "model-negative")
+    assert "equipment" not in obs.entities
+
+
 def test_understanding_is_applied_once_from_sqlite_event(tmp_path):
     text = "Эвотор не передает чеки"
     data = payload(text, entities=[("manufacturer", "Эвотор", "Эвотор")], symptom="не передает чеки",

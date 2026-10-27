@@ -8,7 +8,8 @@ import traceback
 import httpx
 
 from app.config import Settings
-from app.groq_rate_limit import GroqQuotaDeferred, estimate_tokens, groq_rate_limiter
+from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_limiter,
+                                 retry_after_seconds)
 
 
 class GenerationError(RuntimeError):
@@ -75,9 +76,11 @@ async def generate(messages: list[dict], settings: Settings, *, call_stage: str 
         raise GenerationError("LLM API key is not configured")
     headers["Authorization"] = f"Bearer {key}"
     request = {"model": model, "messages": messages, "temperature": 0.2, **token_limit}
+    attempt_number = None
     if settings.llm_provider == "groq":
         try:
-            await groq_rate_limiter.before_request(estimate_tokens(request))
+            attempt_number = await groq_rate_limiter.before_request(
+                estimate_tokens(request), stage=call_stage)
         except GroqQuotaDeferred as exc:
             raise GenerationError("Groq quota temporarily unavailable", error_type=type(exc).__name__,
                                   retry_after_seconds=exc.retry_after_seconds, stage=call_stage,
@@ -114,7 +117,8 @@ async def generate(messages: list[dict], settings: Settings, *, call_stage: str 
         rate_headers = (groq_rate_limiter.observe(getattr(response, "headers", {}),
                         status=getattr(response, "status_code", None),
                         usage=usage, stage=call_stage,
-                        duration_ms=round((perf_counter() - started) * 1000))
+                        duration_ms=round((perf_counter() - started) * 1000),
+                        attempt_number=attempt_number)
                         if settings.llm_provider == "groq" else None)
         return Generation(
             text=content.strip(), model=data.get("model") or model,
@@ -132,18 +136,13 @@ async def generate(messages: list[dict], settings: Settings, *, call_stage: str 
         # Provider response bodies may contain sensitive data; never expose them.
         response = exc.response if isinstance(exc, httpx.HTTPStatusError) else response
         status = getattr(response, "status_code", None) if response is not None else None
-        retry_after = None
         response_headers = getattr(response, "headers", {}) if response is not None else {}
-        rate_headers = (groq_rate_limiter.observe(response_headers, status=status, usage=None,
-                        stage=call_stage, duration_ms=round((perf_counter() - started) * 1000))
+        rate_headers = (groq_rate_limiter.observe(response_headers, status=status,
+                        usage=None,
+                        stage=call_stage, duration_ms=round((perf_counter() - started) * 1000),
+                        attempt_number=attempt_number)
                         if settings.llm_provider == "groq" else None)
-        if response_headers:
-            try:
-                value = float(response_headers.get('retry-after', ''))
-                if 0 <= value <= 86400:
-                    retry_after = value
-            except ValueError:
-                pass
+        retry_after = retry_after_seconds(response_headers)
         provider_error_code = provider_error_param = provider_error_type = None
         provider_usage = None
         schema_error = None

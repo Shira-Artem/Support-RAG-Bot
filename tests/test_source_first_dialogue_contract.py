@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 from app.config import Settings
 from app.dialogue_state import DialogueManager, DialogueState
+from app.dialogue_state import ActiveRoute, Fact, TaskContext
 from app.llm_client import Generation
 from app.rag import SearchResult
 from app.retrieval_pipeline import EvaluatedDocument, Relevance, RetrievalResult
@@ -275,7 +276,7 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
     assert "действующий тариф" not in answer.text and "текущую очередь" not in answer.text
 
 
-def test_vendor_scoped_procedure_requests_service_before_planner(monkeypatch, tmp_path):
+def test_vendor_scoped_procedure_requests_manufacturer_not_ofd_service(monkeypatch, tmp_path):
     path = "evotor/ofd/ofd-subscription.md"
     doc_id, heading = "evotor-ofd-subscription-8865646794770", "Возможная причина"
     content = "Одна из причин отсутствия передачи — завершившийся оплаченный период обслуживания оператора."
@@ -293,8 +294,9 @@ def test_vendor_scoped_procedure_requests_service_before_planner(monkeypatch, tm
                          .answer(message, state=state))
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "source_scope_context_missing"
-    assert answer.clarification_slot == "service"
-    assert "какой сервис" in answer.text.lower() or "какой сервис" in answer.text.lower()
+    assert answer.clarification_slot == "manufacturer"
+    assert "производител" in answer.text.lower()
+    assert "офд" not in answer.text.lower()
 
 
 def test_rejected_entity_cannot_satisfy_vendor_scope_gate(monkeypatch, tmp_path):
@@ -323,6 +325,71 @@ def test_rejected_entity_cannot_satisfy_vendor_scope_gate(monkeypatch, tmp_path)
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "source_scope_context_missing"
     assert answer.clarification_slot in {"service", "manufacturer"}
+
+
+def test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only(tmp_path):
+    source = "evotor/fn/fn-234.md"
+    doc_id, heading = "evotor-fn-234-360005580254", "Первое различение причины"
+    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    text = dict(_sections(body))[heading]
+    scope = {"service": "Эвотор", "task_category": "error_diagnosis",
+             "operations": ["diagnose_error"], "manufacturer": "Эвотор", "model": None}
+    retrieval = _retrieval(source, doc_id, heading, scope, text)
+    question = "На кассе появилась ошибка ФН 234. Что она означает и какие безопасные проверки доступны?"
+    state = DialogueState(intent="fiscal_drive", operation="diagnose", object="ФН 234",
+                          task=Fact(question, 1, question, 0, len(question)))
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+                         .answer(question, state=state,
+                             coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert answer.clarification_slot is None
+    assert "Статья производителя связывает код ФН 234" in answer.text
+    assert "Область источника: Эвотор" in answer.text
+    assert "модель оборудования не подтверждена" in answer.text.lower()
+    assert "Проверьте" not in answer.text and "Настройки →" not in answer.text
+    gate = answer.retrieval_diagnostics["source_scope_gate"]
+    assert gate["attributed_fact_only"] is True
+    assert gate["customer_scope_confirmed"] is False
+
+
+def test_software_integration_scope_does_not_require_hardware_model_or_ofd(tmp_path, monkeypatch):
+    import json
+
+    source = "1c/bank/directbank-all-accounts.md"
+    doc_id, heading = "batch-20261013-bank-directbank-all-accounts", "Безопасная диагностика"
+    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    text = dict(_sections(body))[heading]
+    scope = {"service": "1С:Бухгалтерия 8", "task_category": "bank_statement",
+             "operations": ["load_bank_statements"], "manufacturer": "1С",
+             "model": "1С:Бухгалтерия 8, редакция 3.0"}
+    retrieval = _retrieval(source, doc_id, heading, scope, text)
+    question = "В 1С перестали загружаться банковские выписки через DirectBank. С чего начать?"
+    facts = {slot: [Fact(value, 1, value, 0, len(value))]
+             for slot, value in {"software": "1С", "integration": "DirectBank"}.items()}
+    task = TaskContext(task_id="bank", topic_start_message_id=1, intent="bank_statement",
+        operation="diagnose", object="банковская выписка", entities=facts,
+        active_route=ActiveRoute("software", facts["software"][0]),
+        task_fact=Fact(question, 1, question, 0, len(question)))
+
+    async def select_diagnostic(messages, _settings):
+        payload = json.loads(messages[-1]["content"])
+        selected = next(item for item in payload["candidate_sections"]
+                        if item["section"] == heading)
+        return Generation(json.dumps({"mode": "select", "section_id": selected["id"],
+            "applicability_confirmed": True, "order_confirmed": True, "reason": "scoped software diagnostic"}),
+            "offline-planner")
+
+    monkeypatch.setattr("app.source_first_service.generate", select_diagnostic)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+        .answer(question, state=DialogueState(task_context=task),
+                coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert answer.clarification_slot is None
+    assert "1С:ДиректБанк" in answer.text
+    assert "ОФД" not in answer.text
+    gate = answer.retrieval_diagnostics["source_scope_gate"]
+    assert gate["eligible_source_count"] == 1
+    assert gate["inapplicable"] == []
 
 
 def test_information_followup_gets_grounded_answer_for_current_question(monkeypatch, tmp_path):

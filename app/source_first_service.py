@@ -41,6 +41,21 @@ _CONDITION_OR_WARNING = re.compile(
     re.IGNORECASE,
 )
 _GENERIC_SCOPE_TERMS = {"ofd", "kkt", "фнс", "ккт", "документ", "сервис", "данн", "касс"}
+_HARDWARE_TASK_CATEGORIES = {"device", "fiscal_drive", "network", "network_diagnostics",
+    "ofd_connection", "error_diagnosis", "receipt_transmission", "fiscal_document_control",
+    "fiscal_format", "marking", "tspiot"}
+
+
+def _matches_scope_value(left: str, right: str) -> bool:
+    """Match equivalent source scope labels without conflating their types."""
+    normalize = lambda value: re.sub(r"[^a-zа-я0-9]+", " ", value.casefold().replace("ё", "е")).strip()
+    a, b = normalize(str(left)), normalize(str(right))
+    if not a or not b:
+        return False
+    online = {"online", "онлайн"}
+    if bool(set(a.split()) & online) != bool(set(b.split()) & online):
+        return False
+    return set(a.split()) <= set(b.split()) or set(b.split()) <= set(a.split())
 
 
 def _sections(body: str) -> list[tuple[str, str]]:
@@ -96,7 +111,8 @@ def _focused_approved_sentence(sections: list[dict], focus: str) -> tuple[dict, 
     ranked = []
     for section_index, item in enumerate(sections):
         for sentence_index, sentence in enumerate(statements(item["text"])):
-            if evidence_role(sentence) != "fact":
+            if (evidence_role(sentence) != "fact"
+                    or evidence_kind(sentence, str(item.get("section") or "")) in {"procedure", "interface"}):
                 continue
             sentence_terms = _focus_terms(sentence)
             overlap = len(focus_terms & sentence_terms)
@@ -774,8 +790,13 @@ class SourceFirstService:
         scope = selected.get("scope") or {}
         scope_labels = [str(scope[key]) for key in ("service", "manufacturer", "model")
                         if scope.get(key)]
-        attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}.\n"
-                       if scope_labels else "")
+        scope_gate = (base.get("retrieval_diagnostics") or {}).get("source_scope_gate") or {}
+        if scope_gate.get("attributed_fact_only"):
+            attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}. "
+                          "Модель оборудования не подтверждена; привожу только общий факт из источника.\n")
+        else:
+            attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}.\n"
+                           if scope_labels else "")
         text = (f"{sentence}\n\n{attribution}Источник: {selected['source']} — "
                 f"{selected['section']}")
         if unsafe_operation_issue(text) or instruction_issue(sentence, evidence):
@@ -995,9 +1016,26 @@ class SourceFirstService:
             scoped_limitations = []
             for item in sections:
                 scope = item["scope"]
-                required = [("service", {"service", "ofd"}),
-                            ("manufacturer", {"manufacturer", "equipment", "service", "ofd"}),
-                            ("model", {"equipment", "model"})]
+                # `service` in source metadata is a publisher/product label,
+                # not a synonym for the customer's OFD. Resolve it only
+                # against independently confirmed entity types that can name
+                # that product (including software/integration), while keeping
+                # manufacturer and model as separate hardware facts.
+                hardware_scope = scope.get("task_category") in _HARDWARE_TASK_CATEGORIES
+                required = []
+                if scope.get("service"):
+                    service_slots = {"service", "software", "integration"}
+                    if hardware_scope:
+                        service_slots.add("manufacturer")
+                    # A vendor's own support label duplicates the metadata
+                    # manufacturer; it is not a request for the customer's OFD.
+                    if not (scope.get("manufacturer") and _matches_scope_value(
+                            scope["service"], scope["manufacturer"])):
+                        required.append(("service", service_slots))
+                if hardware_scope and scope.get("manufacturer"):
+                    required.append(("manufacturer", {"manufacturer"}))
+                if hardware_scope and scope.get("model"):
+                    required.append(("model", {"equipment"}))
                 missing_slots = []
                 mismatch = False
                 for field, client_slots in required:
@@ -1006,23 +1044,27 @@ class SourceFirstService:
                         continue
                     values = {fact.value.casefold() for slot in client_slots
                               for fact in state.task_entities.get(slot, [])}
-                    # Some reviewed vendor documents encode the device maker
-                    # in `service` because their procedures are specific to
-                    # that vendor's equipment. Accept that route only when
-                    # the exact metadata value matches a client-confirmed
-                    # manufacturer; this does not confirm an OFD operator.
-                    if field == "service" and not values:
-                        values = {fact.value.casefold()
-                                  for fact in state.task_entities.get("manufacturer", [])}
                     if not values:
                         missing_slots.append(field)
-                    elif not any(expected_value.casefold() in value or value in expected_value.casefold()
-                                 for value in values):
+                    elif not any(_matches_scope_value(expected_value, value) for value in values):
                         mismatch = True
                 if mismatch:
                     inapplicable.append({"document_id": item["document_id"], "reason": "confirmed_scope_mismatch"})
                     continue
                 if missing_slots:
+                    # When the article is manufacturer-scoped but contains
+                    # general error facts rather than model instructions, a
+                    # tightly attributed fact-only answer is safer and more
+                    # useful than asking for an OFD or inventing applicability.
+                    if (not mismatch and hardware_scope and not scope.get("model")
+                            and missing_slots == ["manufacturer"]
+                            and scope.get("manufacturer")
+                            and state.operation == "diagnose"):
+                        fact_sections = [section for section in [item]
+                            if any(evidence_kind(sentence, section["section"]) == "fact"
+                                   for sentence in statements(section["text"]))]
+                        if fact_sections:
+                            scoped_limitations.extend(fact_sections)
                     unknown_slots = set(state.task_context.unknown_facts if state.task_context else [])
                     askable_missing = [field for field in missing_slots
                                        if ("equipment" if field == "model" else field) not in unknown_slots]
@@ -1042,6 +1084,14 @@ class SourceFirstService:
                 limitation_docs = {item["document_id"] for item in scoped_limitations}
                 if len(limitation_docs) == 1 and scoped_limitations:
                     selected_limit = scoped_limitations[0]
+                    if (state.operation == "diagnose" and not selected_limit["scope"].get("model")
+                            and selected_limit["scope"].get("manufacturer")):
+                        base["retrieval_diagnostics"]["source_scope_gate"].update({
+                            "reason": "attributed_general_error_fact_only",
+                            "attributed_fact_only": True,
+                            "customer_scope_confirmed": False})
+                        return await self._coordinated_information_answer(user_message, state,
+                            scoped_limitations, {"current_subgoal": user_message}, started, base)
                     path = self.root / selected_limit["source"]
                     if sha256(path.read_bytes()).hexdigest() != selected_limit["source_sha256"]:
                         return self._escalate("Источник изменился во время обработки запроса. Запросите специалиста.",
@@ -1174,26 +1224,28 @@ class SourceFirstService:
             preflight = _generic_preflight(body, state, selected["scope"])
             source_units = _approved_check_units(body, selected["source"], selected["section"],
                 equipment=state.task_entity("equipment"), manufacturer=state.task_entity("manufacturer"))
+            hardware_scope = selected["scope"].get("task_category") in _HARDWARE_TASK_CATEGORIES
             first_model_scoped = next((unit for unit in source_units if unit["model_scope"]), None)
             confirmed_model = _model_identity(state.task_entity("equipment"),
                                               state.task_entity("manufacturer"))
             selected_model = _model_identity(selected["scope"].get("model"),
                                              selected["scope"].get("manufacturer"))
-            if (not informational and selected_model and confirmed_model
+            if (not informational and hardware_scope and selected_model and confirmed_model
                     and not _model_matches_scope(confirmed_model, [selected_model])):
                 return self._escalate(
                     "Не нашёл подтверждения, что этот approved-раздел подходит для указанной модели оборудования. "
                     "Не буду выдавать этот порядок; запросите проверку специалиста.",
                     "source_model_scope_not_applicable", "selected_document_model_scope_mismatch", started, **base)
-            if (not informational and first_model_scoped and confirmed_model
+            if (not informational and hardware_scope and first_model_scoped and confirmed_model
                     and not first_model_scoped["model_value"]):
                 return self._escalate(
                     "Не нашёл подтверждения, что этот approved-раздел подходит для указанной модели оборудования. "
                     "Не буду выдавать этот порядок; запросите проверку специалиста.",
                     "source_model_scope_not_applicable", "selected_check_model_scope_mismatch", started, **base)
-            missing_manufacturer_model = (selected["scope"].get("manufacturer")
+            missing_manufacturer_model = (hardware_scope and selected["scope"].get("manufacturer")
                 and state.task_entity("manufacturer") and not state.task_entity("equipment"))
             missing_model_scope = (not informational
+                and hardware_scope
                 and (first_model_scoped is not None or selected_model or missing_manufacturer_model)
                 and confirmed_model is None)
             if (missing_model_scope and not preflight

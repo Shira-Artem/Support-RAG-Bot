@@ -14,7 +14,7 @@ from typing import Protocol
 
 
 SCHEMA_VERSION = 2
-ENTITY_SLOTS = {"service", "manufacturer", "equipment", "ofd", "software", "integration"}
+ENTITY_SLOTS = {"service", "manufacturer", "equipment", "ofd", "software", "integration", "component"}
 CLARIFICATION_SLOTS = ENTITY_SLOTS | {"goal", "details", "task"}
 RELATIONS = {"new_task", "continue", "parameter_update", "constraint_update",
              "contradiction", "answer_to_clarification", "unknown"}
@@ -638,7 +638,7 @@ ENTITY_NAMES = (
     ("ofd", "Такском", ("такском",)),
     ("ofd", "Астрал", ("астрал",)),
     ("software", "1С", ("1с", "1c", "один эс")),
-    ("service", "ТС ПиОТ", ("тс пиот", "тспиот")),
+    ("component", "ТС ПиОТ", ("тс пиот", "тспиот")),
     ("integration", "DirectBank", ("directbank", "директбанк")),
     ("service", "Честный ЗНАК", ("честный знак", "честном знаке")),
     ("manufacturer", "Эвотор", ("эвотор", "evotor")),
@@ -1186,8 +1186,11 @@ class DialogueManager:
                 if known_task:
                     state.operation_evidence = obs.operation_evidence
                     state.operation_confidence = obs.operation_confidence
-                if obs.symptom:
-                    state.symptom = obs.symptom
+
+        # Symptoms are independently validated exact-span facts. A rejected or
+        # task-mode intent label must not discard a confirmed symptom.
+        if obs.symptom and relation != "contradiction":
+            state.symptom = obs.symptom
 
         state.revision = previous.revision + 1
         state.relation = relation
@@ -1285,8 +1288,26 @@ class DialogueManager:
                        or obs.symptom or obs.unknown_facts))
               or (relation == "continue" and obs.relation == "new_task" and obs.entities)):
             _append_unique(state.details, [obs.evidence])
-        if previous.expected and relation == "answer_to_clarification":
-            state.expected = None
+        if previous.expected and relation != "contradiction" and relation != "new_task":
+            expected_slot = previous.expected.slot
+            if expected_slot == "details":
+                supplied = bool(obs.details or obs.goals or obs.constraints or obs.parameters or obs.symptom)
+            elif expected_slot == "goal":
+                supplied = bool(obs.goals or obs.constraints)
+            elif expected_slot == "task":
+                supplied = bool(obs.intent != "unknown" or obs.operation != "unknown" or obs.entities)
+            else:
+                equivalent_slots = {
+                    "service": {"service", "ofd", "software", "integration"},
+                    "ofd": {"ofd", "service"},
+                    "model": {"equipment"}, "equipment": {"equipment"},
+                    "software": {"software"}, "integration": {"integration"},
+                }.get(expected_slot, {expected_slot})
+                supplied = bool(equivalent_slots.intersection(obs.entities))
+            supplied |= expected_slot in obs.unknown_facts
+            if supplied:
+                state.expected = None
+                state.task_context.open_question = None
         if changed_entity and explicit_routes and relation not in {"new_task", "answer_to_clarification"}:
             state.transition = "change_service" if "service" in explicit_routes else "change_parameter"
         elif obs.error and previous.error and obs.error.value != previous.error.value:

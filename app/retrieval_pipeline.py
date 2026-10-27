@@ -336,6 +336,14 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
         return None
     if state.object == "ОФД" and state.operation == "explain":
         return "ofd_connection"
+    # A confirmed technical component can define a narrower diagnostic family
+    # than the coarse hardware symptom. This affects candidate relevance only;
+    # manufacturer/service, approval, SHA, and procedure applicability gates
+    # remain independent and unchanged.
+    if (state.operation in {"diagnose", "status", "check"}
+            and state.task_entity("component") == "ТС ПиОТ"
+            and any(term in task_folded for term in ("модул", "драйвер", "тс пиот", "тспиот"))):
+        return "tspiot"
     # Resolve the task family from positive subject/context evidence before
     # falling back to the coarse DialogueState intent.  These are semantic
     # families, not expected-document lookups.
@@ -920,7 +928,25 @@ class RetrievalPipeline:
             if ofd and not ofd_match:
                 reasons.append("ofd_mismatch_or_unlabeled")
             missing_scope = document_applicability(state, meta, technical=technical)
-            if missing_scope:
+            # A generic error article may still contain a source-attributed
+            # fact even when its manufacturer is unknown. Let it reach the
+            # Source-first claim gate only when it has no model scope and no
+            # confirmed scope conflict. Source-first then permits factual
+            # evidence only; it cannot render a procedure from this deferred
+            # candidate. Model-specific steps remain hard-filtered here.
+            attributed_fact_candidate = (
+                bool(missing_scope)
+                and state.operation == "diagnose"
+                and actual_task == "error_diagnosis"
+                and not meta.get("model")
+                and bool(meta.get("manufacturer"))
+                and not manufacturer_fact
+                and not equipment_fact
+                and not routing
+                and not state.task_entity("service")
+                and not state.task_entity("ofd")
+            )
+            if missing_scope and not attributed_fact_candidate:
                 reasons.extend(f"applicability_{slot}_unconfirmed" for slot in missing_scope)
             if expected_task and actual_task and actual_task != expected_task and not related_search_task:
                 reasons.append(f"task_mismatch:{actual_task}!={expected_task}")
@@ -958,6 +984,8 @@ class RetrievalPipeline:
                                  f"operation_compatibility={operation_status}",
                                  f"related_search_task={related_search_task}",
                                  f"procedure_service={procedure_service or 'unreviewed'}"]
+            if attributed_fact_candidate:
+                relevance_reasons.append("scope_deferred_to_source_first_fact_only_gate")
             if unresolved_fallback:
                 relevance_reasons.append("unresolved_task_fallback")
             relevance = Relevance("match" if service_match else "unknown_or_mismatch",

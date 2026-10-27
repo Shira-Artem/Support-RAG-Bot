@@ -310,6 +310,10 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                     "generation_error": answer_diagnostic.get("generation_error"),
                     "validation_status": answer_diagnostic.get("validation_status"),
                     "retrieval_reason": retrieval.get("insufficiency_reason"),
+                    "candidate_diagnostics": [{
+                        "source": item.get("source"), "document_id": item.get("document_id"),
+                        "reasons": item.get("reasons", []),
+                    } for item in retrieval.get("candidates", [])],
                     "selected_sources": [{"source": item.get("source"),
                                           "document_id": item.get("document_id"),
                                           "section": item.get("section")}
@@ -702,6 +706,67 @@ def test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves(
         assert target.parent == (ROOT / "experiments/architecture_recovery_audit").resolve()
         target.write_text(json.dumps([ofd, first, followup, progress], ensure_ascii=False, indent=2) + "\n",
                           encoding="utf-8")
+
+
+def test_bplus_semantic_recovery_reaches_local_approved_retrieval(monkeypatch, tmp_path):
+    """Offline paraphrase replay: semantic aliases and typed facts reach retrieval."""
+    fn_text = "Ошибка ФН 234: хочу понять причину и безопасно проверить кассу."
+    evotor_text = "Эвотор 7.3 после проверки интернета всё ещё не передаёт чеки в ОФД."
+    tspiot_text = "На кассе Эвотор модуль ТС ПИоТ не запускается; нужны первые проверки."
+    fn = _run_replay(monkeypatch, tmp_path / "fn", [{"id": "fn234_alias", "text": fn_text,
+        "provider_raw": {"request_type": "request", "relation": "new_task",
+            "intent": "fiscal_drive", "operation": "lookup", "object": "ошибка ФН",
+            "object_evidence": {"quote": "Ошибка ФН 234"},
+            "goal": {"quote": "понять причину и безопасно проверить кассу"},
+            "symptom": {"quote": "Ошибка ФН 234"}, "entities": [], "unknown_facts": [],
+            "specialist_requested": False, "specialist_evidence": None, "confidence": 0.9}}],
+        sources=("evotor/fn/fn-234.md",), coordinator_enabled=True)[0]
+    evotor = _run_replay(monkeypatch, tmp_path / "evotor", [{"id": "evotor73_alias", "text": evotor_text,
+        "provider_raw": {"request_type": "support_request", "relation": "new_task",
+            "intent": "troubleshooting", "operation": "diagnosis", "object": "чек",
+            "object_evidence": {"quote": "чеки"},
+            "goal": {"quote": "всё ещё не передаёт чеки в ОФД"},
+            "symptom": {"quote": "не передаёт чеки в ОФД"},
+            "entities": [{"slot": "model", "value": "Эвотор 7.3",
+                          "evidence": {"quote": "Эвотор 7.3"}}],
+            "unknown_facts": [], "specialist_requested": False,
+            "specialist_evidence": None, "confidence": 0.9}}],
+        sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)[0]
+    tspiot = _run_replay(monkeypatch, tmp_path / "tspiot", [{"id": "tspiot_component", "text": tspiot_text,
+        "provider_raw": {"request_type": "diagnostic_request", "relation": "new_task",
+            "intent": "diagnosis", "operation": "troubleshooting", "object": "касса",
+            "object_evidence": {"quote": "кассе Эвотор"},
+            "goal": {"quote": "модуль ТС ПИоТ не запускается"},
+            "symptom": {"quote": "не запускается"},
+            "entities": [{"slot": "manufacturer", "value": "Эвотор",
+                          "evidence": {"quote": "Эвотор"}},
+                         {"slot": "system", "value": "ТС ПИоТ",
+                          "evidence": {"quote": "ТС ПИоТ"}}],
+            "unknown_facts": [], "specialist_requested": False,
+            "specialist_evidence": None, "confidence": 0.9}}],
+        sources=("evotor/tspiot/local-module-startup.md",), coordinator_enabled=True)[0]
+
+    for trace in (fn, evotor, tspiot):
+        assert trace["retrieval_called"], trace["reason"]
+        assert trace["route"] in {"answer", "clarify"}
+        assert trace["coordinator_decision"]["route"] == "technical_action"
+        assert trace["stage_call_counts"]["actual_provider_calls"] == 0
+    assert fn["route"] == "answer"
+    assert fn["source_scope_reason"] == "attributed_general_error_fact_only"
+    assert [item["source"] for item in fn["selected_sources"]] == ["evotor/fn/fn-234.md"]
+    assert "Область источника: Эвотор" in fn["final_reply"]
+    assert "Статья производителя связывает код ФН 234" in fn["final_reply"]
+    assert "Проверьте" not in fn["final_reply"] and "Настройки →" not in fn["final_reply"]
+    assert [item["source"] for item in evotor["selected_sources"]] == [
+        "evotor/ofd/evotor-7-3-ofd-connection.md"]
+    assert [item["source"] for item in tspiot["selected_sources"]] == [
+        "evotor/tspiot/local-module-startup.md"]
+    assert fn["validated"]["request_type"] == "diagnosis"
+    assert fn["state"]["operation"] == "diagnose"
+    assert evotor["state"]["confirmed_equipment"] == "Эвотор 7.3"
+    assert evotor["state"]["operation"] == "diagnose"
+    assert tspiot["state_after_sqlite_reopen"]["task_context"]["entities"]["component"][0]["value"] == "ТС ПиОТ"
+    assert "service" not in tspiot["state_after_sqlite_reopen"]["task_context"]["entities"]
 
 
 @pytest.mark.parametrize("case_id", ["S1", "S4", "S5"])
