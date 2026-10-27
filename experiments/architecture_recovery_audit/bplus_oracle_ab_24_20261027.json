@@ -1,0 +1,3307 @@
+{
+  "title": "Frozen 24-attempt architecture A/B audit",
+  "method": "Sanitized outputs from read-only frozen replays and three bounded live Groq ID-only selector calls. No raw utterances, SQLite identifiers, trace IDs, or secrets. A/B/C use a deterministic local planner fixture; D returns IDs/covers only and exact approved text is rendered after existing validation.",
+  "cases": [
+    {
+      "case": 1,
+      "topic": "Эвотор 7.3/ОФД",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "receipt_transmission",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "receipt_transmission",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:model_features!=receipt_transmission"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "quality": "useful first step",
+        "rejection_reasons": [
+          "task_mismatch:model_features!=receipt_transmission"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 683
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "receipt_transmission",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "receipt_transmission",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "receipt_transmission",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "topic": "Эвотор ФН 231",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "explain"
+      },
+      "task_operation_after_resolver": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "error_diagnosis",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": []
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          }
+        ],
+        "answer": "Источник описывает случай с ФН-М на 36 месяцев, когда параметры регистрации и фактический вид продаваемой позиции не соответствуют условиям эксплуатации накопителя. Код на чеке — ФН 231; на экране может появляться -3975.\n\nИсточник: data/knowledge/evotor/fn/fn-231.md — Контекст ошибки",
+        "quality": "partial/wrong target",
+        "rejection_reasons": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 592
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          }
+        ],
+        "answer": "Источник описывает случай с ФН-М на 36 месяцев, когда параметры регистрации и фактический вид продаваемой позиции не соответствуют условиям эксплуатации накопителя. Код на чеке — ФН 231; на экране может появляться -3975.\n\nИсточник: data/knowledge/evotor/fn/fn-231.md — Контекст ошибки",
+        "quality": "partial/wrong target",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "evotor/fn/fn-231.md",
+            "section": "Проверка без изменения регистрации"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "evotor/fn/fn-231.md",
+            "section": "Проверка без изменения регистрации"
+          }
+        ],
+        "answer": "Посмотрите в отчёте «Итог регистрации ККТ», указан ли признак расчётов за услуги. Если фактически продаётся услуга, проверьте вид позиции в карточке товара: она должна быть оформлена как услуга. Если есть продажи товаров при неподходящей конфигурации ФН, источник указывает на необходимость другого накопителя; решение о замене и перерегистрации требует специалиста.\n\nИсточник: data/knowledge/evotor/fn/fn-231.md — Проверка без изменения регистрации",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "expert_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 3,
+      "topic": "Эвотор/время",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "explain"
+      },
+      "task_operation_after_resolver": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "error_diagnosis",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "evotor/fn/fn-234.md",
+            "section": "Первое различение причины"
+          },
+          {
+            "source": "evotor/fn/fn-217.md",
+            "section": "Действие"
+          },
+          {
+            "source": "evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          },
+          {
+            "source": "evotor/fn/fn-235.md",
+            "section": "Смысл и безопасная проверка"
+          },
+          {
+            "source": "evotor/fn/fn-210.md",
+            "section": "Аппаратная диагностика"
+          },
+          {
+            "source": "evotor/fn/fn-212.md",
+            "section": "Куда направить проверку"
+          }
+        ],
+        "candidate_count": 6,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=error_diagnosis",
+          "task_mismatch:receipt_print!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:model_features!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fiscal_format!=error_diagnosis"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:fiscal_format!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:model_features!=error_diagnosis",
+          "task_mismatch:network_diagnostics!=error_diagnosis",
+          "task_mismatch:receipt_print!=error_diagnosis",
+          "task_mismatch:receipt_transmission!=error_diagnosis",
+          "task_mismatch:tspiot!=error_diagnosis"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 608
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [
+          {
+            "source": "evotor/fn/fn-234.md",
+            "section": "Первое различение причины"
+          },
+          {
+            "source": "evotor/fn/fn-217.md",
+            "section": "Действие"
+          },
+          {
+            "source": "evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          },
+          {
+            "source": "evotor/fn/fn-210.md",
+            "section": "Аппаратная диагностика"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "expert_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 4,
+      "topic": "Эвотор/смена",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "cash_operations",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "cash_operations",
+        "expert_operation": "close",
+        "selected_approved_candidates": [],
+        "candidate_count": 0,
+        "rejection_reasons": [
+          "operation_mismatch:close",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=cash_operations",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_print!=cash_operations"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_operation",
+        "approved_evidence": [],
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "operation_mismatch:diagnose",
+          "task_mismatch:receipt_print!=cash_operations",
+          "task_mismatch:receipt_transmission!=cash_operations"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 0
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_operation",
+        "approved_evidence": [],
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "cash_operations",
+        "operation": "close"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "cash_operations",
+          "operation": "close"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "cash_operations",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 5,
+      "topic": "Эвотор/маркировка 1",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "marking",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "marking",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "marking",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "evotor/marking/receive-marked-upd-prereqs.md",
+            "section": "Что потребуется"
+          },
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          }
+        ],
+        "candidate_count": 2,
+        "rejection_reasons": [
+          "task_mismatch:error_diagnosis!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:error_diagnosis!=marking"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_format!=marking",
+          "task_mismatch:model_features!=marking",
+          "task_mismatch:network_diagnostics!=marking",
+          "task_mismatch:receipt_print!=marking",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:tspiot!=marking"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 583
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [
+          {
+            "source": "evotor/marking/receive-marked-upd-prereqs.md",
+            "section": "Что потребуется"
+          },
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          }
+        ],
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence_after_gates": [
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "marking",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "marking",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "marking",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 6,
+      "topic": "Эвотор/маркировка 2",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "marking",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "marking",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "marking",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          },
+          {
+            "source": "evotor/marking/receive-marked-upd-prereqs.md",
+            "section": "Что потребуется"
+          }
+        ],
+        "candidate_count": 2,
+        "rejection_reasons": [
+          "task_mismatch:error_diagnosis!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:error_diagnosis!=marking"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_format!=marking",
+          "task_mismatch:model_features!=marking",
+          "task_mismatch:network_diagnostics!=marking",
+          "task_mismatch:receipt_print!=marking",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:tspiot!=marking"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 627
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          },
+          {
+            "source": "evotor/marking/receive-marked-upd-prereqs.md",
+            "section": "Что потребуется"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          }
+        ],
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence_after_gates": [
+          {
+            "source": "evotor/marking/code-check-error-first-steps.md",
+            "section": "Что безопасно проверить"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "marking",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "marking",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "marking",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 7,
+      "topic": "aQsi physical/ФН 7",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "explain"
+      },
+      "task_operation_after_resolver": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "error_diagnosis",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_devices/errors/fn7-date.md",
+            "section": "Проверенная информация и первичная диагностика"
+          },
+          {
+            "source": "aqsi/aqsi-error-126.md",
+            "section": "Безопасная диагностика"
+          },
+          {
+            "source": "aqsi_devices/errors/goods-not-on-device.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "candidate_count": 3,
+        "rejection_reasons": [
+          "error_code_mismatch",
+          "error_code_mismatch",
+          "subtask_anchor_uncovered",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "error_code_mismatch",
+          "error_code_mismatch",
+          "subtask_anchor_uncovered",
+          "subtask_anchor_uncovered",
+          "task_mismatch:marking!=error_diagnosis"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "error_code_mismatch",
+          "task_mismatch:access!=error_diagnosis",
+          "task_mismatch:cash_list!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:ofd_connection!=error_diagnosis",
+          "task_mismatch:peripheral_setup!=error_diagnosis",
+          "task_mismatch:product_catalog!=error_diagnosis",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:service_connection!=error_diagnosis",
+          "task_mismatch:settings!=error_diagnosis",
+          "task_mismatch:shift_management!=error_diagnosis",
+          "task_mismatch:support!=error_diagnosis"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 635
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [
+          {
+            "source": "aqsi_devices/errors/fn7-date.md",
+            "section": "Проверенная информация и первичная диагностика"
+          },
+          {
+            "source": "aqsi/aqsi-error-126.md",
+            "section": "Безопасная диагностика"
+          },
+          {
+            "source": "aqsi_devices/errors/goods-not-on-device.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "aqsi_devices/errors/fn7-date.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence_after_gates": [
+          {
+            "source": "aqsi_devices/errors/fn7-date.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "expert_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 8,
+      "topic": "aQsi physical/товары",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "device",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "product_catalog",
+        "expert_operation": "add",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_devices/catalog/create-product.md",
+            "section": "Вопрос клиента"
+          },
+          {
+            "source": "aqsi_devices/catalog/excel-import.md",
+            "section": "Вопрос клиента"
+          },
+          {
+            "source": "aqsi_devices/catalog/shop-assignment.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "candidate_count": 3,
+        "rejection_reasons": [
+          "task_mismatch:error_diagnosis!=product_catalog",
+          "task_mismatch:sales!=product_catalog",
+          "task_mismatch:error_diagnosis!=product_catalog",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=product_catalog",
+          "task_mismatch:service_connection!=product_catalog",
+          "task_mismatch:access!=product_catalog",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=product_catalog",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=product_catalog"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "applicability_model_unconfirmed",
+          "task_mismatch:access!=error_diagnosis",
+          "task_mismatch:cash_list!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:ofd_connection!=error_diagnosis",
+          "task_mismatch:peripheral_setup!=error_diagnosis",
+          "task_mismatch:product_catalog!=error_diagnosis",
+          "task_mismatch:receipt_issue!=error_diagnosis",
+          "task_mismatch:refund!=error_diagnosis",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:service_connection!=error_diagnosis",
+          "task_mismatch:shift_management!=error_diagnosis",
+          "task_mismatch:support!=error_diagnosis"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 594
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "aqsi_devices/catalog/create-product.md",
+            "section": "Вопрос клиента"
+          },
+          {
+            "source": "aqsi_devices/catalog/excel-import.md",
+            "section": "Вопрос клиента"
+          },
+          {
+            "source": "aqsi_devices/catalog/shop-assignment.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "answer": "1. Откройте «База товаров» и действие добавления товара; штрихкод можно ввести или считать встроенным сканером.\n\nИсточник: data/knowledge/aqsi_devices/catalog/create-product.md — Проверенная информация и первичная диагностика",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "aqsi_devices/errors/goods-not-on-device.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence_after_gates": [
+          {
+            "source": "aqsi_devices/errors/goods-not-on-device.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "product_catalog",
+        "operation": "add"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "product_catalog",
+          "operation": "add"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 9,
+      "topic": "aQsi physical/сканер",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "peripheral_setup",
+        "operation": "check"
+      },
+      "B_oracle_task": {
+        "expert_task": "peripheral_setup",
+        "expert_operation": "check",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_devices/peripherals/scanner.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=peripheral_setup",
+          "subtask_anchor_uncovered",
+          "task_mismatch:ofd_connection!=peripheral_setup",
+          "task_mismatch:equipment_setup!=peripheral_setup",
+          "subtask_anchor_uncovered",
+          "task_mismatch:ofd_connection!=peripheral_setup",
+          "subtask_anchor_uncovered",
+          "task_mismatch:error_diagnosis!=peripheral_setup",
+          "subtask_anchor_uncovered",
+          "task_mismatch:marking!=peripheral_setup",
+          "subtask_anchor_uncovered"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+        "quality": "partial/wrong target",
+        "rejection_reasons": [
+          "task_mismatch:access!=peripheral_setup",
+          "task_mismatch:correction_receipt!=peripheral_setup",
+          "task_mismatch:equipment_setup!=peripheral_setup",
+          "task_mismatch:error_diagnosis!=peripheral_setup",
+          "task_mismatch:fiscal_drive!=peripheral_setup",
+          "task_mismatch:fns_registration!=peripheral_setup",
+          "task_mismatch:integration!=peripheral_setup",
+          "task_mismatch:marking!=peripheral_setup",
+          "task_mismatch:ofd_connection!=peripheral_setup",
+          "task_mismatch:product_catalog!=peripheral_setup",
+          "task_mismatch:receipt_issue!=peripheral_setup",
+          "task_mismatch:refund!=peripheral_setup",
+          "task_mismatch:sales!=peripheral_setup",
+          "task_mismatch:service_connection!=peripheral_setup",
+          "task_mismatch:settings!=peripheral_setup",
+          "task_mismatch:shift_management!=peripheral_setup",
+          "task_mismatch:support!=peripheral_setup"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 611
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "aqsi_devices/peripherals/scanner.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "answer": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+        "quality": "partial/wrong target",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "aqsi_devices/peripherals/scanner.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "aqsi_devices/peripherals/scanner.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": {
+        "attempted": true,
+        "selected_source": "aqsi_devices/peripherals/scanner.md",
+        "selected_section": "Вопрос клиента",
+        "covers": [
+          "connect_scanner"
+        ],
+        "http_status": 200,
+        "tokens": 994,
+        "latency_ms": 777,
+        "validator_result": "rejected: applicability_service_unconfirmed_or_mismatch",
+        "final_useful": false,
+        "diagnosis": "SourceFirst accepts confirmed manufacturer aQsi; separate selector validator requires service slot.",
+        "model": "openai/gpt-oss-20b"
+      },
+      "expert_oracle_task_operation": {
+        "task": "peripheral_setup",
+        "operation": "check"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "peripheral_setup",
+          "operation": "check"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "peripheral_setup",
+          "operation": "check"
+        }
+      }
+    },
+    {
+      "case": 10,
+      "topic": "aQsi physical/маркировка",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "explain"
+      },
+      "task_operation_after_resolver": {
+        "task": "marking",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "marking",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_devices/marking/permission-diagnostics.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "task_mismatch:sales!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:product_catalog!=marking",
+          "task_mismatch:sales!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:product_catalog!=marking"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "task_mismatch:access!=marking",
+          "task_mismatch:cash_list!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:equipment_setup!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_drive!=marking",
+          "task_mismatch:fns_registration!=marking",
+          "task_mismatch:integration!=marking",
+          "task_mismatch:ofd_connection!=marking",
+          "task_mismatch:peripheral_setup!=marking",
+          "task_mismatch:product_catalog!=marking",
+          "task_mismatch:receipt_issue!=marking",
+          "task_mismatch:refund!=marking",
+          "task_mismatch:sales!=marking",
+          "task_mismatch:service_connection!=marking",
+          "task_mismatch:settings!=marking",
+          "task_mismatch:shift_management!=marking",
+          "task_mismatch:support!=marking"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 658
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [
+          {
+            "source": "aqsi_devices/marking/permission-diagnostics.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "answer": "Уточните модель оборудования.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [
+          {
+            "document_id": "aqsi-device-permission-diagnostics",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-permission-diagnostics",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-permission-diagnostics",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-permission-diagnostics",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "marking",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "expert_task_operation": {
+          "task": "marking",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "marking",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 11,
+      "topic": "aQsi physical/ФН 161",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": null,
+        "operation": null
+      },
+      "task_operation_after_resolver": {
+        "task": null,
+        "operation": null
+      },
+      "B_oracle_task": {
+        "expert_task": null,
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [],
+        "candidate_count": null,
+        "rejection_reasons": []
+      },
+      "A_resolver_plus_gate": {
+        "route": null,
+        "scenario": "escalate",
+        "scenario_reason": "raw_understanding_http_error",
+        "approved_evidence": [],
+        "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "quality": "unreplayable",
+        "rejection_reasons": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null
+        }
+      },
+      "B_oracle_task_final": {
+        "route": null,
+        "scenario": "unreplayable",
+        "scenario_reason": "raw_understanding_http_error",
+        "approved_evidence": [],
+        "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "quality": "unreplayable",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "unreplayable",
+        "scenario_reason": "raw_understanding_http_error",
+        "approved_evidence_after_gates": [],
+        "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "quality": "unreplayable",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": null,
+          "operation": null
+        },
+        "expert_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": null,
+          "operation": null
+        }
+      }
+    },
+    {
+      "case": 12,
+      "topic": "aQsi Online/фискализация",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "service_connection",
+        "operation": "fiscalize"
+      },
+      "B_oracle_task": {
+        "expert_task": "service_connection",
+        "expert_operation": "fiscalize",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_online/setup/fiscalize.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:access!=service_connection",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:fiscalize",
+          "subtask_anchor_uncovered",
+          "task_mismatch:support!=service_connection",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=service_connection",
+          "service_mismatch_or_unlabeled",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fiscal_drive!=service_connection",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:fiscalize",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=service_connection",
+          "subtask_anchor_uncovered",
+          "task_mismatch:refund!=service_connection"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/aqsi_online/setup/fiscalize.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "answer": "После активации заказа сведения о ККТ и ФН появляются в «Мои кассы». Регистрационный номер из ФНС понадобится на этапе фискализации в aQsi Online; интерфейс также запрашивает контактный email и данные применения кассы. Завершайте операцию лишь после сверки реквизитов.\n\nДополнительное условие источника (Когда нужен специалист):\nНеверные реквизиты, статус регистрации ФНС не подтверждён или нужен выбор агентских признаков — инженер/ответственный за ККТ.\n\nИсточник: data/knowledge/aqsi_online/setup/fiscalize.md — Что можно объяснить и проверить",
+        "quality": "useful first step",
+        "rejection_reasons": [
+          "operation_mismatch:fiscalize",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=service_connection",
+          "task_mismatch:account_settings!=service_connection",
+          "task_mismatch:cash_list!=service_connection",
+          "task_mismatch:correction_receipt!=service_connection",
+          "task_mismatch:equipment_setup!=service_connection",
+          "task_mismatch:error_diagnosis!=service_connection",
+          "task_mismatch:fiscal_drive!=service_connection",
+          "task_mismatch:fns_registration!=service_connection",
+          "task_mismatch:integration!=service_connection",
+          "task_mismatch:marking!=service_connection",
+          "task_mismatch:ofd_connection!=service_connection",
+          "task_mismatch:peripheral_setup!=service_connection",
+          "task_mismatch:product_catalog!=service_connection",
+          "task_mismatch:receipt_issue!=service_connection",
+          "task_mismatch:refund!=service_connection",
+          "task_mismatch:sales!=service_connection",
+          "task_mismatch:settings!=service_connection",
+          "task_mismatch:shift_management!=service_connection",
+          "task_mismatch:support!=service_connection"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 711
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "aqsi_online/setup/fiscalize.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "answer": "После активации заказа сведения о ККТ и ФН появляются в «Мои кассы». Регистрационный номер из ФНС понадобится на этапе фискализации в aQsi Online; интерфейс также запрашивает контактный email и данные применения кассы. Завершайте операцию лишь после сверки реквизитов.\n\nДополнительное условие источника (Когда нужен специалист):\nНеверные реквизиты, статус регистрации ФНС не подтверждён или нужен выбор агентских признаков — инженер/ответственный за ККТ.\n\nИсточник: data/knowledge/aqsi_online/setup/fiscalize.md — Что можно объяснить и проверить",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "aqsi_online/setup/fiscalize.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "aqsi_online/setup/fiscalize.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "answer": "После активации заказа сведения о ККТ и ФН появляются в «Мои кассы». Регистрационный номер из ФНС понадобится на этапе фискализации в aQsi Online; интерфейс также запрашивает контактный email и данные применения кассы. Завершайте операцию лишь после сверки реквизитов.\n\nИсточник: data/knowledge/aqsi_online/setup/fiscalize.md — Что можно объяснить и проверить",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "service_connection",
+        "operation": "fiscalize"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "service_connection",
+          "operation": "fiscalize"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "service_connection",
+          "operation": "fiscalize"
+        }
+      }
+    },
+    {
+      "case": 13,
+      "topic": "aQsi Online/сотрудник",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "explain"
+      },
+      "task_operation_after_resolver": {
+        "task": "access",
+        "operation": "add_employee"
+      },
+      "B_oracle_task": {
+        "expert_task": "access",
+        "expert_operation": "assign",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_online/account/add-user.md",
+            "section": "Ограничения"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "operation_mismatch:assign",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=access",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=access",
+          "subtask_anchor_uncovered",
+          "task_mismatch:refund!=access",
+          "subtask_anchor_uncovered",
+          "task_mismatch:account_settings!=access",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_issue!=access",
+          "subtask_anchor_uncovered",
+          "task_mismatch:support!=access",
+          "service_mismatch_or_unlabeled",
+          "subtask_anchor_uncovered",
+          "task_mismatch:product_catalog!=access"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "operation_mismatch:add_employee",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:account_settings!=access",
+          "task_mismatch:cash_list!=access",
+          "task_mismatch:correction_receipt!=access",
+          "task_mismatch:equipment_setup!=access",
+          "task_mismatch:error_diagnosis!=access",
+          "task_mismatch:fiscal_drive!=access",
+          "task_mismatch:fns_registration!=access",
+          "task_mismatch:integration!=access",
+          "task_mismatch:marking!=access",
+          "task_mismatch:ofd_connection!=access",
+          "task_mismatch:peripheral_setup!=access",
+          "task_mismatch:product_catalog!=access",
+          "task_mismatch:receipt_issue!=access",
+          "task_mismatch:refund!=access",
+          "task_mismatch:sales!=access",
+          "task_mismatch:service_connection!=access",
+          "task_mismatch:settings!=access",
+          "task_mismatch:shift_management!=access",
+          "task_mismatch:support!=access"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 271
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [
+          {
+            "source": "aqsi_online/account/add-user.md",
+            "section": "Ограничения"
+          }
+        ],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "access",
+        "operation": "assign"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "expert_task_operation": {
+          "task": "access",
+          "operation": "assign"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "access",
+          "operation": "add_employee"
+        }
+      }
+    },
+    {
+      "case": 14,
+      "topic": "aQsi Online/частичный возврат",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "refund",
+        "operation": "return"
+      },
+      "B_oracle_task": {
+        "expert_task": "refund",
+        "expert_operation": "return",
+        "selected_approved_candidates": [
+          {
+            "source": "aqsi_online/receipts/partial-refund.md",
+            "section": "Вопрос клиента"
+          },
+          {
+            "source": "aqsi_online/receipts/full-refund.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "candidate_count": 2,
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:sales!=refund",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:sales!=refund",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=refund",
+          "subtask_anchor_uncovered",
+          "task_mismatch:support!=refund",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=refund",
+          "subtask_anchor_uncovered",
+          "task_mismatch:access!=refund",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_issue!=refund",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=refund"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/aqsi_online/receipts/partial-refund.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "answer": "В истории выбирают первоначальный чек и запускают возврат. В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату.\n\nДополнительное условие источника (Когда нужен специалист):\nСложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.\n\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Что можно объяснить и проверить",
+        "quality": "useful first step",
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=refund",
+          "task_mismatch:cash_list!=refund",
+          "task_mismatch:correction_receipt!=refund",
+          "task_mismatch:equipment_setup!=refund",
+          "task_mismatch:error_diagnosis!=refund",
+          "task_mismatch:fiscal_drive!=refund",
+          "task_mismatch:fns_registration!=refund",
+          "task_mismatch:integration!=refund",
+          "task_mismatch:marking!=refund",
+          "task_mismatch:ofd_connection!=refund",
+          "task_mismatch:peripheral_setup!=refund",
+          "task_mismatch:product_catalog!=refund",
+          "task_mismatch:receipt_issue!=refund",
+          "task_mismatch:sales!=refund",
+          "task_mismatch:service_connection!=refund",
+          "task_mismatch:settings!=refund",
+          "task_mismatch:shift_management!=refund",
+          "task_mismatch:support!=refund"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 728
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "aqsi_online/receipts/partial-refund.md",
+            "section": "Вопрос клиента"
+          },
+          {
+            "source": "aqsi_online/receipts/full-refund.md",
+            "section": "Вопрос клиента"
+          }
+        ],
+        "answer": "В истории выбирают первоначальный чек и запускают возврат. В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату.\n\nДополнительное условие источника (Когда нужен специалист):\nСложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.\n\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Что можно объяснить и проверить",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "aqsi_online/receipts/partial-refund.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "aqsi_online/receipts/partial-refund.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "answer": "В истории выбирают первоначальный чек и запускают возврат. В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату.\n\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Что можно объяснить и проверить",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "refund",
+        "operation": "return"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "refund",
+          "operation": "return"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "refund",
+          "operation": "return"
+        }
+      }
+    },
+    {
+      "case": 15,
+      "topic": "aQsi Online/1С",
+      "kb_grade": "C",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "integration",
+        "operation": "connect"
+      },
+      "B_oracle_task": {
+        "expert_task": "integration",
+        "expert_operation": "configure",
+        "selected_approved_candidates": [],
+        "candidate_count": 0,
+        "rejection_reasons": [
+          "software_mismatch_or_unlabeled",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=integration"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "software_mismatch_or_unlabeled",
+          "task_mismatch:service_connection!=integration"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 223
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "integration",
+        "operation": "configure"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "integration",
+          "operation": "configure"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "integration",
+          "operation": "connect"
+        }
+      }
+    },
+    {
+      "case": 16,
+      "topic": "aQsi Online/доставка чека",
+      "kb_grade": "C",
+      "understanding_before": {
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "receipt_transmission",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "receipt_transmission",
+        "expert_operation": "transmit",
+        "selected_approved_candidates": [],
+        "candidate_count": 0,
+        "rejection_reasons": [
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "task_mismatch:receipt_issue!=receipt_transmission",
+          "task_mismatch:ofd_connection!=receipt_transmission",
+          "subtask_anchor_uncovered",
+          "task_mismatch:access!=receipt_transmission",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=receipt_transmission",
+          "task_mismatch:refund!=receipt_transmission",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=receipt_transmission"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=receipt_transmission",
+          "task_mismatch:account_settings!=receipt_transmission",
+          "task_mismatch:cash_list!=receipt_transmission",
+          "task_mismatch:correction_receipt!=receipt_transmission",
+          "task_mismatch:equipment_setup!=receipt_transmission",
+          "task_mismatch:error_diagnosis!=receipt_transmission",
+          "task_mismatch:fiscal_drive!=receipt_transmission",
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "task_mismatch:integration!=receipt_transmission",
+          "task_mismatch:marking!=receipt_transmission",
+          "task_mismatch:ofd_connection!=receipt_transmission",
+          "task_mismatch:product_catalog!=receipt_transmission",
+          "task_mismatch:receipt_issue!=receipt_transmission",
+          "task_mismatch:refund!=receipt_transmission",
+          "task_mismatch:sales!=receipt_transmission",
+          "task_mismatch:service_connection!=receipt_transmission",
+          "task_mismatch:shift_management!=receipt_transmission",
+          "task_mismatch:support!=receipt_transmission"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 230
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "receipt_transmission",
+        "operation": "transmit"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "receipt_transmission",
+          "operation": "transmit"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "receipt_transmission",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 17,
+      "topic": "АТОЛ Онлайн/128",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "access",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": "error_diagnosis",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+            "section": "Вопрос пользователя"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": []
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 595
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [
+          {
+            "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+            "section": "Вопрос пользователя"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "access",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 18,
+      "topic": "АТОЛ Онлайн/блокировка ФН",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "fiscal_drive",
+        "operation": "check"
+      },
+      "B_oracle_task": {
+        "expert_task": "error_diagnosis",
+        "expert_operation": "diagnose",
+        "selected_approved_candidates": [
+          {
+            "source": "atol_online/errors/amount-errors-16-23.md",
+            "section": "Важно / когда передать специалисту"
+          },
+          {
+            "source": "atol_online/errors/request-errors-26-1008.md",
+            "section": "Важно / когда передать специалисту"
+          },
+          {
+            "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+            "section": "Важно / когда передать специалисту"
+          },
+          {
+            "source": "atol_online/errors/fn-and-marking-errors-116-414-421-148.md",
+            "section": "Важно / когда передать специалисту"
+          }
+        ],
+        "candidate_count": 4,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:contract!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "subtask_anchor_uncovered",
+          "task_mismatch:billing!=error_diagnosis"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_source_section",
+        "approved_evidence": [],
+        "answer": "В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "applicability_equipment_unconfirmed",
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=fiscal_drive",
+          "task_mismatch:cash_list!=fiscal_drive",
+          "task_mismatch:cash_reports!=fiscal_drive",
+          "task_mismatch:contract!=fiscal_drive",
+          "task_mismatch:correction_receipt!=fiscal_drive",
+          "task_mismatch:edo!=fiscal_drive",
+          "task_mismatch:equipment_setup!=fiscal_drive",
+          "task_mismatch:error_diagnosis!=fiscal_drive",
+          "task_mismatch:fns_registration!=fiscal_drive",
+          "task_mismatch:integration!=fiscal_drive",
+          "task_mismatch:ofd_connection!=fiscal_drive",
+          "task_mismatch:receipt_issue!=fiscal_drive",
+          "task_mismatch:receipt_search!=fiscal_drive",
+          "task_mismatch:receipt_transmission!=fiscal_drive",
+          "task_mismatch:service_connection!=fiscal_drive",
+          "task_mismatch:settings!=fiscal_drive",
+          "task_mismatch:support!=fiscal_drive"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 668
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence": [
+          {
+            "source": "atol_online/errors/amount-errors-16-23.md",
+            "section": "Важно / когда передать специалисту"
+          },
+          {
+            "source": "atol_online/errors/request-errors-26-1008.md",
+            "section": "Важно / когда передать специалисту"
+          },
+          {
+            "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+            "section": "Важно / когда передать специалисту"
+          },
+          {
+            "source": "atol_online/errors/fn-and-marking-errors-116-414-421-148.md",
+            "section": "Важно / когда передать специалисту"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "atol_online/fn/blocked.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "approved_evidence_after_gates": [
+          {
+            "source": "atol_online/fn/blocked.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "error_diagnosis",
+        "operation": "diagnose"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "error_diagnosis",
+          "operation": "diagnose"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "fiscal_drive",
+          "operation": "check"
+        }
+      }
+    },
+    {
+      "case": 19,
+      "topic": "АТОЛ Онлайн/журнал чеков",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "receipt",
+        "operation": "search"
+      },
+      "task_operation_after_resolver": {
+        "task": "receipt_search",
+        "operation": "search"
+      },
+      "B_oracle_task": {
+        "expert_task": "receipt_search",
+        "expert_operation": "search",
+        "selected_approved_candidates": [
+          {
+            "source": "atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:billing!=receipt_search",
+          "subtask_anchor_uncovered",
+          "task_mismatch:billing!=receipt_search",
+          "subtask_anchor_uncovered",
+          "task_mismatch:billing!=receipt_search",
+          "subtask_anchor_uncovered",
+          "task_mismatch:service_connection!=receipt_search",
+          "subtask_anchor_uncovered",
+          "task_mismatch:billing!=receipt_search",
+          "task_mismatch:correction_receipt!=receipt_search",
+          "task_mismatch:error_diagnosis!=receipt_search",
+          "task_mismatch:receipt_issue!=receipt_search"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+        "quality": "useful first step",
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=receipt_search",
+          "task_mismatch:contract!=receipt_search",
+          "task_mismatch:correction_receipt!=receipt_search",
+          "task_mismatch:edo!=receipt_search",
+          "task_mismatch:equipment_setup!=receipt_search",
+          "task_mismatch:error_diagnosis!=receipt_search",
+          "task_mismatch:fiscal_drive!=receipt_search",
+          "task_mismatch:fns_registration!=receipt_search",
+          "task_mismatch:integration!=receipt_search",
+          "task_mismatch:ofd_connection!=receipt_search",
+          "task_mismatch:receipt_issue!=receipt_search",
+          "task_mismatch:refund!=receipt_search",
+          "task_mismatch:service_connection!=receipt_search",
+          "task_mismatch:settings!=receipt_search",
+          "task_mismatch:shift_management!=receipt_search",
+          "task_mismatch:support!=receipt_search"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 630
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "receipt_search",
+        "operation": "search"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "receipt",
+          "operation": "search"
+        },
+        "expert_task_operation": {
+          "task": "receipt_search",
+          "operation": "search"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "receipt_search",
+          "operation": "search"
+        }
+      }
+    },
+    {
+      "case": 20,
+      "topic": "АТОЛ Онлайн/оплата",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "search"
+      },
+      "task_operation_after_resolver": {
+        "task": "billing",
+        "operation": "check"
+      },
+      "B_oracle_task": {
+        "expert_task": "billing",
+        "expert_operation": "change_permissions",
+        "selected_approved_candidates": [
+          {
+            "source": "atol_online/billing/debt-payment.md",
+            "section": "Вопрос пользователя"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "operation_mismatch:change_permissions",
+          "subtask_anchor_uncovered",
+          "task_mismatch:edo!=billing"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/atol_online/billing/debt-payment.md",
+            "section": "Что проверено по инструкции производителя"
+          }
+        ],
+        "answer": "Проверьте сумму задолженности и срок действия текущего периода обслуживания.\n\nИсточник: data/knowledge/atol_online/billing/debt-payment.md — Что проверено по инструкции производителя",
+        "quality": "useful first step",
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:contract!=billing",
+          "task_mismatch:correction_receipt!=billing",
+          "task_mismatch:edo!=billing",
+          "task_mismatch:equipment_replacement!=billing",
+          "task_mismatch:equipment_setup!=billing",
+          "task_mismatch:error_diagnosis!=billing",
+          "task_mismatch:fiscal_drive!=billing",
+          "task_mismatch:fns_registration!=billing",
+          "task_mismatch:integration!=billing",
+          "task_mismatch:ofd_connection!=billing",
+          "task_mismatch:receipt_issue!=billing",
+          "task_mismatch:receipt_search!=billing",
+          "task_mismatch:refund!=billing",
+          "task_mismatch:service_connection!=billing",
+          "task_mismatch:settings!=billing",
+          "task_mismatch:shift_management!=billing",
+          "task_mismatch:support!=billing"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 674
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "atol_online/billing/debt-payment.md",
+            "section": "Вопрос пользователя"
+          }
+        ],
+        "answer": "Проверьте сумму задолженности и срок действия текущего периода обслуживания.\n\nИсточник: data/knowledge/atol_online/billing/debt-payment.md — Что проверено по инструкции производителя",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "atol_online/billing/debt-payment.md",
+            "section": "Что проверено по инструкции производителя"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "atol_online/billing/debt-payment.md",
+            "section": "Что проверено по инструкции производителя"
+          }
+        ],
+        "answer": "Проверьте сумму задолженности и срок действия текущего периода обслуживания.\n\nИсточник: data/knowledge/atol_online/billing/debt-payment.md — Что проверено по инструкции производителя",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "billing",
+        "operation": "change_permissions"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "expert_task_operation": {
+          "task": "billing",
+          "operation": "change_permissions"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "billing",
+          "operation": "check"
+        }
+      }
+    },
+    {
+      "case": 21,
+      "topic": "ФФД 1.2/сервис неизвестен",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "search"
+      },
+      "task_operation_after_resolver": {
+        "task": "fiscal_format",
+        "operation": "check"
+      },
+      "B_oracle_task": {
+        "expert_task": "fiscal_format",
+        "expert_operation": "check",
+        "selected_approved_candidates": [
+          {
+            "source": "evotor/ffd/how-to-check-ffd.md",
+            "section": "Почему это важно"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "task_mismatch:service_connection!=fiscal_format",
+          "task_mismatch:integration!=fiscal_format",
+          "task_mismatch:receipt_issue!=fiscal_format",
+          "task_mismatch:correction_receipt!=fiscal_format",
+          "subtask_anchor_uncovered",
+          "task_mismatch:correction_receipt!=fiscal_format",
+          "subtask_anchor_uncovered",
+          "task_mismatch:integration!=fiscal_format",
+          "subtask_anchor_uncovered",
+          "task_mismatch:integration!=fiscal_format",
+          "subtask_anchor_uncovered",
+          "task_mismatch:integration!=fiscal_format"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [],
+        "answer": "Какой производитель оборудования используется?",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "task_mismatch:correction_receipt!=fiscal_format",
+          "task_mismatch:integration!=fiscal_format",
+          "task_mismatch:receipt_issue!=fiscal_format",
+          "task_mismatch:service_connection!=fiscal_format"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 641
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "approved_evidence": [
+          {
+            "source": "evotor/ffd/how-to-check-ffd.md",
+            "section": "Почему это важно"
+          }
+        ],
+        "answer": "Какой производитель оборудования используется?",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [
+          {
+            "document_id": "evotor-ffd-version-check-20261019",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          },
+          {
+            "document_id": "evotor-ffd-version-check-20261019",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          },
+          {
+            "document_id": "evotor-ffd-version-check-20261019",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          }
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "fiscal_format",
+        "operation": "check"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "expert_task_operation": {
+          "task": "fiscal_format",
+          "operation": "check"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "fiscal_format",
+          "operation": "check"
+        }
+      }
+    },
+    {
+      "case": 22,
+      "topic": "АТОЛ Онлайн/API",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "general",
+        "operation": "search"
+      },
+      "task_operation_after_resolver": {
+        "task": "integration",
+        "operation": "check"
+      },
+      "B_oracle_task": {
+        "expert_task": "integration",
+        "expert_operation": "check",
+        "selected_approved_candidates": [],
+        "candidate_count": 0,
+        "rejection_reasons": [
+          "task_mismatch:correction_receipt!=integration",
+          "subtask_anchor_uncovered",
+          "task_mismatch:error_diagnosis!=integration",
+          "subtask_anchor_uncovered",
+          "task_mismatch:edo!=integration",
+          "subtask_anchor_uncovered",
+          "subtask_anchor_uncovered",
+          "task_mismatch:error_diagnosis!=integration",
+          "subtask_anchor_uncovered",
+          "task_mismatch:receipt_issue!=integration"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=integration",
+          "task_mismatch:contract!=integration",
+          "task_mismatch:correction_receipt!=integration",
+          "task_mismatch:edo!=integration",
+          "task_mismatch:equipment_replacement!=integration",
+          "task_mismatch:equipment_setup!=integration",
+          "task_mismatch:error_diagnosis!=integration",
+          "task_mismatch:fiscal_drive!=integration",
+          "task_mismatch:fns_registration!=integration",
+          "task_mismatch:ofd_connection!=integration",
+          "task_mismatch:receipt_issue!=integration",
+          "task_mismatch:receipt_transmission!=integration",
+          "task_mismatch:service_connection!=integration",
+          "task_mismatch:settings!=integration",
+          "task_mismatch:shift_management!=integration",
+          "task_mismatch:support!=integration"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 276
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "integration",
+        "operation": "check"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "expert_task_operation": {
+          "task": "integration",
+          "operation": "check"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "integration",
+          "operation": "check"
+        }
+      }
+    },
+    {
+      "case": 23,
+      "topic": "Платформа ОФД/нет чеков",
+      "kb_grade": "B",
+      "understanding_before": {
+        "intent": "device",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "receipt_transmission",
+        "operation": "diagnose"
+      },
+      "B_oracle_task": {
+        "expert_task": null,
+        "expert_operation": "check",
+        "selected_approved_candidates": [
+          {
+            "source": "platformaofd/ofd/lkk-cash-monitoring.md",
+            "section": "Просмотр списка касс"
+          },
+          {
+            "source": "platformaofd/flk/flk-507.md",
+            "section": "Что проверить"
+          },
+          {
+            "source": "platformaofd/flk/flk-508.md",
+            "section": "Что проверить"
+          }
+        ],
+        "candidate_count": 3,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "subtask_anchor_uncovered",
+          "task_unresolved",
+          "subtask_anchor_uncovered",
+          "service_mismatch_or_unlabeled",
+          "task_unresolved",
+          "subtask_anchor_uncovered",
+          "subtask_anchor_uncovered",
+          "subtask_anchor_uncovered",
+          "service_mismatch_or_unlabeled",
+          "subtask_anchor_uncovered",
+          "task_unresolved"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "approved_evidence": [],
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "quality": "safe refusal/clarification",
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:bank_statement!=receipt_transmission",
+          "task_mismatch:billing!=receipt_transmission",
+          "task_mismatch:cash_list!=receipt_transmission",
+          "task_mismatch:cash_search!=receipt_transmission",
+          "task_mismatch:correction_receipt!=receipt_transmission",
+          "task_mismatch:edo!=receipt_transmission",
+          "task_mismatch:equipment_setup!=receipt_transmission",
+          "task_mismatch:error_diagnosis!=receipt_transmission",
+          "task_mismatch:fiscal_document_control!=receipt_transmission",
+          "task_mismatch:fiscal_drive!=receipt_transmission",
+          "task_mismatch:fns_monitoring!=receipt_transmission",
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "task_mismatch:goods_receipt!=receipt_transmission",
+          "task_mismatch:integration!=receipt_transmission",
+          "task_mismatch:marking!=receipt_transmission",
+          "task_mismatch:ofd_connection!=receipt_transmission",
+          "task_mismatch:period_close!=receipt_transmission",
+          "task_mismatch:receipt_issue!=receipt_transmission",
+          "task_mismatch:receipt_search!=receipt_transmission",
+          "task_mismatch:receipt_status!=receipt_transmission",
+          "task_mismatch:sales!=receipt_transmission",
+          "task_mismatch:service_connection!=receipt_transmission",
+          "task_mismatch:shift_management!=receipt_transmission"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 255
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "platformaofd/ofd/lkk-cash-monitoring.md",
+            "section": "Просмотр списка касс"
+          }
+        ],
+        "answer": "Откройте «Кассы» → «Мониторинг». Здесь отображаются результаты мониторинга подключённых ККТ. Предустановленные фильтры позволяют отбирать открытые и закрытые смены, кассы без документов, с почти заполненной памятью ФН, с оплатой или без неё.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md — Просмотр списка касс",
+        "quality": "partial/wrong target",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [],
+        "scenario": "not_run",
+        "scenario_reason": "no_expert_gold_section_defined",
+        "approved_evidence_after_gates": [],
+        "answer": null,
+        "quality": "safe refusal/clarification",
+        "source_scope_rejections": [],
+        "not_run_reason": "no_expert_gold_section_defined",
+        "route": null,
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": null,
+      "expert_oracle_task_operation": {
+        "task": "receipt_transmission",
+        "operation": "check"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "receipt_transmission",
+          "operation": "check"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "receipt_transmission",
+          "operation": "diagnose"
+        }
+      }
+    },
+    {
+      "case": 24,
+      "topic": "Платформа ОФД/статус ФНС",
+      "kb_grade": "A",
+      "understanding_before": {
+        "intent": "receipt",
+        "operation": "diagnose"
+      },
+      "task_operation_after_resolver": {
+        "task": "receipt_status",
+        "operation": "status"
+      },
+      "B_oracle_task": {
+        "expert_task": "receipt_status",
+        "expert_operation": "status",
+        "selected_approved_candidates": [
+          {
+            "source": "platformaofd/ofd/lkk-receipt-fns-status.md",
+            "section": "Результат контроля"
+          }
+        ],
+        "candidate_count": 1,
+        "rejection_reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:fiscal_drive!=receipt_status",
+          "service_mismatch_or_unlabeled",
+          "subtask_anchor_uncovered",
+          "task_mismatch:ofd_connection!=receipt_status",
+          "task_mismatch:ofd_connection!=receipt_status",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:fns_registration!=receipt_status",
+          "task_mismatch:fiscal_drive!=receipt_status",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:service_connection!=receipt_status",
+          "service_mismatch_or_unlabeled",
+          "subtask_anchor_uncovered",
+          "task_mismatch:fiscal_drive!=receipt_status",
+          "task_mismatch:fiscal_document_control!=receipt_status"
+        ]
+      },
+      "A_resolver_plus_gate": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md",
+            "section": "Результат контроля"
+          }
+        ],
+        "answer": "В поиске чеков статус отражает результат форматно-логического контроля ФНС. Успешный приём означает отсутствие ошибок; предупреждение — приём с обнаруженными ошибками; карантин — передачу при незавершённой регистрации, когда проверка на сайте ФНС недоступна; отказ — отклонение документа из-за ошибок. Подсказка иконки показывает статус.\n\nДополнительное условие источника (Ограничения):\nПорядок исправления зависит от конкретной ошибки и регистрации. Одна отметка не заменяет диагностику специалистом.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md — Результат контроля",
+        "quality": "partial/wrong target",
+        "rejection_reasons": [
+          "task_mismatch:access!=receipt_status",
+          "task_mismatch:bank_statement!=receipt_status",
+          "task_mismatch:billing!=receipt_status",
+          "task_mismatch:cash_list!=receipt_status",
+          "task_mismatch:cash_search!=receipt_status",
+          "task_mismatch:correction_receipt!=receipt_status",
+          "task_mismatch:ens!=receipt_status",
+          "task_mismatch:equipment_replacement!=receipt_status",
+          "task_mismatch:error_diagnosis!=receipt_status",
+          "task_mismatch:fiscal_document_control!=receipt_status",
+          "task_mismatch:fiscal_drive!=receipt_status",
+          "task_mismatch:fns_monitoring!=receipt_status",
+          "task_mismatch:fns_registration!=receipt_status",
+          "task_mismatch:integration!=receipt_status",
+          "task_mismatch:marking!=receipt_status",
+          "task_mismatch:network_diagnostics!=receipt_status",
+          "task_mismatch:ofd_connection!=receipt_status",
+          "task_mismatch:receipt_issue!=receipt_status",
+          "task_mismatch:receipt_search!=receipt_status",
+          "task_mismatch:reconciliation!=receipt_status",
+          "task_mismatch:refund!=receipt_status",
+          "task_mismatch:sales!=receipt_status",
+          "task_mismatch:service_connection!=receipt_status",
+          "task_mismatch:settings!=receipt_status",
+          "task_mismatch:shift_management!=receipt_status",
+          "task_mismatch:tspiot!=receipt_status",
+          "task_mismatch:vat_accounting!=receipt_status",
+          "task_mismatch:vat_usn!=receipt_status"
+        ],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": 588
+        }
+      },
+      "B_oracle_task_final": {
+        "route": "technical_action",
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence": [
+          {
+            "source": "platformaofd/ofd/lkk-receipt-fns-status.md",
+            "section": "Результат контроля"
+          }
+        ],
+        "answer": "В поиске чеков статус отражает результат форматно-логического контроля ФНС. Успешный приём означает отсутствие ошибок; предупреждение — приём с обнаруженными ошибками; карантин — передачу при незавершённой регистрации, когда проверка на сайте ФНС недоступна; отказ — отклонение документа из-за ошибок. Подсказка иконки показывает статус.\n\nДополнительное условие источника (Ограничения):\nПорядок исправления зависит от конкретной ошибки и регистрации. Одна отметка не заменяет диагностику специалистом.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md — Результат контроля",
+        "quality": "partial/wrong target",
+        "source_scope_rejections": [],
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "C_oracle_evidence_final": {
+        "injected_approved_section": [
+          {
+            "source": "platformaofd/ofd/lkk-receipt-search.md",
+            "section": "Поиск чеков"
+          }
+        ],
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "approved_evidence_after_gates": [
+          {
+            "source": "platformaofd/ofd/lkk-receipt-search.md",
+            "section": "Поиск чеков"
+          }
+        ],
+        "answer": "Маршрут: «Чеки» → «Поиск чеков». Период задаётся датами пробития, а не поступления в ОФД. Для прошлого месяца выберите календарные границы нужного месяца. Основные параметры: тип документа, магазин, касса по названию или РНМ; отдельно доступны ФД и ФП из чека.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-search.md — Поиск чеков",
+        "quality": "useful first step",
+        "source_scope_rejections": [],
+        "not_run_reason": null,
+        "route": "technical_action",
+        "usage": {
+          "provider_calls": 0,
+          "provider_tokens": 0,
+          "latency_ms": null,
+          "latency_note": "not instrumented for this local replay"
+        }
+      },
+      "D_live_selector": {
+        "attempted": true,
+        "selected_source": "platformaofd/ofd/lkk-receipt-search.md",
+        "selected_section": "Поиск чеков",
+        "covers": [
+          "locate_receipt"
+        ],
+        "http_status": 200,
+        "tokens": 1328,
+        "latency_ms": 843,
+        "validator_result": "accepted; exact approved section rendered",
+        "final_useful": true,
+        "answer": "Route «Чеки» → «Поиск чеков»; period is set by receipt date.",
+        "note": "First broad call selected multiple pieces and failed procedure_block_must_remain_indivisible (1,321 tokens, 1,117 ms); one-section selection passed.",
+        "model": "openai/gpt-oss-20b",
+        "calls_for_case": 2,
+        "total_tokens_for_case": 2649,
+        "total_latency_ms_for_case": 1960,
+        "attempts": [
+          {
+            "selection": "multiple fragments",
+            "http_status": 200,
+            "tokens": 1321,
+            "latency_ms": 1117,
+            "validator_result": "rejected: procedure_block_must_remain_indivisible"
+          },
+          {
+            "selection": "one whole section; facet locate_receipt",
+            "http_status": 200,
+            "tokens": 1328,
+            "latency_ms": 843,
+            "validator_result": "accepted"
+          }
+        ]
+      },
+      "expert_oracle_task_operation": {
+        "task": "receipt_status",
+        "operation": "status"
+      },
+      "understanding_comparison": {
+        "validated_intent_operation_before": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "expert_task_operation": {
+          "task": "receipt_status",
+          "operation": "status"
+        },
+        "resolver_canonical_task_operation": {
+          "task": "receipt_status",
+          "operation": "status"
+        }
+      }
+    }
+  ]
+}
