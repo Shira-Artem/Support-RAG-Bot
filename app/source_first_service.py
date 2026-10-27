@@ -44,6 +44,36 @@ _GENERIC_SCOPE_TERMS = {"ofd", "kkt", "фнс", "ккт", "документ", "�
 _HARDWARE_TASK_CATEGORIES = {"device", "fiscal_drive", "network", "network_diagnostics",
     "ofd_connection", "error_diagnosis", "receipt_transmission", "fiscal_document_control",
     "fiscal_format", "marking", "tspiot"}
+_GENERAL_CONCEPTUAL_FORM = re.compile(
+    r"\b(?:что\s+(?:такое|означает|значит|делает|представляет\s+собой)|кто\s+такой|"
+    r"чем\s+(?:отличает\w*|различает\w*)|в\s+ч[её]м\s+(?:разниц\w*|отличи\w*)|"
+    r"сравни\w*|сопоставь\w*|как\s+(?:это\s+)?работа\w*|принцип\s+работ\w*|"
+    r"зачем\b|для\s+чего\b|с\s+какой\s+целью\b|"
+    r"почему\s+(?:нуж\w*|использу\w*|применя\w*|создан\w*)|"
+    r"объясни\w*|расскажи\w*|what\s+is|define|compare)\b", re.I)
+_GENERAL_KNOWLEDGE_BLOCK = re.compile(
+    r"\b(?:ошибк\w*|код\s*\d|\d{2,}|не\s+работ\w*|перестал\w*|не\s+переда\w*|"
+    r"не\s+загружа\w*|как\s+(?:настро\w*|подключ\w*|исправ\w*|провер\w*|выполн\w*)|"
+    r"настро\w*|подключ\w*|исправ\w*|проверь\w*|выполн\w*|замен\w*|закры\w*|"
+    r"перерегистр\w*|по\s+закону|законодательств\w*|норматив\w*|требовани\w*|"
+    r"актуальн\w*|на\s+сегодня|сейчас|тариф\w*|стоимост\w*|договор\w*|"
+    r"фн\s*\d+|фискальн\w*\s+операц\w*)\b", re.I)
+_GENERAL_UNSOURCED_CITATION = re.compile(
+    r"https?://|www\.|\bисточник\s*:|\bсогласно\s+(?:документ|инструкц|сайт)|"
+    r"\bпо\s+данным\s+(?:документ|инструкц|сайт)", re.I)
+_CONCEPTUAL_ACTION_SENTENCE = re.compile(
+    r"^\s*(?:попрос\w*|сопостав\w*|свер\w*|уточн\w*|убед\w*|"
+    r"проверь\w*|провер\w*|открой\w*|перейд\w*|нажм\w*|выбер\w*|"
+    r"укаж\w*|введ\w*|настро\w*|подключ\w*|измен\w*|замен\w*|"
+    r"передай\w*|передайте\w*|выполн\w*|посмотр\w*|обрат\w*|"
+    r"позвон\w*|созда\w*|удал\w*|закрой\w*|перерегистр\w*)\b", re.I)
+_COMPARISON_FORMS = (
+    re.compile(r"\bчем\s+отличает\w*\s+(.+?)\s+от\s+(.+?)(?:[?!.]|$)", re.I),
+    re.compile(r"\bчем\s+различает\w*\s+(.+?)\s+от\s+(.+?)(?:[?!.]|$)", re.I),
+    re.compile(r"\bв\s+ч[её]м\s+разниц\w*\s+между\s+(.+?)\s+и\s+(.+?)(?:[?!.]|$)", re.I),
+    re.compile(r"\b(?:сравни|сравните|сопоставь|сопоставьте)\s+(.+?)\s+и\s+(.+?)(?:[?!.]|$)", re.I),
+    re.compile(r"\b(.+?)\s+отличает\w*\s+от\s+(.+?)(?:[?!.]|$)", re.I),
+)
 
 
 def _matches_scope_value(left: str, right: str) -> bool:
@@ -104,7 +134,8 @@ def _focus_terms(text: str) -> set[str]:
     return terms
 
 
-def _focused_approved_sentence(sections: list[dict], focus: str) -> tuple[dict, str] | None:
+def _focused_approved_sentence(sections: list[dict], focus: str, *,
+                               conceptual_question: str | None = None) -> tuple[dict, str] | None:
     focus_terms = _focus_terms(focus)
     if not focus_terms:
         return None
@@ -112,7 +143,16 @@ def _focused_approved_sentence(sections: list[dict], focus: str) -> tuple[dict, 
     for section_index, item in enumerate(sections):
         for sentence_index, sentence in enumerate(statements(item["text"])):
             if (evidence_role(sentence) != "fact"
-                    or evidence_kind(sentence, str(item.get("section") or "")) in {"procedure", "interface"}):
+                    or evidence_kind(sentence, str(item.get("section") or "")) in {"procedure", "interface"}
+                    or _CONCEPTUAL_ACTION_SENTENCE.search(sentence)
+                    # A safety warning can be grammatically factual. Do not
+                    # promote its dangerous-action phrase into a standalone
+                    # informational answer; the independent safety gate stays
+                    # strict and the next relevant approved fact may be used.
+                    or unsafe_operation_issue(sentence)):
+                continue
+            if conceptual_question and not _conceptually_answering_sentence(
+                    sentence, conceptual_question):
                 continue
             sentence_terms = _focus_terms(sentence)
             overlap = len(focus_terms & sentence_terms)
@@ -123,6 +163,45 @@ def _focused_approved_sentence(sections: list[dict], focus: str) -> tuple[dict, 
         return None
     best = max(ranked, key=lambda row: row[:4])
     return best[4], best[5]
+
+
+def _comparison_concepts(question: str) -> tuple[set[str], set[str]] | None:
+    for pattern in _COMPARISON_FORMS:
+        match = pattern.search(question)
+        if match:
+            left, right = _focus_terms(match.group(1)), _focus_terms(match.group(2))
+            if left and right:
+                return left, right
+    return None
+
+
+def _conceptually_answering_sentence(sentence: str, question: str) -> bool:
+    """Require a conceptual fact, and both sides of a comparison in that fact."""
+    if (_CONCEPTUAL_ACTION_SENTENCE.search(sentence)
+            or evidence_role(sentence) != "fact"
+            or evidence_kind(sentence) in {"procedure", "interface"}
+            or unsafe_operation_issue(sentence)):
+        return False
+    concepts = _comparison_concepts(question)
+    if not concepts:
+        return bool(_focus_terms(question) & _focus_terms(sentence))
+    left, right = concepts
+    evidence_terms = _focus_terms(sentence)
+    left_distinct, right_distinct = left - right, right - left
+    # Shared adjectives such as “фискальный” cannot by themselves prove a
+    # comparison. The sentence must name at least one distinctive term for
+    # each concept.
+    return (bool(left_distinct) and bool(right_distinct)
+            and left_distinct <= evidence_terms
+            and right_distinct <= evidence_terms)
+
+
+def _safe_general_knowledge_question(user_message: str, state: DialogueState) -> bool:
+    """Allow model-only text for low-risk conceptual explanations only."""
+    return bool(state.intent == "general" and state.operation == "explain"
+        and _GENERAL_CONCEPTUAL_FORM.search(user_message)
+        and not _GENERAL_KNOWLEDGE_BLOCK.search(user_message)
+        and not unsafe_operation_issue(user_message))
 
 
 _LIMITATION_CLAIM = re.compile(
@@ -638,6 +717,74 @@ class SourceFirstService:
     def __init__(self, rag, settings: Settings, root: Path):
         self.rag, self.settings, self.root = rag, settings, root
 
+    async def _general_knowledge_fallback(self, user_message: str, state: DialogueState,
+                                         started: float, base: dict) -> Answer | None:
+        """Answer only a low-risk definition after a successful approved-source lookup."""
+        if not _safe_general_knowledge_question(user_message, state):
+            return None
+        prompt = [
+            {"role": "system", "content": (
+                "Give a concise, plain-language conceptual explanation from general knowledge. "
+                "Approved-source retrieval was already checked and gave no focused answer. "
+                "This is not a support procedure. Do not give steps, settings, fiscal or legal "
+                "requirements, current facts, prices, product-specific claims, sources, citations, "
+                "or URLs. If uncertain, say so. Return only 1-3 sentences of answer text.")},
+            {"role": "user", "content": user_message},
+        ]
+        try:
+            generated = await generate(prompt, self.settings, call_stage="general_knowledge")
+        except GenerationError as exc:
+            error = _generation_error(exc)
+            error.update(retry_count=exc.retry_count,
+                         retry_wait_seconds=exc.retry_wait_seconds)
+            return self._escalate(
+                "Не удалось сформулировать общее объяснение сейчас. Попробуйте позже.",
+                "general_knowledge_provider_error", "bounded_provider_request_failed",
+                started, **base, generation_status="error", llm_call_attempted=True,
+                generation_error=error)
+        text = generated.text.strip()
+        claims = statements(text)
+        question_terms = content_terms(user_message)
+        response_terms = content_terms(text)
+        invalid = (not text or len(text) > 1000 or not 1 <= len(claims) <= 3
+                   or bool(_GENERAL_UNSOURCED_CITATION.search(text))
+                   or bool(unsafe_operation_issue(text))
+                   or bool(instruction_issue(text, ""))
+                   or not question_terms.intersection(response_terms))
+        diagnostics = base.get("retrieval_diagnostics") or {}
+        diagnostics["general_knowledge_fallback"] = {
+            "eligible": True, "used": not invalid,
+            "source_basis": "model_general_knowledge" if not invalid else None,
+            "approved_sources_checked_first": True,
+            "approved_focused_answer_found": False,
+            "citation_policy": "no_sources_or_urls_claimed",
+            "validation": "conceptual_scope_and_safety" if not invalid else "rejected",
+            "rejection": "output_out_of_scope_or_not_relevant" if invalid else None,
+            "retry_count": generated.retry_count,
+            "retry_wait_seconds": generated.retry_wait_seconds,
+        }
+        base["retrieval_diagnostics"] = diagnostics
+        base.update(model=generated.model, used_model=True, llm_call_attempted=True,
+                    prompt_tokens=generated.prompt_tokens,
+                    completion_tokens=generated.completion_tokens,
+                    total_tokens=generated.total_tokens,
+                    reasoning_tokens=generated.reasoning_tokens,
+                    cached_tokens=generated.cached_tokens,
+                    api_call_id=generated.api_call_id,
+                    raw_model_text=generated.text,
+                    llm_retry_count=generated.retry_count,
+                    llm_retry_wait_seconds=generated.retry_wait_seconds)
+        if invalid:
+            return self._escalate(
+                "Не получилось безопасно проверить общее объяснение. Запросите специалиста.",
+                "general_knowledge_output_rejected", "conceptual_scope_or_safety_gate",
+                started, **base, generation_status="rejected")
+        text = "Общее объяснение (сформулировано моделью, не по approved-документации):\n" + text
+        return Answer(text, scenario="answer", scenario_reason="general_knowledge_fallback",
+                      generation_status="generated", validation_status="general_knowledge_scope_checked",
+                      validation_reason="conceptual question; no actions, current rules, citations or URLs",
+                      duration_ms=round((perf_counter()-started)*1000), **base)
+
     async def _coordinated_information_answer(self, user_message: str, state: DialogueState,
                                         sections: list[dict], decision: dict,
                                         started: float, base: dict) -> Answer:
@@ -650,6 +797,30 @@ class SourceFirstService:
         if len(content_terms(focus)) < 2:
             focus = user_message
         history = base.pop("history", [])
+        conceptual_sections = []
+        for item in sections:
+            if any(_conceptually_answering_sentence(sentence, user_message)
+                   for sentence in statements(item["text"])):
+                conceptual_sections.append(item)
+        base.setdefault("retrieval_diagnostics", {})["conceptual_evidence_gate"] = {
+            "question_kind": ("comparison" if _comparison_concepts(user_message) else "conceptual"),
+            "candidate_sections": len(sections),
+            "conceptual_fact_sections": len(conceptual_sections),
+            "excluded_nonconceptual_or_noncovering_sections": len(sections) - len(conceptual_sections),
+            "comparison_requires_both_concepts_in_one_supported_fact": bool(
+                _comparison_concepts(user_message)),
+        }
+        if not conceptual_sections:
+            fallback = await self._general_knowledge_fallback(
+                user_message, state, started, base)
+            if fallback is not None:
+                return fallback
+            return self._escalate(
+                "В approved-источниках нет подходящего концептуального объяснения; "
+                "не буду подменять его технической инструкцией. Запросите специалиста.",
+                "no_conceptual_evidence", "no_matching_fact_evidence_for_question_type",
+                started, **base)
+        sections = conceptual_sections
         if self.settings.semantic_evidence_selector_enabled:
             from app.semantic_evidence_selector import (
                 build_evidence_units, select_evidence, validate_selected_units)
@@ -709,7 +880,8 @@ class SourceFirstService:
                 prompt_tokens=generated.prompt_tokens, completion_tokens=generated.completion_tokens,
                 total_tokens=generated.total_tokens, reasoning_tokens=generated.reasoning_tokens,
                 cached_tokens=generated.cached_tokens, api_call_id=generated.api_call_id,
-                raw_model_text=generated.text)
+                raw_model_text=generated.text, llm_retry_count=generated.retry_count,
+                llm_retry_wait_seconds=generated.retry_wait_seconds)
             diagnostics = base.get("retrieval_diagnostics") or {}
             diagnostics["semantic_evidence_selector"] = {
                 "decision": {"mode": selected_decision.mode,
@@ -725,9 +897,17 @@ class SourceFirstService:
             }
             base["retrieval_diagnostics"] = diagnostics
             if rejection:
+                fallback = await self._general_knowledge_fallback(
+                    user_message, state, started, base)
+                if fallback is not None:
+                    return fallback
                 return self._escalate("Выбранный фрагмент не прошёл независимые проверки. Запросите специалиста.",
                     "semantic_selector_validation_rejected", rejection, started, **base)
             if selected_decision.mode == "clarify":
+                fallback = await self._general_knowledge_fallback(
+                    user_message, state, started, base)
+                if fallback is not None:
+                    return fallback
                 questions = {"service": "Какой сервис используется?", "manufacturer": "Какой производитель оборудования?",
                     "model": "Уточните модель оборудования.", "period": "За какой период нужен поиск?",
                     "task": "Уточните, что именно нужно найти?"}
@@ -735,8 +915,23 @@ class SourceFirstService:
                     scenario_reason="semantic_selector_clarification", clarification_slot=selected_decision.clarification_slot,
                     generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
             if selected_decision.mode == "no_evidence":
+                fallback = await self._general_knowledge_fallback(
+                    user_message, state, started, base)
+                if fallback is not None:
+                    return fallback
                 return self._escalate("В найденных approved-источниках нет подтверждённого ответа именно на этот вопрос. Запросите специалиста.",
                     "semantic_selector_no_evidence", selected_decision.reason_code, started, **base)
+            if not all(_conceptually_answering_sentence(unit.text, user_message)
+                       for unit in selected):
+                fallback = await self._general_knowledge_fallback(
+                    user_message, state, started, base)
+                if fallback is not None:
+                    return fallback
+                return self._escalate(
+                    "Выбранный approved-фрагмент относится к другому типу вопроса. "
+                    "Не буду подменять объяснение инструкцией; запросите специалиста.",
+                    "semantic_selector_question_type_mismatch",
+                    "selected_evidence_not_conceptual_or_does_not_cover_question", started, **base)
             text_body = " ".join(unit.text for unit in selected)
             evidence = "\n".join(f"{unit.section}\n{unit.text}" for unit in selected)
             if (any(unit.kind == "procedure_block" for unit in selected)
@@ -760,8 +955,19 @@ class SourceFirstService:
                 generation_status="generated", validation_status="verified_approved_evidence_ids",
                 validation_reason="ID membership, approved status, SHA, section text, grounding and safety verified",
                 duration_ms=round((perf_counter()-started)*1000), **base)
-        match = _focused_approved_sentence(sections, focus)
+        match = _focused_approved_sentence(
+            sections, focus, conceptual_question=user_message)
+        # The coordinator subgoal may omit the defining term (for example,
+        # «что она означает»). Retry focus against the whole current question,
+        # which remains untrusted query text and never becomes client evidence.
+        if not match and focus != user_message:
+            match = _focused_approved_sentence(
+                sections, user_message, conceptual_question=user_message)
         if not match:
+            fallback = await self._general_knowledge_fallback(
+                user_message, state, started, base)
+            if fallback is not None:
+                return fallback
             return self._escalate(
                 "В найденном approved-разделе не удалось выделить подтверждённый ответ именно на текущий вопрос. Запросите специалиста.",
                 "coordinator_no_focused_evidence", "no_approved_sentence_matches_current_subgoal",
@@ -778,13 +984,32 @@ class SourceFirstService:
         exact_section = next((content for heading, content in _sections(source_text)
                               if heading == selected["section"]), None)
         evidence = f"{selected['section']}\n{exact_section or ''}"
-        if (exact_section != selected["text"] or sentence not in exact_section
-                or evidence_kind(sentence, selected["section"]) in {"procedure", "interface"}
-                or unsafe_operation_issue(sentence) or instruction_issue(sentence, evidence)
-                or not claim_supported(sentence, evidence)):
+        claim_checks = {
+            "exact_local_section_match": exact_section == selected["text"],
+            "claim_present_in_approved_section": bool(exact_section and sentence in exact_section),
+            "claim_is_nonprocedural_fact": evidence_kind(sentence, selected["section"])
+                not in {"procedure", "interface"},
+            "no_unsafe_operation": unsafe_operation_issue(sentence) is None,
+            "no_unsupported_instruction": instruction_issue(sentence, evidence) is None,
+            "claim_grounded": claim_supported(sentence, evidence),
+        }
+        if not all(claim_checks.values()):
+            diagnostics = base.get("retrieval_diagnostics") or {}
+            diagnostics["coordinator_claim_validation"] = {
+                "claim": sentence, "approved_evidence": exact_section,
+                "source": selected["source"], "section": selected["section"],
+                "checks": claim_checks,
+                "failed_checks": [key for key, passed in claim_checks.items() if not passed],
+            }
+            base["retrieval_diagnostics"] = diagnostics
+            fallback = await self._general_knowledge_fallback(
+                user_message, state, started, base)
+            if fallback is not None:
+                return fallback
             return self._escalate(
                 "Текущий фрагмент не прошёл независимую проверку утверждений. Не буду выдавать его как ответ; запросите специалиста.",
-                "coordinator_evidence_gate_rejected", "exact_quote_failed_independent_grounding_gate",
+                "coordinator_evidence_gate_rejected",
+                ",".join(key for key, passed in claim_checks.items() if not passed),
                 started, **base)
 
         scope = selected.get("scope") or {}
@@ -795,8 +1020,12 @@ class SourceFirstService:
             attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}. "
                           "Модель оборудования не подтверждена; привожу только общий факт из источника.\n")
         else:
-            attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}.\n"
-                           if scope_labels else "")
+            if scope_labels and scope.get("manufacturer") and not scope.get("model"):
+                attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}; "
+                               "модель оборудования в статье не указана.\n")
+            else:
+                attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}.\n"
+                               if scope_labels else "")
         text = (f"{sentence}\n\n{attribution}Источник: {selected['source']} — "
                 f"{selected['section']}")
         if unsafe_operation_issue(text) or instruction_issue(sentence, evidence):
@@ -974,6 +1203,11 @@ class SourceFirstService:
         base.update(results=retrieval.documents, rag_query=query, active_request=query,
                     retrieval_diagnostics={**diagnostics, "engine": "source_first"})
         if not retrieval.sufficient or retrieval.evidence_status == "unsafe":
+            if retrieval.evidence_status != "unsafe":
+                fallback = await self._general_knowledge_fallback(
+                    user_message, state, started, base)
+                if fallback is not None:
+                    return fallback
             # Ask once for a missing scope fact; repeat unresolved clarification
             # closes safely instead of creating an endless question loop.
             reason = retrieval.insufficiency_reason or "no_applicable_source"
@@ -1002,6 +1236,10 @@ class SourceFirstService:
                                   "insufficient_applicable_evidence", reason, started, **base)
         sections = _source_sections(self.rag, retrieval, self.root)
         if not sections:
+            fallback = await self._general_knowledge_fallback(
+                user_message, state, started, base)
+            if fallback is not None:
+                return fallback
             return self._escalate("Найденный фрагмент нельзя сверить с локальной approved-версией источника. Не буду пересказывать его; запросите специалиста.",
                                   "source_integrity_mismatch", "selected_qdrant_section_not_found_in_approved_local_source", started, **base)
         decision = (coordinator_decision.to_dict()
@@ -1149,6 +1387,10 @@ class SourceFirstService:
                     "reason": "non_answer_bearing_units_are_not_answer_evidence",
                     "removed_count": len(non_answer_sections)}
             if not sections:
+                fallback = await self._general_knowledge_fallback(
+                    user_message, state, started, base)
+                if fallback is not None:
+                    return fallback
                 return self._escalate("В approved-источниках не нашёл раздела с подтверждённым объяснением. Не буду выдавать заголовок-вопрос за ответ; запросите специалиста.",
                     "no_answer_bearing_information_source", "approved_retrieval_returned_only_non_answer_units", started, **base)
             if decision and decision.get("route") == "grounded_information":
@@ -1194,6 +1436,8 @@ class SourceFirstService:
                     completion_tokens=generated.completion_tokens, total_tokens=generated.total_tokens,
                     reasoning_tokens=generated.reasoning_tokens, cached_tokens=generated.cached_tokens,
                     api_call_id=generated.api_call_id, raw_model_text=generated.text,
+                    llm_retry_count=generated.retry_count,
+                    llm_retry_wait_seconds=generated.retry_wait_seconds,
                     context_chars=sum(len(x["text"]) for x in sections))
         base["retrieval_diagnostics"]["planner"] = {"mode": mode, "section_id": plan.get("section_id"),
                 "reason": str(plan.get("reason") or "")[:240],
@@ -1202,6 +1446,8 @@ class SourceFirstService:
                 "selection_policy": ("informational_selected_section_claim_validation"
                                      if informational else "customer_scope_and_order_confirmed"),
                 "duration_ms": planner_ms,
+                "retry_count": generated.retry_count,
+                "retry_wait_seconds": generated.retry_wait_seconds,
                 "finish_reason": generated.finish_reason,
                 "candidate_sections": [{k:v for k,v in x.items() if k != "text"} for x in sections]}
         informational_selection = (informational and mode == "select" and selected is not None)
@@ -1599,6 +1845,9 @@ class SourceFirstService:
                         previous = base.get(token_key)
                         if isinstance(added, int) and not isinstance(added, bool):
                             base[token_key] = previous + added if isinstance(previous, int) else added
+                base["llm_retry_count"] = sum(g.retry_count for g in generations)
+                base["llm_retry_wait_seconds"] = round(
+                    sum(g.retry_wait_seconds for g in generations), 2)
                 base.update(used_model=True, llm_call_attempted=True)
                 if not summary:
                     if not composer_diagnostics["repair"]["attempted"]:
@@ -1693,7 +1942,11 @@ class SourceFirstService:
 def _generation_error(exc: GenerationError) -> dict:
     return {"stage": exc.stage, "http_status": exc.http_status, "error_type": exc.error_type,
             "retry_after_seconds": exc.retry_after_seconds, "cause_message": exc.cause_message,
-            "rate_limit_headers": exc.rate_limit_headers}
+            "rate_limit_headers": exc.rate_limit_headers,
+            "retry_count": exc.retry_count,
+            "retry_wait_seconds": exc.retry_wait_seconds,
+            "provider_limit_dimension": ("tpm" if exc.error_type == "tokens" else
+                "request_rate_window_unspecified" if exc.error_type == "requests" else None)}
 
 
 def _provider_unavailable_message(exc: GenerationError, fallback: str) -> str:

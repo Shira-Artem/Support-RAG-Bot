@@ -17,7 +17,10 @@ from app.source_first_service import (SourceFirstService, _sections, _source_sec
                                      _partial_information_composition,
                                      _scoped_limitation_matches, _generic_preflight,
                                      _validate_information_composition,
-                                     _approved_check_units)
+                                     _approved_check_units, _focused_approved_sentence,
+                                     _safe_general_knowledge_question,
+                                     _comparison_concepts,
+                                     _conceptually_answering_sentence)
 from app.dialogue_understanding import validate_response
 from app.response_grounding import content_terms
 
@@ -350,6 +353,103 @@ def test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only(t
     gate = answer.retrieval_diagnostics["source_scope_gate"]
     assert gate["attributed_fact_only"] is True
     assert gate["customer_scope_confirmed"] is False
+
+
+def test_focus_prefers_supported_fn_fact_over_dangerous_safety_warning():
+    source = ROOT / "data/knowledge/evotor/fn/fn-234.md"
+    body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    sections = [{"section": heading, "text": text, "source": "evotor/fn/fn-234.md"}
+                for heading, text in _sections(body)]
+    question = "На кассе появилась ошибка ФН 234. Что она означает и какие безопасные проверки доступны?"
+    match = _focused_approved_sentence(sections, question)
+    assert match is not None
+    selected, claim = match
+    assert selected["section"] == "Первое различение причины"
+    assert claim == "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя."
+    from app.response_grounding import unsafe_operation_issue
+    dangerous_warning = next(sentence for heading, text in _sections(body)
+        if heading == "Если ошибка сохранилась" for sentence in
+        __import__("app.response_grounding", fromlist=["statements"]).statements(text)
+        if "закрытие архива" in sentence)
+    assert unsafe_operation_issue(dangerous_warning) == "закрыть архив ФН"
+
+
+def test_general_knowledge_fallback_is_limited_to_safe_conceptual_explanations(tmp_path, monkeypatch):
+    import json
+
+    source = "atol_online/fn/fn-basics.md"
+    path = ROOT / "data/knowledge" / source
+    body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
+    heading, text = _sections(body)[0]
+    scope = {"task_category": "fiscal_drive", "manufacturer": "АТОЛ",
+             "model": "АТОЛ Онлайн — облачная ККТ"}
+    retrieval = _retrieval(source, "atol-online-11253-fn-basics", heading, scope, text)
+    question = "Привет! Объясни, что такое ОФД и зачем он нужен?"
+    state = DialogueState(intent="general", operation="explain", object="ОФД",
+                          task=Fact(question, 1, question, 0, len(question)))
+    assert _safe_general_knowledge_question(question, state)
+    assert _safe_general_knowledge_question(
+        "Чем отличается фискальный накопитель от оператора фискальных данных?", state)
+    assert _safe_general_knowledge_question("Как работает DNS?", state)
+    assert _safe_general_knowledge_question("Для чего нужен API?", state)
+    assert not _safe_general_knowledge_question("Как закрыть архив ФН?", state)
+    assert not _safe_general_knowledge_question("Как исправить ошибку ФН 234?", state)
+    assert not _safe_general_knowledge_question("Как настроить кассу?", state)
+    assert not _safe_general_knowledge_question("Что требует закон на сегодня об ОФД?", state)
+
+    async def offline_general(messages, _settings, *, call_stage="generation"):
+        assert call_stage == "general_knowledge"
+        assert "approved" in messages[0]["content"].lower()
+        return Generation("ОФД получает фискальные документы от кассы и передаёт их налоговой службе.",
+                          "offline-general-fixture", prompt_tokens=20, completion_tokens=18,
+                          total_tokens=38)
+
+    monkeypatch.setattr("app.source_first_service.generate", offline_general)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=state, coordinator_decision={"route": "grounded_information",
+        "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert answer.scenario_reason == "general_knowledge_fallback"
+    assert "не по approved-документации" in answer.text
+    assert "Источник:" not in answer.text and "http" not in answer.text.lower()
+    assert answer.retrieval_diagnostics["general_knowledge_fallback"]["source_basis"] == "model_general_knowledge"
+
+
+def test_conceptual_evidence_gate_rejects_action_and_requires_both_comparison_sides():
+    question = "Чем отличается фискальный накопитель от оператора фискальных данных?"
+    pair = _comparison_concepts(question)
+    assert pair and pair[0] and pair[1]
+    assert not _conceptually_answering_sentence(
+        "Фискальный накопитель — модуль ККТ, обеспечивающий запись фискальных документов.", question)
+    assert not _conceptually_answering_sentence(
+        "Попросите клиента назвать своего оператора ОФД; сопоставьте сервер и порт.", question)
+    assert not _conceptually_answering_sentence(
+        "Справка различает счёт на лицензию программы сервиса и счёт на облачную ККТ.",
+        "В чём разница между локальной программой и облачным сервисом?")
+    assert _conceptually_answering_sentence(
+        "Фискальный накопитель записывает документы, а оператор фискальных данных передаёт их в ФНС.",
+        question)
+
+
+def test_general_knowledge_output_rejects_invented_citations(tmp_path, monkeypatch):
+    source = "atol_online/fn/fn-basics.md"
+    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    heading, text = _sections(body)[0]
+    retrieval = _retrieval(source, "atol-online-11253-fn-basics", heading,
+        {"task_category": "fiscal_drive", "manufacturer": "АТОЛ"}, text)
+    question = "Что такое ОФД и зачем он нужен?"
+    state = DialogueState(intent="general", operation="explain", object="ОФД",
+                          task=Fact(question, 1, question, 0, len(question)))
+
+    async def offline_bad_citation(*_args, **_kwargs):
+        return Generation("ОФД передаёт документы. Источник: https://example.invalid", "fixture")
+
+    monkeypatch.setattr("app.source_first_service.generate", offline_bad_citation)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=state, coordinator_decision={"route": "grounded_information",
+        "current_subgoal": question}))
+    assert answer.scenario == "escalate"
+    assert answer.scenario_reason == "general_knowledge_output_rejected"
 
 
 def test_software_integration_scope_does_not_require_hardware_model_or_ofd(tmp_path, monkeypatch):

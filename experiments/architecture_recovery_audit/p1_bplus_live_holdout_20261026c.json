@@ -1,0 +1,44 @@
+{
+  "gate": "P1 B+ current Source-first live routing check",
+  "frozen_at_utc": "2026-10-26T10:15:15Z",
+  "known_failures_are_dev_regressions_only": [
+    "p1_unified_live_gate_trace_20261026b.json: ofd_role",
+    "p1_unified_live_gate_trace_20261026b.json: evotor_progress turn 1",
+    "p1_unified_live_gate_trace_20261026b.json: evotor_progress turn 2"
+  ],
+  "execution_budget": {
+    "max_groq_http_attempts_including_quota_probe": 4,
+    "automatic_retries": 0,
+    "concurrent_requests": 1,
+    "read_only_qdrant_collection": "knowledge_stage3_retrieval_20261022",
+    "b2_semantic_evidence_selector": false,
+    "production_sqlite": false,
+    "telegram": false
+  },
+  "scenarios": [
+    {
+      "id": "C1_ofd_role_new",
+      "required": true,
+      "question": "В цепочке фискальных данных ОФД получает электронный документ прямо от кассы или от налоговой, и что делает с ним дальше?",
+      "expected": "Classify as a general information/explain request. Reach approved retrieval and give a short source-attributed explanation of who sends the fiscal document and what the OFD does. Do not ask for an operator/model unless required by the retrieved answer."
+    },
+    {
+      "id": "C2_evotor_transmission_new",
+      "required": true,
+      "question": "На Эвотор 7.3 продажи печатаются, но свежие чеки не видны в кабинете моего ОФД. Интернет на кассе после смены Wi-Fi роутера работает. Как начать проверку?",
+      "expected": "Preserve confirmed Evotor 7.3 and the working-internet observation, route to transmission/status, retrieve the approved applicable Evotor 7.3 article, and provide its first complete safe check with exact conditions and warnings. Do not suggest another sale, unsupported settings changes, or later checks before the first check result."
+    },
+    {
+      "id": "C3_evotor_report_followup_optional",
+      "required": false,
+      "blocked_by_attempt_cap_if_current_path_needs_planner": true,
+      "question": "В диагностическом отчёте EoU запущен, интернет работает, адрес и порт совпадают с параметрами моего ОФД. Что проверить дальше?",
+      "expected": "Continue the same task, retain the exact client-reported results, do not repeat the first check, and retrieve/select the next approved applicable step. If another provider call would exceed the four-attempt batch cap or TPM reserve, mark this turn BLOCKED and do not simulate it."
+    }
+  ],
+  "scoring": {
+    "retrieval_required_for_answerable_turns": true,
+    "usefulness_scale": "0=not useful, 1=partly useful or needs one material correction, 2=useful next action/explanation",
+    "safety": "pass only when all concrete claims/steps are approved, applicable, ordered, and retain their source conditions/warnings"
+  }
+}

@@ -58,8 +58,28 @@ class ReadOnlyQdrant:
 
 
 CASES = [
+    {"id": "ofd_definition", "question": "Привет! Объясни, что такое ОФД и зачем он нужен?",
+     "intent": "general", "operation": "explain", "object": "ОФД",
+     "preferred_section": "Вопрос пользователя"},
+    {"id": "fn_vs_ofd_comparison",
+     "question": "Чем отличается фискальный накопитель от оператора фискальных данных?",
+     "intent": "general", "operation": "explain", "object": "понятие",
+     "preferred_section": "Вопрос пользователя"},
+    {"id": "api_definition", "question": "Что такое API?",
+     "intent": "general", "operation": "explain", "object": "понятие",
+     "preferred_section": "Вопрос пользователя"},
+    {"id": "dns_principle", "question": "Как работает DNS?",
+     "intent": "general", "operation": "explain", "object": "понятие",
+     "preferred_section": "Вопрос пользователя"},
+    {"id": "local_cloud_comparison",
+     "question": "В чём разница между локальной программой и облачным сервисом?",
+     "intent": "general", "operation": "explain", "object": "понятие",
+     "preferred_section": "Вопрос пользователя"},
     {"id": "fn234", "question": "На кассе появилась ошибка ФН 234. Что она означает и какие безопасные проверки доступны?",
      "intent": "fiscal_drive", "operation": "diagnose", "object": "ФН 234",
+     "preferred_section": "Первое различение причины"},
+    {"id": "fn234_misclassified_general", "question": "На кассе появилась ошибка ФН 234. Что она означает и какие безопасные проверки доступны?",
+     "intent": "general", "operation": "explain", "object": "ФН 234",
      "preferred_section": "Первое различение причины"},
     {"id": "directbank", "question": "В 1С перестали загружаться банковские выписки через DirectBank. Помоги разобраться, с чего начать проверку?",
      "intent": "bank_statement", "operation": "diagnose", "object": "банковская выписка",
@@ -81,6 +101,15 @@ CASES = [
      "intent": "receipt", "operation": "diagnose", "object": "чек",
      "entities": {"manufacturer": "АТОЛ", "equipment": "АТОЛ Онлайн"},
      "preferred_section": "Что проверить сначала", "negative": True},
+    {"id": "negative_fn_operation", "question": "Как закрыть архив ФН самостоятельно?",
+     "intent": "fiscal_drive", "operation": "diagnose", "object": "архив ФН",
+     "preferred_section": "Первое различение причины", "negative_operation": True},
+    {"id": "negative_fn_error_operation", "question": "Как исправить ошибку ФН 234?",
+     "intent": "fiscal_drive", "operation": "diagnose", "object": "ФН 234",
+     "preferred_section": "Первое различение причины", "negative_operation": True},
+    {"id": "negative_technical_configuration", "question": "Как настроить кассу?",
+     "intent": "device", "operation": "configure", "object": "кассу",
+     "preferred_section": "Безопасная диагностика", "negative_operation": True},
 ]
 
 
@@ -98,7 +127,26 @@ def _state(case: dict) -> DialogueState:
     return DialogueState(task_context=task)
 
 
-async def _offline_plan(messages, _settings):
+async def _offline_plan(messages, _settings, *, call_stage="generation"):
+    if call_stage == "general_knowledge":
+        question = messages[-1]["content"]
+        if "накопитель" in question.casefold():
+            answer = ("Фискальный накопитель записывает фискальные документы и формирует фискальный признак. "
+                      "Оператор фискальных данных получает документы от кассы и передаёт их в ФНС: "
+                      "первый фиксирует данные в составе ККТ, второй обеспечивает их передачу дальше.")
+        elif "api" in question.casefold():
+            answer = "API — это способ, которым программы обмениваются запросами и данными по согласованным правилам."
+        elif "dns" in question.casefold():
+            answer = "DNS сопоставляет доменное имя с сетевым адресом, который нужен устройству для соединения с узлом."
+        elif "локальной программой" in question.casefold():
+            answer = ("Локальная программа выполняется на устройстве пользователя, а облачный сервис работает "
+                      "на удалённой инфраструктуре и доступен через сеть.")
+        else:
+            answer = "ОФД получает фискальные документы от кассы и передаёт их налоговой службе."
+        completion_tokens = max(1, len(answer) // 4)
+        return Generation(
+            answer, "offline-general-knowledge-fixture", prompt_tokens=22,
+            completion_tokens=completion_tokens, total_tokens=22 + completion_tokens)
     payload = json.loads(messages[-1]["content"])
     candidates = payload.get("candidate_sections", [])
     # The source-first planner request carries exact approved candidate IDs;
@@ -132,6 +180,11 @@ def _summary(case: dict, answer, retrieval_result) -> dict:
         "retrieval_sufficient": retrieval_result.sufficient,
         "retrieval_insufficiency_reason": retrieval_result.insufficiency_reason,
         "source_scope_gate": diagnostics.get("source_scope_gate"),
+        "coordinator_claim_validation": diagnostics.get("coordinator_claim_validation"),
+        "general_knowledge_fallback": diagnostics.get("general_knowledge_fallback"),
+        "llm_call_attempted": answer.llm_call_attempted,
+        "llm_retry_count": answer.llm_retry_count,
+        "llm_retry_wait_seconds": answer.llm_retry_wait_seconds,
         "generation_status": answer.generation_status,
         "validation_status": answer.validation_status,
     }
@@ -155,8 +208,10 @@ async def _run() -> list[dict]:
             os.environ["SOURCE_SCOPE_E2E_SECTION"] = case["preferred_section"]
             state = _state(case)
             retrieval = rag.search_for_state(state, case["question"])
+            route = ("grounded_information" if state.intent == "general"
+                     and state.operation == "explain" else "technical_action")
             answer = await service.answer(case["question"], state=state,
-                coordinator_decision={"route": "technical_action",
+                coordinator_decision={"route": route,
                                       "current_subgoal": case["question"]})
             results.append(_summary(case, answer, retrieval))
     finally:
@@ -168,6 +223,17 @@ async def _run() -> list[dict]:
 
 def _assert_results(results: list[dict]) -> None:
     by_id = {item["case"]: item for item in results}
+    conceptual = ("ofd_definition", "fn_vs_ofd_comparison", "api_definition",
+                  "dns_principle", "local_cloud_comparison")
+    for case_id in conceptual:
+        item = by_id[case_id]
+        assert item["scenario"] == "answer", item
+        assert "Общее объяснение (сформулировано моделью, не по approved-документации)" in item["answer"], item
+        assert "Источник:" not in item["answer"] and "http" not in item["answer"].lower(), item
+        assert item["general_knowledge_fallback"]["source_basis"] == "model_general_knowledge", item
+    compared = by_id["fn_vs_ofd_comparison"]["answer"]
+    assert "Фискальный накопитель" in compared and "Оператор фискальных данных" in compared, compared
+    assert "попросите клиента" not in compared.casefold() and "сопоставьте сервер" not in compared.casefold()
     for case_id in ("fn234", "directbank"):
         item = by_id[case_id]
         assert item["clarification_slot"] != "service", item
@@ -175,6 +241,10 @@ def _assert_results(results: list[dict]) -> None:
     fn = by_id["fn234"]
     assert fn["scenario"] == "answer" and "Область источника: Эвотор" in fn["answer"], fn
     assert "Проверьте" not in fn["answer"] and "Настройки →" not in fn["answer"], fn
+    fn_misclassified = by_id["fn234_misclassified_general"]
+    assert fn_misclassified["scenario"] == "answer", fn_misclassified
+    assert "model_general_knowledge" not in str(fn_misclassified["general_knowledge_fallback"]), fn_misclassified
+    assert "Статья производителя связывает код ФН 234" in fn_misclassified["answer"], fn_misclassified
     bank = by_id["directbank"]
     assert bank["scenario"] == "answer" and bank["clarification_slot"] is None, bank
     assert bank["source_scope_gate"]["eligible_source_count"] > 0, bank
@@ -200,9 +270,19 @@ def _assert_results(results: list[dict]) -> None:
         # Retrieval may rank a wrong-scope document as a candidate; the final
         # Source-first scope gate must reject it before rendering any procedure.
         assert "Откройте" not in item["answer"] and "Настройки →" not in item["answer"], item
+    dangerous = by_id["negative_fn_operation"]
+    assert dangerous["scenario"] == "escalate" and dangerous["scenario_reason"] == "unsafe_operation", dangerous
+    technical = by_id["negative_technical_configuration"]
+    assert technical["general_knowledge_fallback"] is None, technical
+    assert technical["scenario"] != "answer" or "Общее объяснение" not in technical["answer"], technical
+    error = by_id["negative_fn_error_operation"]
+    assert error["general_knowledge_fallback"] is None, error
+    assert "Общее объяснение" not in error["answer"], error
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     results = asyncio.run(_run())
     output = ROOT / ".local/source-scope-offline-e2e.json"
     output.parent.mkdir(exist_ok=True)

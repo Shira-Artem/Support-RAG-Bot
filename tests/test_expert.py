@@ -787,7 +787,7 @@ def test_groq_provider_uses_shared_generation_interface(monkeypatch, tmp_path):
                                   settings(tmp_path, llm_provider="groq", groq_api_key="test-groq")))
     assert calls[0][0].startswith("https://api.groq.com/")
     assert calls[0][2]["model"] == "openai/gpt-oss-20b"
-    assert calls[0][2]["max_completion_tokens"] == 2048
+    assert calls[0][2]["max_completion_tokens"] == 1024
     assert calls[0][2]["reasoning_effort"] == "low"
     assert result.text == "Ответ Groq" and result.prompt_tokens == 11
     assert (result.completion_tokens, result.total_tokens) == (7, 18)

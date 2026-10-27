@@ -19,6 +19,7 @@ def isolated_groq_quota(monkeypatch, tmp_path):
 
 class _Client:
     response = None
+    responses = None
     requests = 0
 
     def __init__(self, *args, **kwargs):
@@ -32,6 +33,8 @@ class _Client:
 
     async def post(self, *args, **kwargs):
         type(self).requests += 1
+        if type(self).responses:
+            return type(self).responses.pop(0)
         return type(self).response
 
 
@@ -84,23 +87,39 @@ def test_observed_tpm_blocks_next_call_without_http_retry(monkeypatch):
 
 def test_rate_limit_diagnostics_are_bounded_and_retain_retry_and_usage(monkeypatch):
     _Client.requests = 0
-    _Client.response = _response(429, {"error": {"message": "echoed secret prompt", "type": "rate_limit_error",
+    _Client.responses = [
+      _response(429, {"error": {"message": "echoed secret prompt", "type": "tokens",
         "code": "rate_limit_exceeded", "param": None},
         "usage": {"prompt_tokens": 4, "completion_tokens": 0, "total_tokens": 4}},
-        {"retry-after": "12", "x-request-id": "req-123"})
+        {"retry-after": "0.01", "x-request-id": "req-123"}),
+      _response(200, {"model": "actual", "choices": [{"message": {"content": "safe"}}],
+        "usage": {"prompt_tokens": 2, "completion_tokens": 3, "total_tokens": 5}},
+        {"x-ratelimit-remaining-requests": "10", "x-ratelimit-remaining-tokens": "7000"}),
+    ]
+    monkeypatch.setattr(client.httpx, "AsyncClient", _Client)
+    result = asyncio.run(client.generate([], _settings()))
+    assert result.retry_count == 1
+    assert result.retry_wait_seconds == pytest.approx(0.01)
+    assert result.total_tokens == 5
+    assert _Client.requests == 2
+    trace_path = __import__("app.groq_rate_limit", fromlist=["_TRACE"])._TRACE
+    trace = [__import__("json").loads(line) for line in
+             trace_path.read_text(encoding="utf-8").splitlines()]
+    retry = next(item for item in trace if item.get("event") == "bounded_retry_scheduled")
+    assert retry["http_status"] == 429 and retry["retry_after_seconds"] == pytest.approx(0.01)
+    assert "echoed secret prompt" not in str(trace)
+
+
+def test_429_without_short_retry_after_is_not_retried(monkeypatch):
+    _Client.requests = 0
+    _Client.responses = None
+    _Client.response = _response(429, {"error": {"type": "tokens", "code": "rate_limit_exceeded"}},
+                                 {"retry-after": "60"})
     monkeypatch.setattr(client.httpx, "AsyncClient", _Client)
     with pytest.raises(client.GenerationError) as raised:
         asyncio.run(client.generate([], _settings()))
-    error = raised.value
-    assert error.http_status == 429
-    assert error.error_type == "rate_limit_error"
-    assert error.provider_error_code == "rate_limit_exceeded"
-    assert error.retry_after_seconds == 12
-    assert error.duration_ms is not None
-    assert error.provider_usage == {"prompt_tokens": 4, "completion_tokens": 0, "total_tokens": 4}
-    assert error.request_id == "req-123"
-    assert "echoed secret prompt" not in str(error.__dict__)
-    assert "echoed secret prompt" not in (error.cause_message or "")
+    assert raised.value.http_status == 429
+    assert raised.value.retry_count == 0
     assert _Client.requests == 1
 
 

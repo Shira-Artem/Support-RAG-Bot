@@ -554,6 +554,8 @@ class Answer:
     retrieval_collection: str | None = None
     reasoning_effort: str | None = None
     llm_call_attempted: bool = False
+    llm_retry_count: int = 0
+    llm_retry_wait_seconds: float = 0.0
     response_repair: dict | None = None
     generation_error: dict | None = None
     dialogue_understanding: dict | None = None
@@ -947,6 +949,8 @@ class AnswerService:
                           prompt_tokens=completion.prompt_tokens,
                           completion_tokens=completion.completion_tokens,
                           total_tokens=completion.total_tokens,
+                          llm_retry_count=completion.retry_count,
+                          llm_retry_wait_seconds=completion.retry_wait_seconds,
                           reasoning_tokens=completion.reasoning_tokens,
                           cached_tokens=completion.cached_tokens,
                           api_call_id=completion.api_call_id,
@@ -970,6 +974,8 @@ class AnswerService:
                 context_chars=len(context),
                 generation_error={'http_status': exc.http_status, 'error_type': exc.error_type,
                                   'retry_after_seconds': exc.retry_after_seconds,
+                                  'retry_count': exc.retry_count,
+                                  'retry_wait_seconds': exc.retry_wait_seconds,
                                   'stage': exc.stage, 'cause_message': exc.cause_message,
                                   'traceback': exc.traceback_text},
             )

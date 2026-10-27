@@ -131,8 +131,36 @@ def test_definition_wording_overrides_lookup_label_without_object_specific_rules
         assert kind == "information"
         assert observation.intent == "general" and observation.operation == "explain"
         assert state.operation == "explain"
-        assert any(item.get("reason") == "explicit_concept_definition_request"
+        assert any(item.get("reason") == "explicit_conceptual_information_request"
                    for item in observation.validation_diagnostics)
+
+
+def test_comparison_purpose_and_principle_questions_normalize_to_general_explain():
+    examples = (
+        "Чем отличается фискальный накопитель от оператора фискальных данных?",
+        "В чём разница между локальной программой и облачным сервисом?",
+        "Для чего нужен API?",
+        "Как работает DNS?",
+        "Объясни принцип работы базы данных.",
+    )
+    for text in examples:
+        raw = payload(text, kind="information", intent="unknown", operation="lookup",
+                      obj="понятие", object_quote=None, relation="new_task", goal=text)
+        kind, _, _, observation = validate_response(raw, text, 79)
+        state = DialogueManager().advance(DialogueState(), text, 79, observation=observation)
+        assert kind == "information"
+        assert observation.intent == "general" and observation.operation == "explain"
+        assert state.intent == "general" and state.operation == "explain"
+
+
+def test_technical_error_explanation_is_not_reclassified_as_general_concept():
+    text = "Объясни, как исправить ошибку ФН 234"
+    raw = payload(text, kind="information", intent="unknown", operation="lookup",
+                  obj="понятие", object_quote=None, relation="new_task", goal=text)
+    kind, _, _, observation = validate_response(raw, text, 80)
+    assert kind == "information"
+    assert observation.operation == "diagnose"
+    assert observation.intent != "general"
 
     # Deterministic replay of the saved live provider fields: raw `lookup`
     # was normalized to `search` before this generic phrasing rule resolves it.

@@ -60,9 +60,16 @@ RELATION_ALIASES = {"new_topic": "new_task", "topic_change": "new_task",
     "clarification_answer": "answer_to_clarification", "parameter_change": "parameter_update",
     "constraint_change": "constraint_update", "conflict": "contradiction"}
 
-_CONCEPT_DEFINITION_REQUEST = re.compile(
-    r"\b(?:что\s+(?:такое|значит|означает)|что\s+представляет\s+собой|"
-    r"what\s+is|define)\b", re.I)
+_CONCEPTUAL_INFORMATION_REQUEST = re.compile(
+    r"\b(?:что\s+(?:такое|значит|означает|делает)|кто\s+такой|"
+    r"что\s+представляет\s+собой|"
+    r"чем\s+(?:отличает\w*|различает\w*)|"
+    r"в\s+ч[её]м\s+(?:разниц\w*|отличи\w*)|"
+    r"(?:сравни|сравните|сопоставь|сопоставьте)\b|"
+    r"как\s+(?:это\s+)?работа\w*|принцип\s+работ\w*|"
+    r"зачем\b|для\s+чего\b|с\s+какой\s+целью\b|"
+    r"почему\s+(?:нуж\w*|использу\w*|применя\w*|создан\w*)|"
+    r"объясни\w*|расскажи\w*|what\s+is|define|compare|how\s+does\s+.+\s+work)\b", re.I)
 _EXPLICIT_LOOKUP_ACTION = re.compile(
     r"\b(?:найти|найдите|находить|ищу|ищем|ищут|искать|поищи|поищите|"
     r"поискать|разыскать|отыскать|найден|поиск|find|search\s+for|look\s+up)\b", re.I)
@@ -114,9 +121,9 @@ def _contextual_operation(raw_operation: Any, raw_intent: Any, raw_kind: Any,
     return "unknown"
 
 
-def _is_concept_definition_request(text: str) -> bool:
-    """Recognize explicit concept-definition wording without binding it to an entity."""
-    return bool(_CONCEPT_DEFINITION_REQUEST.search(text)
+def _is_conceptual_information_request(text: str) -> bool:
+    """Recognize generic conceptual questions without binding them to a domain."""
+    return bool(_CONCEPTUAL_INFORMATION_REQUEST.search(text)
                 and not _EXPLICIT_LOOKUP_ACTION.search(text))
 
 
@@ -530,17 +537,17 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
                   "unsupported_value_defaulted_to_unknown")
         _field_result(diagnostics, field_name, status, reason, value=value)
     if (kind == "information" and operation in {"search", "unknown"}
-            and _is_concept_definition_request(text)):
+            and _is_conceptual_information_request(text)):
         previous_operation = operation
         previous_intent = intent
         intent = "general"
         operation = "explain"
         _field_result(diagnostics, "operation_resolution", "accepted",
-                      "explicit_concept_definition_request", raw_normalized_operation=previous_operation,
+                      "explicit_conceptual_information_request", raw_normalized_operation=previous_operation,
                       value=operation)
         if previous_intent != "general":
             _field_result(diagnostics, "intent_resolution", "accepted",
-                          "concept_definition_is_general_information",
+                          "conceptual_question_is_general_information",
                           raw_normalized_intent=previous_intent, value=intent)
     raw_obj = data["object"]
     if isinstance(raw_obj, str):

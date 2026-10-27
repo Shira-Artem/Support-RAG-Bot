@@ -171,6 +171,22 @@ class GroqRateLimiter:
         except OSError:
             pass
 
+    def record_bounded_retry(self, *, stage: str, retry_number: int,
+                             retry_after_seconds: float,
+                             provider_error_type: str | None) -> None:
+        """Record a single bounded provider-directed retry without response body."""
+        self._write_trace({
+            "at_utc": datetime.now(timezone.utc).isoformat(),
+            "stage": stage,
+            "event": "bounded_retry_scheduled",
+            "http_status": 429,
+            "retry_number": retry_number,
+            "retry_after_seconds": round(retry_after_seconds, 2),
+            "provider_error_type": provider_error_type,
+            "usage": {"prompt_tokens": None, "completion_tokens": None,
+                      "total_tokens": None},
+        })
+
     def _record_deferred(self, stage: str, estimated_tokens: int, reason: str,
                          retry_after_seconds: float, bypass_local_tpm: bool) -> None:
         self._write_trace({"at_utc": datetime.now(timezone.utc).isoformat(),

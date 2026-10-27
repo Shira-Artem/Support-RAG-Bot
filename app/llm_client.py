@@ -1,6 +1,7 @@
 """One chat-completions interface for the two configured providers."""
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass
 from time import perf_counter
 import traceback
@@ -20,7 +21,8 @@ class GenerationError(RuntimeError):
                  provider_error_code: str | None = None,
                  provider_error_param: str | None = None,
                  provider_usage: dict | None = None, request_id: str | None = None,
-                 schema_error: str | None = None, rate_limit_headers: dict | None = None):
+                 schema_error: str | None = None, rate_limit_headers: dict | None = None,
+                 retry_count: int = 0, retry_wait_seconds: float = 0.0):
         super().__init__(message)
         self.http_status = http_status
         self.error_type = error_type
@@ -35,6 +37,8 @@ class GenerationError(RuntimeError):
         self.request_id = request_id
         self.schema_error = schema_error
         self.rate_limit_headers = rate_limit_headers
+        self.retry_count = retry_count
+        self.retry_wait_seconds = retry_wait_seconds
 
 
 @dataclass(frozen=True)
@@ -50,20 +54,25 @@ class Generation:
     finish_reason: str | None = None
     duration_ms: int | None = None
     rate_limit_headers: dict | None = None
+    retry_count: int = 0
+    retry_wait_seconds: float = 0.0
 
 
 def _optional_int(value) -> int | None:
     return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
 
 
-async def generate(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
+async def _generate_once(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
     if settings.llm_provider == "groq":
         key, model = settings.groq_api_key, settings.groq_model
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {}
         # GPT-OSS reasoning tokens use the same completion budget as visible output.
         # 2048 leaves room for reasoning while comfortably exceeding short support answers.
-        token_limit = {"max_completion_tokens": 2048,
+        # Routine support answers and planner decisions are short. Reserving
+        # 2048 output tokens per request unnecessarily trips provider TPM when
+        # less than that reserve remains, even when the actual answer is small.
+        token_limit = {"max_completion_tokens": 1024,
                        "reasoning_effort": settings.groq_reasoning_effort or "low"}
     elif settings.llm_provider == "openrouter":
         key, model = settings.openrouter_api_key, settings.openrouter_model
@@ -192,3 +201,34 @@ async def generate(messages: list[dict], settings: Settings, *, call_stage: str 
             schema_error=schema_error,
             rate_limit_headers=rate_headers,
         ) from exc
+
+
+_MAX_GROQ_429_RETRIES = 1
+_MAX_GROQ_RETRY_AFTER_SECONDS = 15.0
+
+
+async def generate(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
+    """Retry one short, provider-directed 429 cooldown; never retry local defers."""
+    retries = 0
+    waited = 0.0
+    while True:
+        try:
+            result = await _generate_once(messages, settings, call_stage=call_stage)
+            return Generation(**{**result.__dict__, "retry_count": retries,
+                                 "retry_wait_seconds": round(waited, 2)})
+        except GenerationError as exc:
+            delay = exc.retry_after_seconds
+            retryable = (settings.llm_provider == "groq"
+                         and exc.http_status == 429
+                         and retries < _MAX_GROQ_429_RETRIES
+                         and delay is not None and 0 < delay <= _MAX_GROQ_RETRY_AFTER_SECONDS)
+            if not retryable:
+                exc.retry_count = retries
+                exc.retry_wait_seconds = round(waited, 2)
+                raise
+            groq_rate_limiter.record_bounded_retry(
+                stage=call_stage, retry_number=retries + 1, retry_after_seconds=delay,
+                provider_error_type=exc.error_type)
+            await asyncio.sleep(delay)
+            retries += 1
+            waited += delay

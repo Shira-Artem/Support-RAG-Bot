@@ -289,16 +289,16 @@ def test_feature_flagged_source_first_renders_only_verified_selected_sentence(mo
         service="АТОЛ Онлайн")
     units = build_evidence_units([item], informational=True)
     async def fake_select(question, state, history, candidates, settings, *, current_subgoal=None):
-        assert question == "Какова роль оператора?"
-        assert current_subgoal == "Какова роль оператора?"
+        assert question == "Что делает ОФД?"
+        assert current_subgoal == "Что делает ОФД?"
         assert [unit.kind for unit in candidates] == ["sentence", "sentence"]
         return (EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "{}"),
                 Generation("{}", "offline", 2, 3, 5))
     monkeypatch.setattr(selector_module, "select_evidence", fake_select)
     service = SourceFirstService(None, SimpleNamespace(semantic_evidence_selector_enabled=True), tmp_path)
     result = __import__("asyncio").run(service._coordinated_information_answer(
-        "Какова роль оператора?", DialogueState(intent="general", operation="explain"),
-        [item], {"current_subgoal": "Какова роль оператора?"}, 0.0,
+        "Что делает ОФД?", DialogueState(intent="general", operation="explain"),
+        [item], {"current_subgoal": "Что делает ОФД?"}, 0.0,
         {"retrieval_diagnostics": {}}))
     assert result.validation_status == "verified_approved_evidence_ids"
     assert "ОФД получает фискальные документы" in result.text
