@@ -633,7 +633,7 @@ def client_clauses(text: str):
 ENTITY_NAMES = (
     ("service", "aQsi Online", ("aqsi online", "акси онлайн")),
     ("service", "АТОЛ Онлайн", ("атол онлайн", "atol online")),
-    ("ofd", "Платформа ОФД", ("платформа офд", "платформе офд", "платформы офд")),
+    ("ofd", "Платформа ОФД", ("платформа офд", "платформе офд", "платформы офд", "платформу офд")),
     ("ofd", "Первый ОФД", ("первый офд", "первом офд")),
     ("ofd", "Такском", ("такском",)),
     ("ofd", "Астрал", ("астрал",)),
@@ -1067,7 +1067,7 @@ class DialogueManager:
                   *([obs.relation_evidence] if obs.relation_evidence else []),
                   *([obs.symptom] if obs.symptom else []),
                   *([obs.evidence] if obs.evidence else []), *([obs.error] if obs.error else [])]
-        valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'create_role', 'view_reports', 'change_permissions', 'diagnose', 'status'}
+        valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'create_role', 'view_reports', 'change_permissions', 'diagnose', 'status', 'fiscalize'}
         if obs.operation not in valid_operations or obs.intent not in {name for name, _, _ in OBJECTS} | {'unknown', 'general'}:
             raise ValueError('Unsupported analyser task; extend the typed vocabulary explicitly')
         if obs.evidence is None or set(obs.entities) - ENTITY_SLOTS or any(

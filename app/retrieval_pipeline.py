@@ -15,9 +15,10 @@ from app.procedure_policy import (document_applicability, normalize_operation,
                                   reviewed_safe_diagnostic_section,
                                   diagnostic_version_compatible)
 from app.rag import SearchResult
-from app.response_grounding import (claim_supported, evidence_statements, has_action,
+from app.response_grounding import (claim_supported, content_terms, evidence_statements, has_action,
                                     has_named_role, normalize, permission_clauses, statements,
                                     unsafe_operation_issue)
+from app.task_operation_resolver import resolve_task_operation
 
 
 class CandidateSource(Protocol):
@@ -324,11 +325,68 @@ def _terms(text: str) -> set[str]:
             if len(x) > 2 or any(char.isdigit() for char in x)}
 
 
+_SUBTASK_ACTION_TOKENS = (
+    "провер", "тест", "диагност", "убед", "verify", "check", "diagnos",
+    "подключ", "соедин", "connect", "configure", "setup", "поиск", "найт",
+    "иск", "search", "find", "передач", "переда", "отправ", "достав",
+    "transmit", "send", "deliver",
+)
+_SUBTASK_CONTEXT_TERMS = {"кабинет", "личн"}
+
+
+def _subtask_signature(query: str, state: DialogueState,
+                       expected_task: str | None) -> set[str]:
+    """Extract topic anchors and action from the existing task/operation contract."""
+    topic = content_terms(query)
+    for slot in ("service", "manufacturer", "equipment", "software", "ofd", "component"):
+        fact = state.task_entity(slot) or state.entity(slot)
+        if fact:
+            topic.difference_update(content_terms(fact))
+    # The broad task label alone cannot distinguish debugging an integration
+    # from a catalog of products that can be integrated.
+    if expected_task == "integration":
+        topic.difference_update(content_terms("integration интеграция"))
+    topic.difference_update(_SUBTASK_CONTEXT_TERMS)
+    topic = {term for term in topic
+             if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    return topic
+
+
+def _subtask_title_terms(title: str, expected_task: str | None) -> set[str]:
+    terms = content_terms(title)
+    if expected_task == "integration":
+        terms.difference_update(content_terms("integration интеграция"))
+    terms.difference_update(_SUBTASK_CONTEXT_TERMS)
+    return {term for term in terms
+            if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+
+
+def _subtask_question_terms(article_text: str, expected_task: str | None) -> set[str]:
+    questions = []
+    sections = re.split(r"(?m)^##\s+", article_text or "")
+    for section in sections:
+        heading, _, body = section.partition("\n")
+        if heading.strip().casefold().startswith("вопрос"):
+            questions.append(body)
+    terms = content_terms(" ".join(questions))
+    if expected_task == "integration":
+        terms.difference_update(content_terms("integration интеграция"))
+    terms.difference_update(_SUBTASK_CONTEXT_TERMS)
+    return {term for term in terms
+            if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+
+
 def _state_task_category(state: DialogueState, query: str) -> str | None:
     query_folded = query.casefold().replace("ё", "е")
     task_facts = [*([state.task] if state.task else []), *state.goals,
                   *state.constraints, *state.details, *state.parameters]
     task_folded = " ".join(f.value for f in task_facts).casefold().replace("ё", "е")
+    # The same evidence-bound projection used during Understanding wins only
+    # when the reducer still holds its operation. It never consults a hit.
+    resolved = resolve_task_operation(task_folded, operation=state.operation,
+                                      intent=state.intent)
+    if (resolved.task_category and resolved.operation == state.operation):
+        return resolved.task_category
     # Explanations are read-only concept questions. They still require
     # approved, exact evidence, but no service/model/task-category label is a
     # prerequisite for retrieving a relevant definition.
@@ -835,6 +893,11 @@ class RetrievalPipeline:
         unsafe = unsafe_operation_issue(query)
         raw = self.source.search(query, top_k=self.candidate_k)
         expected_task = _state_task_category(state, query)
+        subtask_topics = _subtask_signature(query, state, expected_task)
+        topic_anchor_available = any(
+            bool(subtask_topics & _subtask_title_terms(
+                str((hit.metadata or {}).get("title") or ""), expected_task))
+            for hit in raw)
         evaluated_hits: list[tuple[str, SearchResult, EvaluatedDocument, bool]] = []
         for hit in raw:
             meta = normalize_metadata({**(hit.metadata or {}), "source": (hit.metadata or {}).get("source") or hit.source,
@@ -847,6 +910,14 @@ class RetrievalPipeline:
             # accidentally returns them.
             if meta.get("status") != "approved":
                 reasons.append("status_unapproved")
+            # A named error code is an exact task parameter. A different
+            # named code in the source title cannot be substituted merely
+            # because the broader diagnosis family matches.
+            code_pattern = r"\b(?:фн|ошибк\w*|код)\s*[-№#:]?\s*(\d{1,4})\b"
+            requested_codes = set(re.findall(code_pattern, query.casefold(), re.I))
+            titled_codes = set(re.findall(code_pattern, str(meta.get("title") or "").casefold(), re.I))
+            if requested_codes and titled_codes and not requested_codes.intersection(titled_codes):
+                reasons.append("error_code_mismatch")
             # Session facts persist across tasks. Only the cabinet bound to the
             # current task is a hard service constraint; hardware is required
             # separately for technical tasks, not for an OFD receipt filter.
@@ -884,6 +955,7 @@ class RetrievalPipeline:
             lexical_overlap = len(query_terms & body_terms) / max(1, len(query_terms))
             related_search_task = _related_task_for_query(state, expected_task, actual_task, query)
             operation_metadata = meta
+            article_text = ""
             if expected_task and actual_task == expected_task and meta.get("document_id"):
                 article_getter = getattr(self.source, "article", None)
                 if callable(article_getter):
@@ -920,6 +992,13 @@ class RetrievalPipeline:
             procedure_service = meta.get("procedure_service")
             if not _procedure_matches(state, meta):
                 reasons.append(f"procedure_service_mismatch:{procedure_service}")
+            title = str(meta.get("title") or "")
+            title_topic_overlap = subtask_topics & _subtask_title_terms(title, expected_task)
+            question_topic_overlap = subtask_topics & _subtask_question_terms(article_text, expected_task)
+            subtask_covered = (bool(title_topic_overlap) if topic_anchor_available
+                               else bool(title_topic_overlap or question_topic_overlap))
+            if not subtask_topics or not subtask_covered:
+                reasons.append("subtask_anchor_uncovered")
             model_bound = technical or expected_task in {"model_features", "integration"}
             if model_bound and manufacturer_fact and not manufacturer_match:
                 reasons.append("manufacturer_mismatch_or_unlabeled")
@@ -983,7 +1062,10 @@ class RetrievalPipeline:
                                  f"operation_match={operation_match}",
                                  f"operation_compatibility={operation_status}",
                                  f"related_search_task={related_search_task}",
-                                 f"procedure_service={procedure_service or 'unreviewed'}"]
+                                 f"procedure_service={procedure_service or 'unreviewed'}",
+                                 f"subtask_title_topic_overlap={len(title_topic_overlap)}",
+                                 f"subtask_question_topic_overlap={len(question_topic_overlap)}",
+                                 f"subtask_topic_anchor_available={topic_anchor_available}"]
             if attributed_fact_candidate:
                 relevance_reasons.append("scope_deferred_to_source_first_fact_only_gate")
             if unresolved_fallback:

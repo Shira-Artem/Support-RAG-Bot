@@ -19,6 +19,7 @@ from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS,
 from app.config import Settings
 from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_limiter,
                                  retry_after_seconds)
+from app.task_operation_resolver import resolve_task_operation
 
 
 TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
@@ -26,7 +27,7 @@ UNKNOWN_SLOTS = ENTITY_SLOTS | {"goal", "details", "task"}
 INTENTS = {name for name, _, _ in OBJECTS} | {"general", "unknown"}
 OBJECT_VALUES = {obj for _, obj, _ in OBJECTS} | {"понятие"}
 OPERATIONS_ALLOWED = ({name for name, _ in OPERATIONS} |
-                      {"unknown", "explain", "diagnose", "status", "view_reports",
+                      {"unknown", "explain", "diagnose", "status", "fiscalize", "view_reports",
                        "change_permissions", "add_employee", "assign_role",
                        "create_role", "request_specialist"})
 
@@ -48,7 +49,7 @@ INTENT_ALIASES = {"definition": "general", "concept": "general",
     "ask": "unknown", "question": "unknown", "request_help": "unknown",
     "help_request": "unknown"}
 OPERATION_ALIASES = {"explanation": "explain", "explain_operation": "explain",
-    "diagnosis": "diagnose", "procedure": "diagnose", "procedural": "diagnose",
+    "diagnosis": "diagnose",
     "troubleshooting": "diagnose", "troubleshoot": "diagnose",
     "error_explanation": "diagnose", "error_diagnosis": "diagnose",
     "diagnostic": "diagnose", "status_check": "status", "find_receipt": "search",
@@ -264,11 +265,15 @@ def _fold(value: str) -> str:
     return re.sub(r"\s+", " ", value.casefold().replace("ё", "е")).strip()
 
 
+def _alias_spans(alias: str, text: str):
+    return re.finditer(r"(?<!\w)" + re.escape(alias) + r"(?!\w)", text, re.I)
+
+
 def _canonical_entity_from_quote(slot: str, quote: str) -> str | None:
     """Resolve a known client mention to one canonical name using its source span."""
     folded_quote = _fold(quote)
     found = [(candidate_slot, name, _fold(alias)) for candidate_slot, name, aliases in ENTITY_NAMES
-             for alias in aliases if _fold(alias) in folded_quote]
+             for alias in aliases if any(_alias_spans(alias, quote))]
     # A service name such as "АТОЛ Онлайн" contains a manufacturer alias.
     # Prefer the longer full name and never infer the shorter cross-slot name.
     matches = {name for candidate_slot, name, alias in found
@@ -284,7 +289,7 @@ def _typed_entity_from_quote(quote: str) -> tuple[str, str] | None:
     hits: list[tuple[int, int, str, str]] = []
     for slot, canonical, aliases in ENTITY_NAMES:
         for alias in aliases:
-            for match in re.finditer(re.escape(alias), quote, re.I):
+            for match in _alias_spans(alias, quote):
                 hits.append((match.start(), match.end(), slot, canonical))
     selected: list[tuple[int, int, str, str]] = []
     for hit in sorted(hits, key=lambda item: (-(item[1] - item[0]), item[0])):
@@ -312,7 +317,7 @@ def _extract_known_entities(text: str, message_id: int | str,
     candidates = []
     for slot, canonical, aliases in ENTITY_NAMES:
         for alias in aliases:
-            for match in re.finditer(re.escape(alias), text, re.I):
+            for match in _alias_spans(alias, text):
                 candidates.append((match.start(), match.end(), slot, canonical, alias))
     model_candidates: list[tuple[int, int, str, str]] = []
     for slot, brand, aliases in ENTITY_NAMES:
@@ -730,7 +735,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
 
     goal = _parse_optional_fact(text, data["goal"], message_id, diagnostics, "goal")
     symptom = _parse_optional_fact(text, data["symptom"], message_id, diagnostics, "symptom")
-    if kind == "information" and operation == "unknown" and goal is not None:
+    if kind == "information" and operation == "unknown" and goal is not None and _EXPLICIT_LOOKUP_ACTION.search(text):
         # This is a read-only lookup route, grounded in an exact user goal.
         # It permits retrieval to establish whether a safe approved answer
         # exists; it does not authorize a technical procedure by itself.
@@ -741,6 +746,14 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             intent = "general"
             _field_result(diagnostics, "intent", "accepted",
                           "general_information_intent_from_grounded_goal", value=intent)
+    resolution = resolve_task_operation(text, operation=operation, intent=intent)
+    if resolution.task_category is not None:
+        if operation != resolution.operation or intent != resolution.intent:
+            _field_result(diagnostics, "task_operation_resolution", "accepted", resolution.reason,
+                          task_category=resolution.task_category, previous_operation=operation,
+                          value=resolution.operation)
+        operation = resolution.operation
+        intent = resolution.intent
     if obj is None and relation == "new_task" and operation == "search":
         search_target = _unique_search_target_from_goal(goal)
         if search_target:
@@ -750,7 +763,8 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             _field_result(diagnostics, "object", "accepted",
                           "registered_search_target_grounded_before_parameter",
                           value=value, start=start, end=end)
-    if obj is not None and operation not in {"unknown", "explain"} and intent in {"unknown", "general"}:
+    if (obj is not None and operation not in {"unknown", "explain"} and intent in {"unknown", "general"}
+            and resolution.task_category is None):
         categories = {category for category, canonical, _ in OBJECTS if canonical == obj}
         if len(categories) == 1:
             category = next(iter(categories))

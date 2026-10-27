@@ -1,0 +1,1329 @@
+{
+  "title": "B+ Evidence Relevance/Subtask Coverage frozen replay, 2026-10-27",
+  "method": "Actual frozen 24 local turn records replayed against local Stage3/Qdrant and SourceFirst; deterministic local planner fixture picks the first substantive selected section; no Groq/provider calls. This is not a replay of the historical Groq planner output. Per-case exact answers and cited approved source sections are preserved below.",
+  "versions": [
+    "original production recorded reply",
+    "current Task & Operation Resolver without new gate (gate bypassed only inside ignored replay harness)",
+    "current Resolver plus gate"
+  ],
+  "limitations": [
+    "Case 11 raw Understanding HTTP 400 is unreplayable; recorded production answer is retained.",
+    "The historical production answers were live; offline replies use deterministic planner fixture and cannot establish live latency equivalence.",
+    "Fixture latency omits network/Groq costs; provider calls and tokens in both offline replay versions are zero.",
+    "The report evaluates usefulness from actual final text plus approved citations, not retrieval rank alone."
+  ],
+  "cases": [
+    {
+      "case": 1,
+      "label": "Эвотор 7.3/ОФД",
+      "kb_grade": "A",
+      "question_sha256": "beb294d891dabaabe61002c0789c2972d017ab56a0dd389be715edf6c027e4bb",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "answer_quality": "useful",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 877,
+            "completion_tokens": 1416,
+            "total_tokens": 2293
+          },
+          "generation_total": 2320
+        },
+        "latency_ms": 1772
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "selected_document_ids": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "answer_quality": "полезный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 669
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала"
+          }
+        ],
+        "selected_document_ids": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "answer_quality": "полезный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 683
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 2,
+      "label": "Эвотор ФН 231",
+      "kb_grade": "A",
+      "question_sha256": "94548276ffd61cb2952f5907a2ae923c87a68739e56f1339cd5e148fa2ac99a7",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "ai_coordinator_grounded_information",
+        "answer": "Код на чеке — ФН 231; на экране может появляться -3975.\n\nОбласть источника: Эвотор; модель оборудования в статье не указана.\nИсточник: data/knowledge/evotor/fn/fn-231.md — Контекст ошибки",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          }
+        ],
+        "answer_quality": "context_only",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 873,
+            "completion_tokens": 788,
+            "total_tokens": 1661
+          },
+          "generation_total": null
+        },
+        "latency_ms": 602
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Источник описывает случай с ФН-М на 36 месяцев, когда параметры регистрации и фактический вид продаваемой позиции не соответствуют условиям эксплуатации накопителя. Код на чеке — ФН 231; на экране может появляться -3975.\n\nИсточник: data/knowledge/evotor/fn/fn-231.md — Контекст ошибки",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          }
+        ],
+        "selected_document_ids": [
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_quality": "контекстный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 582
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Источник описывает случай с ФН-М на 36 месяцев, когда параметры регистрации и фактический вид продаваемой позиции не соответствуют условиям эксплуатации накопителя. Код на чеке — ФН 231; на экране может появляться -3975.\n\nИсточник: data/knowledge/evotor/fn/fn-231.md — Контекст ошибки",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/fn/fn-231.md",
+            "section": "Контекст ошибки"
+          }
+        ],
+        "selected_document_ids": [
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_quality": "контекстный; нет первого шага",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 592
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 3,
+      "label": "Эвотор/время",
+      "kb_grade": "B",
+      "question_sha256": "919237fe7414286e11ad8aab9ecd2a6776771d6c44dfbbe41ac35c081459405c",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "ai_coordinator_grounded_information",
+        "answer": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя.\n\nОбласть источника: Эвотор; модель оборудования в статье не указана.\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины",
+        "documents": [
+          {
+            "document": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины"
+          }
+        ],
+        "answer_quality": "context_only",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 871,
+            "completion_tokens": 1084,
+            "total_tokens": 1955
+          },
+          "generation_total": null
+        },
+        "latency_ms": 618
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-fn-234-360005580254",
+          "evotor-time-mismatch-check-20261019",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 624
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-fn-234-360005580254",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-231-360005098974",
+          "evotor-fn-210-360004715693"
+        ],
+        "answer_quality": "уточнение ProgressLedger",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 608
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 4,
+      "label": "Эвотор/смена",
+      "kb_grade": "B",
+      "question_sha256": "251076d64e4fb10856b040a9e75ade10889b35ad439f33a6d3f49899ba21bc87",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_operation",
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "documents": [],
+        "answer_quality": "safety_stop",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 864,
+            "completion_tokens": 681,
+            "total_tokens": 1545
+          },
+          "generation_total": null
+        },
+        "latency_ms": 0
+      },
+      "resolver_only": {
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_operation",
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "safety-stop",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 0
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_operation",
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "safety-stop",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 0
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 5,
+      "label": "Эвотор/маркировка 1",
+      "kb_grade": "A",
+      "question_sha256": "be3e9fd3eb03dc9cf7bb4ef0f9364a3a04c34b80c1cc4ec5fe620d2cec912a09",
+      "original_production": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 868,
+            "completion_tokens": 1470,
+            "total_tokens": 2338
+          },
+          "generation_total": 2621
+        },
+        "latency_ms": 1775
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-marked-goods-upd-20261019",
+          "evotor-mark-check-error-20261019"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 624
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-marked-goods-upd-20261019",
+          "evotor-mark-check-error-20261019"
+        ],
+        "answer_quality": "уточнение ProgressLedger",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 583
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 6,
+      "label": "Эвотор/маркировка 2",
+      "kb_grade": "A",
+      "question_sha256": "be3e9fd3eb03dc9cf7bb4ef0f9364a3a04c34b80c1cc4ec5fe620d2cec912a09",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "planner_could_not_select_safely",
+        "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 868,
+            "completion_tokens": 907,
+            "total_tokens": 1775
+          },
+          "generation_total": 2432
+        },
+        "latency_ms": 2434
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 586
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "answer_quality": "уточнение ProgressLedger",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 627
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 7,
+      "label": "aQsi physical/ФН 7",
+      "kb_grade": "A",
+      "question_sha256": "cffc83e0a0ace135996d60c3b56c452d4633f7cc02541a8816ff0e141c56a5cd",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "ai_coordinator_grounded_information",
+        "answer": "Установка оборудования сама по себе не означает завершённую регистрацию ККТ в ФНС и фискализацию.\n\nОбласть источника: aQsi, aQsi 5 / aQsi 6.\nИсточник: data/knowledge/aqsi_devices/start/unbox-hardware.md — Проверенная информация и первичная диагностика",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_devices/start/unbox-hardware.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer_quality": "context_only",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 866,
+            "completion_tokens": 1235,
+            "total_tokens": 2101
+          },
+          "generation_total": null
+        },
+        "latency_ms": 723
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-device-fn7-date",
+          "aqsi-device-paper-print-retry",
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 669
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-device-fn7-date",
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126"
+        ],
+        "answer_quality": "уточнение scope",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 635
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 8,
+      "label": "aQsi physical/товары",
+      "kb_grade": "A",
+      "question_sha256": "07cb4962375c4fd50431f5edabde2f972e2910c1712ae408b99da3708c80a7e5",
+      "original_production": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 867,
+            "completion_tokens": 1089,
+            "total_tokens": 1956
+          },
+          "generation_total": null
+        },
+        "latency_ms": 717
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-fn161-document-not-saved",
+          "aqsi-device-paper-print-retry"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 612
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126",
+          "aqsi-device-fn18-expired",
+          "aqsi-device-fn161-document-not-saved"
+        ],
+        "answer_quality": "уточнение scope",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 594
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 9,
+      "label": "aQsi physical/сканер",
+      "kb_grade": "B",
+      "question_sha256": "57dbffc893ca195b73f3e2a9b5e84381ac27e8e17739fc90e8d37a684ac67747",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "dialogue_state_unresolved",
+        "answer": "Не удалось надёжно определить текущую задачу. Добавьте важную деталь или запросите специалиста.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 867,
+            "completion_tokens": 963,
+            "total_tokens": 1830
+          },
+          "generation_total": null
+        },
+        "latency_ms": 0
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "1. В описанной производителем конфигурации поддерживаются весы ШТРИХ-СЛИМ 200 через USB-C адаптер или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scales.md — Проверенная информация и первичная диагностика",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_devices/peripherals/scales.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "selected_document_ids": [
+          "aqsi-device-scanner-hub-power",
+          "aqsi-device-scanner",
+          "aqsi-device-scales"
+        ],
+        "answer_quality": "нерелевантный ответ",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 635
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "selected_document_ids": [
+          "aqsi-device-scanner"
+        ],
+        "answer_quality": "полезный первый безопасный шаг",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 611
+      },
+      "gate_changed_final": true
+    },
+    {
+      "case": 10,
+      "label": "aQsi physical/маркировка",
+      "kb_grade": "B",
+      "question_sha256": "fa46ee423ea1b2bad7021cc5a90a77c69f6cf724a35da4b3d356c211db66cae2",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "ai_coordinator_grounded_information",
+        "answer": "При оформлении продажи кассир добавляет позицию в чек и сканирует код маркировки (встроенным или совместимым внешним сканером).\n\nОбласть источника: aQsi, aQsi 5Ф.\nИсточник: data/knowledge/aqsi_devices/sales/marked-product.md — Проверенная информация и первичная диагностика",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_devices/sales/marked-product.md",
+            "section": "Проверенная информация и первичная диагностика"
+          }
+        ],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 866,
+            "completion_tokens": 1405,
+            "total_tokens": 2271
+          },
+          "generation_total": null
+        },
+        "latency_ms": 686
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-device-permission-diagnostics",
+          "aqsi-device-permission-setup"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 614
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Уточните модель оборудования.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-device-permission-diagnostics"
+        ],
+        "answer_quality": "уточнение scope",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 658
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 11,
+      "label": "aQsi physical/ФН 161",
+      "kb_grade": "A",
+      "question_sha256": "70dab6f7ca3e7bea64bf177c429ed1d2cf2ce659197b9bc1dc6fb5372b45141c",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "understanding_error",
+        "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "provider_error",
+        "provider_tokens": {
+          "understanding": null,
+          "generation_total": null
+        },
+        "latency_ms": 0
+      },
+      "resolver_only": {
+        "scenario": "escalate",
+        "scenario_reason": "raw_understanding_http_error",
+        "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "ошибка исходного Understanding",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": null
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "raw_understanding_http_error",
+        "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "ошибка исходного Understanding",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": null
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 12,
+      "label": "aQsi Online/фискализация",
+      "kb_grade": "A",
+      "question_sha256": "1c72199790a9f9ee4c59cb4c4269b05b4a0deb159e061538c8634dced2a60c75",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 864,
+            "completion_tokens": 749,
+            "total_tokens": 1613
+          },
+          "generation_total": null
+        },
+        "latency_ms": 299
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "После активации заказа сведения о ККТ и ФН появляются в «Мои кассы». Регистрационный номер из ФНС понадобится на этапе фискализации в aQsi Online; интерфейс также запрашивает контактный email и данные применения кассы. Завершайте операцию лишь после сверки реквизитов.\n\nДополнительное условие источника (Когда нужен специалист):\nНеверные реквизиты, статус регистрации ФНС не подтверждён или нужен выбор агентских признаков — инженер/ответственный за ККТ.\n\nИсточник: data/knowledge/aqsi_online/setup/fiscalize.md — Что можно объяснить и проверить",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_online/setup/fiscalize.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "selected_document_ids": [
+          "aqsi-online-setup-fiscalize"
+        ],
+        "answer_quality": "полезный первый шаг",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 604
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "После активации заказа сведения о ККТ и ФН появляются в «Мои кассы». Регистрационный номер из ФНС понадобится на этапе фискализации в aQsi Online; интерфейс также запрашивает контактный email и данные применения кассы. Завершайте операцию лишь после сверки реквизитов.\n\nДополнительное условие источника (Когда нужен специалист):\nНеверные реквизиты, статус регистрации ФНС не подтверждён или нужен выбор агентских признаков — инженер/ответственный за ККТ.\n\nИсточник: data/knowledge/aqsi_online/setup/fiscalize.md — Что можно объяснить и проверить",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_online/setup/fiscalize.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "selected_document_ids": [
+          "aqsi-online-setup-fiscalize"
+        ],
+        "answer_quality": "полезный первый шаг",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 711
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 13,
+      "label": "aQsi Online/сотрудник",
+      "kb_grade": "B",
+      "question_sha256": "5cc1facdd8a97e25f698b54935122393ebabc5bcddfca1aa7f84137165654712",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "ai_coordinator_grounded_information",
+        "answer": "Это создание новой записи.\n\nОбласть источника: aQsi Online, aQsi, aQsi Online (облачная касса).\nИсточник: data/knowledge/aqsi_online/account/add-user.md — Ограничения",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_online/account/add-user.md",
+            "section": "Ограничения"
+          }
+        ],
+        "answer_quality": "context_only",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 866,
+            "completion_tokens": 852,
+            "total_tokens": 1718
+          },
+          "generation_total": null
+        },
+        "latency_ms": 725
+      },
+      "resolver_only": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-online-account-add-user"
+        ],
+        "answer_quality": "недостаточно applicable evidence",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 255
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [
+          "aqsi-online-account-add-user"
+        ],
+        "answer_quality": "недостаточно applicable evidence",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 271
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 14,
+      "label": "aQsi Online/частичный возврат",
+      "kb_grade": "A",
+      "question_sha256": "a366b887c19eac431a5ef1dccdb5d05b25a312502a7299964c4c151e9d2ba196",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 860,
+            "completion_tokens": 889,
+            "total_tokens": 1749
+          },
+          "generation_total": null
+        },
+        "latency_ms": 282
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В истории выбирают первоначальный чек и запускают возврат. В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату.\n\nДополнительное условие источника (Когда нужен специалист):\nСложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.\n\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Что можно объяснить и проверить",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_online/receipts/partial-refund.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "selected_document_ids": [
+          "aqsi-online-receipts-partial-refund",
+          "aqsi-online-receipts-full-refund"
+        ],
+        "answer_quality": "полезный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 587
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В истории выбирают первоначальный чек и запускают возврат. В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату.\n\nДополнительное условие источника (Когда нужен специалист):\nСложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.\n\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Что можно объяснить и проверить",
+        "documents": [
+          {
+            "document": "data/knowledge/aqsi_online/receipts/partial-refund.md",
+            "section": "Что можно объяснить и проверить"
+          }
+        ],
+        "selected_document_ids": [
+          "aqsi-online-receipts-partial-refund",
+          "aqsi-online-receipts-full-refund"
+        ],
+        "answer_quality": "полезный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 728
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 15,
+      "label": "aQsi Online/1С",
+      "kb_grade": "C",
+      "question_sha256": "b5935e38b3f97fa9138b4f746c4265bf0905f26b38ab2cf220d30d59dcd2bd7e",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "gap",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 863,
+            "completion_tokens": 1338,
+            "total_tokens": 2201
+          },
+          "generation_total": null
+        },
+        "latency_ms": 254
+      },
+      "resolver_only": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "knowledge gap",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 270
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "knowledge gap",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 223
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 16,
+      "label": "aQsi Online/доставка чека",
+      "kb_grade": "C",
+      "question_sha256": "3ff6c6b1f39dd6d97c61f5d22af01f06af6f65e0fa9226000de5ab107535b79a",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "gap",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 868,
+            "completion_tokens": 1028,
+            "total_tokens": 1896
+          },
+          "generation_total": null
+        },
+        "latency_ms": 234
+      },
+      "resolver_only": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "knowledge gap",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 228
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "knowledge gap",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 230
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 17,
+      "label": "АТОЛ Онлайн/128",
+      "kb_grade": "B",
+      "question_sha256": "b621f95a523c1f87b8e6e995e659d434c793a3daf713677a91f14d3866be200f",
+      "original_production": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Какой производитель оборудования используется?",
+        "documents": [],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 867,
+            "completion_tokens": 1230,
+            "total_tokens": 2097
+          },
+          "generation_total": null
+        },
+        "latency_ms": 647
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "atol-online-22561-gateway-errors-timeout-128-protocol"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 562
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "progress_ledger_waiting_for_model",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "documents": [],
+        "selected_document_ids": [
+          "atol-online-22561-gateway-errors-timeout-128-protocol"
+        ],
+        "answer_quality": "уточнение ProgressLedger",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 595
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 18,
+      "label": "АТОЛ Онлайн/блокировка ФН",
+      "kb_grade": "A",
+      "question_sha256": "eef55e4c424805e7bd807dce75c3490c7831d21dc9be3630defeee3571bd04a2",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 871,
+            "completion_tokens": 1103,
+            "total_tokens": 1974
+          },
+          "generation_total": null
+        },
+        "latency_ms": 303
+      },
+      "resolver_only": {
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_source_section",
+        "answer": "В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
+        "documents": [],
+        "selected_document_ids": [
+          "atol-online-12789-bring-own-fn",
+          "atol-online-20054-replacement-process",
+          "atol-online-18220-blocked",
+          "atol-online-20691-receive-old-fn"
+        ],
+        "answer_quality": "safety-stop",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 600
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "unsafe_source_section",
+        "answer": "В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
+        "documents": [],
+        "selected_document_ids": [
+          "atol-online-12789-bring-own-fn",
+          "atol-online-20054-replacement-process",
+          "atol-online-18220-blocked",
+          "atol-online-20691-receive-old-fn"
+        ],
+        "answer_quality": "safety-stop",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 668
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 19,
+      "label": "АТОЛ Онлайн/журнал чеков",
+      "kb_grade": "A",
+      "question_sha256": "d3772cf7236aa80cfac8cf952593c9408e7787935934ea256a6c34cbe4a8988a",
+      "original_production": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+        "documents": [
+          {
+            "document": "data/knowledge/atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "answer_quality": "useful",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 867,
+            "completion_tokens": 1009,
+            "total_tokens": 1876
+          },
+          "generation_total": 2379
+        },
+        "latency_ms": 1622
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+        "documents": [
+          {
+            "document": "data/knowledge/atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "selected_document_ids": [
+          "atol-online-22560-receipt-journal-export"
+        ],
+        "answer_quality": "полезный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 674
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+        "documents": [
+          {
+            "document": "data/knowledge/atol_online/receipts/receipt-journal-export.md",
+            "section": "Подтверждённые сведения"
+          }
+        ],
+        "selected_document_ids": [
+          "atol-online-22560-receipt-journal-export"
+        ],
+        "answer_quality": "полезный",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 630
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 20,
+      "label": "АТОЛ Онлайн/оплата",
+      "kb_grade": "A",
+      "question_sha256": "772b734912bc3d024e8720a892eb5dca8cb97f23f6ad6c5481b048f299f29581",
+      "original_production": {
+        "scenario": "clarify",
+        "scenario_reason": "planner_clarification",
+        "answer": "Какую конкретно часть задачи или результат вы хотите получить?",
+        "documents": [],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 867,
+            "completion_tokens": 1120,
+            "total_tokens": 1987
+          },
+          "generation_total": 2262
+        },
+        "latency_ms": 11977
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Проверьте сумму задолженности и срок действия текущего периода обслуживания.\n\nИсточник: data/knowledge/atol_online/billing/debt-payment.md — Что проверено по инструкции производителя",
+        "documents": [
+          {
+            "document": "data/knowledge/atol_online/billing/debt-payment.md",
+            "section": "Что проверено по инструкции производителя"
+          }
+        ],
+        "selected_document_ids": [
+          "atol-online-14133-debt-payment",
+          "atol-online-14134-documents-operations",
+          "atol-online-11077-service-blocked",
+          "atol-online-11073-renewal-invoice"
+        ],
+        "answer_quality": "полезный первый шаг",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 636
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Проверьте сумму задолженности и срок действия текущего периода обслуживания.\n\nИсточник: data/knowledge/atol_online/billing/debt-payment.md — Что проверено по инструкции производителя",
+        "documents": [
+          {
+            "document": "data/knowledge/atol_online/billing/debt-payment.md",
+            "section": "Что проверено по инструкции производителя"
+          }
+        ],
+        "selected_document_ids": [
+          "atol-online-14133-debt-payment"
+        ],
+        "answer_quality": "полезный первый шаг",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 674
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 21,
+      "label": "ФФД 1.2/сервис неизвестен",
+      "kb_grade": "B",
+      "question_sha256": "8fd909c3666c9ecf441712dce2bce942648f0bfefcb687b3db4ffcc36d6a80f1",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 874,
+            "completion_tokens": 1211,
+            "total_tokens": 2085
+          },
+          "generation_total": null
+        },
+        "latency_ms": 250
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Какой производитель оборудования используется?",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-ffd-version-check-20261019"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 608
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Какой производитель оборудования используется?",
+        "documents": [],
+        "selected_document_ids": [
+          "evotor-ffd-version-check-20261019"
+        ],
+        "answer_quality": "уточнение scope",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 641
+      },
+      "gate_changed_final": false
+    },
+    {
+      "case": 22,
+      "label": "АТОЛ Онлайн/API",
+      "kb_grade": "B",
+      "question_sha256": "1f7e6155091e88332823e699d55200fd53d25170277d45f161dd17eec165f1a3",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 873,
+            "completion_tokens": 1371,
+            "total_tokens": 2244
+          },
+          "generation_total": null
+        },
+        "latency_ms": 250
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "Производитель публикует каталог интеграций с системами интернет-торговли, банками и агрегаторами. Перед настройкой откройте актуальный список, найдите название сервиса и проверьте, указан ли необходимый ФФД 1.05 или 1.2. Совместимость означает наличие описанной интеграции, но не гарантирует корректную работу без настройки и актуальных версий модулей.\n\nИсточник: data/knowledge/atol_online/integration/catalog-cms-banks.md — Что проверено по инструкции производителя",
+        "documents": [
+          {
+            "document": "data/knowledge/atol_online/integration/catalog-cms-banks.md",
+            "section": "Что проверено по инструкции производителя"
+          }
+        ],
+        "selected_document_ids": [
+          "atol-online-12790-catalog-cms-banks",
+          "atol-online-11254-test-cashier",
+          "atol-online-12790-integration-1c-versions",
+          "atol-online-11244-api-test"
+        ],
+        "answer_quality": "нерелевантный ответ",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 625
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "недостаточно evidence; запрос неоднозначен без API/конкретизации",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 276
+      },
+      "gate_changed_final": true
+    },
+    {
+      "case": 23,
+      "label": "Платформа ОФД/нет чеков",
+      "kb_grade": "B",
+      "question_sha256": "f266b3d051fff11757e8053fba984f57623945b5ac5c0eb0a227c783897086ba",
+      "original_production": {
+        "scenario": "clarify",
+        "scenario_reason": "applicability_context_missing",
+        "answer": "Какое именно оборудование используется?",
+        "documents": [],
+        "answer_quality": "clarify",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 874,
+            "completion_tokens": 1397,
+            "total_tokens": 2271
+          },
+          "generation_total": null
+        },
+        "latency_ms": 267
+      },
+      "resolver_only": {
+        "scenario": "clarify",
+        "scenario_reason": "source_scope_context_missing",
+        "answer": "Какой производитель оборудования используется?",
+        "documents": [],
+        "selected_document_ids": [
+          "platformaofd-partner-kkt-diagnostics",
+          "platformaofd-atol-transmission-checks",
+          "platformaofd-shtrih-connection-checks"
+        ],
+        "answer_quality": "уточнение",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 614
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "selected_document_ids": [],
+        "answer_quality": "недостаточно evidence; gate false negative",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 255
+      },
+      "gate_changed_final": true
+    },
+    {
+      "case": 24,
+      "label": "Платформа ОФД/статус ФНС",
+      "kb_grade": "A",
+      "question_sha256": "94f2195bf3e0955ce5801d701a2c50d6a122448b3bdb413aae1ece72e0c1954b",
+      "original_production": {
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+        "documents": [],
+        "answer_quality": "escalate",
+        "provider_tokens": {
+          "understanding": {
+            "prompt_tokens": 867,
+            "completion_tokens": 1168,
+            "total_tokens": 2035
+          },
+          "generation_total": null
+        },
+        "latency_ms": 253
+      },
+      "resolver_only": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В поиске чеков статус отражает результат форматно-логического контроля ФНС. Успешный приём означает отсутствие ошибок; предупреждение — приём с обнаруженными ошибками; карантин — передачу при незавершённой регистрации, когда проверка на сайте ФНС недоступна; отказ — отклонение документа из-за ошибок. Подсказка иконки показывает статус.\n\nДополнительное условие источника (Ограничения):\nПорядок исправления зависит от конкретной ошибки и регистрации. Одна отметка не заменяет диагностику специалистом.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md — Результат контроля",
+        "documents": [
+          {
+            "document": "data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md",
+            "section": "Результат контроля"
+          }
+        ],
+        "selected_document_ids": [
+          "platformaofd-lkk-receipt-fns-status"
+        ],
+        "answer_quality": "частичный: только значения статусов",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 601
+      },
+      "resolver_plus_relevance_gate": {
+        "scenario": "answer",
+        "scenario_reason": "source_first_exact_section",
+        "answer": "В поиске чеков статус отражает результат форматно-логического контроля ФНС. Успешный приём означает отсутствие ошибок; предупреждение — приём с обнаруженными ошибками; карантин — передачу при незавершённой регистрации, когда проверка на сайте ФНС недоступна; отказ — отклонение документа из-за ошибок. Подсказка иконки показывает статус.\n\nДополнительное условие источника (Ограничения):\nПорядок исправления зависит от конкретной ошибки и регистрации. Одна отметка не заменяет диагностику специалистом.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md — Результат контроля",
+        "documents": [
+          {
+            "document": "data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md",
+            "section": "Результат контроля"
+          }
+        ],
+        "selected_document_ids": [
+          "platformaofd-lkk-receipt-fns-status"
+        ],
+        "answer_quality": "частичный: значения статусов без пути для чека",
+        "provider_calls": 0,
+        "provider_tokens": 0,
+        "latency_ms": 588
+      },
+      "gate_changed_final": false
+    }
+  ]
+}

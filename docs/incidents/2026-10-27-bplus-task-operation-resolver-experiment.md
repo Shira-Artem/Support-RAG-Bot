@@ -1,0 +1,80 @@
+# B+ Task & Operation Resolver — frozen 24-turn offline experiment
+
+**Дата:** 27.10.2026. **Решение:** offline quality gate **NO-GO**; работающий Telegram worker не переключён. Код остаётся локальным экспериментом без commit/push. Исходный [причинный аудит](2026-10-27-bplus-24-attempt-causal-audit.md) остаётся историческим источником фактов production. Машиночитаемая обезличенная [матрица 24 попыток](../../experiments/architecture_recovery_audit/bplus_task_operation_24_frozen_20261027.json) содержит хеш вопроса, validated Understanding, state, route, top approved, все зафиксированные rejection reasons, selected/eligible evidence, итог и измерения по каждой попытке. Приватные raw questions/answers и исходные traces сохранены только в ignored `.local/`.
+
+## Продолжение эксперимента
+
+Попытка добавить минимальный Evidence Relevance / Subtask Coverage gate устранила два неправильных ответа Resolver-only, но вызвала массовые regressions и получила NO-GO. Полный трёхсторонний replay, буквальные ответы, источники/разделы, оценка полезности и latency опубликованы в [отчёте Evidence Relevance](2026-10-27-bplus-evidence-relevance-experiment.md) и [JSON-матрице](../../experiments/architecture_recovery_audit/bplus_evidence_relevance_24_three_way_20261027.json). Worker оставлен прежним.
+
+## Метод и границы вывода
+
+- **До:** реальные production SQLite diagnostics из 10:53–12:16 МСК 27.10.2026; SQLite открывалась read-only в предшествующем аудите. Ответы и расход Groq взяты из сохранённых traces. **После:** frozen raw Groq Understanding из локального JSONL пропущен через новый validator, DialogueState, Coordinator, настоящий read-only Stage3 Qdrant (934 points), approved/applicability gates и SourceFirst. Planner заменён детерминированным локальным fixture, который выбирает первый содержательный раздел; его качество нельзя приравнивать к будущему Groq planner. Новых Groq вызовов и Telegram сообщений нет.
+- #11 (aQsi physical, ФН 161) имел raw Understanding HTTP 400; его нельзя честно прогнать через frozen payload. В матрице это `unreplayable`, а не успех или исправление.
+- A/B/C — оценки **достаточности approved KB** из исходного аудита, не оценки новых ответов. Ответ признаётся полезным только если даёт запрошенную безопасную проверку или первый шаг, а не просто показывает релевантный заголовок/точный фрагмент.
+- Относительная latency ДО/ПОСЛЕ end-to-end **не установлена**: baseline включает живые provider calls и runtime, после — локальный fixture и прогретая/непрогретая embedding модель. В after новых provider calls/tokens **0**; это означает отсутствие *добавленных* вызовов классификатора, а не обещание нулевой стоимости live генерации. Медиана локального full-handler replay — 621 ms по 23 replayable попыткам; median Stage3 retrieval в отдельном replay — около 221 ms. Изменение live latency и token usage измерить можно только после безопасного live gate.
+
+## Реализация и причинная проверка
+
+- Один `TaskOperation` resolver в `app/task_operation_resolver.py` проецирует явный смысл клиентской фразы в существующие `intent`, `operation`, `task_category` и режим (информация, диагностика, действие). Он применяется на validated Understanding и в retrieval только при согласовании с текущей операцией DialogueState; не читает найденные документы, не создаёт service/manufacturer/model/version. Неоднозначность оставляет `unknown` и прежний contract.
+- Удалено превращение Groq `procedure` в `diagnose`; `search` теперь ставится только при явном запросе поиска. Сообщения об ошибках и отказе маркировки перестали автоматически оставаться `general/explain`. Добавлены контекстные соответствия с существующими `metadata.operations` для `fiscalize`, billing check, peripheral check, receipt status. Универсальная проверка названного error code отклоняет статью с **другим** кодом в заголовке.
+- Entity span boundary устраняет ложного производителя Штрих-М из слова «штрихкодов»; aQsi Online и АТОЛ Онлайн остаются сервисами, физические устройства — производителями/моделями. SourceFirst признаёт подтверждённый OFD как service scope и cloud-service label без требования физической модели. При этом требование конкретной названной модели, approval, локальный SHA, source scope, safety и grounding остаются включены.
+- **Отрицательные наблюдения:** удаление `procedure→diagnose` само по себе недостаточно — без единого task projection `general/explain` продолжает вести технические запросы в grounded information. Слепое расширение operation compatibility открывает смежные документы: #9 выбрал весы для сканера, #14 одновременно видит полный возврат, #18 — замену/получение ФН, #22 — общий каталог. Нахождение статьи в top не обеспечивает подходящий финальный раздел. Это ограничение первого улучшения, не основание ослабить gates.
+
+## Измеримый результат
+
+| Метрика | До | После frozen offline | Вывод |
+|---|---:|---:|---|
+| A-попытки с полезным первым ответом | 2/13 (#1, #19) | 5/13 (#1, #12, #14, #19, #20) | +3; #20 покрывает проверку долга, но не полное восстановление |
+| Изменён validated intent/operation | — | 18/24 | #11 не replayable; в части случаев изменения не привели к полезному ответу |
+| Изменён Coordinator route | — | 6/24 | Только следствие нормализованного state; отдельный Coordinator defect не доказан |
+| Ранее не selected, теперь selected | — | 8 попыток | 31 новых selected document ID **не** равно 31 полезной статье; 5 точных достаточных источников (#12, #14, #18, #20, #24) стали eligible, но #18 закрыт safety |
+| Фактические offline финалы | 7 answer / 5 clarify / 12 escalate | 9 answer / 9 clarify / 6 escalate | Из 9 after answers полезных A — 5; #9 и #22 нерелевантны, #2 и #24 неполны |
+| Provider calls/tokens в after replay | production usage в исходной матрице | 0/0 | Сравнение live token economy не измерено |
+| Safety/scope/approved/SHA нарушения в replay и suite | — | 0 наблюдённых | Нулевые нарушения недостаточны для GO при ответах не по задаче |
+
+**Отказы после replay:** 9 clarify (7 ProgressLedger требует модель, 2 SourceFirst требует scope), 6 escalate (1 unsafe operation, 1 unsafe source section, 3 недостаточный applicable evidence, 1 исходный HTTP 400). Два подтверждённых C gaps (#15 интеграция aQsi Online/1С, #16 доставка уже сформированного чека) остаются gaps. Среди 9 answer два явно непригодны (#9 весы вместо сканера, #22 каталог вместо диагностики API), два частичны без запрошенного первого шага (#2 ФН 231, #24 конкретный статус ФНС). #13 с правильной статьёй остаётся `insufficient_applicable_evidence`; #7 и #17 — уточнение модели; #18 — safety stop. Поэтому gate NO-GO, несмотря на локальный прирост полезных A.
+
+## Сравнение каждой frozen попытки
+
+В колонке `selected` указано число approved документов, допущенных retrieval; полные IDs и **все** before/after rejection reasons находятся в JSON матрице. `eligible` — статус retrieval evidence, не гарантия ответа. `before → after` в последней колонке — практическое качество ответа и after `scenario_reason`.
+
+| №/тема/KB | validated intent/operation ДО → ПОСЛЕ; canonical task | route ДО → ПОСЛЕ | top approved ДО → ПОСЛЕ | selected ДО → ПОСЛЕ; eligible | фактический итог ДО → offline ПОСЛЕ |
+|---|---|---|---|---|---|
+| 01 Эвотор 7.3/ОФД (A) | unknown/diagnose → receipt/diagnose; receipt_transmission | technical_action → technical_action | evotor-7-3-ofd-connection-360014099534 → evotor-7-3-ofd-connection-360014099534 | 1 → 1; partial | useful → useful (source_first_exact_section) |
+| 02 Эвотор ФН 231 (A) | general/explain → unknown/diagnose; error_diagnosis | grounded_information → technical_action | evotor-fn-231-360005098974 → evotor-fn-231-360005098974 | 1 → 1; partial | context_only → context_only (source_first_exact_section) |
+| 03 Эвотор/время (B) | general/explain → unknown/diagnose; error_diagnosis | grounded_information → technical_action | evotor-fn-234-360005580254 → evotor-fn-234-360005580254 | 1 → 4; partial | context_only → clarify (progress_ledger_waiting_for_model) |
+| 04 Эвотор/смена (B) | unknown/diagnose → unknown/diagnose; cash_operations | technical_action → technical_action | — → evotor-6-shift-360006708093 | 0 → 0; unsafe | safety_stop → safety_stop (unsafe_operation) |
+| 05 Эвотор/маркировка 1 (A) | marking/diagnose → marking/diagnose; marking | technical_action → technical_action | evotor-marked-goods-upd-20261019 → evotor-marked-goods-upd-20261019 | 2 → 2; partial | clarify → clarify (progress_ledger_waiting_for_model) |
+| 06 Эвотор/маркировка 2 (A) | marking/diagnose → marking/diagnose; marking | technical_action → technical_action | evotor-mark-check-error-20261019 → evotor-mark-check-error-20261019 | 2 → 2; partial | escalate → clarify (progress_ledger_waiting_for_model) |
+| 07 aQsi physical/ФН 7 (A) | general/explain → unknown/diagnose; error_diagnosis | grounded_information → technical_action | aqsi-device-fn7-date → aqsi-device-fn7-date | 1 → 4; partial | context_only → clarify (progress_ledger_waiting_for_model) |
+| 08 aQsi physical/товары (A) | device/diagnose → device/diagnose; error_diagnosis | technical_action → technical_action | aqsi-device-goods-not-on-device → aqsi-device-goods-not-on-device | 4 → 4; partial | clarify → clarify (progress_ledger_waiting_for_model) |
+| 09 aQsi physical/сканер (B) | unknown/diagnose → device/check; peripheral_setup | technical_action → technical_action | — → aqsi-device-scanner-hub-power | 0 → 3; partial | escalate → wrong_adjacent_answer (source_first_exact_section) |
+| 10 aQsi physical/маркировка (B) | general/explain → marking/diagnose; marking | grounded_information → technical_action | aqsi-device-marked-product → aqsi-device-permission-diagnostics | 1 → 2; partial | clarify → clarify (progress_ledger_waiting_for_model) |
+| 11 aQsi physical/ФН 161 (A) | ?/? → —; — | conversation → — | — → — | 0 → 0; — | provider_error → unreplayable (raw_understanding_http_error) |
+| 12 aQsi Online/фискализация (A) | unknown/diagnose → device/fiscalize; service_connection | technical_action → technical_action | aqsi-online-setup-fiscalize → aqsi-online-setup-fiscalize | 0 → 1; partial | escalate → useful_first_step (source_first_exact_section) |
+| 13 aQsi Online/сотрудник (B) | general/explain → access/add_employee; access | grounded_information → technical_action | aqsi-online-account-add-user → aqsi-online-account-add-user | 1 → 1; partial | context_only → insufficient_evidence (insufficient_applicable_evidence) |
+| 14 aQsi Online/частичный возврат (A) | unknown/diagnose → receipt/return; refund | technical_action → technical_action | aqsi-device-standard-refund → aqsi-online-receipts-partial-refund | 0 → 2; partial | escalate → useful (source_first_exact_section) |
+| 15 aQsi Online/1С (C) | unknown/diagnose → unknown/connect; integration | technical_action → technical_action | aqsi-online-setup-add-store → aqsi-online-setup-add-store | 0 → 0; none | gap → gap (insufficient_applicable_evidence) |
+| 16 aQsi Online/доставка чека (C) | receipt/diagnose → receipt/diagnose; receipt_transmission | technical_action → technical_action | aqsi-online-fns-finish-reg → aqsi-online-fns-finish-reg | 0 → 0; none | gap → gap (insufficient_applicable_evidence) |
+| 17 АТОЛ Онлайн/128 (B) | access/diagnose → unknown/diagnose; error_diagnosis | technical_action → technical_action | atol-online-22561-gateway-errors-timeout-128-protocol → atol-online-22561-gateway-errors-timeout-128-protocol | 1 → 1; partial | clarify → clarify (progress_ledger_waiting_for_model) |
+| 18 АТОЛ Онлайн/блокировка ФН (A) | unknown/diagnose → fiscal_drive/check; fiscal_drive | technical_action → technical_action | atol-online-11071-disable-one-cashier → atol-online-12789-bring-own-fn | 0 → 4; partial | escalate → safety_stop (unsafe_source_section) |
+| 19 АТОЛ Онлайн/журнал чеков (A) | receipt/search → receipt/search; receipt_search | technical_action → technical_action | atol-online-22560-receipt-journal-export → atol-online-22560-receipt-journal-export | 1 → 1; partial | useful → useful (source_first_exact_section) |
+| 20 АТОЛ Онлайн/оплата (A) | general/search → billing/check; billing | technical_action → technical_action | atol-online-11073-renewal-invoice → atol-online-14133-debt-payment | 1 → 4; partial | clarify → useful_first_step_only (source_first_exact_section) |
+| 21 ФФД 1.2/сервис неизвестен (B) | general/search → unknown/check; fiscal_format | technical_action → technical_action | atol-online-22555-switch-ffd12 → evotor-ffd-version-check-20261019 | 0 → 1; partial | clarify → clarify (source_scope_context_missing) |
+| 22 АТОЛ Онлайн/API (B) | general/search → unknown/check; integration | technical_action → technical_action | atol-online-11244-api-test → atol-online-12790-catalog-cms-banks | 0 → 4; partial | escalate → irrelevant_answer (source_first_exact_section) |
+| 23 Платформа ОФД/нет чеков (B) | device/diagnose → receipt/diagnose; receipt_transmission | technical_action → technical_action | platformaofd-partner-kkt-diagnostics → platformaofd-partner-kkt-diagnostics | 0 → 3; partial | clarify → clarify (source_scope_context_missing) |
+| 24 Платформа ОФД/статус ФНС (A) | receipt/diagnose → receipt/status; receipt_status | technical_action → technical_action | platformaofd-lkk-receipt-fns-status → platformaofd-lkk-receipt-fns-status | 0 → 1; partial | escalate → status_meanings_only (source_first_exact_section) |
+
+## Контрольные и отрицательные проверки
+
+- aQsi Online: #12 и #14 получили точные approved sections и полезный первый ответ; #14 не превратился в повторную выдачу чека. Физическая aQsi и aQsi Online, а также облачная и физическая АТОЛ остаются разными entity slots; модель не подставляется. Частичный возврат всё ещё требует проверки реального возврата и суммы; selected полного возврата не должен автоматически стать инструкцией.
+- АТОЛ Онлайн: #20 получил проверку задолженности; #17 остался на уточнении модели, #18 остался safety stop, #22 показал нерелевантный ответ. #21 при неизвестном сервисе выбрал Evotor FFD article в retrieval, но source scope не дал инструкцию и запросил производителя. Это наблюдаемый барьер; само попадание чужой статьи в top — нежелательный шум.
+- Платформа ОФД: #24 получил значения статусов, но не путь проверки **конкретного** чека, поэтому это не полезное решение. #23 всё ещё уточняет производителя вместо самостоятельной OFD проверки.
+- Эвотор: #2 ушёл с general/explain на техническую диагностику, но ответ остался контекстным; #5/#6 маркировка не улучшились; #1 Эвотор 7.3 сохранил полезный шаг. DirectBank в отдельном read-only Stage3 regression E2E сохранил правильный approved маршрут.
+- `tests/test_task_operation_resolver.py` содержит 10 независимых парафраз и отрицательные entity/operation/continuation/safety проверки. Полный `python -m pytest -q`: **505 passed, 4 xfailed, 0 failed**; Stage3 `python scripts/source_scope_offline_e2e.py`: **15/15 passed** (read-only, local fixture). Существующие тесты проверяют draft, неподходящий scope, SHA, unsafe operation и регистрацию; их прохождение подтверждает сохранение code-level gates, но не заменяет live test. Qdrant client 1.19.1/server 1.15.4 выдаёт прежнее compatibility warning.
+
+## Решение и следующий шаг
+
+Не перезапускать Telegram worker и не делать backup SQLite для несостоявшегося rollout: offline gate не пройден из-за двух нерелевантных ответов и неполных финалов при найденных источниках. Production code, KB, Qdrant, SQLite, `.env` и worker не изменены; текущий локальный checkout отличается от запущенного worker. Не делать commit/push до ручной проверки.
+
+Сначала исправить **универсальную проверку соответствия выбранного evidence запрошенной подзадаче** (сканер≠весы, API failure≠каталог, статус конкретного чека≠значения статусов), с fail-closed результатом при неполном покрытии. Затем повторить этот frozen replay и независимые парафразы, требуя ≥5 полезных A без нерелевантных answer и 0 safety/scope/SHA нарушений. После GO — backup SQLite, безопасное переключение единственного worker, runtime hashes/logs и ручной live E2E владельца. Это отдельное согласование, не часть текущего внедрения.

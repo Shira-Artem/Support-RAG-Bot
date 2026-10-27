@@ -1,0 +1,2500 @@
+{
+  "method": "production baseline vs frozen Understanding replay through current code and read-only Stage3; SourceFirst with deterministic local planner fixture; no Groq",
+  "cases": [
+    {
+      "case": 1,
+      "question_sha256": "beb294d891dabaabe61002c0789c2972d017ab56a0dd389be715edf6c027e4bb",
+      "label": "Эвотор 7.3/ОФД",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "evotor-7-3-ofd-connection-360014099534",
+        "selected": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:model_features!=receipt_transmission"
+        ],
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "6ba49a88447ae638eca0e07efdb7010a441a19afd5253e106507e15e32135008",
+        "understanding_tokens": {
+          "prompt_tokens": 877,
+          "completion_tokens": 1416,
+          "total_tokens": 2293
+        },
+        "generation_tokens": 2320,
+        "duration_ms": 1772
+      },
+      "after": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "canonical_task": "receipt_transmission",
+        "route": "technical_action",
+        "top_approved": "evotor-7-3-ofd-connection-360014099534",
+        "selected": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:model_features!=receipt_transmission"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 464,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "6ba49a88447ae638eca0e07efdb7010a441a19afd5253e106507e15e32135008",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 1,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 685,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "useful",
+      "after_quality": "useful"
+    },
+    {
+      "case": 2,
+      "question_sha256": "94548276ffd61cb2952f5907a2ae923c87a68739e56f1339cd5e148fa2ac99a7",
+      "label": "Эвотор ФН 231",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "route": "grounded_information",
+        "top_approved": "evotor-fn-231-360005098974",
+        "selected": [
+          "evotor-fn-231-360005098974"
+        ],
+        "rejection_reasons": [],
+        "scenario": "answer",
+        "reason": "ai_coordinator_grounded_information",
+        "answer_sha256": "6a453e282e55ad62ddeea6c78fee6a943b8c012fa40f1978c7730982e6907dea",
+        "understanding_tokens": {
+          "prompt_tokens": 873,
+          "completion_tokens": 788,
+          "total_tokens": 1661
+        },
+        "generation_tokens": null,
+        "duration_ms": 602
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "canonical_task": "error_diagnosis",
+        "route": "technical_action",
+        "top_approved": "evotor-fn-231-360005098974",
+        "selected": [
+          "evotor-fn-231-360005098974"
+        ],
+        "rejection_reasons": [],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 271,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "b7a9169176c78f10cf764eb7f371c178c94d6c53ca9f81c60d30c1e8a6fa3ea0",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 2,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 616,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "context_only",
+      "after_quality": "context_only"
+    },
+    {
+      "case": 3,
+      "question_sha256": "919237fe7414286e11ad8aab9ecd2a6776771d6c44dfbbe41ac35c081459405c",
+      "label": "Эвотор/время",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "route": "grounded_information",
+        "top_approved": "evotor-fn-234-360005580254",
+        "selected": [
+          "evotor-fn-234-360005580254"
+        ],
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "scenario": "answer",
+        "reason": "ai_coordinator_grounded_information",
+        "answer_sha256": "4418cafea0ce28402094d6bd8f4425e72b0d05ee843bf1aedc2e2809fb200607",
+        "understanding_tokens": {
+          "prompt_tokens": 871,
+          "completion_tokens": 1084,
+          "total_tokens": 1955
+        },
+        "generation_tokens": null,
+        "duration_ms": 618
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "canonical_task": "error_diagnosis",
+        "route": "technical_action",
+        "top_approved": "evotor-fn-234-360005580254",
+        "selected": [
+          "evotor-fn-234-360005580254",
+          "evotor-time-mismatch-check-20261019",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-231-360005098974"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:fiscal_format!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:model_features!=error_diagnosis",
+          "task_mismatch:network_diagnostics!=error_diagnosis",
+          "task_mismatch:receipt_print!=error_diagnosis",
+          "task_mismatch:receipt_transmission!=error_diagnosis",
+          "task_mismatch:tspiot!=error_diagnosis"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 220,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": true,
+        "duration_ms": 612,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "context_only",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 4,
+      "question_sha256": "251076d64e4fb10856b040a9e75ade10889b35ad439f33a6d3f49899ba21bc87",
+      "label": "Эвотор/смена",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": null,
+        "selected": [],
+        "rejection_reasons": [],
+        "scenario": "escalate",
+        "reason": "unsafe_operation",
+        "answer_sha256": "bf10ff38853a4791d8cd2423bf878c71862aa5bbd369cf56f73ab5b536ca6bc5",
+        "understanding_tokens": {
+          "prompt_tokens": 864,
+          "completion_tokens": 681,
+          "total_tokens": 1545
+        },
+        "generation_tokens": null,
+        "duration_ms": 0
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "canonical_task": "cash_operations",
+        "route": "technical_action",
+        "top_approved": "evotor-6-shift-360006708093",
+        "selected": [],
+        "rejection_reasons": [
+          "operation_mismatch:diagnose",
+          "task_mismatch:receipt_print!=cash_operations",
+          "task_mismatch:receipt_transmission!=cash_operations"
+        ],
+        "eligible_evidence": "unsafe",
+        "sufficient": false,
+        "insufficiency_reason": "unsafe_operation:закрыть смену",
+        "retrieval_ms": 191,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "escalate",
+        "reason": "unsafe_operation",
+        "answer_sha256": "bf10ff38853a4791d8cd2423bf878c71862aa5bbd369cf56f73ab5b536ca6bc5",
+        "source_scope_gate": null,
+        "validation_status": "not_run",
+        "generation_status": "no_context",
+        "fixture_generation_invoked": false,
+        "duration_ms": 0,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "safety_stop",
+      "after_quality": "safety_stop"
+    },
+    {
+      "case": 5,
+      "question_sha256": "be3e9fd3eb03dc9cf7bb4ef0f9364a3a04c34b80c1cc4ec5fe620d2cec912a09",
+      "label": "Эвотор/маркировка 1",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "evotor-marked-goods-upd-20261019",
+        "selected": [
+          "evotor-marked-goods-upd-20261019",
+          "evotor-mark-check-error-20261019"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_format!=marking",
+          "task_mismatch:model_features!=marking",
+          "task_mismatch:network_diagnostics!=marking",
+          "task_mismatch:receipt_print!=marking",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:tspiot!=marking"
+        ],
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+        "understanding_tokens": {
+          "prompt_tokens": 868,
+          "completion_tokens": 1470,
+          "total_tokens": 2338
+        },
+        "generation_tokens": 2621,
+        "duration_ms": 1775
+      },
+      "after": {
+        "validated": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "canonical_task": "marking",
+        "route": "technical_action",
+        "top_approved": "evotor-marked-goods-upd-20261019",
+        "selected": [
+          "evotor-marked-goods-upd-20261019",
+          "evotor-mark-check-error-20261019"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_format!=marking",
+          "task_mismatch:model_features!=marking",
+          "task_mismatch:network_diagnostics!=marking",
+          "task_mismatch:receipt_print!=marking",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:tspiot!=marking"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 221,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": true,
+        "duration_ms": 623,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 6,
+      "question_sha256": "be3e9fd3eb03dc9cf7bb4ef0f9364a3a04c34b80c1cc4ec5fe620d2cec912a09",
+      "label": "Эвотор/маркировка 2",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "evotor-mark-check-error-20261019",
+        "selected": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_format!=marking",
+          "task_mismatch:model_features!=marking",
+          "task_mismatch:network_diagnostics!=marking",
+          "task_mismatch:receipt_print!=marking",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:tspiot!=marking"
+        ],
+        "scenario": "escalate",
+        "reason": "planner_could_not_select_safely",
+        "answer_sha256": "b89477a90300afa3d8c00ecdf019042175c4612fff9b27640a1a2301a17fb587",
+        "understanding_tokens": {
+          "prompt_tokens": 868,
+          "completion_tokens": 907,
+          "total_tokens": 1775
+        },
+        "generation_tokens": 2432,
+        "duration_ms": 2434
+      },
+      "after": {
+        "validated": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "canonical_task": "marking",
+        "route": "technical_action",
+        "top_approved": "evotor-mark-check-error-20261019",
+        "selected": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:cash_operations!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_format!=marking",
+          "task_mismatch:model_features!=marking",
+          "task_mismatch:network_diagnostics!=marking",
+          "task_mismatch:receipt_print!=marking",
+          "task_mismatch:receipt_transmission!=marking",
+          "task_mismatch:tspiot!=marking"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 260,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": true,
+        "duration_ms": 601,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 7,
+      "question_sha256": "cffc83e0a0ace135996d60c3b56c452d4633f7cc02541a8816ff0e141c56a5cd",
+      "label": "aQsi physical/ФН 7",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "route": "grounded_information",
+        "top_approved": "aqsi-device-fn7-date",
+        "selected": [
+          "aqsi-device-unbox-hardware"
+        ],
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "scenario": "answer",
+        "reason": "ai_coordinator_grounded_information",
+        "answer_sha256": "999ea6756838342a0acc2a514bf07638c231cc3cb677ecbca26ce080aeaa26da",
+        "understanding_tokens": {
+          "prompt_tokens": 866,
+          "completion_tokens": 1235,
+          "total_tokens": 2101
+        },
+        "generation_tokens": null,
+        "duration_ms": 723
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "canonical_task": "error_diagnosis",
+        "route": "technical_action",
+        "top_approved": "aqsi-device-fn7-date",
+        "selected": [
+          "aqsi-device-fn7-date",
+          "aqsi-device-paper-print-retry",
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126"
+        ],
+        "rejection_reasons": [
+          "error_code_mismatch",
+          "task_mismatch:access!=error_diagnosis",
+          "task_mismatch:cash_list!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:ofd_connection!=error_diagnosis",
+          "task_mismatch:peripheral_setup!=error_diagnosis",
+          "task_mismatch:product_catalog!=error_diagnosis",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:service_connection!=error_diagnosis",
+          "task_mismatch:settings!=error_diagnosis",
+          "task_mismatch:shift_management!=error_diagnosis",
+          "task_mismatch:support!=error_diagnosis"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 221,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+        "source_scope_gate": {
+          "inapplicable": [
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-fn7-date",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            }
+          ],
+          "eligible_source_count": 0,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": false,
+        "duration_ms": 667,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "context_only",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 8,
+      "question_sha256": "07cb4962375c4fd50431f5edabde2f972e2910c1712ae408b99da3708c80a7e5",
+      "label": "aQsi physical/товары",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "aqsi-device-goods-not-on-device",
+        "selected": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-fn161-document-not-saved",
+          "aqsi-device-paper-print-retry"
+        ],
+        "rejection_reasons": [
+          "applicability_model_unconfirmed",
+          "task_mismatch:access!=error_diagnosis",
+          "task_mismatch:cash_list!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:ofd_connection!=error_diagnosis",
+          "task_mismatch:peripheral_setup!=error_diagnosis",
+          "task_mismatch:product_catalog!=error_diagnosis",
+          "task_mismatch:receipt_issue!=error_diagnosis",
+          "task_mismatch:refund!=error_diagnosis",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:service_connection!=error_diagnosis",
+          "task_mismatch:shift_management!=error_diagnosis",
+          "task_mismatch:support!=error_diagnosis"
+        ],
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+        "understanding_tokens": {
+          "prompt_tokens": 867,
+          "completion_tokens": 1089,
+          "total_tokens": 1956
+        },
+        "generation_tokens": null,
+        "duration_ms": 717
+      },
+      "after": {
+        "validated": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "canonical_task": "error_diagnosis",
+        "route": "technical_action",
+        "top_approved": "aqsi-device-goods-not-on-device",
+        "selected": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-fn161-document-not-saved",
+          "aqsi-device-paper-print-retry"
+        ],
+        "rejection_reasons": [
+          "applicability_model_unconfirmed",
+          "task_mismatch:access!=error_diagnosis",
+          "task_mismatch:cash_list!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:ofd_connection!=error_diagnosis",
+          "task_mismatch:peripheral_setup!=error_diagnosis",
+          "task_mismatch:product_catalog!=error_diagnosis",
+          "task_mismatch:receipt_issue!=error_diagnosis",
+          "task_mismatch:refund!=error_diagnosis",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:service_connection!=error_diagnosis",
+          "task_mismatch:shift_management!=error_diagnosis",
+          "task_mismatch:support!=error_diagnosis"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 284,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+        "source_scope_gate": {
+          "inapplicable": [
+            {
+              "document_id": "aqsi-device-goods-not-on-device",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-goods-not-on-device",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-goods-not-on-device",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-goods-not-on-device",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            }
+          ],
+          "eligible_source_count": 0,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": false,
+        "duration_ms": 618,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 9,
+      "question_sha256": "57dbffc893ca195b73f3e2a9b5e84381ac27e8e17739fc90e8d37a684ac67747",
+      "label": "aQsi physical/сканер",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": null,
+        "selected": [],
+        "rejection_reasons": [],
+        "scenario": "escalate",
+        "reason": "dialogue_state_unresolved",
+        "answer_sha256": "304d55ac60bc7fd45ac9072f3690981a20d4694990e3d4d719704cec7d3e4a7c",
+        "understanding_tokens": {
+          "prompt_tokens": 867,
+          "completion_tokens": 963,
+          "total_tokens": 1830
+        },
+        "generation_tokens": null,
+        "duration_ms": 0
+      },
+      "after": {
+        "validated": {
+          "intent": "device",
+          "operation": "check"
+        },
+        "state": {
+          "intent": "device",
+          "operation": "check"
+        },
+        "canonical_task": "peripheral_setup",
+        "route": "technical_action",
+        "top_approved": "aqsi-device-scanner-hub-power",
+        "selected": [
+          "aqsi-device-scanner-hub-power",
+          "aqsi-device-scanner",
+          "aqsi-device-scales"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:access!=peripheral_setup",
+          "task_mismatch:correction_receipt!=peripheral_setup",
+          "task_mismatch:equipment_setup!=peripheral_setup",
+          "task_mismatch:error_diagnosis!=peripheral_setup",
+          "task_mismatch:fiscal_drive!=peripheral_setup",
+          "task_mismatch:fns_registration!=peripheral_setup",
+          "task_mismatch:integration!=peripheral_setup",
+          "task_mismatch:marking!=peripheral_setup",
+          "task_mismatch:ofd_connection!=peripheral_setup",
+          "task_mismatch:product_catalog!=peripheral_setup",
+          "task_mismatch:receipt_issue!=peripheral_setup",
+          "task_mismatch:refund!=peripheral_setup",
+          "task_mismatch:sales!=peripheral_setup",
+          "task_mismatch:service_connection!=peripheral_setup",
+          "task_mismatch:settings!=peripheral_setup",
+          "task_mismatch:shift_management!=peripheral_setup",
+          "task_mismatch:support!=peripheral_setup"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 227,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "720eea5e6a7c90d4ca8a7140ef99789ce510b49ff570488018fb267c8efeda59",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 637,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "wrong_adjacent_answer"
+    },
+    {
+      "case": 10,
+      "question_sha256": "fa46ee423ea1b2bad7021cc5a90a77c69f6cf724a35da4b3d356c211db66cae2",
+      "label": "aQsi physical/маркировка",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "route": "grounded_information",
+        "top_approved": "aqsi-device-marked-product",
+        "selected": [
+          "aqsi-device-marked-product"
+        ],
+        "rejection_reasons": [
+          "task_unresolved"
+        ],
+        "scenario": "answer",
+        "reason": "ai_coordinator_grounded_information",
+        "answer_sha256": "c528f8d257006ed35f22e4940a117f68a346c47bd8df27544c6ab80a2c761928",
+        "understanding_tokens": {
+          "prompt_tokens": 866,
+          "completion_tokens": 1405,
+          "total_tokens": 2271
+        },
+        "generation_tokens": null,
+        "duration_ms": 686
+      },
+      "after": {
+        "validated": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "marking",
+          "operation": "diagnose"
+        },
+        "canonical_task": "marking",
+        "route": "technical_action",
+        "top_approved": "aqsi-device-permission-diagnostics",
+        "selected": [
+          "aqsi-device-permission-diagnostics",
+          "aqsi-device-permission-setup"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:access!=marking",
+          "task_mismatch:cash_list!=marking",
+          "task_mismatch:correction_receipt!=marking",
+          "task_mismatch:equipment_setup!=marking",
+          "task_mismatch:error_diagnosis!=marking",
+          "task_mismatch:fiscal_drive!=marking",
+          "task_mismatch:fns_registration!=marking",
+          "task_mismatch:integration!=marking",
+          "task_mismatch:ofd_connection!=marking",
+          "task_mismatch:peripheral_setup!=marking",
+          "task_mismatch:product_catalog!=marking",
+          "task_mismatch:receipt_issue!=marking",
+          "task_mismatch:refund!=marking",
+          "task_mismatch:sales!=marking",
+          "task_mismatch:service_connection!=marking",
+          "task_mismatch:settings!=marking",
+          "task_mismatch:shift_management!=marking",
+          "task_mismatch:support!=marking"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 227,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+        "source_scope_gate": {
+          "inapplicable": [
+            {
+              "document_id": "aqsi-device-permission-setup",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-permission-setup",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-permission-setup",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            },
+            {
+              "document_id": "aqsi-device-permission-setup",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "model"
+              ],
+              "askable_missing": [
+                "model"
+              ]
+            }
+          ],
+          "eligible_source_count": 0,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": false,
+        "duration_ms": 628,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 11,
+      "question_sha256": "70dab6f7ca3e7bea64bf177c429ed1d2cf2ce659197b9bc1dc6fb5372b45141c",
+      "label": "aQsi physical/ФН 161",
+      "grade": "A",
+      "raw_trace_status": "provider_http_error",
+      "before": {
+        "validated": {
+          "intent": null,
+          "operation": null
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "unknown"
+        },
+        "route": "conversation",
+        "top_approved": null,
+        "selected": [],
+        "rejection_reasons": [],
+        "scenario": "escalate",
+        "reason": "understanding_error",
+        "answer_sha256": "041814fe61439f5783a876f2db48642c4a92471ea9d18d4469fc28e95e768d86",
+        "understanding_tokens": null,
+        "generation_tokens": null,
+        "duration_ms": 0
+      },
+      "after": {
+        "validated": null,
+        "state": null,
+        "canonical_task": null,
+        "route": null,
+        "top_approved": null,
+        "selected": null,
+        "rejection_reasons": null,
+        "eligible_evidence": null,
+        "sufficient": null,
+        "insufficiency_reason": null,
+        "retrieval_ms": null,
+        "model_calls": null,
+        "new_tokens": null
+      },
+      "offline": {
+        "scenario": "escalate",
+        "reason": "raw_understanding_http_error",
+        "answer_sha256": null,
+        "source_scope_gate": null,
+        "validation_status": null,
+        "generation_status": null,
+        "fixture_generation_invoked": null,
+        "duration_ms": null,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": null
+      },
+      "before_quality": "provider_error",
+      "after_quality": "unreplayable"
+    },
+    {
+      "case": 12,
+      "question_sha256": "1c72199790a9f9ee4c59cb4c4269b05b4a0deb159e061538c8634dced2a60c75",
+      "label": "aQsi Online/фискализация",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "aqsi-online-setup-fiscalize",
+        "selected": [],
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_unresolved"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 864,
+          "completion_tokens": 749,
+          "total_tokens": 1613
+        },
+        "generation_tokens": null,
+        "duration_ms": 299
+      },
+      "after": {
+        "validated": {
+          "intent": "device",
+          "operation": "fiscalize"
+        },
+        "state": {
+          "intent": "device",
+          "operation": "fiscalize"
+        },
+        "canonical_task": "service_connection",
+        "route": "technical_action",
+        "top_approved": "aqsi-online-setup-fiscalize",
+        "selected": [
+          "aqsi-online-setup-fiscalize"
+        ],
+        "rejection_reasons": [
+          "operation_mismatch:fiscalize",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=service_connection",
+          "task_mismatch:account_settings!=service_connection",
+          "task_mismatch:cash_list!=service_connection",
+          "task_mismatch:correction_receipt!=service_connection",
+          "task_mismatch:equipment_setup!=service_connection",
+          "task_mismatch:error_diagnosis!=service_connection",
+          "task_mismatch:fiscal_drive!=service_connection",
+          "task_mismatch:fns_registration!=service_connection",
+          "task_mismatch:integration!=service_connection",
+          "task_mismatch:marking!=service_connection",
+          "task_mismatch:ofd_connection!=service_connection",
+          "task_mismatch:peripheral_setup!=service_connection",
+          "task_mismatch:product_catalog!=service_connection",
+          "task_mismatch:receipt_issue!=service_connection",
+          "task_mismatch:refund!=service_connection",
+          "task_mismatch:sales!=service_connection",
+          "task_mismatch:settings!=service_connection",
+          "task_mismatch:shift_management!=service_connection",
+          "task_mismatch:support!=service_connection"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 250,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "03a3a51283dfc478996ce1f5374792febfebd562a7164318b5d6deb21079de55",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 643,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "useful_first_step"
+    },
+    {
+      "case": 13,
+      "question_sha256": "5cc1facdd8a97e25f698b54935122393ebabc5bcddfca1aa7f84137165654712",
+      "label": "aQsi Online/сотрудник",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "explain"
+        },
+        "route": "grounded_information",
+        "top_approved": "aqsi-online-account-add-user",
+        "selected": [
+          "aqsi-online-account-add-user"
+        ],
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_unresolved"
+        ],
+        "scenario": "answer",
+        "reason": "ai_coordinator_grounded_information",
+        "answer_sha256": "94608f13f9a74f2d8fdc19de34cc14d0ac2d44ad0b8d2f746d63b3d66f18ce7a",
+        "understanding_tokens": {
+          "prompt_tokens": 866,
+          "completion_tokens": 852,
+          "total_tokens": 1718
+        },
+        "generation_tokens": null,
+        "duration_ms": 725
+      },
+      "after": {
+        "validated": {
+          "intent": "access",
+          "operation": "add_employee"
+        },
+        "state": {
+          "intent": "access",
+          "operation": "add_employee"
+        },
+        "canonical_task": "access",
+        "route": "technical_action",
+        "top_approved": "aqsi-online-account-add-user",
+        "selected": [
+          "aqsi-online-account-add-user"
+        ],
+        "rejection_reasons": [
+          "operation_mismatch:add_employee",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:account_settings!=access",
+          "task_mismatch:cash_list!=access",
+          "task_mismatch:correction_receipt!=access",
+          "task_mismatch:equipment_setup!=access",
+          "task_mismatch:error_diagnosis!=access",
+          "task_mismatch:fiscal_drive!=access",
+          "task_mismatch:fns_registration!=access",
+          "task_mismatch:integration!=access",
+          "task_mismatch:marking!=access",
+          "task_mismatch:ofd_connection!=access",
+          "task_mismatch:peripheral_setup!=access",
+          "task_mismatch:product_catalog!=access",
+          "task_mismatch:receipt_issue!=access",
+          "task_mismatch:refund!=access",
+          "task_mismatch:sales!=access",
+          "task_mismatch:service_connection!=access",
+          "task_mismatch:settings!=access",
+          "task_mismatch:shift_management!=access",
+          "task_mismatch:support!=access"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": false,
+        "insufficiency_reason": "access_evidence_incomplete",
+        "retrieval_ms": 221,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "source_scope_gate": null,
+        "validation_status": "not_run",
+        "generation_status": "no_context",
+        "fixture_generation_invoked": false,
+        "duration_ms": 253,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "context_only",
+      "after_quality": "insufficient_evidence"
+    },
+    {
+      "case": 14,
+      "question_sha256": "a366b887c19eac431a5ef1dccdb5d05b25a312502a7299964c4c151e9d2ba196",
+      "label": "aQsi Online/частичный возврат",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "aqsi-device-standard-refund",
+        "selected": [],
+        "rejection_reasons": [
+          "operation_mismatch:diagnose",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=refund",
+          "task_mismatch:cash_list!=refund",
+          "task_mismatch:correction_receipt!=refund",
+          "task_mismatch:equipment_setup!=refund",
+          "task_mismatch:error_diagnosis!=refund",
+          "task_mismatch:fiscal_drive!=refund",
+          "task_mismatch:fns_registration!=refund",
+          "task_mismatch:integration!=refund",
+          "task_mismatch:marking!=refund",
+          "task_mismatch:ofd_connection!=refund",
+          "task_mismatch:peripheral_setup!=refund",
+          "task_mismatch:product_catalog!=refund",
+          "task_mismatch:receipt_issue!=refund",
+          "task_mismatch:sales!=refund",
+          "task_mismatch:service_connection!=refund",
+          "task_mismatch:settings!=refund",
+          "task_mismatch:shift_management!=refund",
+          "task_mismatch:support!=refund"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 860,
+          "completion_tokens": 889,
+          "total_tokens": 1749
+        },
+        "generation_tokens": null,
+        "duration_ms": 282
+      },
+      "after": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "return"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "return"
+        },
+        "canonical_task": "refund",
+        "route": "technical_action",
+        "top_approved": "aqsi-online-receipts-partial-refund",
+        "selected": [
+          "aqsi-online-receipts-partial-refund",
+          "aqsi-online-receipts-full-refund"
+        ],
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=refund",
+          "task_mismatch:cash_list!=refund",
+          "task_mismatch:correction_receipt!=refund",
+          "task_mismatch:equipment_setup!=refund",
+          "task_mismatch:error_diagnosis!=refund",
+          "task_mismatch:fiscal_drive!=refund",
+          "task_mismatch:fns_registration!=refund",
+          "task_mismatch:integration!=refund",
+          "task_mismatch:marking!=refund",
+          "task_mismatch:ofd_connection!=refund",
+          "task_mismatch:peripheral_setup!=refund",
+          "task_mismatch:product_catalog!=refund",
+          "task_mismatch:receipt_issue!=refund",
+          "task_mismatch:sales!=refund",
+          "task_mismatch:service_connection!=refund",
+          "task_mismatch:settings!=refund",
+          "task_mismatch:shift_management!=refund",
+          "task_mismatch:support!=refund"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 235,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "c38ed139b458cc8d0e8812db7467b9c0f2f8d57522fda86a99de291f42b3f680",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 611,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "useful"
+    },
+    {
+      "case": 15,
+      "question_sha256": "b5935e38b3f97fa9138b4f746c4265bf0905f26b38ab2cf220d30d59dcd2bd7e",
+      "label": "aQsi Online/1С",
+      "grade": "C",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "aqsi-online-setup-add-store",
+        "selected": [],
+        "rejection_reasons": [
+          "software_mismatch_or_unlabeled",
+          "task_mismatch:service_connection!=integration"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 863,
+          "completion_tokens": 1338,
+          "total_tokens": 2201
+        },
+        "generation_tokens": null,
+        "duration_ms": 254
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "connect"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "connect"
+        },
+        "canonical_task": "integration",
+        "route": "technical_action",
+        "top_approved": "aqsi-online-setup-add-store",
+        "selected": [],
+        "rejection_reasons": [
+          "software_mismatch_or_unlabeled",
+          "task_mismatch:service_connection!=integration"
+        ],
+        "eligible_evidence": "none",
+        "sufficient": false,
+        "insufficiency_reason": "no_task_matched_candidates",
+        "retrieval_ms": 204,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "source_scope_gate": null,
+        "validation_status": "not_run",
+        "generation_status": "no_context",
+        "fixture_generation_invoked": false,
+        "duration_ms": 245,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "gap",
+      "after_quality": "gap"
+    },
+    {
+      "case": 16,
+      "question_sha256": "3ff6c6b1f39dd6d97c61f5d22af01f06af6f65e0fa9226000de5ab107535b79a",
+      "label": "aQsi Online/доставка чека",
+      "grade": "C",
+      "raw_trace_status": "validated",
+      "before": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "aqsi-online-fns-finish-reg",
+        "selected": [],
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=receipt_transmission",
+          "task_mismatch:account_settings!=receipt_transmission",
+          "task_mismatch:cash_list!=receipt_transmission",
+          "task_mismatch:correction_receipt!=receipt_transmission",
+          "task_mismatch:equipment_setup!=receipt_transmission",
+          "task_mismatch:error_diagnosis!=receipt_transmission",
+          "task_mismatch:fiscal_drive!=receipt_transmission",
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "task_mismatch:integration!=receipt_transmission",
+          "task_mismatch:marking!=receipt_transmission",
+          "task_mismatch:ofd_connection!=receipt_transmission",
+          "task_mismatch:product_catalog!=receipt_transmission",
+          "task_mismatch:receipt_issue!=receipt_transmission",
+          "task_mismatch:refund!=receipt_transmission",
+          "task_mismatch:sales!=receipt_transmission",
+          "task_mismatch:service_connection!=receipt_transmission",
+          "task_mismatch:shift_management!=receipt_transmission",
+          "task_mismatch:support!=receipt_transmission"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 868,
+          "completion_tokens": 1028,
+          "total_tokens": 1896
+        },
+        "generation_tokens": null,
+        "duration_ms": 234
+      },
+      "after": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "canonical_task": "receipt_transmission",
+        "route": "technical_action",
+        "top_approved": "aqsi-online-fns-finish-reg",
+        "selected": [],
+        "rejection_reasons": [
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:access!=receipt_transmission",
+          "task_mismatch:account_settings!=receipt_transmission",
+          "task_mismatch:cash_list!=receipt_transmission",
+          "task_mismatch:correction_receipt!=receipt_transmission",
+          "task_mismatch:equipment_setup!=receipt_transmission",
+          "task_mismatch:error_diagnosis!=receipt_transmission",
+          "task_mismatch:fiscal_drive!=receipt_transmission",
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "task_mismatch:integration!=receipt_transmission",
+          "task_mismatch:marking!=receipt_transmission",
+          "task_mismatch:ofd_connection!=receipt_transmission",
+          "task_mismatch:product_catalog!=receipt_transmission",
+          "task_mismatch:receipt_issue!=receipt_transmission",
+          "task_mismatch:refund!=receipt_transmission",
+          "task_mismatch:sales!=receipt_transmission",
+          "task_mismatch:service_connection!=receipt_transmission",
+          "task_mismatch:shift_management!=receipt_transmission",
+          "task_mismatch:support!=receipt_transmission"
+        ],
+        "eligible_evidence": "none",
+        "sufficient": false,
+        "insufficiency_reason": "no_task_matched_candidates",
+        "retrieval_ms": 216,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "source_scope_gate": null,
+        "validation_status": "not_run",
+        "generation_status": "no_context",
+        "fixture_generation_invoked": false,
+        "duration_ms": 221,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "gap",
+      "after_quality": "gap"
+    },
+    {
+      "case": 17,
+      "question_sha256": "b621f95a523c1f87b8e6e995e659d434c793a3daf713677a91f14d3866be200f",
+      "label": "АТОЛ Онлайн/128",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "access",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "access",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "atol-online-22561-gateway-errors-timeout-128-protocol",
+        "selected": [
+          "atol-online-22561-gateway-errors-timeout-128-protocol"
+        ],
+        "rejection_reasons": [],
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be",
+        "understanding_tokens": {
+          "prompt_tokens": 867,
+          "completion_tokens": 1230,
+          "total_tokens": 2097
+        },
+        "generation_tokens": null,
+        "duration_ms": 647
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "canonical_task": "error_diagnosis",
+        "route": "technical_action",
+        "top_approved": "atol-online-22561-gateway-errors-timeout-128-protocol",
+        "selected": [
+          "atol-online-22561-gateway-errors-timeout-128-protocol"
+        ],
+        "rejection_reasons": [],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 193,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 3,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": true,
+        "duration_ms": 614,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 18,
+      "question_sha256": "eef55e4c424805e7bd807dce75c3490c7831d21dc9be3630defeee3571bd04a2",
+      "label": "АТОЛ Онлайн/блокировка ФН",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "atol-online-11071-disable-one-cashier",
+        "selected": [],
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_unresolved"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 871,
+          "completion_tokens": 1103,
+          "total_tokens": 1974
+        },
+        "generation_tokens": null,
+        "duration_ms": 303
+      },
+      "after": {
+        "validated": {
+          "intent": "fiscal_drive",
+          "operation": "check"
+        },
+        "state": {
+          "intent": "fiscal_drive",
+          "operation": "check"
+        },
+        "canonical_task": "fiscal_drive",
+        "route": "technical_action",
+        "top_approved": "atol-online-12789-bring-own-fn",
+        "selected": [
+          "atol-online-12789-bring-own-fn",
+          "atol-online-20054-replacement-process",
+          "atol-online-18220-blocked",
+          "atol-online-20691-receive-old-fn"
+        ],
+        "rejection_reasons": [
+          "applicability_equipment_unconfirmed",
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=fiscal_drive",
+          "task_mismatch:cash_list!=fiscal_drive",
+          "task_mismatch:cash_reports!=fiscal_drive",
+          "task_mismatch:contract!=fiscal_drive",
+          "task_mismatch:correction_receipt!=fiscal_drive",
+          "task_mismatch:edo!=fiscal_drive",
+          "task_mismatch:equipment_setup!=fiscal_drive",
+          "task_mismatch:error_diagnosis!=fiscal_drive",
+          "task_mismatch:fns_registration!=fiscal_drive",
+          "task_mismatch:integration!=fiscal_drive",
+          "task_mismatch:ofd_connection!=fiscal_drive",
+          "task_mismatch:receipt_issue!=fiscal_drive",
+          "task_mismatch:receipt_search!=fiscal_drive",
+          "task_mismatch:receipt_transmission!=fiscal_drive",
+          "task_mismatch:service_connection!=fiscal_drive",
+          "task_mismatch:settings!=fiscal_drive",
+          "task_mismatch:support!=fiscal_drive"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 214,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "escalate",
+        "reason": "unsafe_source_section",
+        "answer_sha256": "00a1103f0f2b307ce9d11315926a087de9cbc28ef488df00d6d84d1b849fee73",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "no_context",
+        "fixture_generation_invoked": true,
+        "duration_ms": 621,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "safety_stop"
+    },
+    {
+      "case": 19,
+      "question_sha256": "d3772cf7236aa80cfac8cf952593c9408e7787935934ea256a6c34cbe4a8988a",
+      "label": "АТОЛ Онлайн/журнал чеков",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "search"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "search"
+        },
+        "route": "technical_action",
+        "top_approved": "atol-online-22560-receipt-journal-export",
+        "selected": [
+          "atol-online-22560-receipt-journal-export"
+        ],
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=receipt_search",
+          "task_mismatch:contract!=receipt_search",
+          "task_mismatch:correction_receipt!=receipt_search",
+          "task_mismatch:edo!=receipt_search",
+          "task_mismatch:equipment_setup!=receipt_search",
+          "task_mismatch:error_diagnosis!=receipt_search",
+          "task_mismatch:fiscal_drive!=receipt_search",
+          "task_mismatch:fns_registration!=receipt_search",
+          "task_mismatch:integration!=receipt_search",
+          "task_mismatch:ofd_connection!=receipt_search",
+          "task_mismatch:receipt_issue!=receipt_search",
+          "task_mismatch:refund!=receipt_search",
+          "task_mismatch:service_connection!=receipt_search",
+          "task_mismatch:settings!=receipt_search",
+          "task_mismatch:shift_management!=receipt_search",
+          "task_mismatch:support!=receipt_search"
+        ],
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "8803afae02e06e1264092a5f10f60613c73c7cd77cdd8a71a5184aaf788da1b3",
+        "understanding_tokens": {
+          "prompt_tokens": 867,
+          "completion_tokens": 1009,
+          "total_tokens": 1876
+        },
+        "generation_tokens": 2379,
+        "duration_ms": 1622
+      },
+      "after": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "search"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "search"
+        },
+        "canonical_task": "receipt_search",
+        "route": "technical_action",
+        "top_approved": "atol-online-22560-receipt-journal-export",
+        "selected": [
+          "atol-online-22560-receipt-journal-export"
+        ],
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=receipt_search",
+          "task_mismatch:contract!=receipt_search",
+          "task_mismatch:correction_receipt!=receipt_search",
+          "task_mismatch:edo!=receipt_search",
+          "task_mismatch:equipment_setup!=receipt_search",
+          "task_mismatch:error_diagnosis!=receipt_search",
+          "task_mismatch:fiscal_drive!=receipt_search",
+          "task_mismatch:fns_registration!=receipt_search",
+          "task_mismatch:integration!=receipt_search",
+          "task_mismatch:ofd_connection!=receipt_search",
+          "task_mismatch:receipt_issue!=receipt_search",
+          "task_mismatch:refund!=receipt_search",
+          "task_mismatch:service_connection!=receipt_search",
+          "task_mismatch:settings!=receipt_search",
+          "task_mismatch:shift_management!=receipt_search",
+          "task_mismatch:support!=receipt_search"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 220,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "8803afae02e06e1264092a5f10f60613c73c7cd77cdd8a71a5184aaf788da1b3",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 3,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 624,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "useful",
+      "after_quality": "useful"
+    },
+    {
+      "case": 20,
+      "question_sha256": "772b734912bc3d024e8720a892eb5dca8cb97f23f6ad6c5481b048f299f29581",
+      "label": "АТОЛ Онлайн/оплата",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "route": "technical_action",
+        "top_approved": "atol-online-11073-renewal-invoice",
+        "selected": [
+          "atol-online-11073-renewal-invoice"
+        ],
+        "rejection_reasons": [
+          "operation_mismatch:search",
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:contract!=billing",
+          "task_mismatch:correction_receipt!=billing",
+          "task_mismatch:edo!=billing",
+          "task_mismatch:equipment_replacement!=billing",
+          "task_mismatch:equipment_setup!=billing",
+          "task_mismatch:error_diagnosis!=billing",
+          "task_mismatch:fiscal_drive!=billing",
+          "task_mismatch:fns_registration!=billing",
+          "task_mismatch:integration!=billing",
+          "task_mismatch:ofd_connection!=billing",
+          "task_mismatch:receipt_issue!=billing",
+          "task_mismatch:receipt_search!=billing",
+          "task_mismatch:refund!=billing",
+          "task_mismatch:service_connection!=billing",
+          "task_mismatch:settings!=billing",
+          "task_mismatch:shift_management!=billing",
+          "task_mismatch:support!=billing"
+        ],
+        "scenario": "clarify",
+        "reason": "planner_clarification",
+        "answer_sha256": "e37fa918749cd91f1b38d3ad1d8479b6e341fe2c6939a0cced86cf5bb43bddaf",
+        "understanding_tokens": {
+          "prompt_tokens": 867,
+          "completion_tokens": 1120,
+          "total_tokens": 1987
+        },
+        "generation_tokens": 2262,
+        "duration_ms": 11977
+      },
+      "after": {
+        "validated": {
+          "intent": "billing",
+          "operation": "check"
+        },
+        "state": {
+          "intent": "billing",
+          "operation": "check"
+        },
+        "canonical_task": "billing",
+        "route": "technical_action",
+        "top_approved": "atol-online-14133-debt-payment",
+        "selected": [
+          "atol-online-14133-debt-payment",
+          "atol-online-14134-documents-operations",
+          "atol-online-11077-service-blocked",
+          "atol-online-11073-renewal-invoice"
+        ],
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:contract!=billing",
+          "task_mismatch:correction_receipt!=billing",
+          "task_mismatch:edo!=billing",
+          "task_mismatch:equipment_replacement!=billing",
+          "task_mismatch:equipment_setup!=billing",
+          "task_mismatch:error_diagnosis!=billing",
+          "task_mismatch:fiscal_drive!=billing",
+          "task_mismatch:fns_registration!=billing",
+          "task_mismatch:integration!=billing",
+          "task_mismatch:ofd_connection!=billing",
+          "task_mismatch:receipt_issue!=billing",
+          "task_mismatch:receipt_search!=billing",
+          "task_mismatch:refund!=billing",
+          "task_mismatch:service_connection!=billing",
+          "task_mismatch:settings!=billing",
+          "task_mismatch:shift_management!=billing",
+          "task_mismatch:support!=billing"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 229,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "e8166225878488b34bfafa018b93bfe72ebc1315183ee0aeb62b622e0cb0359e",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 654,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "useful_first_step_only"
+    },
+    {
+      "case": 21,
+      "question_sha256": "8fd909c3666c9ecf441712dce2bce942648f0bfefcb687b3db4ffcc36d6a80f1",
+      "label": "ФФД 1.2/сервис неизвестен",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "route": "technical_action",
+        "top_approved": "atol-online-22555-switch-ffd12",
+        "selected": [],
+        "rejection_reasons": [
+          "operation_mismatch:search",
+          "task_mismatch:correction_receipt!=fiscal_format",
+          "task_mismatch:integration!=fiscal_format",
+          "task_mismatch:receipt_issue!=fiscal_format",
+          "task_mismatch:service_connection!=fiscal_format"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 874,
+          "completion_tokens": 1211,
+          "total_tokens": 2085
+        },
+        "generation_tokens": null,
+        "duration_ms": 250
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "check"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "check"
+        },
+        "canonical_task": "fiscal_format",
+        "route": "technical_action",
+        "top_approved": "evotor-ffd-version-check-20261019",
+        "selected": [
+          "evotor-ffd-version-check-20261019"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:correction_receipt!=fiscal_format",
+          "task_mismatch:integration!=fiscal_format",
+          "task_mismatch:receipt_issue!=fiscal_format",
+          "task_mismatch:service_connection!=fiscal_format"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 184,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be",
+        "source_scope_gate": {
+          "inapplicable": [
+            {
+              "document_id": "evotor-ffd-version-check-20261019",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            },
+            {
+              "document_id": "evotor-ffd-version-check-20261019",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            },
+            {
+              "document_id": "evotor-ffd-version-check-20261019",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            }
+          ],
+          "eligible_source_count": 0,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": false,
+        "duration_ms": 594,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 22,
+      "question_sha256": "1f7e6155091e88332823e699d55200fd53d25170277d45f161dd17eec165f1a3",
+      "label": "АТОЛ Онлайн/API",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "state": {
+          "intent": "general",
+          "operation": "search"
+        },
+        "route": "technical_action",
+        "top_approved": "atol-online-11244-api-test",
+        "selected": [],
+        "rejection_reasons": [
+          "operation_mismatch:search",
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=integration",
+          "task_mismatch:contract!=integration",
+          "task_mismatch:correction_receipt!=integration",
+          "task_mismatch:edo!=integration",
+          "task_mismatch:equipment_replacement!=integration",
+          "task_mismatch:equipment_setup!=integration",
+          "task_mismatch:error_diagnosis!=integration",
+          "task_mismatch:fiscal_drive!=integration",
+          "task_mismatch:fns_registration!=integration",
+          "task_mismatch:ofd_connection!=integration",
+          "task_mismatch:receipt_issue!=integration",
+          "task_mismatch:receipt_search!=integration",
+          "task_mismatch:service_connection!=integration",
+          "task_mismatch:settings!=integration",
+          "task_mismatch:shift_management!=integration",
+          "task_mismatch:support!=integration"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 873,
+          "completion_tokens": 1371,
+          "total_tokens": 2244
+        },
+        "generation_tokens": null,
+        "duration_ms": 250
+      },
+      "after": {
+        "validated": {
+          "intent": "unknown",
+          "operation": "check"
+        },
+        "state": {
+          "intent": "unknown",
+          "operation": "check"
+        },
+        "canonical_task": "integration",
+        "route": "technical_action",
+        "top_approved": "atol-online-12790-catalog-cms-banks",
+        "selected": [
+          "atol-online-12790-catalog-cms-banks",
+          "atol-online-11254-test-cashier",
+          "atol-online-12790-integration-1c-versions",
+          "atol-online-11244-api-test"
+        ],
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:billing!=integration",
+          "task_mismatch:contract!=integration",
+          "task_mismatch:correction_receipt!=integration",
+          "task_mismatch:edo!=integration",
+          "task_mismatch:equipment_replacement!=integration",
+          "task_mismatch:equipment_setup!=integration",
+          "task_mismatch:error_diagnosis!=integration",
+          "task_mismatch:fiscal_drive!=integration",
+          "task_mismatch:fns_registration!=integration",
+          "task_mismatch:ofd_connection!=integration",
+          "task_mismatch:receipt_issue!=integration",
+          "task_mismatch:receipt_transmission!=integration",
+          "task_mismatch:service_connection!=integration",
+          "task_mismatch:settings!=integration",
+          "task_mismatch:shift_management!=integration",
+          "task_mismatch:support!=integration"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 254,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "30a5d9766e6de3ae0c4030c90de678a0a24a7b5964bda37a630c18d102b03504",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 4,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 741,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "irrelevant_answer"
+    },
+    {
+      "case": 23,
+      "question_sha256": "f266b3d051fff11757e8053fba984f57623945b5ac5c0eb0a227c783897086ba",
+      "label": "Платформа ОФД/нет чеков",
+      "grade": "B",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "device",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "platformaofd-partner-kkt-diagnostics",
+        "selected": [],
+        "rejection_reasons": [
+          "applicability_equipment_unconfirmed",
+          "ofd_mismatch_or_unlabeled",
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:bank_statement!=error_diagnosis",
+          "task_mismatch:billing!=error_diagnosis",
+          "task_mismatch:cash_list!=error_diagnosis",
+          "task_mismatch:cash_search!=error_diagnosis",
+          "task_mismatch:correction_receipt!=error_diagnosis",
+          "task_mismatch:edo!=error_diagnosis",
+          "task_mismatch:equipment_setup!=error_diagnosis",
+          "task_mismatch:fiscal_document_control!=error_diagnosis",
+          "task_mismatch:fiscal_drive!=error_diagnosis",
+          "task_mismatch:fns_monitoring!=error_diagnosis",
+          "task_mismatch:fns_registration!=error_diagnosis",
+          "task_mismatch:goods_receipt!=error_diagnosis",
+          "task_mismatch:integration!=error_diagnosis",
+          "task_mismatch:marking!=error_diagnosis",
+          "task_mismatch:ofd_connection!=error_diagnosis",
+          "task_mismatch:period_close!=error_diagnosis",
+          "task_mismatch:receipt_issue!=error_diagnosis",
+          "task_mismatch:receipt_search!=error_diagnosis",
+          "task_mismatch:receipt_status!=error_diagnosis",
+          "task_mismatch:receipt_transmission!=error_diagnosis",
+          "task_mismatch:sales!=error_diagnosis",
+          "task_mismatch:service_connection!=error_diagnosis",
+          "task_mismatch:shift_management!=error_diagnosis"
+        ],
+        "scenario": "clarify",
+        "reason": "applicability_context_missing",
+        "answer_sha256": "4fd0653d02d8967b937402dfbbec647e6eb9844e0756f7212666ebef28f17144",
+        "understanding_tokens": {
+          "prompt_tokens": 874,
+          "completion_tokens": 1397,
+          "total_tokens": 2271
+        },
+        "generation_tokens": null,
+        "duration_ms": 267
+      },
+      "after": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "canonical_task": "receipt_transmission",
+        "route": "technical_action",
+        "top_approved": "platformaofd-partner-kkt-diagnostics",
+        "selected": [
+          "platformaofd-partner-kkt-diagnostics",
+          "platformaofd-atol-transmission-checks",
+          "platformaofd-shtrih-connection-checks"
+        ],
+        "rejection_reasons": [
+          "procedure_service_mismatch:Первый ОФД",
+          "service_mismatch_or_unlabeled",
+          "task_mismatch:bank_statement!=receipt_transmission",
+          "task_mismatch:billing!=receipt_transmission",
+          "task_mismatch:cash_list!=receipt_transmission",
+          "task_mismatch:cash_search!=receipt_transmission",
+          "task_mismatch:correction_receipt!=receipt_transmission",
+          "task_mismatch:edo!=receipt_transmission",
+          "task_mismatch:equipment_setup!=receipt_transmission",
+          "task_mismatch:error_diagnosis!=receipt_transmission",
+          "task_mismatch:fiscal_document_control!=receipt_transmission",
+          "task_mismatch:fiscal_drive!=receipt_transmission",
+          "task_mismatch:fns_monitoring!=receipt_transmission",
+          "task_mismatch:fns_registration!=receipt_transmission",
+          "task_mismatch:goods_receipt!=receipt_transmission",
+          "task_mismatch:integration!=receipt_transmission",
+          "task_mismatch:marking!=receipt_transmission",
+          "task_mismatch:ofd_connection!=receipt_transmission",
+          "task_mismatch:period_close!=receipt_transmission",
+          "task_mismatch:receipt_issue!=receipt_transmission",
+          "task_mismatch:receipt_search!=receipt_transmission",
+          "task_mismatch:receipt_status!=receipt_transmission",
+          "task_mismatch:sales!=receipt_transmission",
+          "task_mismatch:service_connection!=receipt_transmission",
+          "task_mismatch:shift_management!=receipt_transmission"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 278,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be",
+        "source_scope_gate": {
+          "inapplicable": [
+            {
+              "document_id": "platformaofd-atol-transmission-checks",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            },
+            {
+              "document_id": "platformaofd-partner-kkt-diagnostics",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            },
+            {
+              "document_id": "platformaofd-partner-kkt-diagnostics",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            },
+            {
+              "document_id": "platformaofd-shtrih-connection-checks",
+              "reason": "scope_fact_missing",
+              "missing": [
+                "manufacturer"
+              ],
+              "askable_missing": [
+                "manufacturer"
+              ]
+            }
+          ],
+          "eligible_source_count": 0,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "not_run",
+        "generation_status": "clarification",
+        "fixture_generation_invoked": false,
+        "duration_ms": 719,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "clarify",
+      "after_quality": "clarify"
+    },
+    {
+      "case": 24,
+      "question_sha256": "94f2195bf3e0955ce5801d701a2c50d6a122448b3bdb413aae1ece72e0c1954b",
+      "label": "Платформа ОФД/статус ФНС",
+      "grade": "A",
+      "raw_trace_status": "validated_with_field_rejections",
+      "before": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "diagnose"
+        },
+        "route": "technical_action",
+        "top_approved": "platformaofd-lkk-receipt-fns-status",
+        "selected": [],
+        "rejection_reasons": [
+          "operation_mismatch:diagnose",
+          "task_mismatch:account_settings!=receipt_search",
+          "task_mismatch:cash_list!=receipt_search",
+          "task_mismatch:cash_search!=receipt_search",
+          "task_mismatch:contract!=receipt_search",
+          "task_mismatch:correction_receipt!=receipt_search",
+          "task_mismatch:equipment_replacement!=receipt_search",
+          "task_mismatch:equipment_setup!=receipt_search",
+          "task_mismatch:error_diagnosis!=receipt_search",
+          "task_mismatch:fiscal_document_control!=receipt_search",
+          "task_mismatch:fiscal_drive!=receipt_search",
+          "task_mismatch:fns_monitoring!=receipt_search",
+          "task_mismatch:fns_registration!=receipt_search",
+          "task_mismatch:integration!=receipt_search",
+          "task_mismatch:marking!=receipt_search",
+          "task_mismatch:ofd_connection!=receipt_search",
+          "task_mismatch:receipt_issue!=receipt_search",
+          "task_mismatch:receipt_status!=receipt_search",
+          "task_mismatch:receipt_transmission!=receipt_search",
+          "task_mismatch:sales!=receipt_search",
+          "task_mismatch:service_connection!=receipt_search",
+          "task_mismatch:settings!=receipt_search",
+          "task_mismatch:shift_management!=receipt_search"
+        ],
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+        "understanding_tokens": {
+          "prompt_tokens": 867,
+          "completion_tokens": 1168,
+          "total_tokens": 2035
+        },
+        "generation_tokens": null,
+        "duration_ms": 253
+      },
+      "after": {
+        "validated": {
+          "intent": "receipt",
+          "operation": "status"
+        },
+        "state": {
+          "intent": "receipt",
+          "operation": "status"
+        },
+        "canonical_task": "receipt_status",
+        "route": "technical_action",
+        "top_approved": "platformaofd-lkk-receipt-fns-status",
+        "selected": [
+          "platformaofd-lkk-receipt-fns-status"
+        ],
+        "rejection_reasons": [
+          "task_mismatch:access!=receipt_status",
+          "task_mismatch:bank_statement!=receipt_status",
+          "task_mismatch:billing!=receipt_status",
+          "task_mismatch:cash_list!=receipt_status",
+          "task_mismatch:cash_search!=receipt_status",
+          "task_mismatch:correction_receipt!=receipt_status",
+          "task_mismatch:ens!=receipt_status",
+          "task_mismatch:equipment_replacement!=receipt_status",
+          "task_mismatch:error_diagnosis!=receipt_status",
+          "task_mismatch:fiscal_document_control!=receipt_status",
+          "task_mismatch:fiscal_drive!=receipt_status",
+          "task_mismatch:fns_monitoring!=receipt_status",
+          "task_mismatch:fns_registration!=receipt_status",
+          "task_mismatch:integration!=receipt_status",
+          "task_mismatch:marking!=receipt_status",
+          "task_mismatch:network_diagnostics!=receipt_status",
+          "task_mismatch:ofd_connection!=receipt_status",
+          "task_mismatch:receipt_issue!=receipt_status",
+          "task_mismatch:receipt_search!=receipt_status",
+          "task_mismatch:reconciliation!=receipt_status",
+          "task_mismatch:refund!=receipt_status",
+          "task_mismatch:sales!=receipt_status",
+          "task_mismatch:service_connection!=receipt_status",
+          "task_mismatch:settings!=receipt_status",
+          "task_mismatch:shift_management!=receipt_status",
+          "task_mismatch:tspiot!=receipt_status",
+          "task_mismatch:vat_accounting!=receipt_status",
+          "task_mismatch:vat_usn!=receipt_status"
+        ],
+        "eligible_evidence": "partial",
+        "sufficient": true,
+        "insufficiency_reason": "evidence_coverage_incomplete",
+        "retrieval_ms": 199,
+        "model_calls": 0,
+        "new_tokens": 0
+      },
+      "offline": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "answer_sha256": "31d5f7ab4d1e086d28d99c146a827e60ae186602740213b97c710bdfde692e47",
+        "source_scope_gate": {
+          "inapplicable": [],
+          "eligible_source_count": 2,
+          "reason": "customer_confirmed_scope_required_for_procedures"
+        },
+        "validation_status": "exact_source_copy",
+        "generation_status": "generated",
+        "fixture_generation_invoked": true,
+        "duration_ms": 653,
+        "actual_provider_calls": 0,
+        "actual_provider_tokens": 0
+      },
+      "before_quality": "escalate",
+      "after_quality": "status_meanings_only"
+    }
+  ]
+}

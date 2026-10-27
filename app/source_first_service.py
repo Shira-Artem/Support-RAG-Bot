@@ -1260,9 +1260,17 @@ class SourceFirstService:
                 # that product (including software/integration), while keeping
                 # manufacturer and model as separate hardware facts.
                 hardware_scope = scope.get("task_category") in _HARDWARE_TASK_CATEGORIES
+                scoped_model = str(scope.get("model") or "")
+                # A product label such as "cloud cash register" belongs to a
+                # named cloud service. An exact client-confirmed service is
+                # its scope fact; it must not demand a physical device model.
+                cloud_service_scope = ("облач" in scoped_model.casefold()
+                    and bool(scope.get("service"))
+                    and any(_matches_scope_value(scope["service"], fact.value)
+                            for fact in state.task_entities.get("service", [])))
                 required = []
                 if scope.get("service"):
-                    service_slots = {"service", "software", "integration"}
+                    service_slots = {"service", "software", "integration", "ofd"}
                     if hardware_scope:
                         service_slots.add("manufacturer")
                     # A vendor's own support label duplicates the metadata
@@ -1270,9 +1278,9 @@ class SourceFirstService:
                     if not (scope.get("manufacturer") and _matches_scope_value(
                             scope["service"], scope["manufacturer"])):
                         required.append(("service", service_slots))
-                if hardware_scope and scope.get("manufacturer"):
+                if hardware_scope and scope.get("manufacturer") and not cloud_service_scope:
                     required.append(("manufacturer", {"manufacturer"}))
-                if hardware_scope and scope.get("model"):
+                if hardware_scope and scoped_model and not cloud_service_scope:
                     required.append(("model", {"equipment"}))
                 missing_slots = []
                 mismatch = False

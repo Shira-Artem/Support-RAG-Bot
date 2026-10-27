@@ -5,6 +5,10 @@ import re
 
 
 _CONTEXTUAL_OPERATIONS = {
+    ("service_connection", "fiscalize"): "fiscalize_cash_register",
+    ("billing", "check"): "manage_billing",
+    ("peripheral_setup", "check"): "configure_peripheral",
+    ("receipt_status", "status"): "inspect_fns_status",
     ("billing", "change"): "change_plan",
     ("billing", "close"): "get_closing_documents",
     ("billing", "search"): "get_renewal_invoice",

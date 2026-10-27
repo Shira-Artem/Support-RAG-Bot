@@ -1,0 +1,44 @@
+{
+  "status": "BLOCKED",
+  "active_scenario": null,
+  "gate_result": "PENDING_MANUAL_SCORING",
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "qdrant_collection": "knowledge_stage3_retrieval_20261022",
+  "qdrant_mode": "read-only facade",
+  "b2_enabled": false,
+  "holdout_sha256": "42bd32d26c080997b5b253a702ebac21bc62768dedf2ce7bfc7afe53b86fc760",
+  "groq_http_attempts": 1,
+  "groq_http_attempt_limit": 4,
+  "automatic_retries": 0,
+  "quota_stop_reason": "rate_limit_probe_headers_incomplete",
+  "rate_limit_quota_latest": {},
+  "usage_totals": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+  },
+  "turns": [],
+  "preflight": {
+    "configured": true,
+    "issues": [],
+    "qdrant_collection": "knowledge_stage3_retrieval_20261022",
+    "qdrant_exists": true,
+    "qdrant_points": 934,
+    "qdrant_status": "green",
+    "qdrant_mode": "read-only; collection_exists/get_collection only in preflight"
+  },
+  "all_http_attempts": [
+    {
+      "number": 1,
+      "stage": "rate_limit_probe",
+      "started_at_utc": "2026-10-26T10:18:09.393995+00:00",
+      "http_status": 200,
+      "latency_ms": 776,
+      "usage": null,
+      "rate_limit_headers": {},
+      "error_type": null
+    }
+  ],
+  "created_at_utc": "2026-10-26T10:18:10.170259+00:00"
+}
