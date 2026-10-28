@@ -6,7 +6,7 @@ service: Эвотор
 task_category: error_diagnosis
 operations: [diagnose_error]
 manufacturer: Эвотор
-model: 'Смарт-терминалы Эвотор; проверить применимость по модели'
+model: null
 version: null
 source_url: https://support.evotor.ru/article/360005580254
 source_type: manufacturer_support_article

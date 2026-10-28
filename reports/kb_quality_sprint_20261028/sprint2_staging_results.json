@@ -1,0 +1,864 @@
+{
+  "mode": "qdrant_client_in_memory_only",
+  "llm_calls": 0,
+  "production_qdrant_access": false,
+  "production_kb_write": false,
+  "baseline_approved_documents": 206,
+  "candidate_overlay_documents": 5,
+  "cases": [
+    {
+      "case_id": "evotor_fn231",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-fn-231",
+      "message": "Эвотор ошибка ФН 231 -3975 при продаже, ФН-М 36 месяцев, ОСН и продажи услуг.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-fn-231-360005098974"
+          ],
+          "selected_document_ids": [
+            "evotor-fn-231-360005098974"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "evotor-fn-231-360005098974",
+            "candidate-kbqs-20261028-evotor-fn-231",
+            "candidate-kbqs-20261028-evotor-fn-235"
+          ],
+          "selected_document_ids": [
+            "evotor-fn-231-360005098974",
+            "candidate-kbqs-20261028-evotor-fn-231"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 231 — запрос клиента: Эвотор ошибка ФН 231 -3975 при продаже, ФН-М 36 месяцев, ОСН и продажи услуг.",
+      "expected_top_k_hit": true,
+      "expected_final_evidence": true,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-234",
+        "candidate-kbqs-20261028-evotor-fn-235"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "evotor_fn234",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-fn-234",
+      "message": "На Эвоторе ошибка ФН 234, хочу проверить дату и время.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-fn-234-360005580254"
+          ],
+          "selected_document_ids": [
+            "evotor-fn-234-360005580254"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "candidate-kbqs-20261028-evotor-fn-234",
+            "evotor-fn-234-360005580254",
+            "candidate-kbqs-20261028-evotor-fn-235"
+          ],
+          "selected_document_ids": [
+            "evotor-fn-234-360005580254",
+            "candidate-kbqs-20261028-evotor-fn-234"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 234 — запрос клиента: На Эвоторе ошибка ФН 234, хочу проверить дату и время.",
+      "expected_top_k_hit": true,
+      "expected_final_evidence": true,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-235"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "evotor_fn235",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-fn-235",
+      "message": "Эвотор показывает ФН 235 -3979, в ОФД есть неотправленные документы.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-fn-235-360004715213"
+          ],
+          "selected_document_ids": [
+            "evotor-fn-235-360004715213"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "candidate-kbqs-20261028-evotor-fn-235",
+            "evotor-fn-235-360004715213"
+          ],
+          "selected_document_ids": [
+            "candidate-kbqs-20261028-evotor-fn-235",
+            "evotor-fn-235-360004715213"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 235 — запрос клиента: Эвотор показывает ФН 235 -3979, в ОФД есть неотправленные документы.",
+      "expected_top_k_hit": true,
+      "expected_final_evidence": true,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-234"
+      ],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "platform_receipt",
+      "expected_candidate": "candidate-kbqs-20261028-platformaofd-receipt-status",
+      "message": "Как найти конкретный чек в личном кабинете Платформы ОФД и что означает карантин?",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "platformaofd-connect-kkt-to-lkk",
+            "platformaofd-fn-number-in-lkk",
+            "evotor-ofd-settings-reference-20261019",
+            "platformaofd-lkk-cash-search",
+            "platformaofd-lkk-receipt-search",
+            "atol-online-22560-receipt-journal-export",
+            "aqsi-online-receipts-enable-manual-receipt",
+            "platformaofd-flk-507",
+            "platformaofd-partner-kkt-diagnostics",
+            "platformaofd-atol-transmission-checks"
+          ],
+          "selected_document_ids": [
+            "platformaofd-lkk-receipt-search"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "full",
+          "missing_evidence": [],
+          "insufficiency_reason": null
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "candidate-kbqs-20261028-platformaofd-receipt-status",
+            "platformaofd-connect-kkt-to-lkk",
+            "platformaofd-fn-number-in-lkk",
+            "platformaofd-lkk-cash-search",
+            "evotor-ofd-settings-reference-20261019",
+            "platformaofd-lkk-receipt-search",
+            "aqsi-online-receipts-enable-manual-receipt",
+            "atol-online-22560-receipt-journal-export",
+            "platformaofd-flk-507",
+            "platformaofd-partner-kkt-diagnostics"
+          ],
+          "selected_document_ids": [
+            "candidate-kbqs-20261028-platformaofd-receipt-status",
+            "platformaofd-lkk-receipt-search"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "ОФД: Платформа ОФД — поиск чека — запрос клиента: Как найти конкретный чек в личном кабинете Платформы ОФД и что означает карантин?",
+      "expected_top_k_hit": true,
+      "expected_final_evidence": true,
+      "forbidden_candidate_ids": [],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "aqsi_scanner",
+      "expected_candidate": "candidate-kbqs-20261028-aqsi-scanner-hub",
+      "message": "Внешний сканер не читает DataMatrix на физической кассе aQsi, подключен через Hub.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "aqsi-device-scanner-hub-power",
+            "aqsi-device-scanner",
+            "aqsi-device-create-product",
+            "aqsi-device-goods-not-on-device",
+            "aqsi-device-scales",
+            "aqsi-online-account-register-account",
+            "aqsi-device-connection-fields",
+            "aqsi-online-integration-direct-api",
+            "aqsi-device-deferred-order-refund",
+            "aqsi-device-first-start-internet"
+          ],
+          "selected_document_ids": [
+            "aqsi-device-scanner"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "candidate-kbqs-20261028-aqsi-scanner-hub",
+            "aqsi-device-scanner",
+            "aqsi-device-scanner-hub-power",
+            "aqsi-device-create-product",
+            "aqsi-device-goods-not-on-device",
+            "aqsi-device-scales",
+            "aqsi-online-account-register-account",
+            "aqsi-online-integration-direct-api",
+            "aqsi-device-connection-fields",
+            "aqsi-device-deferred-order-refund"
+          ],
+          "selected_document_ids": [
+            "aqsi-device-scanner"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: aQsi — Внешний сканер не читает DataMatrix на физической кассе aQsi, подключен через Hub. — запрос клиента: Внешний сканер не читает DataMatrix на физической кассе aQsi, подключен через Hub.",
+      "expected_top_k_hit": true,
+      "expected_final_evidence": false,
+      "forbidden_candidate_ids": [
+        "aqsi-online-receipts-full-refund",
+        "aqsi-online-receipts-partial-refund"
+      ],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "negative_fn_pair",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-fn-234",
+      "message": "На Эвоторе ошибка ФН 234, проверка даты и времени.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-fn-234-360005580254"
+          ],
+          "selected_document_ids": [
+            "evotor-fn-234-360005580254"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "candidate-kbqs-20261028-evotor-fn-234",
+            "candidate-kbqs-20261028-evotor-fn-235",
+            "evotor-fn-234-360005580254"
+          ],
+          "selected_document_ids": [
+            "candidate-kbqs-20261028-evotor-fn-234",
+            "evotor-fn-234-360005580254"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 234 — запрос клиента: На Эвоторе ошибка ФН 234, проверка даты и времени.",
+      "expected_top_k_hit": true,
+      "expected_final_evidence": true,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-235"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "negative_aqsi_online",
+      "expected_candidate": "candidate-kbqs-20261028-aqsi-scanner-hub",
+      "message": "aQsi Online: как оформить частичный возврат по исходному чеку?",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "aqsi-online-receipts-partial-refund",
+            "aqsi-online-receipts-full-refund",
+            "aqsi-online-receipts-enable-manual-receipt",
+            "aqsi-device-deferred-order-refund",
+            "aqsi-device-standard-refund",
+            "aqsi-online-setup-sign-contract",
+            "aqsi-online-setup-company-details",
+            "aqsi-online-account-register-account",
+            "aqsi-online-account-contact-support",
+            "aqsi-device-fn161-document-not-saved"
+          ],
+          "selected_document_ids": [
+            "aqsi-online-receipts-full-refund",
+            "aqsi-online-receipts-partial-refund"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "aqsi-online-receipts-partial-refund",
+            "aqsi-online-receipts-full-refund",
+            "aqsi-online-receipts-enable-manual-receipt",
+            "aqsi-device-deferred-order-refund",
+            "aqsi-device-standard-refund",
+            "aqsi-online-setup-sign-contract",
+            "aqsi-online-setup-company-details",
+            "aqsi-online-account-register-account",
+            "aqsi-online-account-contact-support",
+            "aqsi-device-fn161-document-not-saved"
+          ],
+          "selected_document_ids": [
+            "aqsi-online-receipts-full-refund",
+            "aqsi-online-receipts-partial-refund"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "сервис: aQsi Online — возврат чек — запрос клиента: aQsi Online: как оформить частичный возврат по исходному чеку?",
+      "expected_top_k_hit": false,
+      "expected_final_evidence": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-aqsi-scanner-hub"
+      ],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "negative_evotor_queue",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-no-receipt-transmission",
+      "message": "На Эвоторе очередь чеков не передается в ОФД.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-ofd-error-not-connected-20261019",
+            "evotor-ofd-subscription-8865646794770",
+            "evotor-fn-235-360004715213",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-fn-210-360004715693",
+            "evotor-fn-234-360005580254",
+            "evotor-6-receipt-copy-360005002514",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-6-ofd-connection-360014099534",
+            "evotor-ofd-settings-reference-20261019"
+          ],
+          "selected_document_ids": [
+            "evotor-ofd-subscription-8865646794770",
+            "evotor-6-ofd-connection-360014099534",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-ofd-error-not-connected-20261019"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "evotor-ofd-error-not-connected-20261019",
+            "evotor-fn-235-360004715213",
+            "evotor-ofd-subscription-8865646794770",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-fn-210-360004715693",
+            "candidate-kbqs-20261028-evotor-fn-234",
+            "evotor-6-receipt-copy-360005002514",
+            "evotor-fn-234-360005580254",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-6-ofd-connection-360014099534"
+          ],
+          "selected_document_ids": [
+            "evotor-ofd-subscription-8865646794770",
+            "evotor-6-ofd-connection-360014099534",
+            "evotor-7-3-ofd-connection-360014099534",
+            "platformaofd-partner-kkt-diagnostics"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — проверка передачи чеков и документов в ОФД ОФД — запрос клиента: На Эвоторе очередь чеков не передается в ОФД.",
+      "expected_top_k_hit": false,
+      "expected_final_evidence": false,
+      "forbidden_candidate_ids": [],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "negative_atol",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-fn-231",
+      "message": "АТОЛ Онлайн: API-чек не найден после платежа, какой статус запроса?",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "atol-online-26774-advance-closing",
+            "atol-online-26773-payment-object-ffd105",
+            "atol-online-22555-switch-ffd12",
+            "atol-online-12790-catalog-cms-banks",
+            "atol-online-21114-mass-correction",
+            "atol-online-11255-sender-email",
+            "atol-online-11244-api-test",
+            "atol-online-22561-amount-errors-16-23",
+            "atol-online-22559-agent-status",
+            "atol-online-22561-request-errors-26-1008"
+          ],
+          "selected_document_ids": [
+            "atol-online-21114-mass-correction"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "atol-online-26774-advance-closing",
+            "atol-online-26773-payment-object-ffd105",
+            "atol-online-22555-switch-ffd12",
+            "atol-online-12790-catalog-cms-banks",
+            "atol-online-21114-mass-correction",
+            "atol-online-11255-sender-email",
+            "atol-online-11244-api-test",
+            "atol-online-22561-amount-errors-16-23",
+            "atol-online-22561-request-errors-26-1008",
+            "atol-online-22559-agent-status"
+          ],
+          "selected_document_ids": [
+            "atol-online-21114-mass-correction"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "сервис: АТОЛ Онлайн — АТОЛ Онлайн: API-чек не найден после платежа, какой статус запроса? — запрос клиента: АТОЛ Онлайн: API-чек не найден после платежа, какой статус запроса?",
+      "expected_top_k_hit": false,
+      "expected_final_evidence": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-234",
+        "candidate-kbqs-20261028-evotor-fn-235"
+      ],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "negative_receipt_diag",
+      "expected_candidate": "candidate-kbqs-20261028-platformaofd-receipt-status",
+      "message": "Платформа ОФД: ошибка ФН 235 и очередь неотправленных документов.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-fn-235-360004715213"
+          ],
+          "selected_document_ids": [],
+          "sufficient_evidence": false,
+          "evidence_status": "none",
+          "missing_evidence": [],
+          "insufficiency_reason": "applicability_context_missing"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "evotor-fn-235-360004715213",
+            "candidate-kbqs-20261028-evotor-fn-235"
+          ],
+          "selected_document_ids": [],
+          "sufficient_evidence": false,
+          "evidence_status": "none",
+          "missing_evidence": [],
+          "insufficiency_reason": "applicability_context_missing"
+        }
+      },
+      "query": "ОФД: Платформа ОФД — диагностика ошибки ФН — код ошибки 235 — запрос клиента: Платформа ОФД: ошибка ФН 235 и очередь неотправленных документов.",
+      "expected_top_k_hit": false,
+      "expected_final_evidence": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-platformaofd-receipt-status"
+      ],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "generic_evotor",
+      "expected_candidate": "candidate-kbqs-20261028-evotor-no-receipt-transmission",
+      "message": "Эвотор не работает, помогите.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "evotor-model-6-lite-1d8e8869",
+            "evotor-tspiot-localmodule-20261019",
+            "evotor-6-shift-360006708093",
+            "evotor-mobile-network-check-20261019",
+            "evotor-ofd-settings-reference-20261019",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-6-receipt-copy-360005002514",
+            "evotor-fn-217-89e20cf4",
+            "evotor-marked-goods-upd-20261019",
+            "evotor-ofd-subscription-8865646794770"
+          ],
+          "selected_document_ids": [],
+          "sufficient_evidence": false,
+          "evidence_status": "none",
+          "missing_evidence": [],
+          "insufficiency_reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "evotor-model-6-lite-1d8e8869",
+            "evotor-tspiot-localmodule-20261019",
+            "evotor-6-shift-360006708093",
+            "evotor-ofd-settings-reference-20261019",
+            "evotor-mobile-network-check-20261019",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-fn-217-89e20cf4",
+            "evotor-6-receipt-copy-360005002514",
+            "evotor-6-ofd-connection-360014099534",
+            "evotor-marked-goods-upd-20261019"
+          ],
+          "selected_document_ids": [],
+          "sufficient_evidence": false,
+          "evidence_status": "none",
+          "missing_evidence": [],
+          "insufficiency_reason": "no_task_matched_candidates"
+        }
+      },
+      "query": "производитель: Эвотор — Эвотор не работает, помогите. — запрос клиента: Эвотор не работает, помогите.",
+      "expected_top_k_hit": false,
+      "expected_final_evidence": false,
+      "forbidden_candidate_ids": [],
+      "forbidden_in_top_k": false,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "real_ofd_unscoped",
+      "expected_candidate": null,
+      "message": "не отправляет данные офд",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "atol-online-11256-what-is-ofd",
+            "platformaofd-atol-transmission-checks",
+            "evotor-fn-210-360004715693",
+            "atol-online-11255-sender-email",
+            "atol-online-23415-activate-taxcom",
+            "aqsi-device-connection-fields",
+            "evotor-fn-235-360004715213",
+            "platformaofd-shtrih-connection-checks",
+            "platformaofd-partner-kkt-diagnostics",
+            "atol-online-22060-change-parameters"
+          ],
+          "selected_document_ids": [
+            "platformaofd-atol-transmission-checks",
+            "platformaofd-shtrih-connection-checks",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-ofd-subscription-8865646794770"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "atol-online-11256-what-is-ofd",
+            "platformaofd-atol-transmission-checks",
+            "evotor-fn-210-360004715693",
+            "atol-online-11255-sender-email",
+            "aqsi-device-connection-fields",
+            "atol-online-23415-activate-taxcom",
+            "evotor-fn-235-360004715213",
+            "candidate-kbqs-20261028-platformaofd-receipt-status",
+            "platformaofd-partner-kkt-diagnostics",
+            "candidate-kbqs-20261028-evotor-fn-235"
+          ],
+          "selected_document_ids": [
+            "platformaofd-atol-transmission-checks",
+            "platformaofd-partner-kkt-diagnostics",
+            "platformaofd-shtrih-connection-checks",
+            "evotor-ofd-subscription-8865646794770"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "проверка передачи чеков и документов в ОФД ОФД — запрос клиента: не отправляет данные офд",
+      "expected_top_k_hit": null,
+      "unexpected_candidate_in_final": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-234",
+        "candidate-kbqs-20261028-evotor-fn-235",
+        "candidate-kbqs-20261028-platformaofd-receipt-status",
+        "candidate-kbqs-20261028-aqsi-scanner-hub"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "real_scanner_unscoped",
+      "expected_candidate": null,
+      "message": "у меня не работает сканер",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "aqsi-device-scanner",
+            "atol-online-12161-add-shop-step3",
+            "aqsi-device-scanner-hub-power",
+            "aqsi-online-fns-finish-reg",
+            "aqsi-device-marking-178",
+            "evotor-model-6-lite-1d8e8869",
+            "atol-online-11247-shop-without-url",
+            "atol-online-11071-disable-one-cashier",
+            "evotor-tspiot-localmodule-20261019",
+            "aqsi-online-setup-sign-contract"
+          ],
+          "selected_document_ids": [],
+          "sufficient_evidence": false,
+          "evidence_status": "none",
+          "missing_evidence": [],
+          "insufficiency_reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "atol-online-12161-add-shop-step3",
+            "aqsi-device-scanner",
+            "aqsi-device-scanner-hub-power",
+            "aqsi-online-fns-finish-reg",
+            "aqsi-device-marking-178",
+            "atol-online-11247-shop-without-url",
+            "evotor-model-6-lite-1d8e8869",
+            "atol-online-11071-disable-one-cashier",
+            "candidate-kbqs-20261028-aqsi-scanner-hub",
+            "evotor-tspiot-localmodule-20261019"
+          ],
+          "selected_document_ids": [],
+          "sufficient_evidence": false,
+          "evidence_status": "none",
+          "missing_evidence": [],
+          "insufficiency_reason": "no_task_matched_candidates"
+        }
+      },
+      "query": "у меня не работает сканер — запрос клиента: у меня не работает сканер",
+      "expected_top_k_hit": null,
+      "unexpected_candidate_in_final": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-234",
+        "candidate-kbqs-20261028-evotor-fn-235",
+        "candidate-kbqs-20261028-platformaofd-receipt-status",
+        "candidate-kbqs-20261028-aqsi-scanner-hub"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "real_edo_marking_unscoped",
+      "expected_candidate": null,
+      "message": "не получаем документы по эдо в чз.",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "atol-online-14749-incoming-documents",
+            "atol-online-14145-closing-docs",
+            "batch-20261013-edo-epd-vs-edo",
+            "evotor-marked-goods-upd-20261019",
+            "atol-online-16568-step7-fn-activation",
+            "atol-online-14134-documents-operations",
+            "batch-20261013-edo-connect-1c-edo",
+            "atol-online-11052-reconciliation-acts",
+            "batch-20261013-taxes-ens-operations-name",
+            "atol-online-11075-fn-invoice"
+          ],
+          "selected_document_ids": [
+            "atol-online-14749-incoming-documents"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "atol-online-14749-incoming-documents",
+            "evotor-marked-goods-upd-20261019",
+            "atol-online-14145-closing-docs",
+            "batch-20261013-edo-epd-vs-edo",
+            "atol-online-16568-step7-fn-activation",
+            "candidate-kbqs-20261028-evotor-fn-235",
+            "atol-online-14134-documents-operations",
+            "batch-20261013-edo-connect-1c-edo",
+            "atol-online-11052-reconciliation-acts",
+            "atol-online-11075-fn-invoice"
+          ],
+          "selected_document_ids": [
+            "atol-online-14749-incoming-documents"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "не получаем документы по эдо в чз. — запрос клиента: не получаем документы по эдо в чз.",
+      "expected_top_k_hit": null,
+      "unexpected_candidate_in_final": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-234",
+        "candidate-kbqs-20261028-evotor-fn-235",
+        "candidate-kbqs-20261028-platformaofd-receipt-status",
+        "candidate-kbqs-20261028-aqsi-scanner-hub"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    },
+    {
+      "case_id": "real_fn_expiry_unscoped",
+      "expected_candidate": null,
+      "message": "касса [ENTITY] [number] ф закончился срок фн",
+      "collections": {
+        "baseline": {
+          "top_k_document_ids": [
+            "atol-online-11075-fn-invoice",
+            "evotor-fn-234-360005580254",
+            "atol-online-18126-monitoring",
+            "aqsi-device-fn7-date",
+            "aqsi-device-paper-print-retry",
+            "aqsi-device-fn18-expired",
+            "atol-online-11069-fns-after-fn-swap",
+            "atol-online-24147-replace-kaznachey",
+            "platformaofd-lkk-cash-monitoring",
+            "atol-online-11253-fn-basics"
+          ],
+          "selected_document_ids": [
+            "atol-online-18126-monitoring",
+            "platformaofd-lkk-cash-monitoring"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k_document_ids": [
+            "atol-online-11075-fn-invoice",
+            "atol-online-18126-monitoring",
+            "evotor-fn-234-360005580254",
+            "aqsi-device-fn7-date",
+            "aqsi-device-paper-print-retry",
+            "candidate-kbqs-20261028-evotor-fn-235",
+            "candidate-kbqs-20261028-evotor-fn-231",
+            "aqsi-device-fn18-expired",
+            "atol-online-11069-fns-after-fn-swap",
+            "atol-online-24147-replace-kaznachey"
+          ],
+          "selected_document_ids": [
+            "atol-online-18126-monitoring",
+            "platformaofd-lkk-cash-monitoring"
+          ],
+          "sufficient_evidence": true,
+          "evidence_status": "partial",
+          "missing_evidence": [
+            "procedure_completeness_unverified"
+          ],
+          "insufficiency_reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "проверка ФН — запрос клиента: касса [ENTITY] [number] ф закончился срок фн",
+      "expected_top_k_hit": null,
+      "unexpected_candidate_in_final": false,
+      "forbidden_candidate_ids": [
+        "candidate-kbqs-20261028-evotor-fn-231",
+        "candidate-kbqs-20261028-evotor-fn-234",
+        "candidate-kbqs-20261028-evotor-fn-235",
+        "candidate-kbqs-20261028-platformaofd-receipt-status",
+        "candidate-kbqs-20261028-aqsi-scanner-hub"
+      ],
+      "forbidden_in_top_k": true,
+      "forbidden_in_final_evidence": false
+    }
+  ],
+  "summary": {
+    "cases": 15,
+    "expected_cases": 11,
+    "expected_top_k_hits": 6,
+    "expected_final_evidence": 5,
+    "forbidden_final_evidence_hits": 0,
+    "real_unscoped_cases": 4,
+    "real_unscoped_new_candidate_hits": 0
+  }
+}

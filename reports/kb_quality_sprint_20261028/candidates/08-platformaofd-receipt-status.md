@@ -4,7 +4,7 @@ title: 'Платформа ОФД: чек не найден или есть ст
 category: ofd
 service: Платформа ОФД
 task_category: receipt_search
-operations: [search_receipt, diagnose_error]
+operations: [search_receipt]
 manufacturer: Платформа ОФД
 model: null
 version: 'Текущий личный кабинет; дата проверки 2026-10-28'

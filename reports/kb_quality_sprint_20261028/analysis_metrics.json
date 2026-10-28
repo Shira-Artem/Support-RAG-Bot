@@ -11,7 +11,7 @@
     "messages_in_duplicate_groups": 188,
     "max_repeat_count": 27,
     "conservative_fuzzy_groups": 408,
-    "safe_unique_examples": 225,
+    "safe_unique_examples": 223,
     "topic_counts": {
       "cash_register": 79,
       "evotor": 31,
@@ -38,13 +38,27 @@
     "intent_counts": {
       "technical_diagnostics": 52,
       "registration_renewal": 41,
-      "accounting_document_process": 84,
-      "information_faq": 92,
-      "unclassified_by_rules": 326,
+      "accounting_document_process": 115,
+      "information_faq": 46,
+      "unclear_request": 2,
       "setup_connection": 39,
-      "personal_status_or_action": 44,
-      "personal_status_check": 22,
-      "employee_action": 24,
+      "manual_review_required": 291,
+      "personal_status_check": 25,
+      "employee_action": 60,
+      "specialist_action": 7,
+      "urgent_complaint": 4
+    },
+    "primary_intent_counts": {
+      "technical_diagnostics": 43,
+      "registration_renewal": 33,
+      "accounting_document_process": 58,
+      "unclear_request": 2,
+      "information_faq": 21,
+      "manual_review_required": 291,
+      "personal_status_check": 25,
+      "employee_action": 60,
+      "specialist_action": 4,
+      "setup_connection": 29,
       "urgent_complaint": 4
     }
   }

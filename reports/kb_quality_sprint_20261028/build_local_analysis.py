@@ -75,15 +75,15 @@ TOPICS = [
 ]
 INTENTS = [
     ("urgent_complaint", r"срочно|жалоб|не отвечает|не связал|обещал|не могу ждать|претенз"),
+    ("employee_action", r"подтвердить\s+(?:подпис|получен)|подтверд\w*\s+подпис|подписать|принять\s+(?:упд|накладн)|закрой|пришл|отправ|сформир|свяж|сделай|передай|позвони|оформите"),
+    ("specialist_action", r"инженер|специалист|техник|мастер|перезвон|свяжитесь|позвоните|установите|настройте|подключите"),
+    ("personal_status_check", r"провер\w*|статус|срок действия|покупк|доступ|отобраз|список|мой\s|моя\s|готов\w*|подключ\w* ли"),
     ("technical_diagnostics", r"не работ|ошиб|не печат|не перед|не подключ|не закры|не проходит|не отправ|не видит|не груз|не пробив|не считыв|нет связи|сбой|проблем|завис|истек|закончился|не принимает|не открывает|не отображ"),
     ("setup_connection", r"настро|подключ|установ|интеграц|эквайринг"),
     ("registration_renewal", r"регистрац|продл|оформ|открыть ип|снять с регистрац|закрыть ип|активац"),
-    ("accounting_document_process", r"декларац|ндс|усн|патент|страхов|выписк|упд|эдо|отчет|бухгалтер|налог|платеж|накладн|егаис|ттн"),
-    ("personal_status_or_action", r"провер|статус|срок действия|покупк|доступ|закрой|пришл|отправ|подпиш|сформир|свяж|проверь"),
+    ("accounting_document_process", r"декларац|ндс|усн|патент|страхов|выписк|упд|эдо|отчет|бухгалтер|налог|платеж|накладн|егаис|ттн|подтвердить\s+(?:подпис|получен)|подтверд\w*\s+подпис|подписать"),
     ("information_faq", r"\?|сколько|когда|какой|какая|какие|как|что|почему|можно ли|нужно ли|чем"),
-    ("information_faq", r"\?|сколько|когда|какой|какая|какие|как|что|почему|можно ли|нужно ли|чем"),
-    ("personal_status_check", r"провер|статус|срок действия|покупк|доступ|отобраз|список|мой |моя "),
-    ("employee_action", r"закрой|пришл|отправ|подпиш|сформир|свяж|сделай|передай|позвони|оформите"),
+    ("unclear_request", r"(?i)^\s*(?:здравствуйте|добрый день|доброе утро|добрый вечер|привет|помогите|ну да|да|ок|хорошо)[!. ,]*\s*$"),
 ]
 
 
@@ -129,7 +129,7 @@ def scrub(value: str) -> str:
     text = re.sub(r"\s+", " ", text).strip(" \\")
     # Some records contain personal/contact payloads that are safer to exclude
     # from the example dataset altogether; their topic still contributes to counts.
-    if unverified_entity or re.search(r"(?i)паспорт|снилс|инн|номер телефона|\bтелефон\b|почт\w*|пропис|реквизит|закрыт\w* ключ", value):
+    if unverified_entity or re.search(r"(?i)паспорт|снилс|инн|номер телефона|\bтелефон\b|почт\w*|пропис|реквизит|закрыт\w* ключ|парол\w*|токен\w*|секрет\w*|\bэцп\b", value):
         return ""
     return text[:500]
 
@@ -242,14 +242,15 @@ def write_messages(message_path: Path) -> dict:
 
     safe_rows = {}
     topic_counts = Counter(); topic_unique = defaultdict(set)
-    intent_counts = Counter()
+    intent_counts = Counter(); primary_intent_counts = Counter(); primary_intent_unique = defaultdict(set)
     for line, key in zip(source, normalized_raw):
         matched_topics = [name for name, pattern in TOPICS if re.search(pattern, line, re.I)]
         for topic in matched_topics:
             topic_counts[topic] += 1; topic_unique[topic].add(key)
         intent_tags = [name for name, pattern in INTENTS if re.search(pattern, line, re.I)]
-        if not intent_tags: intent_tags = ["unclassified_by_rules"]
+        if not intent_tags: intent_tags = ["manual_review_required"]
         intent = intent_tags[0]
+        primary_intent_counts[intent] += 1; primary_intent_unique[intent].add(key)
         for tag in intent_tags: intent_counts[tag] += 1
         safe = scrub(line)
         if not safe: continue
@@ -267,19 +268,19 @@ def write_messages(message_path: Path) -> dict:
         for name, _ in TOPICS:
             if topic_counts[name]: writer.writerow([name, topic_counts[name], len(topic_unique[name])])
     with (OUT / "intent_frequency.csv").open("w", encoding="utf-8-sig", newline="") as stream:
-        writer = csv.writer(stream); writer.writerow(["primary_intent", "messages_including_repeats"])
+        writer = csv.writer(stream); writer.writerow(["primary_intent", "messages_including_repeats", "distinct_normalized_variants"])
         intent_order = ["technical_diagnostics", "information_faq", "setup_connection",
-                        "registration_renewal", "personal_status_or_action", "personal_status_check",
-                        "employee_action", "accounting_document_process", "urgent_complaint",
-                        "unclassified_by_rules"]
+                        "registration_renewal", "personal_status_check", "employee_action",
+                        "specialist_action", "accounting_document_process", "urgent_complaint",
+                        "unclear_request", "manual_review_required"]
         for name in intent_order:
-            if intent_counts[name]: writer.writerow([name, intent_counts[name]])
+            if primary_intent_counts[name]: writer.writerow([name, primary_intent_counts[name], len(primary_intent_unique[name])])
     return {"messages": len(source), "normalized_unique": len(exact_unique),
             "repeat_excess": len(source)-len(exact_unique), "exact_duplicate_groups": sum(n > 1 for n in counts.values()),
             "messages_in_duplicate_groups": sum(n for n in counts.values() if n > 1),
             "max_repeat_count": max(counts.values()), "conservative_fuzzy_groups": fuzzy_groups,
             "safe_unique_examples": len(safe_rows), "topic_counts": dict(topic_counts),
-            "intent_counts": dict(intent_counts)}
+            "intent_counts": dict(intent_counts), "primary_intent_counts": dict(primary_intent_counts)}
 
 
 def expected_behavior(intent: str) -> str:
@@ -292,7 +293,7 @@ def expected_behavior(intent: str) -> str:
         "personal_status_or_action": "requires_authorized_crm_or_lk_integration_or_specialist; do_not_claim_status_from_kb",
         "employee_action": "requires_authority_and_external_system; offer specialist if no approved integration",
         "information_faq": "answer_from_approved_source_with_scope_and_limitations",
-        "unclear": "ask_one_specific_clarifying_question_or_offer_specialist_if_urgent",
+        "unclear_request": "ask_one_specific_question_about_the_missing_goal_or_product; do_not_guess_a_procedure",
     }.get(intent, "manual_review")
 
 

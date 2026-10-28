@@ -6,8 +6,8 @@ service: aQsi
 task_category: peripheral_setup
 operations: [configure_peripheral]
 manufacturer: aQsi
-model: 'Физические кассы; точная модель и способ подключения обязательны'
-version: 'Android/ПО терминала уточнить'
+model: null
+version: null
 source_url: https://aqsi.ru/support/rabota-s-vneshnim-skanerom/
 source_type: manufacturer_support_article
 published_at: null

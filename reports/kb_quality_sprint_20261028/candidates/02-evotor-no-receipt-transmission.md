@@ -6,8 +6,8 @@ service: Эвотор
 task_category: error_diagnosis
 operations: [diagnose_error, check_ofd_connection]
 manufacturer: Эвотор
-model: 'Уточнить модель смарт-терминала'
-version: 'Уточнить версию ПО'
+model: null
+version: null
 source_url: https://support.evotor.ru/article/360014099534
 source_type: manufacturer_support_article
 published_at: null

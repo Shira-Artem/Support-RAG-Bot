@@ -6,8 +6,8 @@ service: '1С:Бухгалтерия 8'
 task_category: bank_statement
 operations: [list_bank_statements]
 manufacturer: 1С
-model: 'Уточнить конфигурацию и редакцию'
-version: 'Уточнить релиз; all-accounts feature in local source from 3.0.148'
+model: null
+version: null
 source_url: https://its.1c.ru/db/content/metod81/src/appsolutionselffinanced/accounting30/money/i8106454.htm
 source_type: vendor_documentation
 published_at: null
