@@ -1,0 +1,51 @@
+{
+  "catalog": {
+    "documents": 269,
+    "old_catalog_misaligned_rows": 42
+  },
+  "messages": {
+    "messages": 570,
+    "normalized_unique": 411,
+    "repeat_excess": 159,
+    "exact_duplicate_groups": 29,
+    "messages_in_duplicate_groups": 188,
+    "max_repeat_count": 27,
+    "conservative_fuzzy_groups": 408,
+    "safe_unique_examples": 225,
+    "topic_counts": {
+      "cash_register": 79,
+      "evotor": 31,
+      "tax_reporting": 18,
+      "edo_upd": 52,
+      "bank_acquiring": 34,
+      "ofd": 25,
+      "account_access_renewal": 28,
+      "marking_chestny_znak": 42,
+      "support_contact_complaint": 6,
+      "qr_payments": 4,
+      "fn": 20,
+      "consumer_goods_operations": 14,
+      "bifit": 14,
+      "atol": 9,
+      "shtrih_m": 6,
+      "mercury": 3,
+      "egais": 8,
+      "ts_piot": 17,
+      "1c": 5,
+      "aqsi": 3,
+      "neva": 4
+    },
+    "intent_counts": {
+      "technical_diagnostics": 52,
+      "registration_renewal": 41,
+      "accounting_document_process": 84,
+      "information_faq": 92,
+      "unclassified_by_rules": 326,
+      "setup_connection": 39,
+      "personal_status_or_action": 44,
+      "personal_status_check": 22,
+      "employee_action": 24,
+      "urgent_complaint": 4
+    }
+  }
+}

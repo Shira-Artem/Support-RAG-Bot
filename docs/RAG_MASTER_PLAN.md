@@ -407,6 +407,17 @@ See the detailed [incident and manual-test checklist](incidents/2026-10-27-bplus
 - На 13 A-попытках полезный первый ответ вырос с 2 до 5, но два offline answers нерелевантны (#9 сканер→весы, #22 API→каталог), ещё два неполны (#2 ФН 231, #24 конкретный статус ФНС). #11 raw Understanding HTTP 400 не replayable; C gaps #15/#16 остались gaps. After: 9 answer / 9 clarify / 6 escalate. Новых Groq calls/tokens в offline replay нет; live latency/token delta не измерены. Полный pytest **505 passed, 4 xfailed**, Stage3 regression E2E **15/15**; fixture planner не равен живой модели.
 - **Gate NO-GO:** работающий worker не перезапускался, SQLite backup для rollout не создавался; production runtime/KB/Qdrant/SQLite/.env не менялись. Не commit/push. Следующий шаг — согласовать универсальный evidence-to-subgoal coverage gate, устраняющий нерелевантные ответы без расширения scope, и повторить frozen/holdout; лишь затем решать вопрос live переключения и ручного E2E. Это не автоматический переход к LLM Composer или Web Search.
 
+## KB Quality Sprint — IN_PROGRESS (локальная подготовка материалов)
+
+Пользователь 2026-10-28 явно начал отдельный sprint по KB и добавил локальный TXT с первыми обращениями. Дополнение переопределяет приоритеты по observed frequency; обращения трактуются как запросы, не как доказанные решения. Анализ offline: 570 непустых строк; ни LLM calls, ни Qdrant read/write, ни production code/KB/worker/SQLite изменений не было.
+
+- Рабочий отчёт: [KB Quality Sprint](../reports/kb_quality_sprint_20261028/report.md).
+- Материалы: [draft-кандидаты](../reports/kb_quality_sprint_20261028/candidates/README.md), [обезличенный набор](../reports/kb_quality_sprint_20261028/anonymized_evaluation_dataset.jsonl), [многоходовые сценарии](../reports/kb_quality_sprint_20261028/multi_turn_scenarios.json), [частоты](../reports/kb_quality_sprint_20261028/topic_frequency.csv), [новый YAML-каталог](../reports/kb_quality_sprint_20261028/corrected_document_catalog.csv).
+- 225 безопасно очищенных уникальных формулировок покрывают 342 появления; 228 повторных/уникальных появлений исключены из текстового evaluation из-за privacy-risk/неуверенной entity extraction. Простой rule classifier оставляет 326 строк без категории; эти строки не объявляются фактически «неясными» и требуют SME/manual coding.
+- Первые 12 предложений обновлены по выборке: добавились ЭДО/УПД, маркировка, банк/эквайринг, ТС ПиОТ, Бифит и общая KKT маршрутизация; aQsi/1С отодвинуты по observed frequency, но не объявлены неважными вне выборки.
+- **Граница:** остановиться после offline отчёта для review пользователя. Не переходить к approval, production KB/Qdrant reindex, CRM-интеграции, handoff code или иным архитектурным этапам без отдельного согласования. Не выполнять commit/push.
+- **Позднее разрешение на публикацию:** пользователь 2026-10-28 явно попросил запушить текущие материалы KB Quality Sprint на GitHub; commit/push разрешены для этого набора после проверки приватности и fast-forward состояния ветки. Это не разрешает approval статей, production writes или переход к следующему архитектурному этапу.
+
 
 ### B+ — Evidence Relevance / Subtask Coverage (offline NO-GO; worker unchanged)
 
