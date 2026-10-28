@@ -20,7 +20,8 @@ from app.source_first_service import (SourceFirstService, _sections, _source_sec
                                      _approved_check_units, _focused_approved_sentence,
                                      _safe_general_knowledge_question,
                                      _comparison_concepts,
-                                     _conceptually_answering_sentence)
+                                     _conceptually_answering_sentence,
+                                     _read_only_status_fact)
 from app.dialogue_understanding import validate_response
 from app.response_grounding import content_terms
 
@@ -429,6 +430,41 @@ def test_conceptual_evidence_gate_rejects_action_and_requires_both_comparison_si
     assert _conceptually_answering_sentence(
         "Фискальный накопитель записывает документы, а оператор фискальных данных передаёт их в ФНС.",
         question)
+
+
+def test_conceptual_definition_requires_the_named_subject_not_shared_context_words():
+    question = "Объясни простыми словами, что такое ОФД и зачем он нужен кассе?"
+    wrong = "Один активированный ФН нельзя просто переносить между произвольными кассами."
+    relevant = "ОФД получает фискальные документы от ККТ и передаёт их в ФНС."
+    assert not _conceptually_answering_sentence(wrong, question)
+    assert _conceptually_answering_sentence(relevant, question)
+    sections = [{"section": "Факт", "text": wrong},
+                {"section": "Факт", "text": relevant}]
+    assert _focused_approved_sentence(
+        sections, question, conceptual_question=question) == (sections[1], relevant)
+
+
+def test_definition_prefers_predicate_about_subject_over_incidental_mention():
+    question = "Объясни, что такое ОФД и зачем он нужен кассе?"
+    incidental = "Для обычных сценариев облачной кассы требуется договор и тариф ОФД."
+    defining = "ОФД получает документы от кассы и передаёт их в ФНС."
+    sections = [{"section": "Факт", "text": incidental},
+                {"section": "Факт", "text": defining}]
+    assert not _conceptually_answering_sentence(incidental, question)
+    assert _focused_approved_sentence(
+        sections, question, conceptual_question=question) == (sections[1], defining)
+    assert not _conceptually_answering_sentence(
+        "Для прямого API сначала получают доступ к тестовой среде.", "Что такое API?")
+
+
+def test_status_reading_does_not_confuse_noun_with_send_operation():
+    question = "Как проверить статус отправки чека в ФНС?"
+    state = DialogueState(intent="receipt", operation="status", object="чек")
+    section = {"section": "Результат контроля", "text":
+               "В поиске чеков статус отражает результат контроля ФНС. "
+               "Подсказка иконки показывает статус."}
+    assert _read_only_status_fact(state, question, section)
+    assert not _read_only_status_fact(state, "Как повторно отправить чек?", section)
 
 
 def test_general_knowledge_output_rejects_invented_citations(tmp_path, monkeypatch):

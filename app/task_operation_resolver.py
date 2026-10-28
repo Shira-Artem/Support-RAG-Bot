@@ -47,6 +47,19 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
         return result("fiscal_drive", "check", "fiscal_drive", "diagnostic", "fiscal_drive_block")
     if _has(s, r"\b(?:задолж\w*|долг\w*|оплаченн\w*\s+период\w*)\b") and _has(s, r"\b(?:оплат\w*|сервис\w*|обслуживан\w*|касс\w*|счет\w*)\b"):
         return result("billing", "check", "billing", "diagnostic", "billing_status")
+    account_subject = _has(s, r"\b(?:банковск\w*|расчетн\w*)\s+сч[её]т\w*\b")
+    statement_subject = _has(s, r"\bвыписк\w*\b")
+    bank_context = (_has(s, r"\b(?:директбанк|directbank|банк\w*\s+обмен\w*)\b")
+                    or (statement_subject and _has(s, r"\bбанк\w*\b")))
+    bank_failure = _has(s, r"\b(?:не\s+\w{0,16}(?:отображ\w*|вид\w*|появ\w*|доступ\w*|загружа\w*|приход\w*)|"
+                           r"отсутств\w*|пропал\w*|исчез\w*|сбо\w*|ошиб\w*|перестал\w*)\b")
+    if bank_context and (account_subject or statement_subject):
+        if bank_failure:
+            return result("bank_statement", "diagnose", "bank_statement", "diagnostic",
+                          "bank_account_or_statement_failure")
+        if _has(s, r"\b(?:подключ\w*|настро\w*)\b") and not statement_subject:
+            return result("integration", "connect", "unknown", "action",
+                          "bank_exchange_setup")
     if (_has(s, r"\b(?:api|апи|интеграц\w*)\b") and _has(s, r"\b(?:провер\w*|тестир\w*|запрос\w*|не\s+появ\w*|не\s+формир\w*)\b")):
         return result("integration", "check", "unknown", "diagnostic", "integration_check")
     if _has(s, r"\bподключ\w*\b") and _has(s, r"\b1[сc]\b"):

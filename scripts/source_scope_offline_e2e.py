@@ -223,7 +223,12 @@ async def _run() -> list[dict]:
 
 def _assert_results(results: list[dict]) -> None:
     by_id = {item["case"]: item for item in results}
-    conceptual = ("ofd_definition", "fn_vs_ofd_comparison", "api_definition",
+    ofd = by_id["ofd_definition"]
+    assert ofd["scenario"] == "answer" and ofd["validation_status"] == "exact_approved_sentence", ofd
+    assert "ОФД получает фискальные документы" in ofd["answer"], ofd
+    assert "Источник: data/knowledge/atol_online/ofd/what-is-ofd.md" in ofd["answer"], ofd
+    assert "перенос" not in ofd["answer"].casefold(), ofd
+    conceptual = ("fn_vs_ofd_comparison", "api_definition",
                   "dns_principle", "local_cloud_comparison")
     for case_id in conceptual:
         item = by_id[case_id]

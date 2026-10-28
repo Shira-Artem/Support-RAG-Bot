@@ -3,7 +3,8 @@ import json
 
 from app.dialogue_state import DialogueState, Fact
 from app.semantic_evidence_selector import EvidenceDecision, EvidenceUnit, validate_selected_units
-from app.scope_policy import assess_source_scope, matches_scope_value
+from app.scope_policy import (assess_source_scope, manufacturer_from_equipment,
+                              matches_scope_value)
 
 
 def _state(**entities):
@@ -93,3 +94,15 @@ def test_scope_policy_distinguishes_unknown_from_confirmed_conflict():
     assert unknown.mismatches == ()
     assert conflict.missing == ()
     assert conflict.mismatches == ("service",)
+
+
+def test_registered_equipment_brand_satisfies_manufacturer_without_inventing_model():
+    scope = {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
+             "task_category": "error_diagnosis"}
+    assert assess_source_scope(_state(equipment="Эвотор"), scope).missing == ()
+    assert assess_source_scope(_state(equipment="Эвотор 7.3"), scope).missing == ()
+    assert manufacturer_from_equipment("Эвотор 7.3") == "Эвотор"
+    assert manufacturer_from_equipment("7.3") is None
+    assert manufacturer_from_equipment("АТОЛ Онлайн") is None
+    assert "manufacturer" in assess_source_scope(
+        _state(manufacturer="aQsi", equipment="Эвотор 7.3"), scope).mismatches

@@ -19,6 +19,10 @@ from app.task_operation_resolver import resolve_task_operation
     ("Внешний сканер не считывает штрихкоды; как проверить подключение?", "peripheral_setup", "check"),
     ("Добавьте нового пользователя кабинета и назначьте роль.", "access", "add_employee"),
     ("Чеки перестали передаваться оператору; как выяснить причину?", "receipt_transmission", "diagnose"),
+    ("Через ДиректБанк не виден второй банковский счёт организации.", "bank_statement", "diagnose"),
+    ("В 1С:ДиректБанк пропал расчётный счёт банка.", "bank_statement", "diagnose"),
+    ("При обмене с банком ошибка получения выписки.", "bank_statement", "diagnose"),
+    ("Как подключить банковский счёт к DirectBank?", "integration", "connect"),
 ])
 def test_independent_task_paraphrases(text, task, operation):
     result = resolve_task_operation(text)

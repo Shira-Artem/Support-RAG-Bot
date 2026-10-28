@@ -1170,10 +1170,11 @@ class RetrievalPipeline:
         # An unresolved operation must not splice several procedures from the
         # same task family. Pick one best candidate and clarify if its margin
         # is not safe; explicit operations may still use the normal limit.
+        conceptual_lookup = state.intent == "general" and state.operation == "explain"
         selection_limit = 1 if selected and (
-            expected_task is None
+            (expected_task is None and not conceptual_lookup)
             or (state.operation in {"unknown", "explain"} and _query_operation_hints(query))
-        ) else self.max_documents
+        ) else min(3, self.max_documents) if conceptual_lookup else self.max_documents
         docs = self._expand(selected[:selection_limit], expected_task, state, query)
         used_sources = {doc.source for doc in docs}
         for item in candidates:

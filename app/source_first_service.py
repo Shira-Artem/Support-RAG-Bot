@@ -67,6 +67,10 @@ _CONCEPTUAL_ACTION_SENTENCE = re.compile(
     r"укаж\w*|введ\w*|настро\w*|подключ\w*|измен\w*|замен\w*|"
     r"передай\w*|передайте\w*|выполн\w*|посмотр\w*|обрат\w*|"
     r"позвон\w*|созда\w*|удал\w*|закрой\w*|перерегистр\w*)\b", re.I)
+_MUTATING_REQUEST = re.compile(
+    r"\b(?:исправ\w*|измен\w*|перерегистр\w*|переоформ\w*|повтор\w*|"
+    r"созда\w*|удал\w*|замен\w*|настро\w*|провест\w*|"
+    r"отправ(?:ить|ьте|лять|ляйте|ь))\b", re.I)
 _COMPARISON_FORMS = (
     re.compile(r"\bчем\s+отличает\w*\s+(.+?)\s+от\s+(.+?)(?:[?!.]|$)", re.I),
     re.compile(r"\bчем\s+различает\w*\s+(.+?)\s+от\s+(.+?)(?:[?!.]|$)", re.I),
@@ -122,6 +126,39 @@ def _focus_terms(text: str) -> set[str]:
     return terms
 
 
+_CONCEPT_SUBJECT_FORMS = (
+    re.compile(r"\b(?:что\s+такое|что\s+означает|что\s+значит|кто\s+такой)\s+(.+?)(?:\s+и\s+зачем\b|[?!.]|$)", re.I),
+    re.compile(r"\b(?:как\s+работает|для\s+чего\s+нужен|зачем\s+нужен)\s+(.+?)(?:[?!.]|$)", re.I),
+)
+
+
+def _concept_subject_terms(question: str) -> set[str]:
+    """Read the named subject of a simple definition/purpose question."""
+    for pattern in _CONCEPT_SUBJECT_FORMS:
+        match = pattern.search(question)
+        if match:
+            return _focus_terms(match.group(1))
+    return set()
+
+
+def _names_concept(sentence: str, subject: set[str]) -> bool:
+    if not subject:
+        return False
+    tokens = [token[:4] if len(token) > 4 else token for token in
+              re.findall(r"[\w]+", sentence.casefold().replace("ё", "е"))]
+    # The named subject must occur in the opening clause with a predicate
+    # following it. A late incidental mention of the same entity (for
+    # example a tariff for it) does not define or explain that entity.
+    # A sentence that starts with a circumstance such as "for API" or "when
+    # calling API" describes a workflow, not the concept itself.
+    if tokens and tokens[0] in {"для", "при", "после", "перед", "через", "если", "в", "на"}:
+        return False
+    opening = tokens[:9]
+    positions = [opening.index(term) for term in subject if term in opening]
+    return (len(positions) == len(subject) and
+            len(tokens) - max(positions) >= 3)
+
+
 def _focused_approved_sentence(sections: list[dict], focus: str, *,
                                conceptual_question: str | None = None) -> tuple[dict, str] | None:
     focus_terms = _focus_terms(focus)
@@ -172,6 +209,9 @@ def _conceptually_answering_sentence(sentence: str, question: str) -> bool:
         return False
     concepts = _comparison_concepts(question)
     if not concepts:
+        subject = _concept_subject_terms(question)
+        if subject:
+            return _names_concept(sentence, subject)
         return bool(_focus_terms(question) & _focus_terms(sentence))
     left, right = concepts
     evidence_terms = _focus_terms(sentence)
@@ -182,6 +222,33 @@ def _conceptually_answering_sentence(sentence: str, question: str) -> bool:
     return (bool(left_distinct) and bool(right_distinct)
             and left_distinct <= evidence_terms
             and right_distinct <= evidence_terms)
+
+
+def _read_only_status_fact(state: DialogueState, question: str, selected: dict | None) -> bool:
+    """A status meaning is information; changing that status remains a procedure."""
+    if (state.operation != "status" or not selected
+            or _MUTATING_REQUEST.search(question) or unsafe_operation_issue(question)):
+        return False
+    claims = statements(selected["text"])
+    return bool(claims) and all(
+        evidence_kind(claim, selected["section"]) == "fact"
+        and not unsafe_operation_issue(claim) for claim in claims)
+
+
+def _technical_section_covers_observed_subject(state: DialogueState,
+                                              selected: dict | None) -> bool:
+    """Reject a broad workflow section that never names the failed object.
+
+    This is a narrow negative check, not proof that a matching section solves
+    the incident. A missing subject cannot be recovered from a title alone.
+    """
+    if (not selected or not state.symptom
+            or selected["scope"].get("task_category") not in {"integration", "peripheral_setup"}):
+        return True
+    object_terms = content_terms(state.object or "") - _GENERIC_SCOPE_TERMS
+    if not object_terms:
+        return True
+    return bool(object_terms & content_terms(selected["text"]))
 
 
 def _safe_general_knowledge_question(user_message: str, state: DialogueState) -> bool:
@@ -643,7 +710,7 @@ def _approved_sources(root: Path) -> dict[str, tuple[Path, dict, str]]:
     return result
 
 
-def _source_sections(rag, retrieval, root: Path) -> list[dict]:
+def _source_sections(rag, retrieval, root: Path, max_sections: int = 4) -> list[dict]:
     """Resolve only exact sections named by applicability-approved Qdrant hits."""
     index = _approved_sources(root)
     selected_documents = {
@@ -698,7 +765,7 @@ def _source_sections(rag, retrieval, root: Path) -> list[dict]:
                     "source_sha256": sha256(path.read_bytes()).hexdigest(),
                     "scope": {field: local_scope.get(field) for field in scope_fields},
                     "qdrant_scope": {field: hit_scope.get(field) for field in scope_fields}})
-    return out[:4]
+    return out[:max_sections]
 
 
 class SourceFirstService:
@@ -1222,7 +1289,9 @@ class SourceFirstService:
                               duration_ms=round((perf_counter()-started)*1000), **base)
             return self._escalate("Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
                                   "insufficient_applicable_evidence", reason, started, **base)
-        sections = _source_sections(self.rag, retrieval, self.root)
+        conceptual_lookup = state.intent == "general" and state.operation == "explain"
+        sections = _source_sections(self.rag, retrieval, self.root,
+                                    12 if conceptual_lookup else 4)
         if not sections:
             fallback = await self._general_knowledge_fallback(
                 user_message, state, started, base)
@@ -1405,21 +1474,82 @@ class SourceFirstService:
                     llm_retry_count=generated.retry_count,
                     llm_retry_wait_seconds=generated.retry_wait_seconds,
                     context_chars=sum(len(x["text"]) for x in sections))
+        read_only_status_fact = (mode == "select" and plan.get("applicability_confirmed") is True
+                                 and _read_only_status_fact(state, user_message, selected))
         base["retrieval_diagnostics"]["planner"] = {"mode": mode, "section_id": plan.get("section_id"),
                 "reason": str(plan.get("reason") or "")[:240],
                 "applicability_confirmed": plan.get("applicability_confirmed"),
                 "order_confirmed": plan.get("order_confirmed"),
                 "selection_policy": ("informational_selected_section_claim_validation"
-                                     if informational else "customer_scope_and_order_confirmed"),
+                                     if informational else "read_only_status_fact"
+                                     if read_only_status_fact else "customer_scope_and_order_confirmed"),
                 "duration_ms": planner_ms,
                 "retry_count": generated.retry_count,
                 "retry_wait_seconds": generated.retry_wait_seconds,
                 "finish_reason": generated.finish_reason,
                 "candidate_sections": [{k:v for k,v in x.items() if k != "text"} for x in sections]}
+        if (not informational and mode == "select" and selected is not None
+                and not _technical_section_covers_observed_subject(state, selected)):
+            alternatives = [item for item in sections if item["id"] != selected["id"]
+                            and _technical_section_covers_observed_subject(state, item)]
+            trace = {"rejected_section": selected["id"],
+                     "reason": "observed_subject_absent_from_selected_evidence",
+                     "alternative_count": len(alternatives), "extra_provider_calls": 0}
+            if alternatives:
+                # One bounded retry using only sections that already passed
+                # retrieval, local approved/SHA and customer-scope gates.
+                retry_payload = {**payload, "candidate_sections": [
+                    {k: v for k, v in item.items() if k != "source_sha256"}
+                    for item in alternatives]}
+                try:
+                    retry_generation = await generate([
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": json.dumps(retry_payload, ensure_ascii=False)},
+                    ], self.settings)
+                    trace["extra_provider_calls"] = 1
+                    for key in ("prompt_tokens", "completion_tokens", "total_tokens",
+                                "reasoning_tokens", "cached_tokens"):
+                        added = getattr(retry_generation, key, None)
+                        previous = base.get(key)
+                        if isinstance(added, int) and not isinstance(added, bool):
+                            base[key] = previous + added if isinstance(previous, int) else added
+                    base["llm_retry_count"] += retry_generation.retry_count
+                    base["llm_retry_wait_seconds"] += retry_generation.retry_wait_seconds
+                    retry_plan = json.loads(retry_generation.text)
+                    trace["retry_mode"] = retry_plan.get("mode") if isinstance(retry_plan, dict) else None
+                    retry_selected = next((item for item in alternatives
+                        if item["id"] == retry_plan.get("section_id")), None) if isinstance(retry_plan, dict) else None
+                    if retry_selected and retry_plan.get("mode") == "select":
+                        plan, selected = retry_plan, retry_selected
+                        mode = "select"
+                        base["retrieval_diagnostics"]["planner"].update({
+                            "mode": mode, "section_id": selected["id"],
+                            "applicability_confirmed": plan.get("applicability_confirmed"),
+                            "order_confirmed": plan.get("order_confirmed"),
+                            "reason": str(plan.get("reason") or "")[:240]})
+                        trace["accepted_section"] = selected["id"]
+                except (GenerationError, ValueError, TypeError, AttributeError) as exc:
+                    trace["retry_error"] = type(exc).__name__
+            base["retrieval_diagnostics"]["planner_reselection"] = trace
+            if selected["id"] == trace["rejected_section"]:
+                clarification = (
+                    "Какой статус или текст ошибки вернул запрос интеграции? "
+                    "Виден ли документ в журнале сервиса?"
+                    if selected["scope"].get("task_category") == "integration" else
+                    "Уточните наблюдаемый симптом, модель и интерфейс подключённого устройства. "
+                    "Это поможет выбрать применимую проверку.")
+                return Answer(
+                    clarification,
+                    scenario="clarify", scenario_reason="selected_evidence_does_not_cover_symptom",
+                    clarification_slot="details", generation_status="clarification",
+                    duration_ms=round((perf_counter()-started)*1000), **base)
+            read_only_status_fact = (mode == "select" and plan.get("applicability_confirmed") is True
+                                     and _read_only_status_fact(state, user_message, selected))
         informational_selection = (informational and mode == "select" and selected is not None)
         scoped_action_selection = (not informational and mode == "select" and selected is not None
                                    and plan.get("applicability_confirmed") is True
-                                   and plan.get("order_confirmed") is True)
+                                   and (plan.get("order_confirmed") is True
+                                        or read_only_status_fact))
         if informational_selection or scoped_action_selection:
             # Re-read and hash the source immediately before rendering.
             path = self.root / selected["source"]
@@ -1843,7 +1973,10 @@ class SourceFirstService:
                 scenario_reason = "source_first_grounded_information_summary"
             else:
                 text = f"{exact_render}\n\nИсточник: {selected['source']} — {selected['section']}"
-                validation_status = "exact_source_preflight" if preflight else "exact_source_copy"
+                if read_only_status_fact:
+                    text += "\n\nДля разбора конкретного документа уточните точную надпись статуса или код ошибки."
+                validation_status = ("exact_source_status_fact" if read_only_status_fact else
+                                     "exact_source_preflight" if preflight else "exact_source_copy")
                 scenario_reason = ("source_first_safe_preflight" if preflight
                                    else "source_first_exact_section")
                 # Record only action units visible in the exact, locally

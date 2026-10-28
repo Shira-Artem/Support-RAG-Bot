@@ -4,6 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import re
 
+from app.dialogue_state import ENTITY_NAMES
+
 
 HARDWARE_TASK_CATEGORIES = {
     "device", "fiscal_drive", "network", "network_diagnostics", "ofd_connection",
@@ -32,6 +34,30 @@ def matches_scope_value(expected: str, confirmed: str) -> bool:
     return left_tokens <= right_tokens or right_tokens <= left_tokens
 
 
+def manufacturer_from_equipment(value: str) -> str | None:
+    """Resolve only an explicit, registered hardware brand or brand/model span.
+
+    An arbitrary model name, a cloud service, and a substring of another
+    product cannot establish a hardware manufacturer.
+    """
+    normalized = re.sub(r"\s+", " ", str(value).casefold().replace("ё", "е")).strip()
+    known_services = [alias.casefold().replace("ё", "е")
+                      for slot, _, aliases in ENTITY_NAMES if slot == "service" for alias in aliases]
+    if any(normalized == service or normalized.startswith(service + " ")
+           for service in known_services):
+        return None
+    matches = set()
+    for slot, manufacturer, aliases in ENTITY_NAMES:
+        if slot != "manufacturer":
+            continue
+        for alias in aliases:
+            brand = alias.casefold().replace("ё", "е")
+            if normalized == brand or re.fullmatch(
+                    re.escape(brand) + r"\s+\d+(?:[.,]\d+)*[a-zа-я]?", normalized):
+                matches.add(manufacturer)
+    return next(iter(matches)) if len(matches) == 1 else None
+
+
 @dataclass(frozen=True)
 class ScopeAssessment:
     missing: tuple[str, ...] = ()
@@ -53,6 +79,15 @@ def assess_source_scope(state, scope: dict) -> ScopeAssessment:
     service = str(scope.get("service") or "")
     manufacturer = str(scope.get("manufacturer") or "")
     entities = state.task_entities
+    confirmed_manufacturers = [fact.value for fact in entities.get("manufacturer", [])]
+    # Equipment is a separate slot. It can establish only the manufacturer
+    # explicitly encoded by an unambiguous known brand or brand/model mention.
+    equipment_manufacturers = [brand for fact in entities.get("equipment", [])
+                               if (brand := manufacturer_from_equipment(fact.value))]
+    if confirmed_manufacturers and equipment_manufacturers and not any(
+            matches_scope_value(left, right)
+            for left in confirmed_manufacturers for right in equipment_manufacturers):
+        return ScopeAssessment(mismatches=("manufacturer",))
     confirmed_service = [fact.value for fact in entities.get("service", [])]
     cloud_service_scope = (
         ("облач" in model.casefold() or "cloud" in model.casefold())
@@ -78,6 +113,8 @@ def assess_source_scope(state, scope: dict) -> ScopeAssessment:
         if not expected:
             continue
         values = [fact.value for slot in slots for fact in entities.get(slot, [])]
+        if "manufacturer" in slots:
+            values.extend(equipment_manufacturers)
         if not values:
             missing.append(field)
         elif not any(matches_scope_value(expected, value) for value in values):
