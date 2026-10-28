@@ -83,6 +83,22 @@ def test_information_is_explain_and_separates_ofd_from_manufacturer():
     assert state.entity("manufacturer") is None and state.entity("ofd") is None
 
 
+@pytest.mark.parametrize(("text", "canonical"), [
+    ("В Saby не могу найти входящий документ.", "Saby"),
+    ("В СБИС не отображается входящий УПД.", "Saby"),
+    ("В Диадоке не вижу отправленный УПД.", "Диадок"),
+    ("В БИФИТ Касса не работает терминал.", "БИФИТ Касса"),
+    ("В БИФИТ не работает терминал.", "БИФИТ"),
+])
+def test_understanding_recovers_registered_route_when_model_omits_entity(text, canonical):
+    raw = payload(text, kind="diagnosis", intent="unknown", operation="diagnose", obj=None,
+                  relation="new_task", entities=())
+    _, _, _, observation = validate_response(raw, text, 77)
+    state = DialogueManager().advance(DialogueState(), text, 77, observation=observation)
+    assert [fact.value for fact in observation.entities["service"]] == [canonical]
+    assert state.routing_slot == "service" and state.routing_service == canonical
+
+
 def test_transliterated_model_name_is_recovered_from_known_brand_alias():
     text = "АТОЛ 30Ф не передаёт чеки"
     raw = payload(text, entities=[("Atol 30F", "Atol 30F", "АТОЛ 30Ф")])

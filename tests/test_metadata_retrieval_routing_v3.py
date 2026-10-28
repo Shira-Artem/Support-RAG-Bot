@@ -5,6 +5,7 @@ from pathlib import Path
 
 from app.dialogue_state import DialogueManager, DialogueState
 from app.knowledge import Chunker, DocumentLoader
+from app.rag_query import build_rag_query
 from app.rag import SearchResult
 from app.retrieval_pipeline import RetrievalPipeline, _state_task_category
 
@@ -63,15 +64,34 @@ def chunks_to_results(chunks, parent):
 def test_integration_1c_search_is_scoped_to_selected_cloud_service():
     aqsi, aqsi_chunks = _loaded_hit("aqsi_online/integration/1c-setup.md", approved=True)
     atol, _ = _loaded_hit("atol_online/integration/integration-1c-versions.md", approved=True)
+    physical_aqsi = SearchResult("aqsi/aqsi-error-115.md",
+        "Для физической кассы aQsi проверьте только указанный код ошибки.", .03,
+        metadata={"document_id": "physical-aqsi-integration-control", "title": "aQsi physical",
+                  "service": "aQsi", "manufacturer": "aQsi", "task_category": "integration",
+                  "status": "approved"})
     state = _state("aQsi Online, как подключить к 1С:УНФ?")
     query = "сервис: aQsi Online — ПО: 1С — подключить aQsi Online к 1С:УНФ"
-    results = [aqsi, atol]
+    results = [aqsi, atol, physical_aqsi]
     articles = {
         aqsi.metadata["document_id"]: chunks_to_results(aqsi_chunks, aqsi),
     }
     result = RetrievalPipeline(Source(results, articles)).search(state, query)
     assert result.documents and {doc.metadata["document_id"] for doc in result.documents} == {"aqsi-online-integration-1c-setup"}
     assert any("service_mismatch_or_unlabeled" in item.reasons for item in result.rejected)
+    assert any(item.document_id == "physical-aqsi-integration-control"
+               and "service_mismatch_or_unlabeled" in item.reasons for item in result.rejected)
+
+
+def test_generic_bifit_route_does_not_authorize_bifit_kassa_product_evidence():
+    state = _state("Здравствуйте. Нам нужно протестировать в программе БИФИТ систему общепит со столами.")
+    query = build_rag_query(state)
+    hit = SearchResult("drafts/bifit-kassa-tables.md", "Настройка столов в БИФИТ Касса.", .9,
+        metadata={"document_id": "bifit-kassa-tables", "title": "Столы БИФИТ Касса",
+                  "service": "БИФИТ Касса", "task_category": "settings", "status": "approved"})
+    result = RetrievalPipeline(Source([hit])).search(state, query)
+    assert state.routing_service == "БИФИТ" and state.routing_slot == "service"
+    assert not result.documents and not result.sufficient
+    assert "service_mismatch_or_unlabeled" in result.rejected[0].reasons
 
 
 def test_unknown_operation_does_not_reject_exact_approved_evotor_instruction():

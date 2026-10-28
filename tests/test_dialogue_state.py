@@ -320,6 +320,30 @@ def test_conflicting_same_kind_entities_are_not_resolved_by_alias_order():
         build_rag_query(state)
 
 
+@pytest.mark.parametrize(("text", "service"), [
+    ("В Saby не могу найти входящий документ.", "Saby"),
+    ("В кабинете СБИС не отображается входящий УПД.", "Saby"),
+    ("В Диадоке не вижу отправленный УПД.", "Диадок"),
+    ("БИФИТ не работает, нужна помощь.", "БИФИТ"),
+    ("БИФИТ Касса не работает, нужна помощь.", "БИФИТ Касса"),
+])
+def test_registered_explicit_services_survive_lexical_reduction(text, service):
+    state = DialogueManager().advance(DialogueState(), text, 1)
+    assert state.entity("service") == service
+    assert state.routing_slot == "service" and state.routing_service == service
+    assert not state.task_entity("manufacturer")
+    assert not state.task_entity("software")
+    assert not state.task_entity("equipment")
+
+
+def test_generic_document_does_not_become_receipt_search_object():
+    text = "В Saby не могу найти входящий документ."
+    state = DialogueManager().advance(DialogueState(), text, 1)
+    assert state.operation == "search"
+    assert state.intent == "unknown" and state.object is None
+    assert state.routing_service == "Saby"
+
+
 def test_unsupported_snapshot_version_is_preserved(tmp_path):
     store = ConversationStore(tmp_path / 'future.sqlite3')
     cid = store.new(1, 1)

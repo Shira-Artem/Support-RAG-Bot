@@ -941,7 +941,15 @@ class RetrievalPipeline:
                 routing_metadata = meta.get('manufacturer')
             elif state.routing_slot == 'software':
                 routing_metadata = meta.get('software') or meta.get('service')
-            service_match = _matches_entity(routing, routing_metadata)
+            # A confirmed service is a product route, not a vendor substring.
+            # Subset matching let a generic "БИФИТ" mention authorize a
+            # product-specific "БИФИТ Касса" candidate. Keep the existing
+            # alias canonicalization upstream, but require the stored service
+            # label to name that same route. Manufacturer/model matching stays
+            # independent below.
+            service_match = (_terms(routing) == _terms(routing_metadata)
+                             if state.routing_slot == "service" and routing and routing_metadata
+                             else _matches_entity(routing, routing_metadata))
             software = state.task_entity("software")
             software_match = _matches_entity(software, meta.get("software"))
             if expected_task == "integration" and software and not software_match:
