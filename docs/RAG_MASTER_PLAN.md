@@ -381,6 +381,18 @@ See the latest [PROJECT_STATE.md](PROJECT_STATE.md) entry for the actual replay 
 
 **Runtime gate complete:** worker PID 32988 is the sole process, fresh receipt has 31/31 matching source hashes and expected B+/Stage3/Groq/allowlist configuration; startup log is clean. Production SQLite backup passed `quick_check`; path and SHA-256 are in the latest PROJECT_STATE addendum. No Telegram messages, commit or push. Stop at user manual verification.
 
+### B+ — shared typed scope policy + subtask evidence coverage (offline GO; limited Telegram pilot running)
+
+**Изменение реализовано и прошло offline gate; единственный Telegram worker перезапущен для ручной проверки пользователя. Следующий шаг — только ручные сообщения пользователя, без дальнейшего этапа архитектуры.**
+
+- SourceFirst, selector validator and procedure applicability share a typed scope matcher. Entity kinds remain distinct; missing facts and confirmed mismatches remain separate. Global ID-only selector remains OFF.
+- The technical RetrievalPipeline now applies candidate-local subject coverage within broad `peripheral_setup` and `integration` task families. This prevents scanner→scales and API failure→catalog final answers while preserving confirmed 1C software integration and existing approval/SHA/applicability/safety gates.
+- Frozen 24 replay: useful A answers **5/13** before and after, no losses; the two irrelevant answers are eliminated (#9 now scanner evidence, #22 insufficient-evidence escalation). Case #11 remains unreplayable (raw Understanding HTTP 400); #15/#16 remain gaps. Exact answers are in the [final replay JSON](../experiments/architecture_recovery_audit/bplus_shared_scope_subtask_24_final_20261027.json).
+- Offline verification: full pytest **515 passed, 4 xfailed, 0 failed**; Stage3 read-only E2E **15/15**. SQLite backup and source both passed `quick_check`.
+- Runtime after switch: sole PID **23004**, runtime receipt **33/33** hashes matching, Stage3 green/934, SourceFirst/Coordinator/Groq expected, selector/handoff OFF, allowlist count/hash preserved. Startup log reports `Application started`; no polling conflict, traceback, or startup error.
+
+See the detailed [incident and manual-test checklist](incidents/2026-10-27-bplus-shared-scope-subtask-pilot.md) and the latest [PROJECT_STATE entry](PROJECT_STATE.md). Do not expand the pilot or start another architecture stage until the user returns live Telegram results. No commit/push until a separate request.
+
 ### B+ — аудит 24 ручных попыток 27.10.2026: диагностика DONE, quality gate NO-GO
 
 - По read-only SQLite и локальному Understanding JSONL подтверждены 24 попытки по 23 вопросам, 10:53–12:16 МСК. Подробный обезличенный [причинный отчёт](incidents/2026-10-27-bplus-24-attempt-causal-audit.md) фиксирует raw/validated Understanding, state, route, Stage3 candidates/rejections, evidence, planner, safety, ответ и usage для каждой попытки. Runtime 31/31 source hashes совпали; Stage3 green/934, все 174 уникальных candidate document IDs присутствуют.
@@ -407,3 +419,8 @@ See the latest [PROJECT_STATE.md](PROJECT_STATE.md) entry for the actual replay 
 - Гипотеза «Hybrid находит, task/evidence блокирует» подтверждена частично: Oracle Task повышает candidates, но почти не полезные ответы; Oracle Evidence сильнее. Дополнительные блокеры State и обязательной scope применимости. Live selector выявил расхождение двух scope validators и опасность выбора нескольких частей процедуры.
 - **NO-GO:** selector не внедрять, Telegram worker не переключать. Никаких изменений production code, KB, Qdrant, SQLite, `.env`, worker. Эксперимент сам не создавал commit/push; публикация только его отчётов и документации выполняется по последующему прямому запросу пользователя.
 - Артефакты: [отчёт](../experiments/architecture_recovery_audit/bplus_oracle_ab_24_20261027.md), [обезличенная матрица](../experiments/architecture_recovery_audit/bplus_oracle_ab_24_20261027.json). Не переходить к реализации до решения пользователя. Кандидат следующего изолированного изменения: повторно использовать SourceFirst scope compatibility в selector validation при сохранении всех gates и выборе цельного approved section.
+
+
+### B+ Shared Scope/Subtask — restored after host shutdown; manual check pending (2026-10-28)
+
+The local pilot on HEAD `525b1b38cd20e1cf907f77862f2b1d729ad7ee6e` was preserved and restored without pull/reset or source changes. After reboot the old process no longer existed; the existing Qdrant container was restarted and Stage3 is green/934. Process-only SourceFirst/Coordinator/Stage3 flags were restored without changing `.env`; selector remains OFF. Read-only Stage3 E2E passed **15/15**, one direct Groq control generation succeeded (233 tokens), and the sole Telegram worker PID **39560** has a fresh 33/33 hash receipt and clean polling startup log. Production SQLite passed read-only `quick_check`; no Telegram messages were sent. See the [recovery report](incidents/2026-10-28-bplus-post-reboot-recovery.md) and latest [PROJECT_STATE entry](PROJECT_STATE.md). Stop for manual Telegram testing; no further architecture stage until user results.

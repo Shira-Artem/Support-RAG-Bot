@@ -1,0 +1,698 @@
+{
+  "method": "Actual 24 anonymized local attempts replayed through current Task Resolver, Coordinator, read-only Stage3 Qdrant and SourceFirst. Deterministic local planner fixture; zero Groq/provider calls. Case 11 raw Understanding HTTP 400 remains unreplayable; its stored production response is represented as raw_understanding_http_error. Every replayable row contains the actual final answer, selected approved document IDs, route, scenario reason, measured local latency, and provider-token counters.",
+  "results": [
+    {
+      "case": 1,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+      "answer_sha256": "6ba49a88447ae638eca0e07efdb7010a441a19afd5253e106507e15e32135008",
+      "route": "technical_action",
+      "selected": [
+        "evotor-7-3-ofd-connection-360014099534"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 1,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 715,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 2,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "Источник описывает случай с ФН-М на 36 месяцев, когда параметры регистрации и фактический вид продаваемой позиции не соответствуют условиям эксплуатации накопителя. Код на чеке — ФН 231; на экране может появляться -3975.\n\nИсточник: data/knowledge/evotor/fn/fn-231.md — Контекст ошибки",
+      "answer_sha256": "b7a9169176c78f10cf764eb7f371c178c94d6c53ca9f81c60d30c1e8a6fa3ea0",
+      "route": "technical_action",
+      "selected": [
+        "evotor-fn-231-360005098974"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 2,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 604,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 3,
+      "scenario": "clarify",
+      "reason": "progress_ledger_waiting_for_model",
+      "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+      "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+      "route": "technical_action",
+      "selected": [
+        "evotor-fn-234-360005580254",
+        "evotor-time-mismatch-check-20261019",
+        "evotor-fn-217-89e20cf4",
+        "evotor-fn-231-360005098974"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": true,
+      "duration_ms": 628,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 4,
+      "scenario": "escalate",
+      "reason": "unsafe_operation",
+      "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+      "answer_sha256": "bf10ff38853a4791d8cd2423bf878c71862aa5bbd369cf56f73ab5b536ca6bc5",
+      "route": "technical_action",
+      "selected": [],
+      "source_scope_gate": null,
+      "validation_status": "not_run",
+      "generation_status": "no_context",
+      "fixture_generation_invoked": false,
+      "duration_ms": 0,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 5,
+      "scenario": "clarify",
+      "reason": "progress_ledger_waiting_for_model",
+      "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+      "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+      "route": "technical_action",
+      "selected": [
+        "evotor-marked-goods-upd-20261019",
+        "evotor-mark-check-error-20261019"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": true,
+      "duration_ms": 621,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 6,
+      "scenario": "clarify",
+      "reason": "progress_ledger_waiting_for_model",
+      "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+      "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+      "route": "technical_action",
+      "selected": [
+        "evotor-mark-check-error-20261019",
+        "evotor-marked-goods-upd-20261019"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": true,
+      "duration_ms": 638,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 7,
+      "scenario": "clarify",
+      "reason": "source_scope_context_missing",
+      "answer": "Уточните модель оборудования.",
+      "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-device-fn7-date",
+        "aqsi-device-paper-print-retry",
+        "aqsi-device-goods-not-on-device",
+        "aqsi-kkt-error-126"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-fn7-date",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "eligible_source_count": 0,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": false,
+      "duration_ms": 686,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 8,
+      "scenario": "clarify",
+      "reason": "source_scope_context_missing",
+      "answer": "Уточните модель оборудования.",
+      "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-device-goods-not-on-device",
+        "aqsi-device-red-blinking-battery",
+        "aqsi-device-fn161-document-not-saved",
+        "aqsi-device-paper-print-retry"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-goods-not-on-device",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "eligible_source_count": 0,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": false,
+      "duration_ms": 662,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 9,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+      "answer_sha256": "2990d59fd46a79e55d9e477e3b07b63b5e8ff77767b8663b9d3ebc53445297a6",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-device-scanner-hub-power",
+        "aqsi-device-scanner"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 653,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 10,
+      "scenario": "clarify",
+      "reason": "source_scope_context_missing",
+      "answer": "Уточните модель оборудования.",
+      "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-device-permission-diagnostics",
+        "aqsi-device-permission-setup"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [
+          {
+            "document_id": "aqsi-device-permission-setup",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-permission-setup",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-permission-setup",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          },
+          {
+            "document_id": "aqsi-device-permission-setup",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "model"
+            ],
+            "askable_missing": [
+              "model"
+            ]
+          }
+        ],
+        "eligible_source_count": 0,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": false,
+      "duration_ms": 724,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 11,
+      "scenario": "escalate",
+      "reason": "raw_understanding_http_error",
+      "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+      "actual_provider_calls": 0
+    },
+    {
+      "case": 12,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "После активации заказа сведения о ККТ и ФН появляются в «Мои кассы». Регистрационный номер из ФНС понадобится на этапе фискализации в aQsi Online; интерфейс также запрашивает контактный email и данные применения кассы. Завершайте операцию лишь после сверки реквизитов.\n\nДополнительное условие источника (Когда нужен специалист):\nНеверные реквизиты, статус регистрации ФНС не подтверждён или нужен выбор агентских признаков — инженер/ответственный за ККТ.\n\nИсточник: data/knowledge/aqsi_online/setup/fiscalize.md — Что можно объяснить и проверить",
+      "answer_sha256": "03a3a51283dfc478996ce1f5374792febfebd562a7164318b5d6deb21079de55",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-online-setup-fiscalize"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 632,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 13,
+      "scenario": "escalate",
+      "reason": "insufficient_applicable_evidence",
+      "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+      "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-online-account-add-user"
+      ],
+      "source_scope_gate": null,
+      "validation_status": "not_run",
+      "generation_status": "no_context",
+      "fixture_generation_invoked": false,
+      "duration_ms": 310,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 14,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "В истории выбирают первоначальный чек и запускают возврат. В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату.\n\nДополнительное условие источника (Когда нужен специалист):\nСложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.\n\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Что можно объяснить и проверить",
+      "answer_sha256": "c38ed139b458cc8d0e8812db7467b9c0f2f8d57522fda86a99de291f42b3f680",
+      "route": "technical_action",
+      "selected": [
+        "aqsi-online-receipts-partial-refund",
+        "aqsi-online-receipts-full-refund"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 641,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 15,
+      "scenario": "escalate",
+      "reason": "insufficient_applicable_evidence",
+      "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+      "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+      "route": "technical_action",
+      "selected": [],
+      "source_scope_gate": null,
+      "validation_status": "not_run",
+      "generation_status": "no_context",
+      "fixture_generation_invoked": false,
+      "duration_ms": 227,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 16,
+      "scenario": "escalate",
+      "reason": "insufficient_applicable_evidence",
+      "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+      "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+      "route": "technical_action",
+      "selected": [],
+      "source_scope_gate": null,
+      "validation_status": "not_run",
+      "generation_status": "no_context",
+      "fixture_generation_invoked": false,
+      "duration_ms": 290,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 17,
+      "scenario": "clarify",
+      "reason": "progress_ledger_waiting_for_model",
+      "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+      "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333",
+      "route": "technical_action",
+      "selected": [
+        "atol-online-22561-gateway-errors-timeout-128-protocol"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 3,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": true,
+      "duration_ms": 615,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 18,
+      "scenario": "escalate",
+      "reason": "unsafe_source_section",
+      "answer": "В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
+      "answer_sha256": "00a1103f0f2b307ce9d11315926a087de9cbc28ef488df00d6d84d1b849fee73",
+      "route": "technical_action",
+      "selected": [
+        "atol-online-12789-bring-own-fn",
+        "atol-online-20054-replacement-process",
+        "atol-online-18220-blocked",
+        "atol-online-20691-receive-old-fn"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "no_context",
+      "fixture_generation_invoked": true,
+      "duration_ms": 684,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 19,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+      "answer_sha256": "8803afae02e06e1264092a5f10f60613c73c7cd77cdd8a71a5184aaf788da1b3",
+      "route": "technical_action",
+      "selected": [
+        "atol-online-22560-receipt-journal-export"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 3,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 665,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 20,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "Проверьте сумму задолженности и срок действия текущего периода обслуживания.\n\nИсточник: data/knowledge/atol_online/billing/debt-payment.md — Что проверено по инструкции производителя",
+      "answer_sha256": "e8166225878488b34bfafa018b93bfe72ebc1315183ee0aeb62b622e0cb0359e",
+      "route": "technical_action",
+      "selected": [
+        "atol-online-14133-debt-payment",
+        "atol-online-14134-documents-operations",
+        "atol-online-11077-service-blocked",
+        "atol-online-11073-renewal-invoice"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 4,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 827,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 21,
+      "scenario": "clarify",
+      "reason": "source_scope_context_missing",
+      "answer": "Какой производитель оборудования используется?",
+      "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be",
+      "route": "technical_action",
+      "selected": [
+        "evotor-ffd-version-check-20261019"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [
+          {
+            "document_id": "evotor-ffd-version-check-20261019",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          },
+          {
+            "document_id": "evotor-ffd-version-check-20261019",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          },
+          {
+            "document_id": "evotor-ffd-version-check-20261019",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          }
+        ],
+        "eligible_source_count": 0,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": false,
+      "duration_ms": 611,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 22,
+      "scenario": "escalate",
+      "reason": "insufficient_applicable_evidence",
+      "answer": "Не нашёл подтверждённую применимую инструкцию для этой задачи. Не буду предлагать неподтверждённые шаги; запросите специалиста кнопкой ниже.",
+      "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0",
+      "route": "technical_action",
+      "selected": [],
+      "source_scope_gate": null,
+      "validation_status": "not_run",
+      "generation_status": "no_context",
+      "fixture_generation_invoked": false,
+      "duration_ms": 280,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 23,
+      "scenario": "clarify",
+      "reason": "source_scope_context_missing",
+      "answer": "Какой производитель оборудования используется?",
+      "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be",
+      "route": "technical_action",
+      "selected": [
+        "platformaofd-partner-kkt-diagnostics",
+        "platformaofd-atol-transmission-checks"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [
+          {
+            "document_id": "platformaofd-atol-transmission-checks",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          },
+          {
+            "document_id": "platformaofd-partner-kkt-diagnostics",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          },
+          {
+            "document_id": "platformaofd-partner-kkt-diagnostics",
+            "reason": "scope_fact_missing",
+            "missing": [
+              "manufacturer"
+            ],
+            "askable_missing": [
+              "manufacturer"
+            ]
+          }
+        ],
+        "eligible_source_count": 0,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "not_run",
+      "generation_status": "clarification",
+      "fixture_generation_invoked": false,
+      "duration_ms": 655,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    },
+    {
+      "case": 24,
+      "scenario": "answer",
+      "reason": "source_first_exact_section",
+      "answer": "В поиске чеков статус отражает результат форматно-логического контроля ФНС. Успешный приём означает отсутствие ошибок; предупреждение — приём с обнаруженными ошибками; карантин — передачу при незавершённой регистрации, когда проверка на сайте ФНС недоступна; отказ — отклонение документа из-за ошибок. Подсказка иконки показывает статус.\n\nДополнительное условие источника (Ограничения):\nПорядок исправления зависит от конкретной ошибки и регистрации. Одна отметка не заменяет диагностику специалистом.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-receipt-fns-status.md — Результат контроля",
+      "answer_sha256": "31d5f7ab4d1e086d28d99c146a827e60ae186602740213b97c710bdfde692e47",
+      "route": "technical_action",
+      "selected": [
+        "platformaofd-lkk-receipt-fns-status"
+      ],
+      "source_scope_gate": {
+        "inapplicable": [],
+        "eligible_source_count": 2,
+        "reason": "customer_confirmed_scope_required_for_procedures"
+      },
+      "validation_status": "exact_source_copy",
+      "generation_status": "generated",
+      "fixture_generation_invoked": true,
+      "duration_ms": 639,
+      "actual_provider_calls": 0,
+      "actual_provider_tokens": 0
+    }
+  ],
+  "title": "B+ shared scope-policy + subtask coverage final frozen replay, 2026-10-27",
+  "baseline": "Compare case-level outcomes with bplus_evidence_relevance_24_three_way_20261027.json; historical useful grade-A baseline remains 5/13."
+}

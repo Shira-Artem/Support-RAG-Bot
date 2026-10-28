@@ -24,6 +24,8 @@ from app.llm_client import GenerationError, generate
 from app.semantic_evidence_selector import evidence_role
 from app.rag_query import QueryNeedsClarification, build_rag_query
 from app.retrieval_pipeline import normalize_metadata
+from app.scope_policy import (HARDWARE_TASK_CATEGORIES, assess_source_scope,
+                              matches_scope_value)
 from app.response_grounding import (claim_supported, content_terms, evidence_kind,
                                     instruction_issue, statements, unsafe_operation_issue)
 
@@ -41,9 +43,7 @@ _CONDITION_OR_WARNING = re.compile(
     re.IGNORECASE,
 )
 _GENERIC_SCOPE_TERMS = {"ofd", "kkt", "фнс", "ккт", "документ", "сервис", "данн", "касс"}
-_HARDWARE_TASK_CATEGORIES = {"device", "fiscal_drive", "network", "network_diagnostics",
-    "ofd_connection", "error_diagnosis", "receipt_transmission", "fiscal_document_control",
-    "fiscal_format", "marking", "tspiot"}
+_HARDWARE_TASK_CATEGORIES = HARDWARE_TASK_CATEGORIES
 _GENERAL_CONCEPTUAL_FORM = re.compile(
     r"\b(?:что\s+(?:такое|означает|значит|делает|представляет\s+собой)|кто\s+такой|"
     r"чем\s+(?:отличает\w*|различает\w*)|в\s+ч[её]м\s+(?:разниц\w*|отличи\w*)|"
@@ -74,18 +74,6 @@ _COMPARISON_FORMS = (
     re.compile(r"\b(?:сравни|сравните|сопоставь|сопоставьте)\s+(.+?)\s+и\s+(.+?)(?:[?!.]|$)", re.I),
     re.compile(r"\b(.+?)\s+отличает\w*\s+от\s+(.+?)(?:[?!.]|$)", re.I),
 )
-
-
-def _matches_scope_value(left: str, right: str) -> bool:
-    """Match equivalent source scope labels without conflating their types."""
-    normalize = lambda value: re.sub(r"[^a-zа-я0-9]+", " ", value.casefold().replace("ё", "е")).strip()
-    a, b = normalize(str(left)), normalize(str(right))
-    if not a or not b:
-        return False
-    online = {"online", "онлайн"}
-    if bool(set(a.split()) & online) != bool(set(b.split()) & online):
-        return False
-    return set(a.split()) <= set(b.split()) or set(b.split()) <= set(a.split())
 
 
 def _sections(body: str) -> list[tuple[str, str]]:
@@ -1261,39 +1249,9 @@ class SourceFirstService:
                 # manufacturer and model as separate hardware facts.
                 hardware_scope = scope.get("task_category") in _HARDWARE_TASK_CATEGORIES
                 scoped_model = str(scope.get("model") or "")
-                # A product label such as "cloud cash register" belongs to a
-                # named cloud service. An exact client-confirmed service is
-                # its scope fact; it must not demand a physical device model.
-                cloud_service_scope = ("облач" in scoped_model.casefold()
-                    and bool(scope.get("service"))
-                    and any(_matches_scope_value(scope["service"], fact.value)
-                            for fact in state.task_entities.get("service", [])))
-                required = []
-                if scope.get("service"):
-                    service_slots = {"service", "software", "integration", "ofd"}
-                    if hardware_scope:
-                        service_slots.add("manufacturer")
-                    # A vendor's own support label duplicates the metadata
-                    # manufacturer; it is not a request for the customer's OFD.
-                    if not (scope.get("manufacturer") and _matches_scope_value(
-                            scope["service"], scope["manufacturer"])):
-                        required.append(("service", service_slots))
-                if hardware_scope and scope.get("manufacturer") and not cloud_service_scope:
-                    required.append(("manufacturer", {"manufacturer"}))
-                if hardware_scope and scoped_model and not cloud_service_scope:
-                    required.append(("model", {"equipment"}))
-                missing_slots = []
-                mismatch = False
-                for field, client_slots in required:
-                    expected_value = scope.get(field)
-                    if not expected_value:
-                        continue
-                    values = {fact.value.casefold() for slot in client_slots
-                              for fact in state.task_entities.get(slot, [])}
-                    if not values:
-                        missing_slots.append(field)
-                    elif not any(_matches_scope_value(expected_value, value) for value in values):
-                        mismatch = True
+                assessment = assess_source_scope(state, scope)
+                missing_slots = list(assessment.missing)
+                mismatch = bool(assessment.mismatches)
                 if mismatch:
                     inapplicable.append({"document_id": item["document_id"], "reason": "confirmed_scope_mismatch"})
                     continue

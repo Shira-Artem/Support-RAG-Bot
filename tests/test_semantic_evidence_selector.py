@@ -33,9 +33,12 @@ def _fixture(tmp_path: Path, text: str, *, service: str = "Платформа О
 def _state(service: str | None = "Платформа ОФД", error: str | None = None):
     entities = {"service": [Fact.span(service, 1)]} if service else {}
     err = Fact.span(error, 1) if error else None
-    return DialogueState(intent="receipt", operation="search", entities=entities, error=err,
-                         task_context=TaskContext(intent="receipt", operation="search",
-                             entities=entities, error=err))
+    state = DialogueState(intent="receipt", operation="search", entities=entities, error=err,
+                          task_context=TaskContext(intent="receipt", operation="search",
+                              entities=entities, error=err))
+    if service:
+        state.routing_slot = "service"
+    return state
 
 
 def test_evidence_ids_are_stable_and_procedure_is_indivisible(tmp_path):
@@ -176,7 +179,7 @@ def test_service_substitution_is_blocked_independently(tmp_path):
     decision = parse_decision('{"mode":"select","selected_ids":["' + units[0].id + '"],"clarification_slot":null,"reason_code":"direct_evidence"}', units)
     selected, reason = validate_selected_units(decision, units, _state("Другой ОФД"), tmp_path, informational=False)
     assert selected == []
-    assert reason == "applicability_service_unconfirmed_or_mismatch"
+    assert reason == "applicability_service_mismatch"
 
 
 def test_prompt_injection_in_evidence_does_not_become_answer_text(tmp_path):

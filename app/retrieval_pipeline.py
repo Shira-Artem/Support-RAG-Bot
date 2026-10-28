@@ -329,9 +329,16 @@ _SUBTASK_ACTION_TOKENS = (
     "провер", "тест", "диагност", "убед", "verify", "check", "diagnos",
     "подключ", "соедин", "connect", "configure", "setup", "поиск", "найт",
     "иск", "search", "find", "передач", "переда", "отправ", "достав",
-    "transmit", "send", "deliver",
+    "transmit", "send", "deliver", "отображ", "появ", "показыв", "вид",
+    "возник", "исчез", "поступ", "приход", "получ",
 )
-_SUBTASK_CONTEXT_TERMS = {"кабинет", "личн"}
+_SUBTASK_CONTEXT_TERMS = {"кабинет", "личн", "нов", "наш"}
+_SUBTASK_COVERAGE_TASKS = {
+    "device", "fiscal_drive", "network", "network_diagnostics", "ofd_connection",
+    "error_diagnosis", "receipt_transmission", "fiscal_document_control",
+    "fiscal_format", "marking", "tspiot", "peripheral_setup", "receipt_search",
+    "receipt_status", "integration",
+}
 
 
 def _subtask_signature(query: str, state: DialogueState,
@@ -369,6 +376,15 @@ def _subtask_question_terms(article_text: str, expected_task: str | None) -> set
         if heading.strip().casefold().startswith("вопрос"):
             questions.append(body)
     terms = content_terms(" ".join(questions))
+    if expected_task == "integration":
+        terms.difference_update(content_terms("integration интеграция"))
+    terms.difference_update(_SUBTASK_CONTEXT_TERMS)
+    return {term for term in terms
+            if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+
+
+def _subtask_body_terms(text: str, expected_task: str | None) -> set[str]:
+    terms = content_terms(text)
     if expected_task == "integration":
         terms.difference_update(content_terms("integration интеграция"))
     terms.difference_update(_SUBTASK_CONTEXT_TERMS)
@@ -894,10 +910,6 @@ class RetrievalPipeline:
         raw = self.source.search(query, top_k=self.candidate_k)
         expected_task = _state_task_category(state, query)
         subtask_topics = _subtask_signature(query, state, expected_task)
-        topic_anchor_available = any(
-            bool(subtask_topics & _subtask_title_terms(
-                str((hit.metadata or {}).get("title") or ""), expected_task))
-            for hit in raw)
         evaluated_hits: list[tuple[str, SearchResult, EvaluatedDocument, bool]] = []
         for hit in raw:
             meta = normalize_metadata({**(hit.metadata or {}), "source": (hit.metadata or {}).get("source") or hit.source,
@@ -995,9 +1007,30 @@ class RetrievalPipeline:
             title = str(meta.get("title") or "")
             title_topic_overlap = subtask_topics & _subtask_title_terms(title, expected_task)
             question_topic_overlap = subtask_topics & _subtask_question_terms(article_text, expected_task)
-            subtask_covered = (bool(title_topic_overlap) if topic_anchor_available
-                               else bool(title_topic_overlap or question_topic_overlap))
-            if not subtask_topics or not subtask_covered:
+            # Compare each candidate's title, FAQ prompt, and actual evidence
+            # text to the same topic signature. Generic action/status verbs
+            # are stripped on both sides, so an adjacent sentence that merely
+            # says an item is displayed does not count as topical evidence.
+            evidence_topic_overlap = subtask_topics & _subtask_body_terms(hit.text, expected_task)
+            # A single shared term often describes only the surrounding
+            # workflow (for example, a device family or a receipt) rather
+            # than the requested subtask. Require two independent topic
+            # anchors in the candidate's own subject/question/evidence.
+            # This is deliberately candidate-local: another hit's title can
+            # neither grant nor deny coverage to this candidate.
+            subtask_covered = bool(
+                title_topic_overlap or question_topic_overlap or evidence_topic_overlap)
+            # `integration` and `peripheral_setup` are broad catch-all task
+            # labels: within those families, require a subject anchor in the
+            # candidate itself (or two supporting anchors in its FAQ/body).
+            # A confirmed software integration is already a concrete subject
+            # fact and does not need this extra lexical check.
+            strict_subtask = expected_task in {"integration", "peripheral_setup"}
+            strong_subtask_coverage = bool(title_topic_overlap) or len(
+                question_topic_overlap | evidence_topic_overlap) >= 2
+            if (expected_task in _SUBTASK_COVERAGE_TASKS and subtask_topics
+                    and (not subtask_covered or (strict_subtask and not strong_subtask_coverage
+                         and not (expected_task == "integration" and software and software_match)))):
                 reasons.append("subtask_anchor_uncovered")
             model_bound = technical or expected_task in {"model_features", "integration"}
             if model_bound and manufacturer_fact and not manufacturer_match:
@@ -1065,7 +1098,7 @@ class RetrievalPipeline:
                                  f"procedure_service={procedure_service or 'unreviewed'}",
                                  f"subtask_title_topic_overlap={len(title_topic_overlap)}",
                                  f"subtask_question_topic_overlap={len(question_topic_overlap)}",
-                                 f"subtask_topic_anchor_available={topic_anchor_available}"]
+                                  f"subtask_body_topic_overlap={len(evidence_topic_overlap)}"]
             if attributed_fact_candidate:
                 relevance_reasons.append("scope_deferred_to_source_first_fact_only_gate")
             if unresolved_fallback:

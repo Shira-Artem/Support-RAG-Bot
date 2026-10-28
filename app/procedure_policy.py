@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import re
 
+from app.scope_policy import matches_scope_value
+
 
 _CONTEXTUAL_OPERATIONS = {
     ("service_connection", "fiscalize"): "fiscalize_cash_register",
@@ -238,8 +240,7 @@ def document_applicability(state, metadata: dict, *, technical: bool = False) ->
     service = str(metadata.get("service") or metadata.get("procedure_service") or "")
     confirmed_service = str(route or state.entity("service") or "")
     service_matches = bool(service and confirmed_service and
-                           service.casefold().replace("ё", "е") ==
-                           confirmed_service.casefold().replace("ё", "е"))
+                           matches_scope_value(service, confirmed_service))
     hardware_families = {"device", "fiscal_drive", "network", "network_diagnostics",
                          "ofd_connection", "error_diagnosis", "receipt_transmission",
                          "fiscal_document_control", "fiscal_format", "marking"}

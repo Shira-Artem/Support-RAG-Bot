@@ -19,6 +19,7 @@ from app.llm_client import Generation, generate
 from app.config import Settings
 from app.response_grounding import (evidence_kind, instruction_issue, statements,
                                     unsafe_operation_issue)
+from app.scope_policy import assess_source_scope
 
 
 MAX_EVIDENCE_TOKENS = 3000
@@ -239,12 +240,11 @@ def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit
                 or _whitespace_normalized(unit.text) not in _whitespace_normalized(section_body)):
             return [], "selected_text_not_in_exact_section"
         if not informational:
-            for field, slot in (("service", "service"), ("manufacturer", "manufacturer"),
-                                ("model", "equipment")):
-                expected = unit.scope.get(field)
-                actual = state.task_entity(slot) or (state.task_entity("ofd") if slot == "service" else None)
-                if expected and (not actual or expected.casefold() not in actual.casefold()):
-                    return [], f"applicability_{field}_unconfirmed_or_mismatch"
+            assessment = assess_source_scope(state, front)
+            if assessment.mismatches:
+                return [], f"applicability_{assessment.mismatches[0]}_mismatch"
+            if assessment.missing:
+                return [], f"applicability_{assessment.missing[0]}_unconfirmed"
     # A procedure block cannot be mixed with detached statements. It is one unit.
     if any(unit.role in {"question", "header"} for unit in selected):
         return [], "non_answer_bearing_unit"
