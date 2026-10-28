@@ -1,0 +1,624 @@
+{
+  "mode": "live_groq_synthetic_e2e",
+  "model": "openai/gpt-oss-20b",
+  "approved_documents": 206,
+  "production_qdrant_access": false,
+  "production_kb_write": false,
+  "sqlite_access": false,
+  "telegram": false,
+  "cases": [
+    {
+      "prompt": "В Saby не могу найти входящий документ. Где безопасно проверить его статус?",
+      "understanding_raw": {
+        "request_type": "question",
+        "relation": "continuation",
+        "intent": "question",
+        "operation": "lookup",
+        "object": "Saby",
+        "object_evidence": {
+          "quote": "Saby"
+        },
+        "goal": {
+          "quote": "Где безопасно проверить его статус?"
+        },
+        "symptom": {
+          "quote": "не могу найти входящий документ"
+        },
+        "entities": [
+          {
+            "slot": "incoming document",
+            "value": "входящий документ",
+            "evidence": {
+              "quote": "входящий документ"
+            }
+          },
+          {
+            "slot": "status",
+            "value": "статус",
+            "evidence": {
+              "quote": "статус"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "understanding_validated": {
+        "request_type": "information",
+        "specialist_requested": false,
+        "unknown_facts": [],
+        "tokens": {
+          "prompt_tokens": 863,
+          "completion_tokens": 927,
+          "total_tokens": 1790
+        },
+        "model": "openai/gpt-oss-20b",
+        "duration_ms": 2113,
+        "validation_diagnostics": [
+          {
+            "field": "relation",
+            "status": "accepted",
+            "reason": "normalized_semantic_alias",
+            "value": "continue"
+          },
+          {
+            "field": "intent",
+            "status": "accepted",
+            "reason": "normalized_semantic_alias",
+            "value": "unknown"
+          },
+          {
+            "field": "operation",
+            "status": "accepted",
+            "reason": "contextual_lookup_operation",
+            "value": "search"
+          },
+          {
+            "field": "object",
+            "status": "rejected",
+            "reason": "unsupported_object_value",
+            "claimed": "Saby"
+          },
+          {
+            "field": "confidence",
+            "status": "accepted",
+            "reason": "valid_confidence",
+            "value": 0.9
+          },
+          {
+            "field": "request_type",
+            "status": "accepted",
+            "reason": "normalized_turn_type_alias",
+            "value": "information",
+            "raw_value": "question"
+          },
+          {
+            "field": "unknown_facts",
+            "status": "omitted",
+            "reason": "no_unknown_slots_claimed"
+          },
+          {
+            "field": "object_evidence",
+            "status": "accepted",
+            "reason": "exact_current_message_span",
+            "start": 2,
+            "end": 6
+          },
+          {
+            "field": "specialist_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "specialist_requested",
+            "status": "accepted",
+            "reason": "not_requested"
+          },
+          {
+            "field": "entities",
+            "status": "accepted",
+            "reason": "valid_array",
+            "count": 2
+          },
+          {
+            "field": "entities[0]",
+            "status": "rejected",
+            "reason": "invalid_entity_slot_or_value",
+            "slot": "incoming document",
+            "claimed": "входящий документ"
+          },
+          {
+            "field": "entities[1]",
+            "status": "rejected",
+            "reason": "invalid_entity_slot_or_value",
+            "slot": "status",
+            "claimed": "статус"
+          },
+          {
+            "field": "entities.service",
+            "status": "accepted",
+            "reason": "exact_known_alias_found_in_current_message",
+            "value": "Saby",
+            "start": 2,
+            "end": 6
+          },
+          {
+            "field": "goal",
+            "status": "accepted",
+            "reason": "exact_current_message_span",
+            "start": 40,
+            "end": 75
+          },
+          {
+            "field": "symptom",
+            "status": "accepted",
+            "reason": "exact_current_message_span",
+            "start": 7,
+            "end": 38
+          },
+          {
+            "field": "request_type_operation",
+            "status": "accepted",
+            "reason": "independent_turn_type_and_task_operation",
+            "request_type": "information",
+            "operation": "search"
+          }
+        ],
+        "observation": {
+          "intent": "unknown",
+          "operation": "search",
+          "object": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "intent_evidence": null,
+          "operation_evidence": null,
+          "object_evidence": {
+            "value": "Saby",
+            "message_id": "synthetic:1",
+            "quote": "Saby",
+            "start": 2,
+            "end": 6
+          },
+          "relation_evidence": null,
+          "evidence": {
+            "value": "В Saby не могу найти входящий документ. Где безопасно проверить его статус?",
+            "message_id": "synthetic:1",
+            "quote": "В Saby не могу найти входящий документ. Где безопасно проверить его статус?",
+            "start": 0,
+            "end": 75
+          },
+          "symptom": {
+            "value": "не могу найти входящий документ",
+            "message_id": "synthetic:1",
+            "quote": "не могу найти входящий документ",
+            "start": 7,
+            "end": 38
+          },
+          "goals": [
+            {
+              "value": "Где безопасно проверить его статус?",
+              "message_id": "synthetic:1",
+              "quote": "Где безопасно проверить его статус?",
+              "start": 40,
+              "end": 75
+            }
+          ],
+          "unknown_facts": {},
+          "entities": {
+            "service": [
+              {
+                "value": "Saby",
+                "message_id": "synthetic:1",
+                "quote": "Saby",
+                "start": 2,
+                "end": 6
+              }
+            ]
+          }
+        }
+      },
+      "state": {
+        "intent": "unknown",
+        "object": null,
+        "operation": "search",
+        "relation": "new_task",
+        "active_route": "service",
+        "routing_service": "Saby",
+        "analysis_required": false,
+        "entities": {
+          "service": [
+            "Saby"
+          ]
+        }
+      },
+      "rag_query": "сервис: Saby — В Saby не могу найти входящий документ. Где безопасно проверить его статус? — запрос клиента: В Saby не могу найти входящий документ. Где безопасно проверить его статус? — цель: Где безопасно проверить его статус?",
+      "expected_task": null,
+      "final_evidence": [],
+      "rejected_reasons": [
+        {
+          "document_id": "aqsi-kkt-error-115",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-tspiot-localmodule-20261019",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-monthly-schedule",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11059-find-offer",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-closing-error-first-diagnostics",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "evotor-mark-check-error-20261019",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-12472-enter-rnm",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-operations-name",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-accounting-settings",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-counterparty-reconciliation-monitor",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "batch-20261013-taxes-ens-menu-2026",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        },
+        {
+          "document_id": "atol-online-11075-fn-invoice",
+          "reasons": [
+            "service_mismatch_or_unlabeled",
+            "task_unresolved"
+          ]
+        }
+      ],
+      "sufficient": false,
+      "evidence_status": "none",
+      "generation_status": "no_context",
+      "scenario": "escalate",
+      "scenario_reason": "insufficient_evidence",
+      "answer": "Для Saby не нашёл подтверждённых сведений по этому действию.  Не буду дополнять инструкцию неподтверждёнными шагами; при необходимости запросите специалиста.",
+      "answer_generation_used_model": false,
+      "llm_call_attempted": false,
+      "usage": {
+        "understanding": {
+          "prompt_tokens": 863,
+          "completion_tokens": 927,
+          "total_tokens": 1790
+        },
+        "answer_prompt_tokens": null,
+        "answer_completion_tokens": null,
+        "answer_total_tokens": null
+      },
+      "duration_ms": {
+        "understanding": 2113,
+        "answer": 169
+      }
+    },
+    {
+      "prompt": "Эвотор 6: как распечатать копию чека по ФД 123?",
+      "understanding_raw": {
+        "request_type": "question",
+        "relation": "new_task",
+        "intent": "print_copy",
+        "operation": "print",
+        "object": "receipt",
+        "object_evidence": {
+          "quote": "чека"
+        },
+        "goal": {
+          "quote": "распечатать копию чека"
+        },
+        "symptom": null,
+        "entities": [
+          {
+            "slot": "software",
+            "value": "Эвотор 6",
+            "evidence": {
+              "quote": "Эвотор 6"
+            }
+          },
+          {
+            "slot": "fiscal_document",
+            "value": "123",
+            "evidence": {
+              "quote": "ФД 123"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "understanding_validated": {
+        "request_type": "information",
+        "specialist_requested": false,
+        "unknown_facts": [],
+        "tokens": {
+          "prompt_tokens": 866,
+          "completion_tokens": 946,
+          "total_tokens": 1812
+        },
+        "model": "openai/gpt-oss-20b",
+        "duration_ms": 3346,
+        "validation_diagnostics": [
+          {
+            "field": "relation",
+            "status": "accepted",
+            "reason": "valid_semantic_classification",
+            "value": "new_task"
+          },
+          {
+            "field": "intent",
+            "status": "rejected",
+            "reason": "unsupported_value_defaulted_to_unknown",
+            "value": "unknown"
+          },
+          {
+            "field": "operation",
+            "status": "rejected",
+            "reason": "unsupported_value_defaulted_to_unknown",
+            "value": "unknown"
+          },
+          {
+            "field": "confidence",
+            "status": "accepted",
+            "reason": "valid_confidence",
+            "value": 0.9
+          },
+          {
+            "field": "request_type",
+            "status": "accepted",
+            "reason": "normalized_turn_type_alias",
+            "value": "information",
+            "raw_value": "question"
+          },
+          {
+            "field": "unknown_facts",
+            "status": "omitted",
+            "reason": "no_unknown_slots_claimed"
+          },
+          {
+            "field": "object_evidence",
+            "status": "accepted",
+            "reason": "exact_current_message_span",
+            "start": 32,
+            "end": 36
+          },
+          {
+            "field": "object",
+            "status": "accepted",
+            "reason": "exact_object_value_grounded_by_evidence",
+            "value": "чек",
+            "start": 32,
+            "end": 36
+          },
+          {
+            "field": "specialist_evidence",
+            "status": "omitted",
+            "reason": "not_claimed"
+          },
+          {
+            "field": "specialist_requested",
+            "status": "accepted",
+            "reason": "not_requested"
+          },
+          {
+            "field": "entities",
+            "status": "accepted",
+            "reason": "valid_array",
+            "count": 2
+          },
+          {
+            "field": "entities[0]",
+            "status": "rejected",
+            "reason": "entity_not_supported_by_source_alias",
+            "slot": "software",
+            "claimed": "Эвотор 6",
+            "start": 0,
+            "end": 8
+          },
+          {
+            "field": "entities[1]",
+            "status": "rejected",
+            "reason": "invalid_entity_slot_or_value",
+            "slot": "fiscal_document",
+            "claimed": "123"
+          },
+          {
+            "field": "entities.manufacturer",
+            "status": "accepted",
+            "reason": "exact_known_alias_found_in_current_message",
+            "value": "Эвотор",
+            "start": 0,
+            "end": 6
+          },
+          {
+            "field": "entities.equipment",
+            "status": "accepted",
+            "reason": "exact_known_manufacturer_model_span",
+            "value": "Эвотор 6",
+            "start": 0,
+            "end": 8
+          },
+          {
+            "field": "goal",
+            "status": "accepted",
+            "reason": "exact_current_message_span",
+            "start": 14,
+            "end": 36
+          },
+          {
+            "field": "symptom",
+            "status": "omitted",
+            "reason": "not_claimed"
+          }
+        ],
+        "observation": {
+          "intent": "unknown",
+          "operation": "unknown",
+          "object": "чек",
+          "relation": "new_task",
+          "confidence": 0.9,
+          "intent_evidence": null,
+          "operation_evidence": null,
+          "object_evidence": {
+            "value": "чека",
+            "message_id": "synthetic:2",
+            "quote": "чека",
+            "start": 32,
+            "end": 36
+          },
+          "relation_evidence": null,
+          "evidence": {
+            "value": "Эвотор 6: как распечатать копию чека по ФД 123?",
+            "message_id": "synthetic:2",
+            "quote": "Эвотор 6: как распечатать копию чека по ФД 123?",
+            "start": 0,
+            "end": 47
+          },
+          "symptom": null,
+          "goals": [
+            {
+              "value": "распечатать копию чека",
+              "message_id": "synthetic:2",
+              "quote": "распечатать копию чека",
+              "start": 14,
+              "end": 36
+            }
+          ],
+          "unknown_facts": {},
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": "synthetic:2",
+                "quote": "Эвотор",
+                "start": 0,
+                "end": 6
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 6",
+                "message_id": "synthetic:2",
+                "quote": "Эвотор 6",
+                "start": 0,
+                "end": 8
+              }
+            ]
+          }
+        }
+      },
+      "state": {
+        "intent": "unknown",
+        "object": "чек",
+        "operation": "unknown",
+        "relation": "new_task",
+        "active_route": "manufacturer",
+        "routing_service": "Эвотор",
+        "analysis_required": false,
+        "entities": {
+          "manufacturer": [
+            "Эвотор"
+          ],
+          "equipment": [
+            "Эвотор 6"
+          ]
+        }
+      },
+      "rag_query": "оборудование: Эвотор 6 — производитель: Эвотор — Эвотор 6: как распечатать копию чека по ФД 123? — запрос клиента: Эвотор 6: как распечатать копию чека по ФД 123? — цель: распечатать копию чека",
+      "expected_task": "receipt_print",
+      "final_evidence": [
+        "evotor-6-receipt-copy-360005002514"
+      ],
+      "rejected_reasons": [
+        {
+          "document_id": "evotor-6-shift-360006708093",
+          "reasons": [
+            "task_mismatch:cash_operations!=receipt_print"
+          ]
+        },
+        {
+          "document_id": "evotor-6-ofd-connection-360014099534",
+          "reasons": [
+            "task_mismatch:receipt_transmission!=receipt_print"
+          ]
+        }
+      ],
+      "sufficient": true,
+      "evidence_status": "partial",
+      "generation_status": "generated",
+      "scenario": "answer",
+      "scenario_reason": "supported_partial_answer",
+      "answer": "Под ролью администратора откройте «Настройки → Обслуживание кассы → Дополнительные операции → Печать документа по номеру», введите номер ФД и подтвердите.\nУточните номер ФД в личном кабинете Эвотора или своего ОФД.\nЕсли номер неизвестен, используйте кабинет ОФД.",
+      "answer_generation_used_model": true,
+      "llm_call_attempted": true,
+      "usage": {
+        "understanding": {
+          "prompt_tokens": 866,
+          "completion_tokens": 946,
+          "total_tokens": 1812
+        },
+        "answer_prompt_tokens": 1602,
+        "answer_completion_tokens": 373,
+        "answer_total_tokens": 1975
+      },
+      "duration_ms": {
+        "understanding": 3346,
+        "answer": 1830
+      }
+    }
+  ]
+}
