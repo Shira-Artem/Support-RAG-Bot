@@ -1,0 +1,1633 @@
+{
+  "method": "existing 51 scenarios; local LexicalAnalyzer/state/query only, no LLM or retrieval; not answer quality",
+  "baseline_head": "292d9cbc8e3c35e231ddad8e96434471f374d8a9",
+  "dataset_sha256": "a664b6964f20f78e3487a930b2ba5e004bfbf0912e5c9b4a8ee1e42dac481a20",
+  "count": 51,
+  "changed": 26,
+  "changes": [
+    {
+      "case_id": "KBQS2-03",
+      "before": {
+        "case_id": "KBQS2-03",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 101
+      },
+      "after": {
+        "case_id": "KBQS2-03",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 41
+      }
+    },
+    {
+      "case_id": "KBQS2-04",
+      "before": {
+        "case_id": "KBQS2-04",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 99
+      },
+      "after": {
+        "case_id": "KBQS2-04",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 40
+      }
+    },
+    {
+      "case_id": "KBQS2-05",
+      "before": {
+        "case_id": "KBQS2-05",
+        "intent": "billing",
+        "operation": "configure",
+        "object": "оплата",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 387
+      },
+      "after": {
+        "case_id": "KBQS2-05",
+        "intent": "billing",
+        "operation": "configure",
+        "object": "оплата",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 345
+      }
+    },
+    {
+      "case_id": "KBQS2-06",
+      "before": {
+        "case_id": "KBQS2-06",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "БИФИТ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 201
+      },
+      "after": {
+        "case_id": "KBQS2-06",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "БИФИТ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 99
+      }
+    },
+    {
+      "case_id": "KBQS2-09",
+      "before": {
+        "case_id": "KBQS2-09",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Штрих-М",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 156
+      },
+      "after": {
+        "case_id": "KBQS2-09",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Штрих-М",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 81
+      }
+    },
+    {
+      "case_id": "KBQS2-14",
+      "before": {
+        "case_id": "KBQS2-14",
+        "intent": "marking",
+        "operation": "unknown",
+        "object": "маркировка",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 85
+      },
+      "after": {
+        "case_id": "KBQS2-14",
+        "intent": "marking",
+        "operation": "unknown",
+        "object": "маркировка",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 33
+      }
+    },
+    {
+      "case_id": "KBQS2-15",
+      "before": {
+        "case_id": "KBQS2-15",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 71
+      },
+      "after": {
+        "case_id": "KBQS2-15",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 26
+      }
+    },
+    {
+      "case_id": "KBQS2-16",
+      "before": {
+        "case_id": "KBQS2-16",
+        "intent": "unknown",
+        "operation": "configure",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 79
+      },
+      "after": {
+        "case_id": "KBQS2-16",
+        "intent": "unknown",
+        "operation": "configure",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 30
+      }
+    },
+    {
+      "case_id": "KBQS2-18",
+      "before": {
+        "case_id": "KBQS2-18",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 175
+      },
+      "after": {
+        "case_id": "KBQS2-18",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 78
+      }
+    },
+    {
+      "case_id": "KBQS2-20",
+      "before": {
+        "case_id": "KBQS2-20",
+        "intent": "receipt",
+        "operation": "unknown",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 167
+      },
+      "after": {
+        "case_id": "KBQS2-20",
+        "intent": "receipt",
+        "operation": "unknown",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 74
+      }
+    },
+    {
+      "case_id": "KBQS2-26",
+      "before": {
+        "case_id": "KBQS2-26",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 396
+      },
+      "after": {
+        "case_id": "KBQS2-26",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 230
+      }
+    },
+    {
+      "case_id": "KBQS2-27",
+      "before": {
+        "case_id": "KBQS2-27",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 241
+      },
+      "after": {
+        "case_id": "KBQS2-27",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 111
+      }
+    },
+    {
+      "case_id": "KBQS2-29",
+      "before": {
+        "case_id": "KBQS2-29",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 69
+      },
+      "after": {
+        "case_id": "KBQS2-29",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 25
+      }
+    },
+    {
+      "case_id": "KBQS2-30",
+      "before": {
+        "case_id": "KBQS2-30",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 121
+      },
+      "after": {
+        "case_id": "KBQS2-30",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 63
+      }
+    },
+    {
+      "case_id": "KBQS2-31",
+      "before": {
+        "case_id": "KBQS2-31",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 75
+      },
+      "after": {
+        "case_id": "KBQS2-31",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 28
+      }
+    },
+    {
+      "case_id": "KBQS2-32",
+      "before": {
+        "case_id": "KBQS2-32",
+        "intent": "fiscal_drive",
+        "operation": "unknown",
+        "object": "ФН",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 93
+      },
+      "after": {
+        "case_id": "KBQS2-32",
+        "intent": "fiscal_drive",
+        "operation": "unknown",
+        "object": "ФН",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 48
+      }
+    },
+    {
+      "case_id": "KBQS2-33",
+      "before": {
+        "case_id": "KBQS2-33",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 158
+      },
+      "after": {
+        "case_id": "KBQS2-33",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 98
+      }
+    },
+    {
+      "case_id": "KBQS2-34",
+      "before": {
+        "case_id": "KBQS2-34",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 133
+      },
+      "after": {
+        "case_id": "KBQS2-34",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 69
+      }
+    },
+    {
+      "case_id": "KBQS2-38",
+      "before": {
+        "case_id": "KBQS2-38",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 69
+      },
+      "after": {
+        "case_id": "KBQS2-38",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 25
+      }
+    },
+    {
+      "case_id": "KBQS2-39",
+      "before": {
+        "case_id": "KBQS2-39",
+        "intent": "report",
+        "operation": "unknown",
+        "object": "отчёт",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 101
+      },
+      "after": {
+        "case_id": "KBQS2-39",
+        "intent": "report",
+        "operation": "unknown",
+        "object": "отчёт",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 41
+      }
+    },
+    {
+      "case_id": "KBQS2-40",
+      "before": {
+        "case_id": "KBQS2-40",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 87
+      },
+      "after": {
+        "case_id": "KBQS2-40",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 34
+      }
+    },
+    {
+      "case_id": "KBQS2-43",
+      "before": {
+        "case_id": "KBQS2-43",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 73
+      },
+      "after": {
+        "case_id": "KBQS2-43",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 27
+      }
+    },
+    {
+      "case_id": "KBQS2-44",
+      "before": {
+        "case_id": "KBQS2-44",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 81
+      },
+      "after": {
+        "case_id": "KBQS2-44",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 31
+      }
+    },
+    {
+      "case_id": "KBQS2-46",
+      "before": {
+        "case_id": "KBQS2-46",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 145
+      },
+      "after": {
+        "case_id": "KBQS2-46",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 63
+      }
+    },
+    {
+      "case_id": "KBQS2-50",
+      "before": {
+        "case_id": "KBQS2-50",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 87
+      },
+      "after": {
+        "case_id": "KBQS2-50",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 34
+      }
+    },
+    {
+      "case_id": "KBQS2-51",
+      "before": {
+        "case_id": "KBQS2-51",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 131
+      },
+      "after": {
+        "case_id": "KBQS2-51",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 56
+      }
+    }
+  ],
+  "results": {
+    "head": [
+      {
+        "case_id": "KBQS2-01",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 67
+      },
+      {
+        "case_id": "KBQS2-02",
+        "intent": "network",
+        "operation": "diagnose",
+        "object": "соединение",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 101
+      },
+      {
+        "case_id": "KBQS2-03",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 101
+      },
+      {
+        "case_id": "KBQS2-04",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 99
+      },
+      {
+        "case_id": "KBQS2-05",
+        "intent": "billing",
+        "operation": "configure",
+        "object": "оплата",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 387
+      },
+      {
+        "case_id": "KBQS2-06",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "БИФИТ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 201
+      },
+      {
+        "case_id": "KBQS2-07",
+        "intent": "device",
+        "operation": "connect",
+        "object": "касса",
+        "route": "БИФИТ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 267
+      },
+      {
+        "case_id": "KBQS2-08",
+        "intent": "device",
+        "operation": "check",
+        "object": "касса",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 116
+      },
+      {
+        "case_id": "KBQS2-09",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Штрих-М",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 156
+      },
+      {
+        "case_id": "KBQS2-10",
+        "intent": "fiscal_drive",
+        "operation": "check",
+        "object": "ФН",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 74
+      },
+      {
+        "case_id": "KBQS2-11",
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 170
+      },
+      {
+        "case_id": "KBQS2-12",
+        "intent": "billing",
+        "operation": "unknown",
+        "object": "тариф",
+        "route": "БИФИТ Касса",
+        "analysis_required": true,
+        "query_error": "Message relationship is unresolved",
+        "query_chars": 0
+      },
+      {
+        "case_id": "KBQS2-13",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 87
+      },
+      {
+        "case_id": "KBQS2-14",
+        "intent": "marking",
+        "operation": "unknown",
+        "object": "маркировка",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 85
+      },
+      {
+        "case_id": "KBQS2-15",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 71
+      },
+      {
+        "case_id": "KBQS2-16",
+        "intent": "unknown",
+        "operation": "configure",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 79
+      },
+      {
+        "case_id": "KBQS2-17",
+        "intent": "marking",
+        "operation": "configure",
+        "object": "маркировка",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 88
+      },
+      {
+        "case_id": "KBQS2-18",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 175
+      },
+      {
+        "case_id": "KBQS2-19",
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 80
+      },
+      {
+        "case_id": "KBQS2-20",
+        "intent": "receipt",
+        "operation": "unknown",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 167
+      },
+      {
+        "case_id": "KBQS2-21",
+        "intent": "receipt",
+        "operation": "assign",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 81
+      },
+      {
+        "case_id": "KBQS2-22",
+        "intent": "access",
+        "operation": "unknown",
+        "object": "сотрудник",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 97
+      },
+      {
+        "case_id": "KBQS2-23",
+        "intent": "general",
+        "operation": "transmit",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 89
+      },
+      {
+        "case_id": "KBQS2-24",
+        "intent": "general",
+        "operation": "transmit",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 94
+      },
+      {
+        "case_id": "KBQS2-25",
+        "intent": "device",
+        "operation": "transmit",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 128
+      },
+      {
+        "case_id": "KBQS2-26",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 396
+      },
+      {
+        "case_id": "KBQS2-27",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 241
+      },
+      {
+        "case_id": "KBQS2-28",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "route": "aQsi",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 127
+      },
+      {
+        "case_id": "KBQS2-29",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 69
+      },
+      {
+        "case_id": "KBQS2-30",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 121
+      },
+      {
+        "case_id": "KBQS2-31",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 75
+      },
+      {
+        "case_id": "KBQS2-32",
+        "intent": "fiscal_drive",
+        "operation": "unknown",
+        "object": "ФН",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 93
+      },
+      {
+        "case_id": "KBQS2-33",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 158
+      },
+      {
+        "case_id": "KBQS2-34",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 133
+      },
+      {
+        "case_id": "KBQS2-35",
+        "intent": "receipt",
+        "operation": "check",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 120
+      },
+      {
+        "case_id": "KBQS2-36",
+        "intent": "device",
+        "operation": "connect",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 77
+      },
+      {
+        "case_id": "KBQS2-37",
+        "intent": "access",
+        "operation": "unknown",
+        "object": "сотрудник",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 41
+      },
+      {
+        "case_id": "KBQS2-38",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 69
+      },
+      {
+        "case_id": "KBQS2-39",
+        "intent": "report",
+        "operation": "unknown",
+        "object": "отчёт",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 101
+      },
+      {
+        "case_id": "KBQS2-40",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 87
+      },
+      {
+        "case_id": "KBQS2-41",
+        "intent": "fiscal_drive",
+        "operation": "connect",
+        "object": "ФН",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 365
+      },
+      {
+        "case_id": "KBQS2-42",
+        "intent": "marking",
+        "operation": "configure",
+        "object": "маркировка",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 114
+      },
+      {
+        "case_id": "KBQS2-43",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 73
+      },
+      {
+        "case_id": "KBQS2-44",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 81
+      },
+      {
+        "case_id": "KBQS2-45",
+        "intent": "device",
+        "operation": "change",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 163
+      },
+      {
+        "case_id": "KBQS2-46",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 145
+      },
+      {
+        "case_id": "KBQS2-47",
+        "intent": "receipt",
+        "operation": "configure",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 153
+      },
+      {
+        "case_id": "KBQS2-48",
+        "intent": "device",
+        "operation": "assign",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 77
+      },
+      {
+        "case_id": "KBQS2-49",
+        "intent": "access",
+        "operation": "unknown",
+        "object": "сотрудник",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 60
+      },
+      {
+        "case_id": "KBQS2-50",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 87
+      },
+      {
+        "case_id": "KBQS2-51",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 131
+      }
+    ],
+    "working": [
+      {
+        "case_id": "KBQS2-01",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 67
+      },
+      {
+        "case_id": "KBQS2-02",
+        "intent": "network",
+        "operation": "diagnose",
+        "object": "соединение",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 101
+      },
+      {
+        "case_id": "KBQS2-03",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 41
+      },
+      {
+        "case_id": "KBQS2-04",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 40
+      },
+      {
+        "case_id": "KBQS2-05",
+        "intent": "billing",
+        "operation": "configure",
+        "object": "оплата",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 345
+      },
+      {
+        "case_id": "KBQS2-06",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "БИФИТ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 99
+      },
+      {
+        "case_id": "KBQS2-07",
+        "intent": "device",
+        "operation": "connect",
+        "object": "касса",
+        "route": "БИФИТ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 267
+      },
+      {
+        "case_id": "KBQS2-08",
+        "intent": "device",
+        "operation": "check",
+        "object": "касса",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 116
+      },
+      {
+        "case_id": "KBQS2-09",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Штрих-М",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 81
+      },
+      {
+        "case_id": "KBQS2-10",
+        "intent": "fiscal_drive",
+        "operation": "check",
+        "object": "ФН",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 74
+      },
+      {
+        "case_id": "KBQS2-11",
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 170
+      },
+      {
+        "case_id": "KBQS2-12",
+        "intent": "billing",
+        "operation": "unknown",
+        "object": "тариф",
+        "route": "БИФИТ Касса",
+        "analysis_required": true,
+        "query_error": "Message relationship is unresolved",
+        "query_chars": 0
+      },
+      {
+        "case_id": "KBQS2-13",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 87
+      },
+      {
+        "case_id": "KBQS2-14",
+        "intent": "marking",
+        "operation": "unknown",
+        "object": "маркировка",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 33
+      },
+      {
+        "case_id": "KBQS2-15",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 26
+      },
+      {
+        "case_id": "KBQS2-16",
+        "intent": "unknown",
+        "operation": "configure",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 30
+      },
+      {
+        "case_id": "KBQS2-17",
+        "intent": "marking",
+        "operation": "configure",
+        "object": "маркировка",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 88
+      },
+      {
+        "case_id": "KBQS2-18",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 78
+      },
+      {
+        "case_id": "KBQS2-19",
+        "intent": "receipt",
+        "operation": "diagnose",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 80
+      },
+      {
+        "case_id": "KBQS2-20",
+        "intent": "receipt",
+        "operation": "unknown",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 74
+      },
+      {
+        "case_id": "KBQS2-21",
+        "intent": "receipt",
+        "operation": "assign",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 81
+      },
+      {
+        "case_id": "KBQS2-22",
+        "intent": "access",
+        "operation": "unknown",
+        "object": "сотрудник",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 97
+      },
+      {
+        "case_id": "KBQS2-23",
+        "intent": "general",
+        "operation": "transmit",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 89
+      },
+      {
+        "case_id": "KBQS2-24",
+        "intent": "general",
+        "operation": "transmit",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 94
+      },
+      {
+        "case_id": "KBQS2-25",
+        "intent": "device",
+        "operation": "transmit",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 128
+      },
+      {
+        "case_id": "KBQS2-26",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 230
+      },
+      {
+        "case_id": "KBQS2-27",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 111
+      },
+      {
+        "case_id": "KBQS2-28",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "route": "aQsi",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 127
+      },
+      {
+        "case_id": "KBQS2-29",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 25
+      },
+      {
+        "case_id": "KBQS2-30",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 63
+      },
+      {
+        "case_id": "KBQS2-31",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 28
+      },
+      {
+        "case_id": "KBQS2-32",
+        "intent": "fiscal_drive",
+        "operation": "unknown",
+        "object": "ФН",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 48
+      },
+      {
+        "case_id": "KBQS2-33",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 98
+      },
+      {
+        "case_id": "KBQS2-34",
+        "intent": "device",
+        "operation": "unknown",
+        "object": "касса",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 69
+      },
+      {
+        "case_id": "KBQS2-35",
+        "intent": "receipt",
+        "operation": "check",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 120
+      },
+      {
+        "case_id": "KBQS2-36",
+        "intent": "device",
+        "operation": "connect",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 77
+      },
+      {
+        "case_id": "KBQS2-37",
+        "intent": "access",
+        "operation": "unknown",
+        "object": "сотрудник",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 41
+      },
+      {
+        "case_id": "KBQS2-38",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 25
+      },
+      {
+        "case_id": "KBQS2-39",
+        "intent": "report",
+        "operation": "unknown",
+        "object": "отчёт",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 41
+      },
+      {
+        "case_id": "KBQS2-40",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 34
+      },
+      {
+        "case_id": "KBQS2-41",
+        "intent": "fiscal_drive",
+        "operation": "connect",
+        "object": "ФН",
+        "route": "АТОЛ",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 365
+      },
+      {
+        "case_id": "KBQS2-42",
+        "intent": "marking",
+        "operation": "configure",
+        "object": "маркировка",
+        "route": "Эвотор",
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 114
+      },
+      {
+        "case_id": "KBQS2-43",
+        "intent": "general",
+        "operation": "unknown",
+        "object": "ОФД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 27
+      },
+      {
+        "case_id": "KBQS2-44",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 31
+      },
+      {
+        "case_id": "KBQS2-45",
+        "intent": "device",
+        "operation": "change",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 163
+      },
+      {
+        "case_id": "KBQS2-46",
+        "intent": "delivery_document",
+        "operation": "unknown",
+        "object": "УПД",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 63
+      },
+      {
+        "case_id": "KBQS2-47",
+        "intent": "receipt",
+        "operation": "configure",
+        "object": "чек",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 153
+      },
+      {
+        "case_id": "KBQS2-48",
+        "intent": "device",
+        "operation": "assign",
+        "object": "касса",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 77
+      },
+      {
+        "case_id": "KBQS2-49",
+        "intent": "access",
+        "operation": "unknown",
+        "object": "сотрудник",
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 60
+      },
+      {
+        "case_id": "KBQS2-50",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 34
+      },
+      {
+        "case_id": "KBQS2-51",
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "route": null,
+        "analysis_required": false,
+        "query_error": null,
+        "query_chars": 56
+      }
+    ]
+  }
+}

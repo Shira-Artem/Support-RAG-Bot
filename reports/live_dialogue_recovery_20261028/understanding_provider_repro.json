@@ -1,0 +1,252 @@
+{
+  "scope": "Synthetic input only; no API keys, headers or production conversations. No request sent by this exporter.",
+  "finding": "Identical strict-schema request produced successful responses and json_validate_failed HTTP400. Nonempty rejected outputs are malformed at the second entities item; one rejected output is empty.",
+  "request": {
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium",
+    "temperature": 0,
+    "max_completion_tokens": 4096,
+    "messages": [
+      {
+        "role": "user",
+        "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Нужно протестировать в БИФИТ Общепит работу со столами.\"}"
+      }
+    ],
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "conversational_understanding",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "request_type": {
+              "type": "string"
+            },
+            "relation": {
+              "type": "string"
+            },
+            "intent": {
+              "type": "string"
+            },
+            "operation": {
+              "type": "string"
+            },
+            "object": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "object_evidence": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "quote": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "goal": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "quote": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "symptom": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "quote": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "entities": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slot": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  },
+                  "evidence": {
+                    "type": "object",
+                    "properties": {
+                      "quote": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "quote"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "slot",
+                  "value",
+                  "evidence"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "unknown_facts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slot": {
+                    "type": "string"
+                  },
+                  "evidence": {
+                    "type": "object",
+                    "properties": {
+                      "quote": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "quote"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "slot",
+                  "evidence"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "specialist_requested": {
+              "type": "boolean"
+            },
+            "specialist_evidence": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "quote": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "confidence": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "request_type",
+            "relation",
+            "intent",
+            "operation",
+            "object",
+            "object_evidence",
+            "goal",
+            "symptom",
+            "entities",
+            "unknown_facts",
+            "specialist_requested",
+            "specialist_evidence",
+            "confidence"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "attempts": [
+    {
+      "artifact": "understanding_repro_20261029_live.json",
+      "status": "validated_with_field_rejections",
+      "request_sha256": "ea3fcb9ebe5fce0fbf50e75dbef631372dff25fe9e37751785ed7d90b6643872"
+    },
+    {
+      "artifact": "understanding_repro_20261029_live.json",
+      "status": "validated_with_field_rejections",
+      "request_sha256": "ea3fcb9ebe5fce0fbf50e75dbef631372dff25fe9e37751785ed7d90b6643872"
+    },
+    {
+      "artifact": "understanding_repro_20261029_live.json",
+      "status": "provider_http_error",
+      "request_sha256": "ea3fcb9ebe5fce0fbf50e75dbef631372dff25fe9e37751785ed7d90b6643872"
+    },
+    {
+      "artifact": "understanding_repro_20261029_live.json",
+      "rejected_output": {
+        "status": 400,
+        "code": "json_validate_failed",
+        "failed_generation": "{\"request_type\":\"information\",\"relation\":\"new_task\",\"intent\":\"general\",\"operation\":\"check\",\"object\":\"tables\",\"object_evidence\":{\"quote\":\"со столами\"},\"goal\":null,\"symptom\":null,\"entities\":[{\"slot\":\"service\",\"value\":\"БИФИТ Общепит\",\"evidence\":{\"quote\":\"в БИФИТ Общепит\"}},\"equipment\",\"value\":\"столами\",\"evidence\":{\"quote\":\"столами\"}}],\"unknown_facts\":[],\"specialist_requested\":false,\"specialist_evidence\":null,\"confidence\":0.9",
+        "local_json_error": {
+          "message": "Expecting ',' delimiter",
+          "position": 290
+        }
+      }
+    },
+    {
+      "artifact": "order_retry_final_20261029_live.json",
+      "status": "provider_http_error",
+      "request_sha256": "ea3fcb9ebe5fce0fbf50e75dbef631372dff25fe9e37751785ed7d90b6643872"
+    },
+    {
+      "artifact": "order_retry_final_20261029_live.json",
+      "status": "provider_http_error",
+      "request_sha256": "ea3fcb9ebe5fce0fbf50e75dbef631372dff25fe9e37751785ed7d90b6643872"
+    },
+    {
+      "artifact": "order_retry_final_20261029_live.json",
+      "rejected_output": {
+        "status": 400,
+        "code": "json_validate_failed",
+        "failed_generation": "",
+        "local_json_error": {
+          "message": "Expecting value",
+          "position": 0
+        }
+      }
+    },
+    {
+      "artifact": "order_retry_final_20261029_live.json",
+      "rejected_output": {
+        "status": 400,
+        "code": "json_validate_failed",
+        "failed_generation": "{\"request_type\":\"information\",\"relation\":\"new_task\",\"intent\":\"general\",\"operation\":\"check\",\"object\":\"tables\",\"object_evidence\":{\"quote\":\"столами\"},\"goal\":{\"quote\":\"протестировать\"},\"symptom\":null,\"entities\":[{\"slot\":\"equipment\",\"value\":\"БИФИТ Общепит\",\"evidence\":{\"quote\":\"БИФИТ Общепит\"}},\"component\",\"value\":\"столы\",\"evidence\":{\"quote\":\"столами\"}}],\"unknown_facts\":[],\"specialist_requested\":false,\"specialist_evidence\":null,\"confidence\":0.9",
+        "local_json_error": {
+          "message": "Expecting ',' delimiter",
+          "position": 309
+        }
+      }
+    }
+  ],
+  "retry_experiment": "One bounded regeneration returned 400 twice and was rolled back; rejected output was never imported into client state."
+}

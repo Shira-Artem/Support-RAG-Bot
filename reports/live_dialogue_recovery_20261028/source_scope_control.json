@@ -1,0 +1,96 @@
+{
+  "method": "offline fixture",
+  "provider_calls": 0,
+  "results": [
+    {
+      "case": "ofd_definition",
+      "scenario": "answer",
+      "scenario_reason": "ai_coordinator_grounded_information",
+      "validation_status": "exact_approved_sentence"
+    },
+    {
+      "case": "fn_vs_ofd_comparison",
+      "scenario": "answer",
+      "scenario_reason": "general_knowledge_fallback",
+      "validation_status": "general_knowledge_scope_checked"
+    },
+    {
+      "case": "api_definition",
+      "scenario": "answer",
+      "scenario_reason": "general_knowledge_fallback",
+      "validation_status": "general_knowledge_scope_checked"
+    },
+    {
+      "case": "dns_principle",
+      "scenario": "answer",
+      "scenario_reason": "general_knowledge_fallback",
+      "validation_status": "general_knowledge_scope_checked"
+    },
+    {
+      "case": "local_cloud_comparison",
+      "scenario": "answer",
+      "scenario_reason": "general_knowledge_fallback",
+      "validation_status": "general_knowledge_scope_checked"
+    },
+    {
+      "case": "fn234",
+      "scenario": "answer",
+      "scenario_reason": "ai_coordinator_grounded_information",
+      "validation_status": "exact_approved_sentence"
+    },
+    {
+      "case": "fn234_misclassified_general",
+      "scenario": "answer",
+      "scenario_reason": "ai_coordinator_grounded_information",
+      "validation_status": "exact_approved_sentence"
+    },
+    {
+      "case": "directbank",
+      "scenario": "answer",
+      "scenario_reason": "source_first_exact_section",
+      "validation_status": "exact_source_copy"
+    },
+    {
+      "case": "evotor73",
+      "scenario": "answer",
+      "scenario_reason": "source_first_exact_section",
+      "validation_status": "exact_source_copy"
+    },
+    {
+      "case": "tspiot",
+      "scenario": "answer",
+      "scenario_reason": "source_first_safe_preflight",
+      "validation_status": "exact_source_preflight"
+    },
+    {
+      "case": "wrong_model",
+      "scenario": "escalate",
+      "scenario_reason": "source_scope_mismatch",
+      "validation_status": "not_run"
+    },
+    {
+      "case": "wrong_manufacturer",
+      "scenario": "escalate",
+      "scenario_reason": "insufficient_applicable_evidence",
+      "validation_status": "not_run"
+    },
+    {
+      "case": "negative_fn_operation",
+      "scenario": "escalate",
+      "scenario_reason": "unsafe_operation",
+      "validation_status": "not_run"
+    },
+    {
+      "case": "negative_fn_error_operation",
+      "scenario": "answer",
+      "scenario_reason": "ai_coordinator_grounded_information",
+      "validation_status": "exact_approved_sentence"
+    },
+    {
+      "case": "negative_technical_configuration",
+      "scenario": "escalate",
+      "scenario_reason": "insufficient_applicable_evidence",
+      "validation_status": "not_run"
+    }
+  ]
+}

@@ -1,0 +1,727 @@
+{
+  "created_at": "2026-10-29T05:07:58.915559+00:00",
+  "head": "292d9cbc8e3c35e231ddad8e96434471f374d8a9",
+  "source_hashes": {
+    "bot.py": "54d275d6f75120def67f0f3257522da2bd9f67fe657ba7873acf8db81b7f4abc",
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/ai_coordinator.py": "406da12318a3c823f0c64f21f74666096b09f080ccc8a6a1b7b237a5fe96a84f",
+    "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+    "app/api.py": "f6b5ebd9d394ead610dc6a0160566cba3a0ae428c8f0bcd08d6d3737e076ed8b",
+    "app/bot_runtime.py": "7a93c28e090390501db083b8c7a0e480ef8d4d303037bd0d2953f319de121b91",
+    "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+    "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
+    "app/conversation_store.py": "cf9218ffe23bbf898be91557d78e4b0ab5b507d24a6364d7d0e9a7c08b2fd716",
+    "app/dialogue_state.py": "4a81827ba0e376ade90433c4263d2505c618dce0716ad8c4f967b0bd653743e1",
+    "app/dialogue_understanding.py": "85ca1f3ec1afe259dc08f3870a81587be2aa920a925542f50a9f1e7def9b4933",
+    "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
+    "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
+    "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+    "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+    "app/groq_rate_limit.py": "58203fd4dd88bd3809adbd019b23dfa5bf715b3a075b051fef1ddd64274f3744",
+    "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
+    "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
+    "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+    "app/llm_client.py": "4bb4dc5dc0916a01fe7e7973c032f3ce1a66bcb449441b706974e86ebf719e1f",
+    "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+    "app/procedure_policy.py": "3b03a70a1ab30a229230db53b7c178d20fa70f9f4905672a3fa22e8aa69673e6",
+    "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+    "app/rag_query.py": "35ec24e6413a6b74068833c7b1db8b2bf6070e3adb8d7804693388c688d242da",
+    "app/response_grounding.py": "f548e843a334c2930c20a9948a333fa88f585e27708bda668ea4eb925757138a",
+    "app/retrieval.py": "9499dd9e665d1eedbc1672aa7d66f4f161beba83ed17312469b029c9335d0b27",
+    "app/retrieval_pipeline.py": "f90a92ec4d4e59a69eab1bd5ba190b3898ef8ab0b6df59ad0ef5d0e5fd78b5d3",
+    "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
+    "app/scope_policy.py": "71b01f6884b06f7a60e0366c3849273538d520fa08671973ac1eb90cb10a712f",
+    "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
+    "app/source_first_service.py": "8ada8c140723e0fd8f4d97d2d64645cd04abe4b418f14021304bf12037dd9d6f",
+    "app/task_operation_resolver.py": "4587f4be5b44b479c0e25e2513acc49154773bfe2d12f988e868c31fb99d6a7f",
+    "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
+  },
+  "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "points": 934,
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "turns": [
+    {
+      "case": "bifit",
+      "turn": 1,
+      "question": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+      "answer": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+      "latency_ms": 8182,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 0,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": null,
+        "task_id": null,
+        "topic_start_message_id": null,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": null,
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 1.0,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": null,
+        "task_id": null,
+        "topic_start_message_id": null,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": null,
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 1.0,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "same_task": true,
+      "understanding": [
+        null
+      ],
+      "diagnostics": {
+        "text": "Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "error",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": 0,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "escalate",
+        "scenario_reason": "understanding_error",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": {
+          "type": "UnderstandingError",
+          "message": "Groq HTTP 400",
+          "http_status": 400,
+          "tokens": null,
+          "duration_ms": 8158,
+          "model": "openai/gpt-oss-20b",
+          "phase": "provider",
+          "error_code": "groq_http_400",
+          "retry_after_seconds": null,
+          "rate_limit_headers": {
+            "x-ratelimit-limit-requests": "1000",
+            "x-ratelimit-remaining-requests": "963",
+            "x-ratelimit-reset-requests": "53m16.799s",
+            "x-ratelimit-limit-tokens": "8000",
+            "x-ratelimit-remaining-tokens": "3959",
+            "x-ratelimit-reset-tokens": "30.307s"
+          },
+          "structured_response": null,
+          "field_diagnostics": [
+            {
+              "field": "$",
+              "status": "rejected",
+              "reason": "groq_http_400"
+            }
+          ],
+          "provider_error": "HTTP 400"
+        },
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": null,
+        "active_request": null,
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 1,
+          "session": {
+            "entities": {},
+            "active_route": null
+          },
+          "task_context": null,
+          "task_id": null,
+          "topic_start_message_id": null,
+          "intent": "unknown",
+          "operation": "unknown",
+          "object": null,
+          "entities": {},
+          "routing_slot": null,
+          "parameters": [],
+          "object_reference": null,
+          "task": null,
+          "operation_evidence": null,
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 1.0,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": null,
+        "retrieval_diagnostics": null,
+        "retrieval_collection": "knowledge_stage3_retrieval_20261022",
+        "reasoning_effort": "medium",
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": {
+          "stage": "understanding",
+          "error_type": "UnderstandingError",
+          "detail": {
+            "type": "UnderstandingError",
+            "message": "Groq HTTP 400",
+            "http_status": 400,
+            "tokens": null,
+            "duration_ms": 8158,
+            "model": "openai/gpt-oss-20b",
+            "phase": "provider",
+            "error_code": "groq_http_400",
+            "retry_after_seconds": null,
+            "rate_limit_headers": {
+              "x-ratelimit-limit-requests": "1000",
+              "x-ratelimit-remaining-requests": "963",
+              "x-ratelimit-reset-requests": "53m16.799s",
+              "x-ratelimit-limit-tokens": "8000",
+              "x-ratelimit-remaining-tokens": "3959",
+              "x-ratelimit-reset-tokens": "30.307s"
+            },
+            "structured_response": null,
+            "field_diagnostics": [
+              {
+                "field": "$",
+                "status": "rejected",
+                "reason": "groq_http_400"
+              }
+            ],
+            "provider_error": "HTTP 400"
+          }
+        },
+        "dialogue_understanding": null,
+        "coordinator_decision": {
+          "request_type": "unknown",
+          "route": "conversation",
+          "task_relation": "new_task",
+          "current_subgoal": null,
+          "required_action": "ask_for_task_or_goal",
+          "rationale": "task_not_ready"
+        },
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        0,
+        1
+      ]
+    }
+  ],
+  "generation_calls": [],
+  "understanding_calls": [
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "provider_http_error",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "groq_http_400"
+        },
+        {
+          "field": "$",
+          "status": "retry",
+          "reason": "json_validate_failed_single_regeneration"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 5314,
+      "error": "Groq HTTP 400",
+      "provider_error": "HTTP 400",
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Нужно протестировать в БИФИТ Общепит работу со столами.\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "provider",
+      "error_code": "groq_http_400"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "provider_http_error",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "groq_http_400"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 2843,
+      "error": "Groq HTTP 400",
+      "provider_error": "HTTP 400",
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Нужно протестировать в БИФИТ Общепит работу со столами.\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "provider",
+      "error_code": "groq_http_400"
+    }
+  ],
+  "provider_errors": [
+    {
+      "status": 400,
+      "code": "json_validate_failed",
+      "type": "invalid_request_error",
+      "param": null,
+      "message": "Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details."
+    },
+    {
+      "status": 400,
+      "code": "json_validate_failed",
+      "type": "invalid_request_error",
+      "param": null,
+      "message": "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details."
+    }
+  ],
+  "http_trace": [
+    {
+      "at_utc": "2026-10-29T05:08:04.776001+00:00",
+      "stage": "understanding",
+      "http_status": 400,
+      "duration_ms": 5313,
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "964",
+        "x-ratelimit-reset-requests": "51m50.399s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5630",
+        "x-ratelimit-reset-tokens": "17.775s"
+      },
+      "usage": {
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "total_tokens": null
+      },
+      "llm_http_attempt": 1
+    },
+    {
+      "at_utc": "2026-10-29T05:08:07.620334+00:00",
+      "stage": "understanding",
+      "http_status": 400,
+      "duration_ms": 2842,
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "963",
+        "x-ratelimit-reset-requests": "53m16.799s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3959",
+        "x-ratelimit-reset-tokens": "30.307s"
+      },
+      "usage": {
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "total_tokens": null
+      },
+      "llm_http_attempt": 2
+    }
+  ]
+}

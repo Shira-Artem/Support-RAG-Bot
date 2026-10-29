@@ -1,0 +1,2823 @@
+{
+  "created_at": "2026-10-28T14:43:52.579856+00:00",
+  "head": "292d9cbc8e3c35e231ddad8e96434471f374d8a9",
+  "source_hashes": {
+    "bot.py": "54d275d6f75120def67f0f3257522da2bd9f67fe657ba7873acf8db81b7f4abc",
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/ai_coordinator.py": "6ade3c39ba604283fc00985828876545f1c2f18bbe307b7586f2f877c686b268",
+    "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+    "app/api.py": "f6b5ebd9d394ead610dc6a0160566cba3a0ae428c8f0bcd08d6d3737e076ed8b",
+    "app/bot_runtime.py": "7a93c28e090390501db083b8c7a0e480ef8d4d303037bd0d2953f319de121b91",
+    "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+    "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
+    "app/conversation_store.py": "cf9218ffe23bbf898be91557d78e4b0ab5b507d24a6364d7d0e9a7c08b2fd716",
+    "app/dialogue_state.py": "dfbde543d8b3d04641fb088ae1d719331e2108ff32290d54462db3627e03abf1",
+    "app/dialogue_understanding.py": "c25c0a299811c5def36065b6ec0be6bfbe36252b5731e0935bb38b4b17ffabb1",
+    "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
+    "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
+    "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+    "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+    "app/groq_rate_limit.py": "58203fd4dd88bd3809adbd019b23dfa5bf715b3a075b051fef1ddd64274f3744",
+    "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
+    "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
+    "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+    "app/llm_client.py": "9404ab2315c6f72eb0cb08eaf4b73a00e829d9cdce66e10d69dbc038081d65be",
+    "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+    "app/procedure_policy.py": "f2075d91c9a3d34869cb352a13fe358ba427b77d80d33a9771731c3618ddf7a5",
+    "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+    "app/rag_query.py": "f3166b74bf25b5f3e870938f82013488d5806f3f2ddae49e59ebaa47722c35fc",
+    "app/response_grounding.py": "f548e843a334c2930c20a9948a333fa88f585e27708bda668ea4eb925757138a",
+    "app/retrieval.py": "9499dd9e665d1eedbc1672aa7d66f4f161beba83ed17312469b029c9335d0b27",
+    "app/retrieval_pipeline.py": "f90a92ec4d4e59a69eab1bd5ba190b3898ef8ab0b6df59ad0ef5d0e5fd78b5d3",
+    "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
+    "app/scope_policy.py": "71b01f6884b06f7a60e0366c3849273538d520fa08671973ac1eb90cb10a712f",
+    "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
+    "app/source_first_service.py": "c415fab69f71cea4e56021a423733733a9fea6a982c864ef6da005f6dfc83250",
+    "app/task_operation_resolver.py": "920e1e9f3548678d80c087e87398a7ebef309b752778546d35ebf67c4cfed20e",
+    "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
+  },
+  "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "points": 934,
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "turns": [
+    {
+      "case": "evotor6",
+      "turn": 1,
+      "question": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+      "answer": "Что именно нужно сделать или что сейчас не работает?",
+      "latency_ms": 3147,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 0,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": null,
+        "task_id": null,
+        "topic_start_message_id": null,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": null,
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 1.0,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 7,
+                "end": 13
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 6",
+                "message_id": 1,
+                "quote": "Эвотор 6",
+                "start": 7,
+                "end": 15
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 7,
+              "end": 13
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "general",
+          "operation": "unknown",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 7,
+                "end": 13
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 6",
+                "message_id": 1,
+                "quote": "Эвотор 6",
+                "start": 7,
+                "end": 15
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 7,
+              "end": 13
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+            "message_id": 1,
+            "quote": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+            "start": 0,
+            "end": 51
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "напечатать копию чека по номеру ФД",
+              "message_id": 1,
+              "quote": "напечатать копию чека по номеру ФД",
+              "start": 16,
+              "end": 50
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": {
+            "slot": "task",
+            "question": "Что именно нужно сделать или что сейчас не работает?",
+            "message_id": 2,
+            "reason": "dialogue_state_task_incomplete"
+          },
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": "task",
+          "current_subgoal": {
+            "value": "напечатать копию чека по номеру ФД",
+            "message_id": 1,
+            "quote": "напечатать копию чека по номеру ФД",
+            "start": 16,
+            "end": 50
+          },
+          "clarification_repeats": {
+            "task": 1
+          },
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "general",
+        "operation": "unknown",
+        "object": "чек",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 7,
+              "end": 13
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 6",
+              "message_id": 1,
+              "quote": "Эвотор 6",
+              "start": 7,
+              "end": 15
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+          "message_id": 1,
+          "quote": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+          "start": 0,
+          "end": 51
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "напечатать копию чека по номеру ФД",
+            "message_id": 1,
+            "quote": "напечатать копию чека по номеру ФД",
+            "start": 16,
+            "end": 50
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": {
+          "slot": "task",
+          "question": "Что именно нужно сделать или что сейчас не работает?",
+          "message_id": 2,
+          "reason": "dialogue_state_task_incomplete"
+        },
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "same_task": false,
+      "understanding": [
+        {
+          "request_type": "information",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 866,
+            "completion_tokens": 828,
+            "total_tokens": 1694
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 3119,
+          "validation_diagnostics": [
+            {
+              "field": "relation",
+              "status": "accepted",
+              "reason": "valid_semantic_classification",
+              "value": "new_task"
+            },
+            {
+              "field": "intent",
+              "status": "accepted",
+              "reason": "normalized_semantic_alias",
+              "value": "general"
+            },
+            {
+              "field": "operation",
+              "status": "rejected",
+              "reason": "unsupported_value_defaulted_to_unknown",
+              "value": "unknown"
+            },
+            {
+              "field": "object",
+              "status": "rejected",
+              "reason": "unsupported_object_value",
+              "claimed": "Эвотор 6"
+            },
+            {
+              "field": "confidence",
+              "status": "accepted",
+              "reason": "valid_confidence",
+              "value": 0.9
+            },
+            {
+              "field": "request_type",
+              "status": "accepted",
+              "reason": "normalized_turn_type_alias",
+              "value": "information",
+              "raw_value": "question"
+            },
+            {
+              "field": "unknown_facts",
+              "status": "accepted",
+              "reason": "valid_array",
+              "count": 1
+            },
+            {
+              "field": "unknown_facts[0]",
+              "status": "rejected",
+              "reason": "invalid_or_duplicate_unknown_fact_slot"
+            },
+            {
+              "field": "object_evidence",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 7,
+              "end": 15
+            },
+            {
+              "field": "object",
+              "status": "accepted",
+              "reason": "unique_registered_object_alias_from_current_message",
+              "value": "чек",
+              "start": 33,
+              "end": 37
+            },
+            {
+              "field": "specialist_evidence",
+              "status": "omitted",
+              "reason": "not_claimed"
+            },
+            {
+              "field": "specialist_requested",
+              "status": "accepted",
+              "reason": "not_requested"
+            },
+            {
+              "field": "entities",
+              "status": "omitted",
+              "reason": "no_entity_claims"
+            },
+            {
+              "field": "entities.manufacturer",
+              "status": "accepted",
+              "reason": "exact_known_alias_found_in_current_message",
+              "value": "Эвотор",
+              "start": 7,
+              "end": 13
+            },
+            {
+              "field": "entities.equipment",
+              "status": "accepted",
+              "reason": "exact_known_manufacturer_model_span",
+              "value": "Эвотор 6",
+              "start": 7,
+              "end": 15
+            },
+            {
+              "field": "goal",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 16,
+              "end": 50
+            },
+            {
+              "field": "symptom",
+              "status": "omitted",
+              "reason": "not_claimed"
+            }
+          ],
+          "observation": {
+            "intent": "general",
+            "operation": "unknown",
+            "object": "чек",
+            "relation": "new_task",
+            "confidence": 0.9,
+            "intent_evidence": null,
+            "operation_evidence": null,
+            "object_evidence": {
+              "value": "чека",
+              "message_id": 1,
+              "quote": "чека",
+              "start": 33,
+              "end": 37
+            },
+            "relation_evidence": null,
+            "evidence": {
+              "value": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+              "message_id": 1,
+              "quote": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+              "start": 0,
+              "end": 51
+            },
+            "symptom": null,
+            "goals": [
+              {
+                "value": "напечатать копию чека по номеру ФД",
+                "message_id": 1,
+                "quote": "напечатать копию чека по номеру ФД",
+                "start": 16,
+                "end": 50
+              }
+            ],
+            "unknown_facts": {},
+            "entities": {
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 7,
+                  "end": 13
+                }
+              ],
+              "equipment": [
+                {
+                  "value": "Эвотор 6",
+                  "message_id": 1,
+                  "quote": "Эвотор 6",
+                  "start": 7,
+                  "end": 15
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "text": "Что именно нужно сделать или что сейчас не работает?",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "clarification",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": 0,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "clarify",
+        "scenario_reason": "dialogue_state_task_incomplete",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": null,
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": null,
+        "active_request": null,
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 1,
+          "session": {
+            "entities": {
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 7,
+                  "end": 13
+                }
+              ],
+              "equipment": [
+                {
+                  "value": "Эвотор 6",
+                  "message_id": 1,
+                  "quote": "Эвотор 6",
+                  "start": 7,
+                  "end": 15
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 7,
+                "end": 13
+              }
+            }
+          },
+          "task_context": {
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "general",
+            "operation": "unknown",
+            "object": "чек",
+            "entities": {
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 7,
+                  "end": 13
+                }
+              ],
+              "equipment": [
+                {
+                  "value": "Эвотор 6",
+                  "message_id": 1,
+                  "quote": "Эвотор 6",
+                  "start": 7,
+                  "end": 15
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 7,
+                "end": 13
+              }
+            },
+            "parameters": [],
+            "object_reference": null,
+            "task_fact": {
+              "value": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+              "message_id": 1,
+              "quote": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+              "start": 0,
+              "end": 51
+            },
+            "operation_evidence": null,
+            "operation_confidence": 0.9,
+            "symptom": null,
+            "superseded_facts": [],
+            "goals": [
+              {
+                "value": "напечатать копию чека по номеру ФД",
+                "message_id": 1,
+                "quote": "напечатать копию чека по номеру ФД",
+                "start": 16,
+                "end": 50
+              }
+            ],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "new_task",
+            "confidence": 0.9,
+            "transition": "new_task",
+            "analysis_required": false,
+            "unresolved": null,
+            "unknown_facts": [],
+            "procedure_id": null,
+            "shown_units": [],
+            "eligible_units": [],
+            "checks": [],
+            "open_question": null,
+            "current_subgoal": {
+              "value": "напечатать копию чека по номеру ФД",
+              "message_id": 1,
+              "quote": "напечатать копию чека по номеру ФД",
+              "start": 16,
+              "end": 50
+            },
+            "clarification_repeats": {},
+            "closed": false
+          },
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "general",
+          "operation": "unknown",
+          "object": "чек",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 7,
+                "end": 13
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 6",
+                "message_id": 1,
+                "quote": "Эвотор 6",
+                "start": 7,
+                "end": 15
+              }
+            ]
+          },
+          "routing_slot": "manufacturer",
+          "parameters": [],
+          "object_reference": null,
+          "task": {
+            "value": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+            "message_id": 1,
+            "quote": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+            "start": 0,
+            "end": 51
+          },
+          "operation_evidence": null,
+          "goals": [
+            {
+              "value": "напечатать копию чека по номеру ФД",
+              "message_id": 1,
+              "quote": "напечатать копию чека по номеру ФД",
+              "start": 16,
+              "end": 50
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": "task",
+        "retrieval_diagnostics": null,
+        "retrieval_collection": "knowledge_stage3_retrieval_20261022",
+        "reasoning_effort": "medium",
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": null,
+        "dialogue_understanding": {
+          "request_type": "information",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 866,
+            "completion_tokens": 828,
+            "total_tokens": 1694
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 3119
+        },
+        "coordinator_decision": {
+          "request_type": "information",
+          "route": "conversation",
+          "task_relation": "new_task",
+          "current_subgoal": "напечатать копию чека по номеру ФД",
+          "required_action": "ask_for_task_or_goal",
+          "rationale": "task_not_ready"
+        },
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        0
+      ]
+    },
+    {
+      "case": "diadoc",
+      "turn": 1,
+      "question": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+      "answer": "Что именно нужно сделать или что сейчас не работает?",
+      "latency_ms": 5020,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 0,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": null,
+        "task_id": null,
+        "topic_start_message_id": null,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": null,
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 1.0,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "service": [
+              {
+                "value": "Диадок",
+                "message_id": 3,
+                "quote": "Диадок",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "service",
+            "fact": {
+              "value": "Диадок",
+              "message_id": 3,
+              "quote": "Диадок",
+              "start": 0,
+              "end": 6
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:3",
+          "topic_start_message_id": 3,
+          "intent": "unknown",
+          "operation": "unknown",
+          "object": "УПД",
+          "entities": {
+            "service": [
+              {
+                "value": "Диадок",
+                "message_id": 3,
+                "quote": "Диадок",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "service",
+            "fact": {
+              "value": "Диадок",
+              "message_id": 3,
+              "quote": "Диадок",
+              "start": 0,
+              "end": 6
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+            "message_id": 3,
+            "quote": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+            "start": 0,
+            "end": 68
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": {
+            "value": "контрагент не видит отправленный УПД",
+            "message_id": 3,
+            "quote": "контрагент не видит отправленный УПД",
+            "start": 8,
+            "end": 44
+          },
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "хочу проверить статус",
+              "message_id": 3,
+              "quote": "хочу проверить статус",
+              "start": 46,
+              "end": 67
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": {
+            "slot": "task",
+            "question": "Что именно нужно сделать или что сейчас не работает?",
+            "message_id": 4,
+            "reason": "dialogue_state_task_incomplete"
+          },
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": "task",
+          "current_subgoal": {
+            "value": "хочу проверить статус",
+            "message_id": 3,
+            "quote": "хочу проверить статус",
+            "start": 46,
+            "end": 67
+          },
+          "clarification_repeats": {
+            "task": 1
+          },
+          "closed": false
+        },
+        "task_id": "task:3",
+        "topic_start_message_id": 3,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": "УПД",
+        "entities": {
+          "service": [
+            {
+              "value": "Диадок",
+              "message_id": 3,
+              "quote": "Диадок",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "service",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+          "message_id": 3,
+          "quote": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+          "start": 0,
+          "end": 68
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "хочу проверить статус",
+            "message_id": 3,
+            "quote": "хочу проверить статус",
+            "start": 46,
+            "end": 67
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": {
+          "slot": "task",
+          "question": "Что именно нужно сделать или что сейчас не работает?",
+          "message_id": 4,
+          "reason": "dialogue_state_task_incomplete"
+        },
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "same_task": false,
+      "understanding": [
+        {
+          "request_type": "unknown",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 866,
+            "completion_tokens": 1037,
+            "total_tokens": 1903
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 4997,
+          "validation_diagnostics": [
+            {
+              "field": "relation",
+              "status": "accepted",
+              "reason": "valid_semantic_classification",
+              "value": "new_task"
+            },
+            {
+              "field": "intent",
+              "status": "rejected",
+              "reason": "unsupported_value_defaulted_to_unknown",
+              "value": "unknown"
+            },
+            {
+              "field": "operation",
+              "status": "rejected",
+              "reason": "unsupported_value_defaulted_to_unknown",
+              "value": "unknown"
+            },
+            {
+              "field": "confidence",
+              "status": "accepted",
+              "reason": "valid_confidence",
+              "value": 0.9
+            },
+            {
+              "field": "request_type",
+              "status": "rejected",
+              "reason": "unsupported_value_preserved_as_unknown",
+              "value": "unknown",
+              "raw_value": "request"
+            },
+            {
+              "field": "unknown_facts",
+              "status": "omitted",
+              "reason": "no_unknown_slots_claimed"
+            },
+            {
+              "field": "object_evidence",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 41,
+              "end": 44
+            },
+            {
+              "field": "object",
+              "status": "accepted",
+              "reason": "exact_object_value_grounded_by_evidence",
+              "value": "УПД",
+              "start": 41,
+              "end": 44
+            },
+            {
+              "field": "specialist_evidence",
+              "status": "omitted",
+              "reason": "not_claimed"
+            },
+            {
+              "field": "specialist_requested",
+              "status": "accepted",
+              "reason": "not_requested"
+            },
+            {
+              "field": "entities",
+              "status": "accepted",
+              "reason": "valid_array",
+              "count": 2
+            },
+            {
+              "field": "entities[0]",
+              "status": "rejected",
+              "reason": "invalid_entity_slot_or_value",
+              "slot": "counterparty",
+              "claimed": "контрагент"
+            },
+            {
+              "field": "entities[1]",
+              "status": "rejected",
+              "reason": "invalid_entity_slot_or_value",
+              "slot": "document",
+              "claimed": "УПД"
+            },
+            {
+              "field": "entities.service",
+              "status": "accepted",
+              "reason": "exact_known_alias_found_in_current_message",
+              "value": "Диадок",
+              "start": 0,
+              "end": 6
+            },
+            {
+              "field": "goal",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 46,
+              "end": 67
+            },
+            {
+              "field": "symptom",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 8,
+              "end": 44
+            }
+          ],
+          "observation": {
+            "intent": "unknown",
+            "operation": "unknown",
+            "object": "УПД",
+            "relation": "new_task",
+            "confidence": 0.9,
+            "intent_evidence": null,
+            "operation_evidence": null,
+            "object_evidence": {
+              "value": "УПД",
+              "message_id": 3,
+              "quote": "УПД",
+              "start": 41,
+              "end": 44
+            },
+            "relation_evidence": null,
+            "evidence": {
+              "value": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+              "message_id": 3,
+              "quote": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+              "start": 0,
+              "end": 68
+            },
+            "symptom": {
+              "value": "контрагент не видит отправленный УПД",
+              "message_id": 3,
+              "quote": "контрагент не видит отправленный УПД",
+              "start": 8,
+              "end": 44
+            },
+            "goals": [
+              {
+                "value": "хочу проверить статус",
+                "message_id": 3,
+                "quote": "хочу проверить статус",
+                "start": 46,
+                "end": 67
+              }
+            ],
+            "unknown_facts": {},
+            "entities": {
+              "service": [
+                {
+                  "value": "Диадок",
+                  "message_id": 3,
+                  "quote": "Диадок",
+                  "start": 0,
+                  "end": 6
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "text": "Что именно нужно сделать или что сейчас не работает?",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "clarification",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": 0,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "clarify",
+        "scenario_reason": "dialogue_state_task_incomplete",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": null,
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": null,
+        "active_request": null,
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 1,
+          "session": {
+            "entities": {
+              "service": [
+                {
+                  "value": "Диадок",
+                  "message_id": 3,
+                  "quote": "Диадок",
+                  "start": 0,
+                  "end": 6
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "service",
+              "fact": {
+                "value": "Диадок",
+                "message_id": 3,
+                "quote": "Диадок",
+                "start": 0,
+                "end": 6
+              }
+            }
+          },
+          "task_context": {
+            "task_id": "task:3",
+            "topic_start_message_id": 3,
+            "intent": "unknown",
+            "operation": "unknown",
+            "object": "УПД",
+            "entities": {
+              "service": [
+                {
+                  "value": "Диадок",
+                  "message_id": 3,
+                  "quote": "Диадок",
+                  "start": 0,
+                  "end": 6
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "service",
+              "fact": {
+                "value": "Диадок",
+                "message_id": 3,
+                "quote": "Диадок",
+                "start": 0,
+                "end": 6
+              }
+            },
+            "parameters": [],
+            "object_reference": null,
+            "task_fact": {
+              "value": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+              "message_id": 3,
+              "quote": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+              "start": 0,
+              "end": 68
+            },
+            "operation_evidence": null,
+            "operation_confidence": 0.9,
+            "symptom": {
+              "value": "контрагент не видит отправленный УПД",
+              "message_id": 3,
+              "quote": "контрагент не видит отправленный УПД",
+              "start": 8,
+              "end": 44
+            },
+            "superseded_facts": [],
+            "goals": [
+              {
+                "value": "хочу проверить статус",
+                "message_id": 3,
+                "quote": "хочу проверить статус",
+                "start": 46,
+                "end": 67
+              }
+            ],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "new_task",
+            "confidence": 0.9,
+            "transition": "new_task",
+            "analysis_required": false,
+            "unresolved": null,
+            "unknown_facts": [],
+            "procedure_id": null,
+            "shown_units": [],
+            "eligible_units": [],
+            "checks": [],
+            "open_question": null,
+            "current_subgoal": {
+              "value": "хочу проверить статус",
+              "message_id": 3,
+              "quote": "хочу проверить статус",
+              "start": 46,
+              "end": 67
+            },
+            "clarification_repeats": {},
+            "closed": false
+          },
+          "task_id": "task:3",
+          "topic_start_message_id": 3,
+          "intent": "unknown",
+          "operation": "unknown",
+          "object": "УПД",
+          "entities": {
+            "service": [
+              {
+                "value": "Диадок",
+                "message_id": 3,
+                "quote": "Диадок",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "routing_slot": "service",
+          "parameters": [],
+          "object_reference": null,
+          "task": {
+            "value": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+            "message_id": 3,
+            "quote": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+            "start": 0,
+            "end": 68
+          },
+          "operation_evidence": null,
+          "goals": [
+            {
+              "value": "хочу проверить статус",
+              "message_id": 3,
+              "quote": "хочу проверить статус",
+              "start": 46,
+              "end": 67
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": "task",
+        "retrieval_diagnostics": null,
+        "retrieval_collection": "knowledge_stage3_retrieval_20261022",
+        "reasoning_effort": "medium",
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": null,
+        "dialogue_understanding": {
+          "request_type": "unknown",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 866,
+            "completion_tokens": 1037,
+            "total_tokens": 1903
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 4997
+        },
+        "coordinator_decision": {
+          "request_type": "unknown",
+          "route": "conversation",
+          "task_relation": "new_task",
+          "current_subgoal": "хочу проверить статус",
+          "required_action": "ask_for_task_or_goal",
+          "rationale": "task_not_ready"
+        },
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        1
+      ]
+    },
+    {
+      "case": "bifit",
+      "turn": 1,
+      "question": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+      "answer": "Что именно нужно сделать или что сейчас не работает?",
+      "latency_ms": 1977,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 0,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": null,
+        "task_id": null,
+        "topic_start_message_id": null,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": null,
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 1.0,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "service": [
+              {
+                "value": "БИФИТ",
+                "message_id": 5,
+                "quote": "БИФИТ",
+                "start": 23,
+                "end": 28
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "service",
+            "fact": {
+              "value": "БИФИТ",
+              "message_id": 5,
+              "quote": "БИФИТ",
+              "start": 23,
+              "end": 28
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:5",
+          "topic_start_message_id": 5,
+          "intent": "unknown",
+          "operation": "unknown",
+          "object": null,
+          "entities": {
+            "service": [
+              {
+                "value": "БИФИТ",
+                "message_id": 5,
+                "quote": "БИФИТ",
+                "start": 23,
+                "end": 28
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "service",
+            "fact": {
+              "value": "БИФИТ",
+              "message_id": 5,
+              "quote": "БИФИТ",
+              "start": 23,
+              "end": 28
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+            "message_id": 5,
+            "quote": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+            "start": 0,
+            "end": 55
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.95,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": {
+            "slot": "task",
+            "question": "Что именно нужно сделать или что сейчас не работает?",
+            "message_id": 6,
+            "reason": "dialogue_state_task_incomplete"
+          },
+          "relation": "new_task",
+          "confidence": 0.95,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": "task",
+          "current_subgoal": null,
+          "clarification_repeats": {
+            "task": 1
+          },
+          "closed": false
+        },
+        "task_id": "task:5",
+        "topic_start_message_id": 5,
+        "intent": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {
+          "service": [
+            {
+              "value": "БИФИТ",
+              "message_id": 5,
+              "quote": "БИФИТ",
+              "start": 23,
+              "end": 28
+            }
+          ]
+        },
+        "routing_slot": "service",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+          "message_id": 5,
+          "quote": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+          "start": 0,
+          "end": 55
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": {
+          "slot": "task",
+          "question": "Что именно нужно сделать или что сейчас не работает?",
+          "message_id": 6,
+          "reason": "dialogue_state_task_incomplete"
+        },
+        "relation": "new_task",
+        "confidence": 0.95,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "same_task": false,
+      "understanding": [
+        {
+          "request_type": "unknown",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 863,
+            "completion_tokens": 760,
+            "total_tokens": 1623
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 1948,
+          "validation_diagnostics": [
+            {
+              "field": "relation",
+              "status": "accepted",
+              "reason": "valid_semantic_classification",
+              "value": "new_task"
+            },
+            {
+              "field": "intent",
+              "status": "rejected",
+              "reason": "unsupported_value_defaulted_to_unknown",
+              "value": "unknown"
+            },
+            {
+              "field": "operation",
+              "status": "rejected",
+              "reason": "unsupported_value_defaulted_to_unknown",
+              "value": "unknown"
+            },
+            {
+              "field": "object",
+              "status": "rejected",
+              "reason": "unsupported_object_value",
+              "claimed": "столами"
+            },
+            {
+              "field": "confidence",
+              "status": "accepted",
+              "reason": "valid_confidence",
+              "value": 0.95
+            },
+            {
+              "field": "request_type",
+              "status": "rejected",
+              "reason": "unsupported_value_preserved_as_unknown",
+              "value": "unknown",
+              "raw_value": "task"
+            },
+            {
+              "field": "unknown_facts",
+              "status": "omitted",
+              "reason": "no_unknown_slots_claimed"
+            },
+            {
+              "field": "object_evidence",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 47,
+              "end": 54
+            },
+            {
+              "field": "specialist_evidence",
+              "status": "omitted",
+              "reason": "not_claimed"
+            },
+            {
+              "field": "specialist_requested",
+              "status": "accepted",
+              "reason": "not_requested"
+            },
+            {
+              "field": "entities",
+              "status": "accepted",
+              "reason": "valid_array",
+              "count": 2
+            },
+            {
+              "field": "entities[0]",
+              "status": "accepted",
+              "reason": "retyped_from_exact_source_alias",
+              "slot": "service",
+              "value": "БИФИТ",
+              "start": 23,
+              "end": 28
+            },
+            {
+              "field": "entities[1]",
+              "status": "rejected",
+              "reason": "invalid_entity_slot_or_value",
+              "slot": "domain",
+              "claimed": "Общепит"
+            },
+            {
+              "field": "goal",
+              "status": "omitted",
+              "reason": "not_claimed"
+            },
+            {
+              "field": "symptom",
+              "status": "omitted",
+              "reason": "not_claimed"
+            }
+          ],
+          "observation": {
+            "intent": "unknown",
+            "operation": "unknown",
+            "object": null,
+            "relation": "new_task",
+            "confidence": 0.95,
+            "intent_evidence": null,
+            "operation_evidence": null,
+            "object_evidence": {
+              "value": "столами",
+              "message_id": 5,
+              "quote": "столами",
+              "start": 47,
+              "end": 54
+            },
+            "relation_evidence": null,
+            "evidence": {
+              "value": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+              "message_id": 5,
+              "quote": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+              "start": 0,
+              "end": 55
+            },
+            "symptom": null,
+            "goals": [],
+            "unknown_facts": {},
+            "entities": {
+              "service": [
+                {
+                  "value": "БИФИТ",
+                  "message_id": 5,
+                  "quote": "БИФИТ",
+                  "start": 23,
+                  "end": 28
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "text": "Что именно нужно сделать или что сейчас не работает?",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "clarification",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": 0,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "clarify",
+        "scenario_reason": "dialogue_state_task_incomplete",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": null,
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": null,
+        "active_request": null,
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 1,
+          "session": {
+            "entities": {
+              "service": [
+                {
+                  "value": "БИФИТ",
+                  "message_id": 5,
+                  "quote": "БИФИТ",
+                  "start": 23,
+                  "end": 28
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "service",
+              "fact": {
+                "value": "БИФИТ",
+                "message_id": 5,
+                "quote": "БИФИТ",
+                "start": 23,
+                "end": 28
+              }
+            }
+          },
+          "task_context": {
+            "task_id": "task:5",
+            "topic_start_message_id": 5,
+            "intent": "unknown",
+            "operation": "unknown",
+            "object": null,
+            "entities": {
+              "service": [
+                {
+                  "value": "БИФИТ",
+                  "message_id": 5,
+                  "quote": "БИФИТ",
+                  "start": 23,
+                  "end": 28
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "service",
+              "fact": {
+                "value": "БИФИТ",
+                "message_id": 5,
+                "quote": "БИФИТ",
+                "start": 23,
+                "end": 28
+              }
+            },
+            "parameters": [],
+            "object_reference": null,
+            "task_fact": {
+              "value": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+              "message_id": 5,
+              "quote": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+              "start": 0,
+              "end": 55
+            },
+            "operation_evidence": null,
+            "operation_confidence": 0.95,
+            "symptom": null,
+            "superseded_facts": [],
+            "goals": [],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "new_task",
+            "confidence": 0.95,
+            "transition": "new_task",
+            "analysis_required": false,
+            "unresolved": null,
+            "unknown_facts": [],
+            "procedure_id": null,
+            "shown_units": [],
+            "eligible_units": [],
+            "checks": [],
+            "open_question": null,
+            "current_subgoal": null,
+            "clarification_repeats": {},
+            "closed": false
+          },
+          "task_id": "task:5",
+          "topic_start_message_id": 5,
+          "intent": "unknown",
+          "operation": "unknown",
+          "object": null,
+          "entities": {
+            "service": [
+              {
+                "value": "БИФИТ",
+                "message_id": 5,
+                "quote": "БИФИТ",
+                "start": 23,
+                "end": 28
+              }
+            ]
+          },
+          "routing_slot": "service",
+          "parameters": [],
+          "object_reference": null,
+          "task": {
+            "value": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+            "message_id": 5,
+            "quote": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+            "start": 0,
+            "end": 55
+          },
+          "operation_evidence": null,
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.95,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": "task",
+        "retrieval_diagnostics": null,
+        "retrieval_collection": "knowledge_stage3_retrieval_20261022",
+        "reasoning_effort": "medium",
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": null,
+        "dialogue_understanding": {
+          "request_type": "unknown",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 863,
+            "completion_tokens": 760,
+            "total_tokens": 1623
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 1948
+        },
+        "coordinator_decision": {
+          "request_type": "unknown",
+          "route": "conversation",
+          "task_relation": "new_task",
+          "current_subgoal": null,
+          "required_action": "ask_for_task_or_goal",
+          "rationale": "task_not_ready"
+        },
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        2
+      ]
+    }
+  ],
+  "generation_calls": [],
+  "understanding_calls": [
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "validated_with_field_rejections",
+      "structured_output": {
+        "request_type": "question",
+        "relation": "new_task",
+        "intent": "information",
+        "operation": "procedure",
+        "object": "Эвотор 6",
+        "object_evidence": {
+          "quote": "Эвотор 6"
+        },
+        "goal": {
+          "quote": "напечатать копию чека по номеру ФД"
+        },
+        "symptom": null,
+        "entities": [],
+        "unknown_facts": [
+          {
+            "slot": "FD number",
+            "evidence": {
+              "quote": "номер ФД"
+            }
+          }
+        ],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "field_diagnostics": [
+        {
+          "field": "relation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "new_task"
+        },
+        {
+          "field": "intent",
+          "status": "accepted",
+          "reason": "normalized_semantic_alias",
+          "value": "general"
+        },
+        {
+          "field": "operation",
+          "status": "rejected",
+          "reason": "unsupported_value_defaulted_to_unknown",
+          "value": "unknown"
+        },
+        {
+          "field": "object",
+          "status": "rejected",
+          "reason": "unsupported_object_value",
+          "claimed": "Эвотор 6"
+        },
+        {
+          "field": "confidence",
+          "status": "accepted",
+          "reason": "valid_confidence",
+          "value": 0.9
+        },
+        {
+          "field": "request_type",
+          "status": "accepted",
+          "reason": "normalized_turn_type_alias",
+          "value": "information",
+          "raw_value": "question"
+        },
+        {
+          "field": "unknown_facts",
+          "status": "accepted",
+          "reason": "valid_array",
+          "count": 1
+        },
+        {
+          "field": "unknown_facts[0]",
+          "status": "rejected",
+          "reason": "invalid_or_duplicate_unknown_fact_slot"
+        },
+        {
+          "field": "object_evidence",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 7,
+          "end": 15
+        },
+        {
+          "field": "object",
+          "status": "accepted",
+          "reason": "unique_registered_object_alias_from_current_message",
+          "value": "чек",
+          "start": 33,
+          "end": 37
+        },
+        {
+          "field": "specialist_evidence",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "specialist_requested",
+          "status": "accepted",
+          "reason": "not_requested"
+        },
+        {
+          "field": "entities",
+          "status": "omitted",
+          "reason": "no_entity_claims"
+        },
+        {
+          "field": "entities.manufacturer",
+          "status": "accepted",
+          "reason": "exact_known_alias_found_in_current_message",
+          "value": "Эвотор",
+          "start": 7,
+          "end": 13
+        },
+        {
+          "field": "entities.equipment",
+          "status": "accepted",
+          "reason": "exact_known_manufacturer_model_span",
+          "value": "Эвотор 6",
+          "start": 7,
+          "end": 15
+        },
+        {
+          "field": "goal",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 16,
+          "end": 50
+        },
+        {
+          "field": "symptom",
+          "status": "omitted",
+          "reason": "not_claimed"
+        }
+      ],
+      "tokens": {
+        "prompt_tokens": 866,
+        "completion_tokens": 828,
+        "total_tokens": 1694
+      },
+      "duration_ms": 3118,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Как на Эвотор 6 напечатать копию чека по номеру ФД?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "complete"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "validated_with_field_rejections",
+      "structured_output": {
+        "request_type": "request",
+        "relation": "new_task",
+        "intent": "request_status",
+        "operation": "lookup",
+        "object": "УПД",
+        "object_evidence": {
+          "quote": "УПД"
+        },
+        "goal": {
+          "quote": "хочу проверить статус"
+        },
+        "symptom": {
+          "quote": "контрагент не видит отправленный УПД"
+        },
+        "entities": [
+          {
+            "slot": "counterparty",
+            "value": "контрагент",
+            "evidence": {
+              "quote": "контрагент"
+            }
+          },
+          {
+            "slot": "document",
+            "value": "УПД",
+            "evidence": {
+              "quote": "УПД"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "field_diagnostics": [
+        {
+          "field": "relation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "new_task"
+        },
+        {
+          "field": "intent",
+          "status": "rejected",
+          "reason": "unsupported_value_defaulted_to_unknown",
+          "value": "unknown"
+        },
+        {
+          "field": "operation",
+          "status": "rejected",
+          "reason": "unsupported_value_defaulted_to_unknown",
+          "value": "unknown"
+        },
+        {
+          "field": "confidence",
+          "status": "accepted",
+          "reason": "valid_confidence",
+          "value": 0.9
+        },
+        {
+          "field": "request_type",
+          "status": "rejected",
+          "reason": "unsupported_value_preserved_as_unknown",
+          "value": "unknown",
+          "raw_value": "request"
+        },
+        {
+          "field": "unknown_facts",
+          "status": "omitted",
+          "reason": "no_unknown_slots_claimed"
+        },
+        {
+          "field": "object_evidence",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 41,
+          "end": 44
+        },
+        {
+          "field": "object",
+          "status": "accepted",
+          "reason": "exact_object_value_grounded_by_evidence",
+          "value": "УПД",
+          "start": 41,
+          "end": 44
+        },
+        {
+          "field": "specialist_evidence",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "specialist_requested",
+          "status": "accepted",
+          "reason": "not_requested"
+        },
+        {
+          "field": "entities",
+          "status": "accepted",
+          "reason": "valid_array",
+          "count": 2
+        },
+        {
+          "field": "entities[0]",
+          "status": "rejected",
+          "reason": "invalid_entity_slot_or_value",
+          "slot": "counterparty",
+          "claimed": "контрагент"
+        },
+        {
+          "field": "entities[1]",
+          "status": "rejected",
+          "reason": "invalid_entity_slot_or_value",
+          "slot": "document",
+          "claimed": "УПД"
+        },
+        {
+          "field": "entities.service",
+          "status": "accepted",
+          "reason": "exact_known_alias_found_in_current_message",
+          "value": "Диадок",
+          "start": 0,
+          "end": 6
+        },
+        {
+          "field": "goal",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 46,
+          "end": 67
+        },
+        {
+          "field": "symptom",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 8,
+          "end": 44
+        }
+      ],
+      "tokens": {
+        "prompt_tokens": 866,
+        "completion_tokens": 1037,
+        "total_tokens": 1903
+      },
+      "duration_ms": 4997,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Диадок: контрагент не видит отправленный УПД, хочу проверить статус.\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "complete"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "validated_with_field_rejections",
+      "structured_output": {
+        "request_type": "task",
+        "relation": "new_task",
+        "intent": "test",
+        "operation": "test",
+        "object": "столами",
+        "object_evidence": {
+          "quote": "столами"
+        },
+        "goal": null,
+        "symptom": null,
+        "entities": [
+          {
+            "slot": "system",
+            "value": "БИФИТ",
+            "evidence": {
+              "quote": "БИФИТ"
+            }
+          },
+          {
+            "slot": "domain",
+            "value": "Общепит",
+            "evidence": {
+              "quote": "Общепит"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.95
+      },
+      "field_diagnostics": [
+        {
+          "field": "relation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "new_task"
+        },
+        {
+          "field": "intent",
+          "status": "rejected",
+          "reason": "unsupported_value_defaulted_to_unknown",
+          "value": "unknown"
+        },
+        {
+          "field": "operation",
+          "status": "rejected",
+          "reason": "unsupported_value_defaulted_to_unknown",
+          "value": "unknown"
+        },
+        {
+          "field": "object",
+          "status": "rejected",
+          "reason": "unsupported_object_value",
+          "claimed": "столами"
+        },
+        {
+          "field": "confidence",
+          "status": "accepted",
+          "reason": "valid_confidence",
+          "value": 0.95
+        },
+        {
+          "field": "request_type",
+          "status": "rejected",
+          "reason": "unsupported_value_preserved_as_unknown",
+          "value": "unknown",
+          "raw_value": "task"
+        },
+        {
+          "field": "unknown_facts",
+          "status": "omitted",
+          "reason": "no_unknown_slots_claimed"
+        },
+        {
+          "field": "object_evidence",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 47,
+          "end": 54
+        },
+        {
+          "field": "specialist_evidence",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "specialist_requested",
+          "status": "accepted",
+          "reason": "not_requested"
+        },
+        {
+          "field": "entities",
+          "status": "accepted",
+          "reason": "valid_array",
+          "count": 2
+        },
+        {
+          "field": "entities[0]",
+          "status": "accepted",
+          "reason": "retyped_from_exact_source_alias",
+          "slot": "service",
+          "value": "БИФИТ",
+          "start": 23,
+          "end": 28
+        },
+        {
+          "field": "entities[1]",
+          "status": "rejected",
+          "reason": "invalid_entity_slot_or_value",
+          "slot": "domain",
+          "claimed": "Общепит"
+        },
+        {
+          "field": "goal",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "symptom",
+          "status": "omitted",
+          "reason": "not_claimed"
+        }
+      ],
+      "tokens": {
+        "prompt_tokens": 863,
+        "completion_tokens": 760,
+        "total_tokens": 1623
+      },
+      "duration_ms": 1947,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Нужно протестировать в БИФИТ Общепит работу со столами.\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "complete"
+    }
+  ],
+  "http_trace": [
+    {
+      "at_utc": "2026-10-28T14:43:56.374788+00:00",
+      "stage": "understanding",
+      "http_status": 200,
+      "duration_ms": 3103,
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6960",
+        "x-ratelimit-reset-tokens": "7.8s"
+      },
+      "usage": {
+        "prompt_tokens": 866,
+        "completion_tokens": 828,
+        "total_tokens": 1694
+      },
+      "llm_http_attempt": 1
+    },
+    {
+      "at_utc": "2026-10-28T14:44:13.451415+00:00",
+      "stage": "understanding",
+      "http_status": 200,
+      "duration_ms": 4995,
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6306",
+        "x-ratelimit-reset-tokens": "12.705s"
+      },
+      "usage": {
+        "prompt_tokens": 866,
+        "completion_tokens": 1037,
+        "total_tokens": 1903
+      },
+      "llm_http_attempt": 2
+    },
+    {
+      "at_utc": "2026-10-28T14:44:27.451665+00:00",
+      "stage": "understanding",
+      "http_status": 200,
+      "duration_ms": 1946,
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6100",
+        "x-ratelimit-reset-tokens": "14.25s"
+      },
+      "usage": {
+        "prompt_tokens": 863,
+        "completion_tokens": 760,
+        "total_tokens": 1623
+      },
+      "llm_http_attempt": 3
+    }
+  ]
+}

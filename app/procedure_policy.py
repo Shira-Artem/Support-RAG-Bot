@@ -189,6 +189,13 @@ def operation_compatibility(operation: str, metadata: dict,
         return "unknown"
     category = metadata.get("task_category")
     supported = {normalize_operation(str(item), category) for item in raw_operations}
+    if (task_category == category == "edo" and operation in {"search", "status", "check", "diagnose"}
+            and supported == {"exchange_edo_documents"}):
+        # This legacy metadata names a whole workflow, not a contradictory
+        # action. Admit it for inspection; it does not prove a read-only step
+        # or authorize signing/resending. SourceFirst still selects/verifies
+        # the exact applicable section and its order and safety.
+        return "unknown"
     if operation in {"unknown", "explain"}:
         hints = {normalize_operation(item, category, query)
                  for item in query_operation_hints(query)}

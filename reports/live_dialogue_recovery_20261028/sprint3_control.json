@@ -1,0 +1,778 @@
+{
+  "mode": "qdrant_client_in_memory_only",
+  "llm_calls": 0,
+  "production_qdrant_access": false,
+  "production_kb_write": false,
+  "approved_baseline_documents": 206,
+  "candidate_overlay_documents": 8,
+  "metadata_normalization": [
+    {
+      "document_id": "candidate-kbqs3-atol-api-receipt-not-found",
+      "source": "01-atol-api-receipt-not-found.md",
+      "task_category": "error_diagnosis",
+      "operations": [
+        "diagnose_error"
+      ],
+      "service": "АТОЛ Онлайн",
+      "model": "АТОЛ Онлайн",
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-bifit-pos-terminal-scope",
+      "source": "02-bifit-pos-terminal-scope.md",
+      "task_category": "peripheral_setup",
+      "operations": [
+        "configure_peripheral"
+      ],
+      "service": "БИФИТ Касса",
+      "model": null,
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-bifit-horeca-tables-scope",
+      "source": "03-bifit-horeca-tables-scope.md",
+      "task_category": "settings",
+      "operations": [
+        "configure_settings"
+      ],
+      "service": "БИФИТ Касса",
+      "model": null,
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-diadoc-outgoing-status",
+      "source": "04-diadoc-outgoing-status.md",
+      "task_category": "edo",
+      "operations": [
+        "exchange_edo_documents"
+      ],
+      "service": "Диадок",
+      "model": null,
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-saby-incoming-status",
+      "source": "05-saby-incoming-status.md",
+      "task_category": "edo",
+      "operations": [
+        "exchange_edo_documents"
+      ],
+      "service": "Saby",
+      "model": null,
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-evotor-marking-refusal",
+      "source": "06-evotor-marking-refusal.md",
+      "task_category": "marking",
+      "operations": [
+        "check_marking_code"
+      ],
+      "service": "Эвотор",
+      "model": null,
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-evotor-combined-payment",
+      "source": "07-evotor-combined-payment.md",
+      "task_category": "sales",
+      "operations": [
+        "process_sale"
+      ],
+      "service": "Эвотор",
+      "model": null,
+      "version": null
+    },
+    {
+      "document_id": "candidate-kbqs3-tspiot-api-scope",
+      "source": "08-tspiot-api-scope.md",
+      "task_category": "tspiot",
+      "operations": [
+        "diagnose_tspiot"
+      ],
+      "service": "ТС ПиОТ",
+      "model": null,
+      "version": null
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "bifit_terminal",
+      "message": "В БИФИТ Касса подключён банковский терминал, но карта не проходит.",
+      "expected_candidate": "candidate-kbqs3-bifit-pos-terminal-scope",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "aqsi-online-fns-finish-reg",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-ofd-error-not-connected-20261019",
+            "evotor-fn-210-360004715693",
+            "batch-20261013-bank-directbank-all-accounts",
+            "platformaofd-shtrih-connection-checks",
+            "platformaofd-tariff-activation",
+            "aqsi-device-unbox-hardware",
+            "evotor-mark-check-error-20261019",
+            "evotor-fn-212-360016100393"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "applicability_context_missing"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-bifit-pos-terminal-scope",
+            "candidate-kbqs3-bifit-horeca-tables-scope",
+            "aqsi-online-fns-finish-reg",
+            "evotor-ofd-error-not-connected-20261019",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-fn-210-360004715693",
+            "batch-20261013-bank-directbank-all-accounts",
+            "platformaofd-shtrih-connection-checks",
+            "platformaofd-tariff-activation",
+            "evotor-fn-212-360016100393"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "applicability_context_missing"
+        }
+      },
+      "query": "сервис: БИФИТ Касса — диагностика ошибки соединение — запрос клиента: В БИФИТ Касса подключён банковский терминал, но карта не проходит.",
+      "top_k_expected": true,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "bifit_tables",
+      "message": "В БИФИТ Касса Общепит нужно проверить тестирование столов.",
+      "expected_candidate": "candidate-kbqs3-bifit-horeca-tables-scope",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "atol-online-11254-test-cashier",
+            "atol-online-11248-bso-feature",
+            "platformaofd-tariff-activation",
+            "aqsi-online-fns-finish-reg",
+            "atol-online-18251-deregister-kkt",
+            "atol-online-22561-gateway-errors-timeout-128-protocol",
+            "atol-online-22561-fn-and-marking-errors-116-414-421-148",
+            "platformaofd-reregistration-kkt",
+            "aqsi-online-fns-register-ooo",
+            "atol-online-24147-replace-kaznachey"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-bifit-horeca-tables-scope",
+            "candidate-kbqs3-bifit-pos-terminal-scope",
+            "atol-online-11254-test-cashier",
+            "atol-online-11248-bso-feature",
+            "platformaofd-tariff-activation",
+            "aqsi-online-fns-finish-reg",
+            "atol-online-18251-deregister-kkt",
+            "atol-online-22561-gateway-errors-timeout-128-protocol",
+            "aqsi-online-fns-register-ooo",
+            "platformaofd-reregistration-kkt"
+          ],
+          "final": [
+            "candidate-kbqs3-bifit-horeca-tables-scope"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "сервис: БИФИТ Касса — проверка касса — запрос клиента: В БИФИТ Касса Общепит нужно проверить тестирование столов.",
+      "top_k_expected": true,
+      "final_expected": true,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "diadoc_status",
+      "message": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+      "expected_candidate": "candidate-kbqs3-diadoc-outgoing-status",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "batch-20261013-edo-epd-vs-edo",
+            "atol-online-14749-incoming-documents",
+            "batch-20261013-edo-connect-1c-edo",
+            "atol-online-11248-bso-feature",
+            "platformaofd-reregistration-kkt",
+            "batch-20261013-vat-electronic-upd-2026",
+            "platformaofd-lkk-receipt-fns-status",
+            "atol-online-22561-amount-errors-16-23",
+            "atol-online-22561-gateway-errors-timeout-128-protocol",
+            "batch-20261013-counterparty-reconciliation-monitor"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-diadoc-outgoing-status",
+            "batch-20261013-edo-epd-vs-edo",
+            "atol-online-14749-incoming-documents",
+            "batch-20261013-edo-connect-1c-edo",
+            "atol-online-11248-bso-feature",
+            "candidate-kbqs3-saby-incoming-status",
+            "platformaofd-reregistration-kkt",
+            "batch-20261013-vat-electronic-upd-2026",
+            "platformaofd-lkk-receipt-fns-status",
+            "atol-online-22561-amount-errors-16-23"
+          ],
+          "final": [
+            "candidate-kbqs3-diadoc-outgoing-status"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "сервис: Диадок — проверка УПД — запрос клиента: Диадок: контрагент не видит отправленный УПД, хочу проверить статус. — ограничения: Диадок: контрагент не видит отправленный УПД",
+      "top_k_expected": true,
+      "final_expected": true,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "saby_incoming",
+      "message": "В Saby не могу найти входящий документ.",
+      "expected_candidate": "candidate-kbqs3-saby-incoming-status",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "batch-20261013-taxes-ens-operations-name",
+            "atol-online-11059-find-offer",
+            "atol-online-12473-integrator-settings",
+            "batch-20261013-taxes-ens-menu-2026",
+            "platformaofd-lkk-cash-search",
+            "platformaofd-fn-number-in-lkk",
+            "atol-online-14145-closing-docs",
+            "platformaofd-lkk-receipt-search",
+            "atol-online-22560-receipt-journal-export",
+            "atol-online-14134-documents-operations"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-saby-incoming-status",
+            "batch-20261013-taxes-ens-operations-name",
+            "atol-online-11059-find-offer",
+            "atol-online-12473-integrator-settings",
+            "batch-20261013-taxes-ens-menu-2026",
+            "platformaofd-lkk-cash-search",
+            "platformaofd-fn-number-in-lkk",
+            "platformaofd-lkk-receipt-search",
+            "atol-online-14145-closing-docs",
+            "candidate-kbqs3-diadoc-outgoing-status"
+          ],
+          "final": [
+            "candidate-kbqs3-saby-incoming-status"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "сервис: Saby — В Saby не могу найти входящий документ. — ограничения: В Saby не могу найти входящий документ",
+      "top_k_expected": true,
+      "final_expected": true,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "evotor_marking",
+      "message": "Эвотор отклонил код маркировки при онлайн-проверке.",
+      "expected_candidate": "candidate-kbqs3-evotor-marking-refusal",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "evotor-mark-check-error-20261019",
+            "evotor-fn-210-360004715693",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-marked-goods-upd-20261019",
+            "evotor-fn-235-360004715213",
+            "evotor-model-6-lite-1d8e8869",
+            "evotor-ofd-error-not-connected-20261019",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-6-ofd-connection-360014099534",
+            "evotor-mobile-network-check-20261019"
+          ],
+          "final": [
+            "evotor-mark-check-error-20261019",
+            "evotor-marked-goods-upd-20261019"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-evotor-marking-refusal",
+            "evotor-mark-check-error-20261019",
+            "evotor-fn-210-360004715693",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-marked-goods-upd-20261019",
+            "evotor-fn-235-360004715213",
+            "evotor-model-6-lite-1d8e8869",
+            "candidate-kbqs3-tspiot-api-scope",
+            "evotor-ofd-error-not-connected-20261019",
+            "evotor-6-ofd-connection-360014099534"
+          ],
+          "final": [
+            "candidate-kbqs3-evotor-marking-refusal",
+            "evotor-mark-check-error-20261019",
+            "evotor-marked-goods-upd-20261019"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — Эвотор отклонил код маркировки при онлайн-проверке.",
+      "top_k_expected": true,
+      "final_expected": true,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "evotor_combo",
+      "message": "Эвотор: как работает комбинированная оплата?",
+      "expected_candidate": "candidate-kbqs3-evotor-combined-payment",
+      "collections": {},
+      "query_error": "Message relationship is unresolved"
+    },
+    {
+      "case_id": "tspiot_generic",
+      "message": "Как диагностировать ошибку ТС ПиОТ?",
+      "expected_candidate": "candidate-kbqs3-tspiot-api-scope",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "evotor-fn-217-89e20cf4",
+            "batch-20261013-closing-error-first-diagnostics",
+            "aqsi-device-marked-product",
+            "aqsi-device-fn161-document-not-saved",
+            "batch-20261013-edo-epd-vs-edo",
+            "evotor-fn-210-360004715693",
+            "aqsi-device-fn18-expired",
+            "aqsi-online-account-contact-support",
+            "platformaofd-lkk-receipt-fns-status",
+            "aqsi-kkt-error-126"
+          ],
+          "final": [
+            "evotor-fn-217-89e20cf4"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k": [
+            "evotor-fn-217-89e20cf4",
+            "batch-20261013-closing-error-first-diagnostics",
+            "aqsi-device-fn161-document-not-saved",
+            "aqsi-device-marked-product",
+            "batch-20261013-edo-epd-vs-edo",
+            "evotor-fn-210-360004715693",
+            "aqsi-device-fn18-expired",
+            "aqsi-online-account-contact-support",
+            "candidate-kbqs3-evotor-marking-refusal",
+            "platformaofd-lkk-receipt-fns-status"
+          ],
+          "final": [
+            "candidate-kbqs3-tspiot-api-scope"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "Как диагностировать ошибку ТС ПиОТ?",
+      "top_k_expected": false,
+      "final_expected": true,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "atol_api",
+      "message": "АТОЛ Онлайн: после подтверждённой оплаты API чек не найден.",
+      "expected_candidate": "candidate-kbqs3-atol-api-receipt-not-found",
+      "collections": {},
+      "query_error": "Message relationship is unresolved"
+    },
+    {
+      "case_id": "negative_atol_evotor",
+      "message": "Эвотор: как работает комбинированная оплата?",
+      "expected_candidate": "candidate-kbqs3-atol-api-receipt-not-found",
+      "collections": {},
+      "query_error": "Message relationship is unresolved"
+    },
+    {
+      "case_id": "negative_bifit_evotor",
+      "message": "Эвотор отклонил код маркировки.",
+      "expected_candidate": "candidate-kbqs3-bifit-pos-terminal-scope",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "evotor-mark-check-error-20261019",
+            "evotor-marked-goods-upd-20261019",
+            "evotor-model-6-lite-1d8e8869",
+            "evotor-6-receipt-copy-360005002514",
+            "evotor-fn-235-360004715213",
+            "evotor-time-mismatch-check-20261019",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-6-shift-360006708093",
+            "evotor-fn-210-360004715693",
+            "evotor-6-ofd-connection-360014099534"
+          ],
+          "final": [
+            "evotor-mark-check-error-20261019",
+            "evotor-marked-goods-upd-20261019"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-evotor-marking-refusal",
+            "evotor-mark-check-error-20261019",
+            "evotor-model-6-lite-1d8e8869",
+            "evotor-marked-goods-upd-20261019",
+            "evotor-6-receipt-copy-360005002514",
+            "evotor-fn-235-360004715213",
+            "evotor-time-mismatch-check-20261019",
+            "evotor-7-3-ofd-connection-360014099534",
+            "evotor-6-shift-360006708093",
+            "evotor-fn-210-360004715693"
+          ],
+          "final": [
+            "candidate-kbqs3-evotor-marking-refusal",
+            "evotor-mark-check-error-20261019",
+            "evotor-marked-goods-upd-20261019"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "производитель: Эвотор — Эвотор отклонил код маркировки.",
+      "top_k_expected": false,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "negative_diadoc_saby",
+      "message": "В Saby не могу найти входящий документ.",
+      "expected_candidate": "candidate-kbqs3-diadoc-outgoing-status",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "batch-20261013-taxes-ens-operations-name",
+            "atol-online-11059-find-offer",
+            "atol-online-12473-integrator-settings",
+            "batch-20261013-taxes-ens-menu-2026",
+            "platformaofd-lkk-cash-search",
+            "platformaofd-fn-number-in-lkk",
+            "atol-online-14145-closing-docs",
+            "platformaofd-lkk-receipt-search",
+            "atol-online-22560-receipt-journal-export",
+            "atol-online-14134-documents-operations"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-saby-incoming-status",
+            "batch-20261013-taxes-ens-operations-name",
+            "atol-online-11059-find-offer",
+            "atol-online-12473-integrator-settings",
+            "batch-20261013-taxes-ens-menu-2026",
+            "platformaofd-lkk-cash-search",
+            "platformaofd-fn-number-in-lkk",
+            "platformaofd-lkk-receipt-search",
+            "atol-online-14145-closing-docs",
+            "candidate-kbqs3-diadoc-outgoing-status"
+          ],
+          "final": [
+            "candidate-kbqs3-saby-incoming-status"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "сервис: Saby — В Saby не могу найти входящий документ. — ограничения: В Saby не могу найти входящий документ",
+      "top_k_expected": true,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "negative_status_atol",
+      "message": "АТОЛ Онлайн: как посмотреть статус подписания УПД?",
+      "expected_candidate": "candidate-kbqs3-atol-api-receipt-not-found",
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "atol-online-14145-closing-docs",
+            "atol-online-11248-bso-feature",
+            "atol-online-16576-freeze-service",
+            "atol-online-22561-gateway-errors-timeout-128-protocol",
+            "atol-online-14749-incoming-documents",
+            "atol-online-22561-amount-errors-16-23",
+            "atol-online-23349-activate-first-ofd",
+            "atol-online-12790-catalog-cms-banks",
+            "atol-online-12148-company-registration",
+            "atol-online-18251-deregister-kkt"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-atol-api-receipt-not-found"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        }
+      },
+      "query": "сервис: АТОЛ Онлайн — проверка УПД — запрос клиента: АТОЛ Онлайн: как посмотреть статус подписания УПД?",
+      "top_k_expected": true,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "real_bifit",
+      "message": "Здравствуйте. Нам нужно протестировать в программе БИФИТ систему общепит со столами.",
+      "expected_candidate": null,
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "atol-online-11242-receipt-creation-modes",
+            "atol-online-11243-correct-ffd105",
+            "atol-online-12790-catalog-cms-banks",
+            "batch-20261013-bank-directbank-auto-schedule",
+            "batch-20261013-taxes-ens-accounting-settings",
+            "atol-online-21944-fns-preparation",
+            "atol-online-25850-contacts",
+            "aqsi-kkt-error-115",
+            "atol-online-18126-monitoring",
+            "evotor-tspiot-localmodule-20261019"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-bifit-horeca-tables-scope",
+            "candidate-kbqs3-bifit-pos-terminal-scope",
+            "atol-online-11242-receipt-creation-modes",
+            "atol-online-11243-correct-ffd105",
+            "atol-online-12790-catalog-cms-banks",
+            "batch-20261013-bank-directbank-auto-schedule",
+            "atol-online-21944-fns-preparation",
+            "atol-online-25850-contacts",
+            "batch-20261013-taxes-ens-accounting-settings",
+            "atol-online-18126-monitoring"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        }
+      },
+      "query": "сервис: БИФИТ — Здравствуйте. Нам нужно протестировать в программе БИФИТ систему общепит со столами.",
+      "top_k_expected": false,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "real_marking",
+      "message": "При пробитии чека не считался код маркировки и эта позиция исчезла из чека.",
+      "expected_candidate": null,
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "platformaofd-flk-508",
+            "platformaofd-lkk-cash-search",
+            "evotor-correction-receipt-scope-20261019",
+            "platformaofd-flk-507",
+            "aqsi-online-receipts-incorrect-105",
+            "aqsi-device-marked-product",
+            "atol-online-22561-fn-and-marking-errors-116-414-421-148",
+            "aqsi-online-receipts-partial-refund",
+            "evotor-mark-check-error-20261019",
+            "evotor-fn-231-360005098974"
+          ],
+          "final": [
+            "platformaofd-flk-508"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k": [
+            "platformaofd-flk-508",
+            "platformaofd-lkk-cash-search",
+            "evotor-correction-receipt-scope-20261019",
+            "candidate-kbqs3-evotor-marking-refusal",
+            "aqsi-online-receipts-incorrect-105",
+            "platformaofd-flk-507",
+            "aqsi-device-marked-product",
+            "atol-online-22561-fn-and-marking-errors-116-414-421-148",
+            "aqsi-online-receipts-partial-refund",
+            "evotor-mark-check-error-20261019"
+          ],
+          "final": [
+            "platformaofd-flk-508"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "При пробитии чека не считался код маркировки и эта позиция исчезла из чека.",
+      "top_k_expected": false,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "real_edo",
+      "message": "Не получаем документы по ЭДО в Честный ЗНАК.",
+      "expected_candidate": null,
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "aqsi-device-permission-diagnostics",
+            "atol-online-14749-incoming-documents",
+            "atol-online-14145-closing-docs",
+            "aqsi-device-permission-setup",
+            "evotor-marked-goods-upd-20261019",
+            "atol-online-16568-step7-fn-activation",
+            "evotor-tspiot-localmodule-20261019",
+            "batch-20261013-edo-connect-1c-edo",
+            "batch-20261013-edo-epd-vs-edo",
+            "atol-online-14133-debt-payment"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        },
+        "staging": {
+          "top_k": [
+            "aqsi-device-permission-diagnostics",
+            "atol-online-14749-incoming-documents",
+            "atol-online-14145-closing-docs",
+            "aqsi-device-permission-setup",
+            "evotor-marked-goods-upd-20261019",
+            "atol-online-16568-step7-fn-activation",
+            "evotor-tspiot-localmodule-20261019",
+            "batch-20261013-edo-epd-vs-edo",
+            "atol-online-14133-debt-payment",
+            "batch-20261013-taxes-ens-operations-name"
+          ],
+          "final": [],
+          "sufficient": false,
+          "evidence_status": "none",
+          "reason": "no_task_matched_candidates"
+        }
+      },
+      "query": "сервис: Честный ЗНАК — Не получаем документы по ЭДО в Честный ЗНАК.",
+      "top_k_expected": false,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    },
+    {
+      "case_id": "real_terminal",
+      "message": "В приложении не подключен ни один банковский терминал.",
+      "expected_candidate": null,
+      "collections": {
+        "baseline": {
+          "top_k": [
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-fn-210-360004715693",
+            "batch-20261013-bank-directbank-all-accounts",
+            "evotor-mobile-network-check-20261019",
+            "evotor-marked-goods-upd-20261019",
+            "aqsi-online-account-register-account",
+            "aqsi-device-scanner-hub-power",
+            "aqsi-device-first-start-internet",
+            "evotor-7-3-ofd-connection-360014099534",
+            "batch-20261013-bank-directbank-other-banks"
+          ],
+          "final": [
+            "evotor-fn-210-360004715693",
+            "evotor-fn-217-89e20cf4",
+            "aqsi-kkt-error-126",
+            "evotor-fn-212-360016100393"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        },
+        "staging": {
+          "top_k": [
+            "candidate-kbqs3-bifit-pos-terminal-scope",
+            "platformaofd-partner-kkt-diagnostics",
+            "evotor-fn-210-360004715693",
+            "batch-20261013-bank-directbank-all-accounts",
+            "evotor-mobile-network-check-20261019",
+            "aqsi-device-scanner-hub-power",
+            "evotor-marked-goods-upd-20261019",
+            "aqsi-online-account-register-account",
+            "aqsi-device-first-start-internet",
+            "evotor-7-3-ofd-connection-360014099534"
+          ],
+          "final": [
+            "evotor-fn-210-360004715693",
+            "evotor-fn-217-89e20cf4",
+            "aqsi-kkt-error-126",
+            "evotor-fn-212-360016100393"
+          ],
+          "sufficient": true,
+          "evidence_status": "partial",
+          "reason": "evidence_coverage_incomplete"
+        }
+      },
+      "query": "диагностика ошибки соединение — запрос клиента: В приложении не подключен ни один банковский терминал.",
+      "top_k_expected": false,
+      "final_expected": false,
+      "unexpected_candidate_final": false
+    }
+  ],
+  "summary": {
+    "cases": 16,
+    "positive_cases": 8,
+    "negative_pairs": 4,
+    "real_prompts": 4,
+    "positive_cases_resolved_by_state": 6,
+    "positive_expected_raw_top_k_hits": 5,
+    "positive_expected_final_evidence_hits": 5,
+    "negative_target_candidate_top_k_hits": 2,
+    "negative_target_candidate_final_hits": 0,
+    "negative_cross_candidate_final_hits": 2,
+    "real_prompts_with_new_candidate_final_evidence": 0,
+    "baseline_staging_same_final_selection_real": 4,
+    "llm_quality_evaluated": false
+  }
+}

@@ -85,6 +85,17 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         raise GenerationError("LLM API key is not configured")
     headers["Authorization"] = f"Bearer {key}"
     request = {"model": model, "messages": messages, "temperature": 0.2, **token_limit}
+    if call_stage == "planner" and settings.llm_provider == "groq":
+        request["response_format"] = {"type": "json_schema", "json_schema": {
+            "name": "source_section_plan", "strict": True,
+            "schema": {"type": "object", "additionalProperties": False,
+                "properties": {
+                    "mode": {"type": "string", "enum": ["select", "clarify", "escalate"]},
+                    "section_id": {"type": "string"},
+                    "applicability_confirmed": {"type": "boolean"},
+                    "order_confirmed": {"type": "boolean"},
+                    "reason": {"type": "string"}},
+                "required": ["mode", "section_id", "applicability_confirmed", "order_confirmed", "reason"]}}}
     attempt_number = None
     if settings.llm_provider == "groq":
         try:

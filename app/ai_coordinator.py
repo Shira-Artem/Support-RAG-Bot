@@ -50,6 +50,12 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
                             if isinstance(item, dict) and item.get("value")), None)
 
     operation = state.operation
+    # An absent enum projection is not an absent client task. A reducer-owned
+    # goal/symptom plus its subject is sufficient to search for evidence;
+    # it never authorizes a procedure or fills a missing scope fact.
+    semantic_task_ready = bool(not state.analysis_required and state.task and
+        (state.goals or state.symptom) and
+        (state.object or state.task_entities))
     current_quote = ((observation.get("evidence") or {}).get("quote")
                      if isinstance(observation.get("evidence"), dict) else None)
     reports_check = bool(current_quote and state.active_task and any(
@@ -69,9 +75,10 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
         route, action, rationale = (
             "grounded_information", "retrieve_and_quote_focused_approved_evidence",
             "grounded_explanation_requires_scoped_evidence")
-    elif operation != "unknown":
+    elif operation != "unknown" or semantic_task_ready:
         route, action, rationale = (
             "technical_action", "retrieve_then_apply_independent_scope_and_safety_gates",
+            "semantic_goal_ready_for_evidence_search" if operation == "unknown" else
             "task_requires_applicability_checked_action")
     else:
         route, action, rationale = "conversation", "ask_for_task_or_goal", "task_not_ready"

@@ -1,0 +1,111 @@
+[
+  {
+    "id": "real_compound_1",
+    "text": "На Эвотор 7.3 чеки пробиваются, но не передаются в ОФД. С чего начать проверку?",
+    "provider_raw": {
+      "request_type": "instruction",
+      "relation": "new_task",
+      "intent": "device",
+      "operation": "diagnose",
+      "object": "receipts",
+      "object_evidence": {
+        "quote": "чеки"
+      },
+      "goal": {
+        "quote": "С чего начать проверку?"
+      },
+      "symptom": {
+        "quote": "чеки пробиваются, но не передаются в ОФД"
+      },
+      "entities": [
+        {
+          "slot": "equipment",
+          "value": "Эвотор 7.3",
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          }
+        },
+        {
+          "slot": "ofd",
+          "value": "ОФД",
+          "evidence": {
+            "quote": "ОФД"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    }
+  },
+  {
+    "id": "real_compound_2",
+    "text": "Диагностический отчёт напечатал. Интернет работает. Подписка ОФД активна. Очередь не уменьшается.",
+    "provider_raw": {
+      "request_type": "information",
+      "relation": "continue",
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": null,
+      "object_evidence": null,
+      "goal": null,
+      "symptom": null,
+      "entities": [],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    }
+  },
+  {
+    "id": "real_compound_3",
+    "text": "В отчёте EoU работает, доступ в интернет есть. Адрес, порт и ИНН ОФД совпадают с настройками оператора. Очередь не уменьшается. Что дальше?",
+    "provider_raw": {
+      "request_type": "instruction",
+      "relation": "continue",
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": "чек",
+      "object_evidence": null,
+      "goal": {
+        "quote": "Что дальше?"
+      },
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "component",
+          "value": "EoU",
+          "evidence": {
+            "quote": "EoU работает"
+          }
+        },
+        {
+          "slot": "service",
+          "value": "доступ в интернет",
+          "evidence": {
+            "quote": "доступ в интернет есть"
+          }
+        },
+        {
+          "slot": "ofd",
+          "value": "Адрес, порт и ИНН ОФД",
+          "evidence": {
+            "quote": "Адрес, порт и ИНН ОФД совпадают"
+          }
+        },
+        {
+          "slot": "component",
+          "value": "Очередь",
+          "evidence": {
+            "quote": "Очередь не уменьшается"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    }
+  }
+]

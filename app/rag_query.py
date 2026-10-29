@@ -89,10 +89,15 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
             if fact.quote:
                 root_request = root_request.replace(fact.quote, " ")
         root_request = re.sub(r"\s+", " ", root_request).strip()
-        if root_request:
+        if root_request and not any(root_request in part for part in parts):
             parts.append("запрос клиента: " + root_request)
     if state.goals:
-        parts.append("цель: " + "; ".join(f.value for f in state.goals))
+        # A goal often repeats a substring of the immutable root request.
+        # Drop only exact redundant spans, never unique conditions/results.
+        distinct_goals = [f.value for f in state.goals
+                          if not any(f.value in part for part in parts)]
+        if distinct_goals:
+            parts.append("цель: " + "; ".join(dict.fromkeys(distinct_goals)))
     if state.constraints:
         parts.append("ограничения: " + "; ".join(f.value for f in state.constraints))
     if state.details:
@@ -110,7 +115,7 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
             if not any(index != other and normalized_details[index] in normalized_details[other]
                        and normalized_details[index] != normalized_details[other]
                        for other in range(len(detail_values)))
-            and not any(anchor in normalized_details[index] or normalized_details[index] in anchor
+            and not any(normalized_details[index] in anchor
                         for anchor in anchors)]
         if retained_details:
             parts.append("уточнение клиента: " + "; ".join(retained_details))

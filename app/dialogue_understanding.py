@@ -104,6 +104,17 @@ def _contextual_operation(raw_operation: Any, raw_intent: Any, raw_kind: Any,
                      for item in entities if isinstance(item, dict)} if isinstance(entities, list) else set()
     error_class = intent_key in {"diagnosis", "troubleshooting", "error_explanation", "error_diagnosis"}
     error_evidence = bool(claimed_slots & {"error", "error_code", "error_type"}) or bool(_ERROR_CONTEXT.search(text))
+    # The provider may describe the speech act instead of choosing an action.
+    # Recover a unique action from the existing shared vocabulary, not a
+    # per-question fallback to diagnosis/search. This still grants no evidence.
+    if operation_key in {"procedure", "instruction", "lookup", "test"}:
+        if operation_key == "lookup" and intent_key in {"status", "status_query", "status_check"}:
+            return "status"
+        action_words = re.findall(r"\w+", text.casefold().replace("ё", "е"))
+        matches = {name for name, roots in OPERATIONS
+                   if any(word.startswith(root) for word in action_words for root in roots)}
+        if len(matches) == 1:
+            return matches.pop()
     if operation_key != "lookup":
         if error_class or error_evidence:
             return "diagnose"
@@ -754,7 +765,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
                           value=resolution.operation)
         operation = resolution.operation
         intent = resolution.intent
-    if obj is None and relation == "new_task" and operation == "search":
+    if relation == "new_task" and operation == "search":
         search_target = _unique_search_target_from_goal(goal)
         if search_target:
             value, start, end = search_target
@@ -763,6 +774,13 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             _field_result(diagnostics, "object", "accepted",
                           "registered_search_target_grounded_before_parameter",
                           value=value, start=start, end=end)
+            categories = {category for category, canonical, _ in OBJECTS if canonical == obj}
+            if len(categories) == 1 and resolution.task_category is None:
+                reason = ("unique_task_family_from_grounded_direct_object"
+                          if intent in {"unknown", "general"} else
+                          "grounded_search_target_over_parameter_domain")
+                intent = categories.pop()
+                _field_result(diagnostics, "intent_resolution", "accepted", reason, value=intent)
     if (obj is not None and operation not in {"unknown", "explain"} and intent in {"unknown", "general"}
             and resolution.task_category is None):
         categories = {category for category, canonical, _ in OBJECTS if canonical == obj}
@@ -802,7 +820,12 @@ def _state_summary(state: DialogueState) -> dict[str, Any]:
             # Prior task facts are context, not the current-turn Observation.symptom.
             "prior_symptom_facts": facts([task.symptom]) if task.symptom else [],
             "goals": facts(task.goals), "constraints": facts(task.constraints),
-            "details": facts(task.details)},
+            "details": facts(task.details),
+            "active_route": {"slot": task.active_route.slot, "value": task.active_route.value}
+                if task.active_route else None,
+            "progress": {"shown_checks": [{"id": unit.get("unit_id"), "label": unit.get("label")}
+                                           for unit in task.shown_units],
+                         "client_results": task.checks}},
             "expected_clarification": ({"slot": state.expected.slot, "question": state.expected.question}
                                        if state.expected else None)}
 
@@ -826,6 +849,11 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
             "Set specialist_requested only for a direct, positive request to speak with a human specialist.",
             "Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.",
             "Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer."],
+        # Hints, deliberately not schema enums: unknown labels must not cause
+        # Groq to reject an otherwise useful response (historical HTTP 400).
+        "preferred_labels": {"request_type": sorted(TURN_TYPES), "relation": sorted(RELATIONS),
+            "intent": sorted(INTENTS), "operation": sorted(OPERATIONS_ALLOWED),
+            "entity_slots": sorted(ENTITY_SLOTS)},
         "recent_history": safe_history, "active_task_state": _state_summary(state), "current_message": text}
     schema = response_schema()
     headers = {"Authorization": f"Bearer {settings.groq_api_key}", "Content-Type": "application/json"}

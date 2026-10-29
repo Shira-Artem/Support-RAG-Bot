@@ -1,0 +1,401 @@
+{
+  "runs": [
+    {
+      "artifact": "baseline_live.json",
+      "turns": 3,
+      "http_attempts": 3,
+      "http_statuses": {
+        "200": 3
+      },
+      "http_stages": {
+        "understanding": 3
+      },
+      "reported_usage": {
+        "prompt_tokens": 2595,
+        "completion_tokens": 2625,
+        "total_tokens": 5220
+      },
+      "turn_latency_ms": {
+        "min": 1977,
+        "median": 3147,
+        "max": 5020
+      },
+      "code_sha256": "9faffc8d6d72a8016eed062936ce6ef774672630506f45410f5742cd2821309f"
+    },
+    {
+      "artifact": "continuity_verified_20261029_live.json",
+      "turns": 2,
+      "http_attempts": 4,
+      "http_statuses": {
+        "200": 3,
+        "429": 1
+      },
+      "http_stages": {
+        "understanding": 2,
+        "planner": 2
+      },
+      "reported_usage": {
+        "prompt_tokens": 4869,
+        "completion_tokens": 3370,
+        "total_tokens": 8239
+      },
+      "turn_latency_ms": {
+        "min": 4098,
+        "median": 4697.5,
+        "max": 5297
+      },
+      "code_sha256": "9b6843afa4c171cd809e1256f762c937d5d39ed2646f303db71c7f2e6ba37744"
+    },
+    {
+      "artifact": "final_continuation_live.json",
+      "turns": 2,
+      "http_attempts": 3,
+      "http_statuses": {
+        "200": 3
+      },
+      "http_stages": {
+        "understanding": 2,
+        "planner": 1
+      },
+      "reported_usage": {
+        "prompt_tokens": 4516,
+        "completion_tokens": 3601,
+        "total_tokens": 8117
+      },
+      "turn_latency_ms": {
+        "min": 3715,
+        "median": 4224.5,
+        "max": 4734
+      },
+      "code_sha256": "c2b9efc18050eb93bf9ce1100c5dd19cd75ef3c4715701312e243311da8085a7"
+    },
+    {
+      "artifact": "final_live.json",
+      "turns": 3,
+      "http_attempts": 3,
+      "http_statuses": {
+        "200": 2,
+        "400": 1
+      },
+      "http_stages": {
+        "understanding": 3
+      },
+      "reported_usage": {
+        "prompt_tokens": 2210,
+        "completion_tokens": 2587,
+        "total_tokens": 4797
+      },
+      "turn_latency_ms": {
+        "min": 3191,
+        "median": 4057,
+        "max": 4537
+      },
+      "code_sha256": "c2b9efc18050eb93bf9ce1100c5dd19cd75ef3c4715701312e243311da8085a7"
+    },
+    {
+      "artifact": "final_resume_20261029_live.json",
+      "turns": 16,
+      "http_attempts": 26,
+      "http_statuses": {
+        "200": 26
+      },
+      "http_stages": {
+        "understanding": 15,
+        "planner": 11
+      },
+      "reported_usage": {
+        "prompt_tokens": 49063,
+        "completion_tokens": 22148,
+        "total_tokens": 71211
+      },
+      "turn_latency_ms": {
+        "min": 2016,
+        "median": 4539,
+        "max": 5886
+      },
+      "code_sha256": "c2b9efc18050eb93bf9ce1100c5dd19cd75ef3c4715701312e243311da8085a7"
+    },
+    {
+      "artifact": "memory1_live.json",
+      "turns": 15,
+      "http_attempts": 23,
+      "http_statuses": {
+        "200": 23
+      },
+      "http_stages": {
+        "understanding": 14,
+        "generation": 9
+      },
+      "reported_usage": {
+        "prompt_tokens": 34596,
+        "completion_tokens": 19705,
+        "total_tokens": 54301
+      },
+      "turn_latency_ms": {
+        "min": 2647,
+        "median": 5766.5,
+        "max": 9826
+      },
+      "code_sha256": "560245b24aca67ebebd51c0e8af738974222cbdefd7135cd2331699191957b6b"
+    },
+    {
+      "artifact": "memory2_live.json",
+      "turns": 3,
+      "http_attempts": 5,
+      "http_statuses": {
+        "200": 4,
+        "429": 1
+      },
+      "http_stages": {
+        "understanding": 3,
+        "generation": 2
+      },
+      "reported_usage": {
+        "prompt_tokens": 7019,
+        "completion_tokens": 3939,
+        "total_tokens": 10958
+      },
+      "turn_latency_ms": {
+        "min": 658,
+        "median": 5822,
+        "max": 6343
+      },
+      "code_sha256": "a3454c86f8fcbbf4e259b13005784809c9f91f0db48a75121407cd6e4e7248ea"
+    },
+    {
+      "artifact": "memory3_live.json",
+      "turns": 3,
+      "http_attempts": 6,
+      "http_statuses": {
+        "200": 6
+      },
+      "http_stages": {
+        "understanding": 3,
+        "generation": 3
+      },
+      "reported_usage": {
+        "prompt_tokens": 12109,
+        "completion_tokens": 5503,
+        "total_tokens": 17612
+      },
+      "turn_latency_ms": {
+        "min": 5158,
+        "median": 6579,
+        "max": 6799
+      },
+      "code_sha256": "17cb1f3858e02b02f115a39a8fd85c56fbe2c33f27558f9e83b7c180935452e3"
+    },
+    {
+      "artifact": "memory4_live.json",
+      "turns": 12,
+      "http_attempts": 19,
+      "http_statuses": {
+        "200": 19
+      },
+      "http_stages": {
+        "understanding": 11,
+        "planner": 8
+      },
+      "reported_usage": {
+        "prompt_tokens": 35721,
+        "completion_tokens": 14843,
+        "total_tokens": 50564
+      },
+      "turn_latency_ms": {
+        "min": 2562,
+        "median": 4665,
+        "max": 8733
+      },
+      "code_sha256": "b5a64a79d50cbb3d78ce78795fce5f6239eba5ca51480fceafe1be30dfb1e12e"
+    },
+    {
+      "artifact": "order_memory_20261029_live.json",
+      "turns": 4,
+      "http_attempts": 8,
+      "http_statuses": {
+        "200": 8
+      },
+      "http_stages": {
+        "understanding": 4,
+        "planner": 4
+      },
+      "reported_usage": {
+        "prompt_tokens": 18014,
+        "completion_tokens": 7039,
+        "total_tokens": 25053
+      },
+      "turn_latency_ms": {
+        "min": 4116,
+        "median": 4717.0,
+        "max": 5446
+      },
+      "code_sha256": "52434d34dd6c18803b0ca3fff21dd9967ff42881d646ee27b9fca3efddd3e49a"
+    },
+    {
+      "artifact": "order_memory_controls_20261029_live.json",
+      "turns": 2,
+      "http_attempts": 3,
+      "http_statuses": {
+        "200": 2,
+        "400": 1
+      },
+      "http_stages": {
+        "understanding": 2,
+        "planner": 1
+      },
+      "reported_usage": {
+        "prompt_tokens": 3466,
+        "completion_tokens": 1401,
+        "total_tokens": 4867
+      },
+      "turn_latency_ms": {
+        "min": 2512,
+        "median": 4089.5,
+        "max": 5667
+      },
+      "code_sha256": "52434d34dd6c18803b0ca3fff21dd9967ff42881d646ee27b9fca3efddd3e49a"
+    },
+    {
+      "artifact": "order_retry_final_20261029_live.json",
+      "turns": 1,
+      "http_attempts": 2,
+      "http_statuses": {
+        "400": 2
+      },
+      "http_stages": {
+        "understanding": 2
+      },
+      "reported_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "turn_latency_ms": {
+        "min": 8182,
+        "median": 8182,
+        "max": 8182
+      },
+      "code_sha256": "341ae4713e92ca8fa34a6c3ce78f2b9bd39830f101847abce4440a461020fa21"
+    },
+    {
+      "artifact": "repair1_live.json",
+      "turns": 5,
+      "http_attempts": 6,
+      "http_statuses": {
+        "200": 6
+      },
+      "http_stages": {
+        "understanding": 5,
+        "generation": 1
+      },
+      "reported_usage": {
+        "prompt_tokens": 7525,
+        "completion_tokens": 6068,
+        "total_tokens": 13593
+      },
+      "turn_latency_ms": {
+        "min": 3600,
+        "median": 4497,
+        "max": 7707
+      },
+      "code_sha256": "560245b24aca67ebebd51c0e8af738974222cbdefd7135cd2331699191957b6b"
+    },
+    {
+      "artifact": "source_order_contract_20261029_live.json",
+      "turns": 1,
+      "http_attempts": 1,
+      "http_statuses": {
+        "400": 1
+      },
+      "http_stages": {
+        "understanding": 1
+      },
+      "reported_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "turn_latency_ms": {
+        "min": 5993,
+        "median": 5993,
+        "max": 5993
+      },
+      "code_sha256": "26d296287d78e7e1a378d240b8be072b0b26ecc4936c454700000f31c37dd4ce"
+    },
+    {
+      "artifact": "terminal_boundary_20261029_live.json",
+      "turns": 4,
+      "http_attempts": 9,
+      "http_statuses": {
+        "200": 7,
+        "429": 2
+      },
+      "http_stages": {
+        "understanding": 4,
+        "planner": 5
+      },
+      "reported_usage": {
+        "prompt_tokens": 14819,
+        "completion_tokens": 9305,
+        "total_tokens": 24124
+      },
+      "turn_latency_ms": {
+        "min": 2338,
+        "median": 5477.0,
+        "max": 21827
+      },
+      "code_sha256": "bca283be1a60beee05e40a8705ce5e254c7feb10324fd708300c4c46364a5b95"
+    },
+    {
+      "artifact": "understanding_diagnostic_20261029_live.json",
+      "turns": 1,
+      "http_attempts": 1,
+      "http_statuses": {
+        "200": 1
+      },
+      "http_stages": {
+        "understanding": 1
+      },
+      "reported_usage": {
+        "prompt_tokens": 1107,
+        "completion_tokens": 1263,
+        "total_tokens": 2370
+      },
+      "turn_latency_ms": {
+        "min": 2961,
+        "median": 2961,
+        "max": 2961
+      },
+      "code_sha256": "9b6843afa4c171cd809e1256f762c937d5d39ed2646f303db71c7f2e6ba37744"
+    },
+    {
+      "artifact": "understanding_repro_20261029_live.json",
+      "turns": 3,
+      "http_attempts": 3,
+      "http_statuses": {
+        "200": 2,
+        "400": 1
+      },
+      "http_stages": {
+        "understanding": 3
+      },
+      "reported_usage": {
+        "prompt_tokens": 2214,
+        "completion_tokens": 3023,
+        "total_tokens": 5237
+      },
+      "turn_latency_ms": {
+        "min": 2468,
+        "median": 2932,
+        "max": 3411
+      },
+      "code_sha256": "9b6843afa4c171cd809e1256f762c937d5d39ed2646f303db71c7f2e6ba37744"
+    }
+  ],
+  "totals": {
+    "turns": 80,
+    "http_attempts": 125,
+    "reported_tokens": 306263
+  },
+  "caveat": "Provider usage missing on HTTP errors is unknown, not zero billed tokens; timing excludes intentional harness pacing."
+}

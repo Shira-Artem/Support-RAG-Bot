@@ -34,6 +34,15 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
     def result(task: str | None, op: str, domain: str, mode: str, why: str):
         return TaskOperation(task, op, domain, mode, why)
 
+    # A qualified business document is not a fiscal receipt. Keep the user's
+    # read-only action separate from document signing/sending, for every EDO.
+    edo_subject = _has(s, r"\b(?:эдо|упд|накладн\w*)\b|\b(?:электронн\w*|входящ\w*|исходящ\w*|отправленн\w*)\s+документ\w*")
+    if edo_subject and not _has(s, r"\b(?:чек\w*|офд|фискальн\w*)\b"):
+        if _has(s, r"\b(?:статус\w*|состояни\w*)\b") and operation in {"unknown", "status", "check", "search", "explain"}:
+            return result("edo", "status", "delivery_document", "information", "electronic_document_status")
+        if operation in {"search", "check", "status", "diagnose"}:
+            return result("edo", operation, "delivery_document", "diagnostic", "electronic_document_lookup")
+
     # A reported failure has priority over a generic request for instructions.
     # A code is diagnostic even when the model calls the turn an explanation.
     error = _has(s, r"\bошиб\w*|\bсбо\w*|\bфн\s*[-№#]?\s*\d{1,3}\b")

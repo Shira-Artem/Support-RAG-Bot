@@ -1,0 +1,507 @@
+{
+  "method": "saved raw Understanding, real Stage3, deterministic local Planner, no provider calls",
+  "cases": [
+    {
+      "case": 1,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "answer_sha256": "6ba49a88447ae638eca0e07efdb7010a441a19afd5253e106507e15e32135008"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "evotor-7-3-ofd-connection-360014099534"
+        ],
+        "answer_sha256": "6ba49a88447ae638eca0e07efdb7010a441a19afd5253e106507e15e32135008"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 2,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_sha256": "b7a9169176c78f10cf764eb7f371c178c94d6c53ca9f81c60d30c1e8a6fa3ea0"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_sha256": "b7a9169176c78f10cf764eb7f371c178c94d6c53ca9f81c60d30c1e8a6fa3ea0"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 3,
+      "before": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "evotor-fn-234-360005580254",
+          "evotor-time-mismatch-check-20261019",
+          "evotor-fn-217-89e20cf4",
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "evotor-fn-234-360005580254",
+          "evotor-fn-217-89e20cf4",
+          "evotor-time-mismatch-check-20261019",
+          "evotor-fn-231-360005098974"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 4,
+      "before": {
+        "scenario": "escalate",
+        "reason": "unsafe_operation",
+        "selected": [],
+        "answer_sha256": "bf10ff38853a4791d8cd2423bf878c71862aa5bbd369cf56f73ab5b536ca6bc5"
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "unsafe_operation",
+        "selected": [],
+        "answer_sha256": "bf10ff38853a4791d8cd2423bf878c71862aa5bbd369cf56f73ab5b536ca6bc5"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 5,
+      "before": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "evotor-marked-goods-upd-20261019",
+          "evotor-mark-check-error-20261019"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 6,
+      "before": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "evotor-mark-check-error-20261019",
+          "evotor-marked-goods-upd-20261019"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 7,
+      "before": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "aqsi-device-fn7-date",
+          "aqsi-device-paper-print-retry",
+          "aqsi-device-goods-not-on-device",
+          "aqsi-kkt-error-126"
+        ],
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "aqsi-device-fn7-date",
+          "aqsi-kkt-error-126",
+          "aqsi-device-paper-print-retry",
+          "aqsi-device-goods-not-on-device"
+        ],
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 8,
+      "before": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-fn161-document-not-saved",
+          "aqsi-device-paper-print-retry"
+        ],
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "aqsi-device-goods-not-on-device",
+          "aqsi-device-fn161-document-not-saved",
+          "aqsi-device-red-blinking-battery",
+          "aqsi-device-paper-print-retry"
+        ],
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 9,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "aqsi-device-scanner-hub-power",
+          "aqsi-device-scanner"
+        ],
+        "answer_sha256": "2990d59fd46a79e55d9e477e3b07b63b5e8ff77767b8663b9d3ebc53445297a6"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "aqsi-device-scanner-hub-power",
+          "aqsi-device-scanner"
+        ],
+        "answer_sha256": "2990d59fd46a79e55d9e477e3b07b63b5e8ff77767b8663b9d3ebc53445297a6"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 10,
+      "before": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "aqsi-device-permission-diagnostics",
+          "aqsi-device-permission-setup"
+        ],
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "aqsi-device-permission-diagnostics",
+          "aqsi-device-permission-setup"
+        ],
+        "answer_sha256": "f5015223341fc449cc5b609169197557cf016e890094938d7cc2431744dc86c6"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 11,
+      "before": {
+        "scenario": "escalate",
+        "reason": "raw_understanding_http_error",
+        "selected": null,
+        "answer_sha256": null
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "raw_understanding_http_error",
+        "selected": null,
+        "answer_sha256": null
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 12,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "aqsi-online-setup-fiscalize"
+        ],
+        "answer_sha256": "03a3a51283dfc478996ce1f5374792febfebd562a7164318b5d6deb21079de55"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "aqsi-online-setup-fiscalize"
+        ],
+        "answer_sha256": "03a3a51283dfc478996ce1f5374792febfebd562a7164318b5d6deb21079de55"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 13,
+      "before": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [
+          "aqsi-online-account-add-user"
+        ],
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0"
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [
+          "aqsi-online-account-add-user"
+        ],
+        "answer_sha256": "0821c71537d57942283c0f14420709477bb96454a6aeaedbce35d24d01e02767"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 14,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "aqsi-online-receipts-partial-refund",
+          "aqsi-online-receipts-full-refund"
+        ],
+        "answer_sha256": "c38ed139b458cc8d0e8812db7467b9c0f2f8d57522fda86a99de291f42b3f680"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "aqsi-online-receipts-full-refund",
+          "aqsi-online-receipts-partial-refund"
+        ],
+        "answer_sha256": "6805784c5721c251bee4dae5d93956ea067969eb95da48f55f698929c6fe33ac"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 15,
+      "before": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [],
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0"
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [],
+        "answer_sha256": "0821c71537d57942283c0f14420709477bb96454a6aeaedbce35d24d01e02767"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 16,
+      "before": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [],
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0"
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [],
+        "answer_sha256": "0821c71537d57942283c0f14420709477bb96454a6aeaedbce35d24d01e02767"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 17,
+      "before": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "atol-online-22561-gateway-errors-timeout-128-protocol"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "selected": [
+          "atol-online-22561-gateway-errors-timeout-128-protocol"
+        ],
+        "answer_sha256": "1d527754b36705a69da9aa02238613c05f00aec7a91cf0f1f164d1d610932333"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 18,
+      "before": {
+        "scenario": "escalate",
+        "reason": "unsafe_source_section",
+        "selected": [
+          "atol-online-12789-bring-own-fn",
+          "atol-online-20054-replacement-process",
+          "atol-online-18220-blocked",
+          "atol-online-20691-receive-old-fn"
+        ],
+        "answer_sha256": "00a1103f0f2b307ce9d11315926a087de9cbc28ef488df00d6d84d1b849fee73"
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "unsafe_source_section",
+        "selected": [
+          "atol-online-20054-replacement-process",
+          "atol-online-18220-blocked",
+          "atol-online-20691-receive-old-fn",
+          "atol-online-12789-bring-own-fn"
+        ],
+        "answer_sha256": "00a1103f0f2b307ce9d11315926a087de9cbc28ef488df00d6d84d1b849fee73"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 19,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "atol-online-22560-receipt-journal-export"
+        ],
+        "answer_sha256": "8803afae02e06e1264092a5f10f60613c73c7cd77cdd8a71a5184aaf788da1b3"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "atol-online-22560-receipt-journal-export"
+        ],
+        "answer_sha256": "8803afae02e06e1264092a5f10f60613c73c7cd77cdd8a71a5184aaf788da1b3"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 20,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "atol-online-14133-debt-payment",
+          "atol-online-14134-documents-operations",
+          "atol-online-11077-service-blocked",
+          "atol-online-11073-renewal-invoice"
+        ],
+        "answer_sha256": "e8166225878488b34bfafa018b93bfe72ebc1315183ee0aeb62b622e0cb0359e"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "atol-online-14133-debt-payment",
+          "atol-online-11077-service-blocked",
+          "atol-online-14134-documents-operations",
+          "atol-online-11073-renewal-invoice"
+        ],
+        "answer_sha256": "e8166225878488b34bfafa018b93bfe72ebc1315183ee0aeb62b622e0cb0359e"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 21,
+      "before": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "evotor-ffd-version-check-20261019"
+        ],
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "evotor-ffd-version-check-20261019"
+        ],
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 22,
+      "before": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [],
+        "answer_sha256": "2d4d35ce805fa3d987a8d9ddc3552441c6703d41014072a5b55b3948b6c6bff0"
+      },
+      "after": {
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "selected": [],
+        "answer_sha256": "dac91ea813ed5eefc99b4eb295562ee7ce63c4f69ab4b9dacc3673164d319bf5"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 23,
+      "before": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "platformaofd-partner-kkt-diagnostics",
+          "platformaofd-atol-transmission-checks"
+        ],
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be"
+      },
+      "after": {
+        "scenario": "clarify",
+        "reason": "source_scope_context_missing",
+        "selected": [
+          "platformaofd-partner-kkt-diagnostics",
+          "platformaofd-atol-transmission-checks"
+        ],
+        "answer_sha256": "9f957071087bd091846fbc95e84854bad90513a642f0de0295807293ef2208be"
+      },
+      "outcome_same": true
+    },
+    {
+      "case": 24,
+      "before": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "platformaofd-lkk-receipt-fns-status"
+        ],
+        "answer_sha256": "78d72b95ccde53b3b6183db8c900b1902b889e624f9b4f189f6d66491543233a"
+      },
+      "after": {
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "selected": [
+          "platformaofd-lkk-receipt-fns-status"
+        ],
+        "answer_sha256": "78d72b95ccde53b3b6183db8c900b1902b889e624f9b4f189f6d66491543233a"
+      },
+      "outcome_same": true
+    }
+  ]
+}

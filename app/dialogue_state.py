@@ -670,7 +670,7 @@ OBJECTS = (
     ("device", "касса", ("касс", "ккт", "принтер")),
 )
 OPERATIONS = (
-    ("repeat_print", ("распечат", "перепечат", "повторн")),
+    ("repeat_print", ("распечат", "напечат", "перепечат", "повторн")),
     ("reset_password", ("восстанов", "сброс", "забыл")),
     ("correct", ("исправ", "корректир", "скоррект")),
     ("reconcile", ("расхожд", "недостач", "свер", "прием", "приём", "подпис")),
@@ -1264,13 +1264,14 @@ class DialogueManager:
         _append_unique(state.goals, obs.goals)
         _append_unique(state.constraints, obs.constraints)
         _append_unique(state.details, obs.details)
-        if relation != "new_task" and obs.goals and not obs.symptom and not obs.details:
+        if relation != "new_task" and (obs.goals or obs.symptom) and not obs.details:
             # A provider goal can cover only the question at the end of a
             # message. Retain any separate client statement as an exact span.
             # This preserves newly reported conditions without treating them
             # as a confirmed route, model, or inferred diagnosis.
             remaining = list(text)
             claimed = [*obs.goals, *obs.constraints, *obs.parameters,
+                       *([obs.symptom] if obs.symptom else []),
                        *(fact for values in obs.entities.values() for fact in values)]
             for fact in claimed:
                 for index in range(fact.start, fact.end):
@@ -1360,27 +1361,41 @@ class DialogueManager:
             label = str(unit.get("label") or "")
             # Content terms are derived from the exact approved unit, with a
             # bounded prefix form to tolerate Russian inflection.
+            action_roots = ("провер", "откр", "закр", "напеч", "распеч", "посмотр", "уточн", "выбер",
+                            "выполн", "сопостав", "свер", "переда", "следу", "подтверд")
             terms = [token for token in re.findall(r"[а-яa-z0-9]+", label.casefold().replace("ё", "е"))
-                     if len(token) >= 4 and token not in {"проверьте", "проверить", "проверка", "проверить"}]
-            if not terms or not any(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*", normalized)
-                                    for term in terms):
+                     if len(token) >= 4 and not token.startswith(action_roots)]
+            # Match the actual client sentence to this check. Previously a
+            # match anywhere in the reply attached its FIRST comma-clause to
+            # every check, losing results and creating false successes.
+            matches = [m for m in re.finditer(r"[^;.!?]+", text)
+                       if any(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*",
+                                        m.group().casefold().replace("ё", "е")) for term in terms)]
+            if not matches:
                 continue
-            matched = re.search(r"[^,;.!?]+", text)
-            if not matched:
-                continue
-            quote = matched.group(0).strip()
+            matched = max(matches, key=lambda m: sum(
+                bool(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*",
+                               m.group().casefold().replace("ё", "е"))) for term in terms))
+            quote = matched.group().strip()
             start = text.find(quote)
             quote_normalized = quote.casefold().replace("ё", "е")
             if re.search(r"\b(?:не\s+(?:знаю|уверен\w*|понятно)|не\s+провер\w*|пока\s+не\s+провер\w*)\b", quote_normalized):
                 status = "unknown" if re.search(r"\bне\s+(?:знаю|уверен\w*|понятно)\b", quote_normalized) else "not_done"
-            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+отправля\w*|истек\w*|законч\w*)\b", quote_normalized):
+            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+отправля\w*|не\s+уменьш\w*|истек\w*|законч\w*)\b", quote_normalized):
                 status = "failed"
-            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|подтвержден\w*)\b", quote_normalized):
+            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", quote_normalized):
                 status = "passed"
             elif re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", quote_normalized):
                 status = "unknown"
             else:
                 continue
+            # A single positive result cannot complete a whole conditional
+            # procedure block (e.g. internet + settings + queue checks).
+            instruction_sentences = [sentence for sentence in re.split(r"[.!?]", label)
+                if re.search(r"\b(?:проверьте|откройте|напечатайте|выясните|сопоставьте|"
+                             r"посмотрите|восстановите|передайте|уточните)\b", sentence, re.I)]
+            if status == "passed" and len(instruction_sentences) > 1:
+                status = "unknown"
             check = next((item for item in task.checks if item.get("unit_id") == unit.get("unit_id")), None)
             if check is None:
                 check = {"unit_id": unit.get("unit_id"), "status": status,
@@ -1424,7 +1439,7 @@ class DialogueManager:
                         and unit.get("source_verified") is True):
                     if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.shown_units}:
                         state.task_context.shown_units.append({k: unit[k] for k in
-                            ("unit_id", "label", "source", "section", "model_scope", "model_value")
+                            ("unit_id", "label", "source", "section", "model_scope", "model_value", "source_order")
                             if k in unit})
                     if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.checks}:
                         state.task_context.checks.append({"unit_id": unit["unit_id"], "status": "asked"})
@@ -1433,7 +1448,7 @@ class DialogueManager:
                         and isinstance(unit.get("label"), str) and unit.get("source_verified") is True
                         and unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.eligible_units}):
                     state.task_context.eligible_units.append({k: unit[k] for k in
-                        ("unit_id", "label", "source", "section", "model_scope", "model_value")
+                        ("unit_id", "label", "source", "section", "model_scope", "model_value", "source_order")
                         if k in unit})
             if isinstance(progress_update.get("open_question"), str):
                 key = progress_update["open_question"]

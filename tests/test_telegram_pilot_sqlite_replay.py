@@ -182,7 +182,8 @@ def _safe_state(state, prior_task_id):
 
 
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
-                injected_candidate=None, coordinator_enabled=False, after_dialogue=None):
+                injected_candidate=None, coordinator_enabled=False, after_dialogue=None,
+                planner_overrides=None):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)
     rag = LocalRag(sources, injected_candidate)
@@ -227,7 +228,7 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
             return Understanding(kind, specialist, unknown, observation, {}, "offline-fixture", 0,
                                  raw, observation.validation_diagnostics)
 
-        async def fake_generation(messages, _settings):
+        async def fake_generation(messages, _settings, *, call_stage="generation"):
             payload = json.loads(messages[-1]["content"])
             if "candidate_sections" in payload:
                 generation_calls.append("planner")
@@ -241,6 +242,8 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                 value = {"mode": "select", "section_id": preferred["id"],
                          "applicability_confirmed": True, "order_confirmed": True,
                          "reason": "offline fixture selects an available approved section"}
+                if planner_overrides:
+                    value.update(planner_overrides.get(len(planner_choices), {}))
                 return Generation(json.dumps(value, ensure_ascii=False), "offline-fixture", 0, 0, 0)
             if "approved_evidence_fragments" in payload:
                 generation_calls.append("judge")
@@ -708,6 +711,63 @@ def test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves(
                           encoding="utf-8")
 
 
+def test_reported_compound_results_keep_unknown_but_show_the_approved_conditional_boundary(monkeypatch, tmp_path):
+    cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
+    assert trace[1]["reason"] == "progress_ledger_next_approved_check"
+    assert trace[2]["reason"] == "progress_ledger_conditional_source_boundary"
+    assert "Если базовые проверки не выявили причину" in trace[2]["final_reply"]
+    assert "передайте диагностический отчёт в поддержку Эвотора" in trace[2]["final_reply"]
+    checks = trace[2]["state_after_sqlite_reopen"]["task_context"]["checks"]
+    assert checks[-1]["status"] == "unknown"
+    assert "каков её результат" not in trace[2]["final_reply"]
+
+
+def test_source_order_survives_sqlite_reopen_without_overriding_current_applicability(monkeypatch, tmp_path):
+    cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True,
+        planner_overrides={2: {"order_confirmed": False},
+                           3: {"order_confirmed": False, "applicability_confirmed": False}})
+    assert trace[1]["reason"] == "progress_ledger_next_approved_check"
+    assert trace[2]["reason"] == "planner_could_not_select_safely"
+    saved = trace[1]["state_after_sqlite_reopen"]
+    units = saved["task_context"]["shown_units"]
+    assert units[-1]["source_order"] == units[0]["source_order"]
+    from app.dialogue_state import DialogueState
+    from app.source_first_service import _source_order_context, _verified_continuation_section
+    state = DialogueState.from_dict(saved)
+    assert _source_order_context(state) == units[-1]["source_order"]["context"]
+    changed_source = {"source": units[-1]["source"], "section": units[-1]["section"],
+        "source_sha256": "changed", "document_id": state.task_context.procedure_id}
+    assert _verified_continuation_section(state, [changed_source]) is None
+    state.task_context.operation = "register"
+    assert _source_order_context(state) != units[-1]["source_order"]["context"]
+
+
+def test_continuation_still_verifies_related_source_conditions(monkeypatch, tmp_path):
+    import app.source_first_service as source_module
+    original = source_module._source_sections
+    calls = []
+
+    def changed_related_section(*args, **kwargs):
+        sections = original(*args, **kwargs)
+        calls.append(True)
+        if len(calls) == 2:
+            # Simulate a section that no longer matches the approved file;
+            # narrowing the planner choice must not remove this renderer gate.
+            sections.append({**sections[0], "id": "changed-condition",
+                "section": "Ограничения", "text": "Changed condition"})
+        return sections
+
+    monkeypatch.setattr(source_module, "_source_sections", changed_related_section)
+    cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
+    trace = _run_replay(monkeypatch, tmp_path, cases[:2],
+        sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
+    assert trace[1]["reason"] == "source_context_section_changed"
+
+
 def test_bplus_semantic_recovery_reaches_local_approved_retrieval(monkeypatch, tmp_path):
     """Offline paraphrase replay: semantic aliases and typed facts reach retrieval."""
     fn_text = "Ошибка ФН 234: хочу понять причину и безопасно проверить кассу."
@@ -826,11 +886,12 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
     final = ledger[-1]["final_reply"].casefold()
     assert "\u043c\u043e\u0434\u0435\u043b" in final
     assert "\u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" not in final
-    assert ledger[-1]["reason"] == "dialogue_state_task_incomplete"
-    assert ledger[-1]["coordinator_decision"]["route"] == "conversation"
-    assert ledger[-1]["coordinator_decision"]["required_action"] == "ask_for_missing_task_detail"
+    assert ledger[-1]["reason"] == "progress_ledger_waiting_for_model"
+    assert ledger[-1]["coordinator_decision"]["route"] == "technical_action"
+    assert ledger[-1]["coordinator_decision"]["required_action"] == "retrieve_then_apply_independent_scope_and_safety_gates"
     assert "настройки" not in ledger[3]["final_reply"].casefold()
-    assert ledger[-1]["route"] == "clarify"
+    assert ledger[-1]["route"] == "answer"
+    assert "когда модель станет известна" in final
     if output_dir := os.environ.get("P1_PROGRESS_OUTPUT_DIR"):
         target = Path(output_dir).resolve()
         assert target == (ROOT / "experiments/architecture_recovery_audit").resolve()

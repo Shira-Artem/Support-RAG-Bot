@@ -35,6 +35,8 @@ def test_scoped_limitation_requires_direct_subject_and_no_procedure():
         "ФН не подтверждён как прямой фильтр чеков. Отсутствие поля в статье не доказывает отсутствие функции."}
     assert _scoped_limitation_matches(limitation, "Можно найти чек по номеру ФН?", state)
     assert not _scoped_limitation_matches(limitation, "Можно найти чек по номеру ФД?", state)
+    assert not _scoped_limitation_matches(limitation, "Как найти чек по номеру фискального документа?", state)
+    assert _scoped_limitation_matches(limitation, "Можно найти чек по номеру фискального накопителя?", state)
     unsafe_mixture = {**limitation, "text": limitation["text"] +
         " Откройте настройки кассы и измените порт подключения."}
     assert not _scoped_limitation_matches(unsafe_mixture, "Можно найти чек по номеру ФН?", state)
@@ -247,7 +249,7 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
     retrieval = RetrievalResult("query", [selected_candidate], [], hits, True, None, "",
                                 evidence_status="source_confirmed")
 
-    async def planner(messages, _settings):
+    async def planner(messages, _settings, *, call_stage="generation"):
         import json
         data = json.loads(messages[1]["content"])
         if "candidate_answer" in data:
@@ -507,7 +509,7 @@ def test_software_integration_scope_does_not_require_hardware_model_or_ofd(tmp_p
         active_route=ActiveRoute("software", facts["software"][0]),
         task_fact=Fact(question, 1, question, 0, len(question)))
 
-    async def select_diagnostic(messages, _settings):
+    async def select_diagnostic(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
         selected = next(item for item in payload["candidate_sections"]
                         if item["section"] == heading)
@@ -563,7 +565,7 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
     first_state = manager.advance(DialogueState(), first_text, 1, observation=first_observation)
     seen = {"calls": 0, "planner_sections": [], "questions": [], "repair_questions": []}
 
-    async def generate_stub(messages, _settings):
+    async def generate_stub(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
         seen["calls"] += 1
         if "candidate_sections" in payload:
@@ -703,7 +705,7 @@ def test_semantic_relevance_replays_saved_composer_answer_with_current_task_and_
     source_path = "data/knowledge/atol_online/ofd/what-is-ofd.md"
     source_sha256 = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
 
-    async def relevant_stub(messages, _settings):
+    async def relevant_stub(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
         seen.update(payload)
         seen["system_prompt"] = messages[0]["content"]
@@ -751,7 +753,7 @@ def test_saved_q1_quote_omitting_the_word_they_is_accepted_by_source_fragment_id
                          if "обрабатывает и передаёт их в ФНС" in text)
     observed = {}
 
-    async def id_judge(messages, _settings):
+    async def id_judge(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
         observed.update(payload)
         return Generation(json.dumps({"verdict": "relevant", "answers_current_question": True,
@@ -900,7 +902,7 @@ def test_information_composer_repair_rejects_fabricated_claim(monkeypatch, tmp_p
     _, _, _, observation = validate_response(raw, question, 1)
     state = DialogueManager().advance(DialogueState(), question, 1, observation=observation)
 
-    async def generate_stub(messages, _settings):
+    async def generate_stub(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
         if "candidate_sections" in payload:
             chosen = next(item for item in payload["candidate_sections"]
@@ -974,7 +976,7 @@ def _run_saved_partial_q2(monkeypatch, tmp_path, *, judge_verdict="relevant", re
     seen = {"calls": [], "judge_payloads": []}
     output_repair = fixture["repair_output"] if repair_output is None else repair_output
 
-    async def generate_stub(messages, _settings):
+    async def generate_stub(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
         if "candidate_sections" in payload:
             chosen = next(item for item in payload["candidate_sections"]
