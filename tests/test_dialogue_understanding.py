@@ -151,6 +151,18 @@ def test_definition_wording_overrides_lookup_label_without_object_specific_rules
                    for item in observation.validation_diagnostics)
 
 
+def test_definition_wording_overrides_conflicting_domain_intent():
+    text = "Что такое ОФД?"
+    raw = payload(text, kind="information", intent="fiscal_drive", operation="explain",
+        obj="ОФД", object_quote="ОФД", relation="new_task")
+    kind, _, _, observation = validate_response(raw, text, 77)
+    assert kind == "information"
+    assert observation.intent == "general" and observation.operation == "explain"
+    assert observation.object == "ОФД"
+    assert any(item.get("reason") == "conceptual_question_is_general_information"
+               for item in observation.validation_diagnostics)
+
+
 def test_comparison_purpose_and_principle_questions_normalize_to_general_explain():
     examples = (
         "Чем отличается фискальный накопитель от оператора фискальных данных?",

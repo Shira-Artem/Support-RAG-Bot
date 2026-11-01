@@ -1,9 +1,9 @@
 {
-  "decision": "NO_GO",
-  "reason": "Understanding strict JSON provider failure reproduced; final memory/scope E2E incomplete due daily TPD quota",
-  "worker_started": false,
+  "decision": "LIMITED_PILOT_GO",
+  "reason": "Closed, allowlisted manual pilot gate passed. Historical intermittent Groq HTTP 400 remains a production reliability blocker, but its safe handling and SQLite/state preservation are covered; the error itself is not treated as an endless pilot blocker.",
+  "worker_started": true,
   "source_hashes": {
-    "bot.py": "54d275d6f75120def67f0f3257522da2bd9f67fe657ba7873acf8db81b7f4abc",
+    "bot.py": "9f8dab70d7162189d5dbf8cd82179be5b994b769731e9b981196010b4002c261",
     "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "app/ai_coordinator.py": "406da12318a3c823f0c64f21f74666096b09f080ccc8a6a1b7b237a5fe96a84f",
     "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
@@ -13,7 +13,7 @@
     "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
     "app/conversation_store.py": "cf9218ffe23bbf898be91557d78e4b0ab5b507d24a6364d7d0e9a7c08b2fd716",
     "app/dialogue_state.py": "4a81827ba0e376ade90433c4263d2505c618dce0716ad8c4f967b0bd653743e1",
-    "app/dialogue_understanding.py": "0a5fd0b8b0f40142b2370ea875db8901afa50c331c07bb9584f6be11359642b9",
+    "app/dialogue_understanding.py": "b4547ab2c2d6f3fbe90de12a43a97c4a4dd52e87aa68a94d6a3d62772af8c626",
     "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
     "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
     "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
@@ -22,7 +22,7 @@
     "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
     "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
     "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
-    "app/llm_client.py": "4bb4dc5dc0916a01fe7e7973c032f3ce1a66bcb449441b706974e86ebf719e1f",
+    "app/llm_client.py": "db56191a38735336745bcc5b5e89ca1d09b302a26786b78ac3086abd6557288e",
     "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
     "app/procedure_policy.py": "3b03a70a1ab30a229230db53b7c178d20fa70f9f4905672a3fa22e8aa69673e6",
     "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
@@ -33,17 +33,40 @@
     "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
     "app/scope_policy.py": "71b01f6884b06f7a60e0366c3849273538d520fa08671973ac1eb90cb10a712f",
     "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
-    "app/source_first_service.py": "8ada8c140723e0fd8f4d97d2d64645cd04abe4b418f14021304bf12037dd9d6f",
+    "app/source_first_service.py": "be9d864c9a8018a8e88a01f0b0a282f8441489b9c0fd517343bde9531820e52b",
     "app/task_operation_resolver.py": "4587f4be5b44b479c0e25e2513acc49154773bfe2d12f988e868c31fb99d6a7f",
     "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
   },
   "remaining_live_blockers": [
-    "Planner order=false conflates source completeness and client completion",
-    "compound result facts are retained but next action is not stable",
-    "Understanding HTTP400 json_validate_failed"
+    "Intermittent Groq strict Understanding HTTP 400/json_validate_failed is not proven eliminated; now handled without continuing on stale state.",
+    "Approved coverage is absent for Saby incoming documents, Diadok status, BIFIT table workflow, ATOL API receipt-not-found incident, and Evotor combined payment.",
+    "aQsi lacks a complete model-specific scanner connection procedure."
   ],
-  "full_pytest": "543 passed, 4 xfailed",
-  "pytest": "545 passed, 4 xfailed, 13 warnings",
-  "report": "continuation_20261029.md",
-  "final_live": "continuity_verified_20261029_live.json"
-}
+  "full_pytest": "547 passed, 4 xfailed, 13 warnings (Python 3.14)",
+  "pytest": "547 passed, 4 xfailed, 13 warnings; full suite on Python 3.14",
+  "report": "telegram_pilot_gate_20261101.md",
+  "final_live": "telegram_pilot_gate_20261101_final_live.json",
+  "worker_pid": 13292,
+  "latest_live_run": "telegram_pilot_gate_20261101.json",
+  "latest_schema_probe": "telegram_pilot_gate_20261101.json#schema_probe",
+  "targeted_pytest": "138 passed, 4 xfailed across local Understanding, task resolver, retrieval routing/fallback, and SQLite replay",
+  "e2e": "29 HTTP 200 + 1 HTTP 429 / 30 actual E2E HTTP attempts (one bounded retry then succeeded); 17 handler turns across controls and final-code rechecks; exact per-turn data in telegram_pilot_gate_20261101.json",
+  "qdrant": "knowledge_stage3_retrieval_20261022 green/934, read-only; existing volume rag_qdrant_storage",
+  "env_sha256": "9c25f4442fc4424b5409ac85a407208ff83e442d0fcdd12df59809f9236c9f92",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "rollback": "Backup .local/backups/limited-pilot-20261101T125226Z contains both SQLite snapshots (quick_check ok), 33 runtime files and 269 KB markdown files; .env unchanged. No agent Telegram sends.",
+  "production_decision": "NO_GO",
+  "runtime_receipt": ".local/bot-runtime.json",
+  "runtime_source_hashes_match": "33/33",
+  "preflight_report": "limited_pilot_preflight_20261101.md",
+  "preflight_e2e": "preflight_atol_evotor_20261101.json",
+  "preflight_cases": {
+    "atol_online_api_incident": "Understanding/coordinator routed to read-only Stage3 retrieval; no applicable approved evidence; honest no-evidence response.",
+    "evotor_combined_payment": "Understanding/coordinator routed to approved-source search; no focused approved article; transparent model-general-knowledge fallback, not approved evidence."
+  },
+  "backup": ".local\\backups\\limited-pilot-20261101T125226Z",
+  "allowlist_count": 3,
+  "allowlist_sha256": "a769696dc284d3ca09ef096a08f59a838bbe09f23f671ab794d1cb573910b7e7",
+  "pilot_worker_log": ".local/limited-pilot-20261101/stdout.log"
+}\n

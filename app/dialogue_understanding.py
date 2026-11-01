@@ -552,8 +552,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
                   "normalized_semantic_alias" if aliases.get(normalized_input) == value else
                   "unsupported_value_defaulted_to_unknown")
         _field_result(diagnostics, field_name, status, reason, value=value)
-    if (kind == "information" and operation in {"search", "unknown"}
-            and _is_conceptual_information_request(text)):
+    if kind == "information" and _is_conceptual_information_request(text):
         previous_operation = operation
         previous_intent = intent
         intent = "general"

@@ -1,0 +1,394 @@
+{
+  "created_at_utc": "2026-11-01T12:32:50.192719+00:00",
+  "head": "97416b084a849ddeefca57150c028b3eab425ac6",
+  "decision": "NO_GO",
+  "worker_pid": null,
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "env_sha256": "9c25f4442fc4424b5409ac85a407208ff83e442d0fcdd12df59809f9236c9f92",
+  "allowlist_count": 3,
+  "allowlist_sha256": "a769696dc284d3ca09ef096a08f59a838bbe09f23f671ab794d1cb573910b7e7",
+  "qdrant": {
+    "container": "rag-qdrant-1",
+    "status": "running",
+    "volume": "rag_qdrant_storage",
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "status_green": true,
+    "points": 934
+  },
+  "e2e": {
+    "turns": 17,
+    "http_attempts": 30,
+    "statuses": {
+      "200": 29,
+      "400": 0,
+      "429": 1
+    },
+    "known_tokens": 82032,
+    "turns_detail": [
+      {
+        "case": "saby",
+        "turn": 1,
+        "question": "В Saby не могу найти входящий документ.",
+        "answer": "Для этой задачи в «Saby» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+        "latency_ms": 3620,
+        "same_task": false,
+        "scenario_reason": "insufficient_applicable_evidence",
+        "generation_status": "no_context",
+        "source": null,
+        "planner": {
+          "applicability_confirmed": null,
+          "source_order_complete": null,
+          "reason": null
+        },
+        "understanding_calls": 1,
+        "generation_calls": 0
+      },
+      {
+        "case": "diadoc",
+        "turn": 1,
+        "question": "Диадок: контрагент не видит отправленный УПД, хочу проверить статус.",
+        "answer": "Для этой задачи в «Диадок» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+        "latency_ms": 2819,
+        "same_task": false,
+        "scenario_reason": "insufficient_applicable_evidence",
+        "generation_status": "no_context",
+        "source": null,
+        "planner": {
+          "applicability_confirmed": null,
+          "source_order_complete": null,
+          "reason": null
+        },
+        "understanding_calls": 1,
+        "generation_calls": 0
+      },
+      {
+        "case": "ofd",
+        "turn": 1,
+        "question": "Что такое ОФД?",
+        "answer": "Какое именно оборудование используется?",
+        "latency_ms": 1982,
+        "same_task": false,
+        "scenario_reason": "applicability_context_missing",
+        "generation_status": "clarification",
+        "source": null,
+        "planner": {
+          "applicability_confirmed": null,
+          "source_order_complete": null,
+          "reason": null
+        },
+        "understanding_calls": 1,
+        "generation_calls": 0
+      },
+      {
+        "case": "evotor6",
+        "turn": 1,
+        "question": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+        "answer": "Под ролью администратора откройте «Настройки → Обслуживание кассы → Дополнительные операции → Печать документа по номеру», введите номер ФД и подтвердите. Повторный отпечаток может не содержать QR-код; при необходимости полную электронную копию ищите в кабинете ОФД. Эвотор 6 не поддерживает низкоуровневую команду поиска последнего ФД, приведённую производителем для других моделей. Если номер неизвестен, используйте кабинет ОФД.\n\nИсточник: data/knowledge/evotor/cash/evotor-6-receipt-copy.md — Действие на кассе",
+        "latency_ms": 4249,
+        "same_task": false,
+        "scenario_reason": "source_first_exact_section",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/cash/evotor-6-receipt-copy.md — Действие на кассе",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": null,
+          "reason": "Section \"Действие на кассе\" provides the step-by-step procedure for printing a receipt copy by FD number on Evotor 6, matching the user’s request."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "bifit",
+        "turn": 1,
+        "question": "Нужно протестировать в БИФИТ Общепит работу со столами.",
+        "answer": "Для этой задачи в «БИФИТ» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+        "latency_ms": 2751,
+        "same_task": false,
+        "scenario_reason": "insufficient_applicable_evidence",
+        "generation_status": "no_context",
+        "source": null,
+        "planner": {
+          "applicability_confirmed": null,
+          "source_order_complete": null,
+          "reason": null
+        },
+        "understanding_calls": 1,
+        "generation_calls": 0
+      },
+      {
+        "case": "evotor_report_memory",
+        "turn": 1,
+        "question": "На Эвотор 7.3 чеки пробиваются, но не передаются в ОФД. С чего начать проверку?",
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "latency_ms": 4784,
+        "same_task": false,
+        "scenario_reason": "source_first_exact_section",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": null,
+          "reason": "The user reports that receipts are printed but not transmitted to OFD on Evotor 7.3. The candidate section \"Что проверить сначала\" provides a step‑by‑step diagnostic procedure for this exact issue, matching the equipment, manufacturer, serv"
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "evotor_report_memory",
+        "turn": 2,
+        "question": "Диагностический отчёт напечатал. Интернет работает. Подписка ОФД активна. Очередь не уменьшается.",
+        "answer": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "latency_ms": 4561,
+        "same_task": true,
+        "scenario_reason": "progress_ledger_next_approved_check",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": null,
+          "reason": "Diagnostic report printed and internet confirmed; next steps per section: verify EoU app state, check OФД address/port, then observe queue behavior."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "evotor_report_memory",
+        "turn": 3,
+        "question": "В отчёте EoU работает, доступ в интернет есть. Адрес, порт и ИНН ОФД совпадают с настройками оператора. Очередь не уменьшается. Что дальше?",
+        "answer": "Сообщённые результаты сохранены. В инструкции предусмотрена такая следующая ветка:\nЕсли базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "latency_ms": 4913,
+        "same_task": true,
+        "scenario_reason": "progress_ledger_conditional_source_boundary",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": null,
+          "reason": "Базовые проверки (EoU, интернет, адрес/порт/ИНН ОФД) выполнены, очередь не уменьшается – согласно инструкции необходимо передать диагностический отчёт в поддержку Эвотора."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "aqsi_existing",
+        "turn": 1,
+        "question": "На физической кассе aQsi перестал работать сканер штрихкодов. Как проверить подключение?",
+        "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+        "latency_ms": 5528,
+        "same_task": false,
+        "scenario_reason": "planner_could_not_select_safely",
+        "generation_status": "no_context",
+        "source": null,
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": null,
+          "reason": "The selected section contains verified information and initial diagnostics relevant to checking the connection of a barcode scanner on an aQsi physical cash register. It addresses compatibility, interface options, and basic troubleshooting "
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "directbank",
+        "turn": 1,
+        "question": "В 1С через DirectBank перестали загружаться банковские выписки. С чего начать?",
+        "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+        "latency_ms": 4333,
+        "same_task": false,
+        "scenario_reason": "planner_could_not_select_safely",
+        "generation_status": "no_context",
+        "source": null,
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": null,
+          "reason": "The user reports that bank statements stopped loading via DirectBank in 1С. The candidate section provides a safe diagnostic procedure for DirectBank integration in 1С:Бухгалтерия 8, covering version checks, interface navigation, account co"
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "ofd",
+        "turn": 1,
+        "question": "Что такое ОФД?",
+        "answer": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.\n\nОбласть источника: АТОЛ Онлайн, АТОЛ, АТОЛ Онлайн — облачная ККТ.\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя",
+        "latency_ms": 2879,
+        "same_task": false,
+        "scenario_reason": "ai_coordinator_grounded_information",
+        "generation_status": "generated",
+        "source": "data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя",
+        "planner": {
+          "applicability_confirmed": null,
+          "source_order_complete": null,
+          "reason": null
+        },
+        "understanding_calls": 1,
+        "generation_calls": 0
+      },
+      {
+        "case": "directbank",
+        "turn": 1,
+        "question": "В 1С через DirectBank перестали загружаться банковские выписки. С чего начать?",
+        "answer": "1. Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.\n\nИсточник: data/knowledge/1c/bank/directbank-all-accounts.md — Безопасная диагностика",
+        "latency_ms": 4415,
+        "same_task": false,
+        "scenario_reason": "source_first_exact_section",
+        "generation_status": "generated",
+        "source": "data/knowledge/1c/bank/directbank-all-accounts.md — Безопасная диагностика",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "reason": "Section provides safe diagnostic steps for 1C DirectBank bank statement loading issues."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "aqsi_existing",
+        "turn": 1,
+        "question": "На физической кассе aQsi перестал работать сканер штрихкодов. Как проверить подключение?",
+        "answer": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+        "latency_ms": 4225,
+        "same_task": false,
+        "scenario_reason": "source_first_exact_section",
+        "generation_status": "generated",
+        "source": "data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "reason": "Section provides detailed steps for checking scanner compatibility, interface, and basic diagnostics relevant to verifying the connection of a physical aQsi cash register scanner."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "evotor_report_memory",
+        "turn": 1,
+        "question": "На Эвотор 7.3 чеки пробиваются, но не передаются в ОФД. С чего начать проверку?",
+        "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "latency_ms": 4384,
+        "same_task": false,
+        "scenario_reason": "source_first_exact_section",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "reason": "The section outlines the initial diagnostic steps for Evotor 7.3 receipt transmission issues, matching the user’s request to start the check."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "evotor_report_memory",
+        "turn": 2,
+        "question": "Диагностический отчёт напечатал. Интернет работает. Подписка ОФД активна. Очередь не уменьшается.",
+        "answer": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "latency_ms": 4042,
+        "same_task": true,
+        "scenario_reason": "progress_ledger_next_approved_check",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": false,
+          "reason": "Diagnostic report printed and internet works. Next, verify the EoU application status, confirm the OФД address/port and ИНН match the operator’s current settings, then observe whether the queue of unsent documents decreases. If the basic ch"
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "evotor_report_memory",
+        "turn": 3,
+        "question": "В отчёте EoU работает, доступ в интернет есть. Адрес, порт и ИНН ОФД совпадают с настройками оператора. Очередь не уменьшается. Что дальше?",
+        "answer": "Сообщённые результаты сохранены. В инструкции предусмотрена такая следующая ветка:\nЕсли базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "latency_ms": 16264,
+        "same_task": true,
+        "scenario_reason": "progress_ledger_conditional_source_boundary",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "reason": "Базовые проверки (EoU, интернет, адрес/порт ОФД) выполнены, очередь не уменьшается. Следующий шаг – передать диагностический отчёт в поддержку Эвотора, как указано в разделе \"Что проверить сначала\"."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      },
+      {
+        "case": "evotor6",
+        "turn": 1,
+        "question": "Как на Эвотор 6 напечатать копию чека по номеру ФД?",
+        "answer": "Под ролью администратора откройте «Настройки → Обслуживание кассы → Дополнительные операции → Печать документа по номеру», введите номер ФД и подтвердите. Повторный отпечаток может не содержать QR-код; при необходимости полную электронную копию ищите в кабинете ОФД. Эвотор 6 не поддерживает низкоуровневую команду поиска последнего ФД, приведённую производителем для других моделей. Если номер неизвестен, используйте кабинет ОФД.\n\nИсточник: data/knowledge/evotor/cash/evotor-6-receipt-copy.md — Действие на кассе",
+        "latency_ms": 3679,
+        "same_task": false,
+        "scenario_reason": "source_first_exact_section",
+        "generation_status": "generated",
+        "source": "data/knowledge/evotor/cash/evotor-6-receipt-copy.md — Действие на кассе",
+        "planner": {
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "reason": "The user asks how to print a copy of a receipt by FD number on Evotor 6. The \"Действие на кассе\" section provides the exact steps to perform this action, matching the task intent and scope."
+        },
+        "understanding_calls": 1,
+        "generation_calls": 1
+      }
+    ]
+  },
+  "schema_probe": {
+    "probe_http_attempts": 4,
+    "probe_http_statuses": {
+      "200": 4,
+      "400": 0,
+      "429": 0
+    },
+    "correct_input_probe_attempts": 2,
+    "correct_input_probe_tokens": 4551,
+    "all_probe_tokens_including_two_bad_input_runs": 8904,
+    "valid_forms": [
+      "current nullable type union",
+      "equivalent anyOf nullable objects"
+    ],
+    "result": "both correct-input probes returned HTTP 200 and passed exact-span validation; insufficient evidence to claim intermittent json_validate_failed fixed; one local TPM deferral, no retry"
+  },
+  "open_blockers": [
+    "Historical Groq strict Understanding json_validate_failed remains unresolved; two valid schema-shape probes and the 31-call live gate had no 400, which does not establish reliability repair.",
+    "Approved coverage remains absent for Saby incoming-document search, Diadok outgoing-UPD status, and BIFIT table workflow.",
+    "aQsi answer now shares the approved initial compatibility fact; a complete model-specific scanner connection procedure is not present in the approved article."
+  ],
+  "rollback": "Existing backup .local/backups/live-dialogue-recovery-20261029T051416Z (SQLite plus 33 runtime sources; manifest env SHA matches current .env). No production database, Qdrant index, .env, allowlist, or Telegram worker was changed or started.",
+  "source_hashes": {
+    "bot.py": "54d275d6f75120def67f0f3257522da2bd9f67fe657ba7873acf8db81b7f4abc",
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/ai_coordinator.py": "406da12318a3c823f0c64f21f74666096b09f080ccc8a6a1b7b237a5fe96a84f",
+    "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+    "app/api.py": "f6b5ebd9d394ead610dc6a0160566cba3a0ae428c8f0bcd08d6d3737e076ed8b",
+    "app/bot_runtime.py": "7a93c28e090390501db083b8c7a0e480ef8d4d303037bd0d2953f319de121b91",
+    "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+    "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
+    "app/conversation_store.py": "cf9218ffe23bbf898be91557d78e4b0ab5b507d24a6364d7d0e9a7c08b2fd716",
+    "app/dialogue_state.py": "4a81827ba0e376ade90433c4263d2505c618dce0716ad8c4f967b0bd653743e1",
+    "app/dialogue_understanding.py": "b4547ab2c2d6f3fbe90de12a43a97c4a4dd52e87aa68a94d6a3d62772af8c626",
+    "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
+    "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
+    "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+    "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+    "app/groq_rate_limit.py": "58203fd4dd88bd3809adbd019b23dfa5bf715b3a075b051fef1ddd64274f3744",
+    "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
+    "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
+    "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+    "app/llm_client.py": "db56191a38735336745bcc5b5e89ca1d09b302a26786b78ac3086abd6557288e",
+    "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+    "app/procedure_policy.py": "3b03a70a1ab30a229230db53b7c178d20fa70f9f4905672a3fa22e8aa69673e6",
+    "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+    "app/rag_query.py": "35ec24e6413a6b74068833c7b1db8b2bf6070e3adb8d7804693388c688d242da",
+    "app/response_grounding.py": "f548e843a334c2930c20a9948a333fa88f585e27708bda668ea4eb925757138a",
+    "app/retrieval.py": "9499dd9e665d1eedbc1672aa7d66f4f161beba83ed17312469b029c9335d0b27",
+    "app/retrieval_pipeline.py": "f90a92ec4d4e59a69eab1bd5ba190b3898ef8ab0b6df59ad0ef5d0e5fd78b5d3",
+    "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
+    "app/scope_policy.py": "71b01f6884b06f7a60e0366c3849273538d520fa08671973ac1eb90cb10a712f",
+    "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
+    "app/source_first_service.py": "be9d864c9a8018a8e88a01f0b0a282f8441489b9c0fd517343bde9531820e52b",
+    "app/task_operation_resolver.py": "4587f4be5b44b479c0e25e2513acc49154773bfe2d12f988e868c31fb99d6a7f",
+    "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
+  }
+}

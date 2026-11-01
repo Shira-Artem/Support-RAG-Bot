@@ -18,11 +18,13 @@ from unittest.mock import AsyncMock
 import pytest
 
 from app.config import Settings
+from app.answer_service import Answer
 from app.conversation_store import ConversationStore
 from app.dialogue_understanding import Understanding, UnderstandingError, validate_response
 
 
-def test_groq_quota_pause_preserves_user_turn_and_active_task(monkeypatch, tmp_path):
+@pytest.mark.parametrize("http_status", [400, 429])
+def test_understanding_http_error_preserves_user_turn(monkeypatch, tmp_path, http_status):
     store = ConversationStore(tmp_path / "quota.sqlite3")
     cid = store.new(42, 42)
     settings = Settings(telegram_bot_token="offline-token", openrouter_api_key="",
@@ -46,14 +48,27 @@ def test_groq_quota_pause_preserves_user_turn_and_active_task(monkeypatch, tmp_p
     sys.modules.pop("bot", None)
     bot = importlib.import_module("bot")
     try:
-        async def quota(*_args, **_kwargs):
-            raise UnderstandingError("Groq HTTP 429", http_status=429,
-                phase="provider", code="groq_http_429", retry_after_seconds=12)
+        calls = 0
+
+        async def understanding(text, message_id, _history, _state, _settings):
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                raise UnderstandingError(f"Groq HTTP {http_status}", http_status=http_status,
+                    phase="provider", code=f"groq_http_{http_status}", retry_after_seconds=12)
+            raw = {"request_type": "information", "relation": "new_task",
+                "intent": "general", "operation": "explain", "object": "понятие",
+                "object_evidence": {"quote": "ОФД"}, "goal": {"quote": text},
+                "symptom": None, "entities": [], "unknown_facts": [],
+                "specialist_requested": False, "specialist_evidence": None, "confidence": 0.91}
+            kind, specialist, unknown, observation = validate_response(raw, text, message_id)
+            return Understanding(kind, specialist, unknown, observation, {}, "offline", 0, raw,
+                                 observation.validation_diagnostics)
 
         async def no_retrieval(*_args, **_kwargs):
-            raise AssertionError("retrieval must not run without Understanding")
+            raise AssertionError("retrieval must not run after failed Understanding")
 
-        monkeypatch.setattr(bot, "understand_message", quota)
+        monkeypatch.setattr(bot, "understand_message", understanding)
         monkeypatch.setattr(bot.source_first_service, "answer", no_retrieval)
         reply = AsyncMock()
         message = SimpleNamespace(text="Что такое ОФД?", reply_text=reply,
@@ -64,9 +79,28 @@ def test_groq_quota_pause_preserves_user_turn_and_active_task(monkeypatch, tmp_p
         saved = ConversationStore(tmp_path / "quota.sqlite3")
         history = saved.history(cid)
         assert history[-2]["content"] == "Что такое ОФД?"
-        assert "лимит запросов" in history[-1]["content"]
+        assert ("лимит запросов" in history[-1]["content"]) == (http_status == 429)
+        if http_status == 400:
+            assert "Временно" in history[-1]["content"]
         assert saved.dialogue_state(cid).task_id is None
         assert reply.await_count == 1
+
+        generation_calls = []
+        async def next_answer(*_args, **_kwargs):
+            generation_calls.append(True)
+            return Answer("ОФД — оператор фискальных данных.", rag_engine="source_first",
+                          generation_status="ok", provider="groq", model="offline")
+
+        monkeypatch.setattr(bot.source_first_service, "answer", next_answer)
+        asyncio.run(bot.handle_message(update, None))
+        reopened = ConversationStore(tmp_path / "quota.sqlite3")
+        history = reopened.history(cid)
+        assert history[-2]["content"] == "Что такое ОФД?"
+        assert history[-1]["content"] == "ОФД — оператор фискальных данных."
+        assert generation_calls == [True]
+        assert reopened.dialogue_state(cid).task_id is not None
+        with reopened.connect() as db:
+            assert db.execute("PRAGMA quick_check").fetchone()[0] == "ok"
     finally:
         sys.modules.pop("bot", None)
 from app.expert_store import ExpertStore

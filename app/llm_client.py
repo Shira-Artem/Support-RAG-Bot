@@ -93,9 +93,9 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
                     "mode": {"type": "string", "enum": ["select", "clarify", "escalate"]},
                     "section_id": {"type": "string"},
                     "applicability_confirmed": {"type": "boolean"},
-                    "order_confirmed": {"type": "boolean"},
+                    "source_order_complete": {"type": "boolean"},
                     "reason": {"type": "string"}},
-                "required": ["mode", "section_id", "applicability_confirmed", "order_confirmed", "reason"]}}}
+                "required": ["mode", "section_id", "applicability_confirmed", "source_order_complete", "reason"]}}}
     attempt_number = None
     if settings.llm_provider == "groq":
         try:

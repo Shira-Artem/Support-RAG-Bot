@@ -311,20 +311,29 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         message_id = conversations.begin(conversation_id, user_text)
     dialogue_state = conversations.dialogue_state(conversation_id)
     coordinator_decision = None
+    understanding_failed = bool(understanding_error)
     quota_deferred = bool(understanding_error and (
         understanding_error.get("http_status") == 429 or
         understanding_error.get("error_code") == "groq_quota_deferred"))
-    if use_ai_coordinator and not quota_deferred:
+    if use_ai_coordinator and not understanding_failed:
         current_event = next((item for item in reversed(conversations.history(conversation_id))
                               if item.get("role") == "user" and item.get("content") == user_text), {})
         coordinator_decision = coordinate(current_event.get("understanding"), dialogue_state)
     try:
-        if quota_deferred:
-            answer = Answer(
+        if understanding_failed:
+            user_message = (
                 "Сейчас достигнут лимит запросов к модели. Переписка сохранена; "
-                "повторите вопрос немного позже.", rag_engine="source_first",
-                generation_status="error", generation_reason="groq_quota_deferred",
-                scenario="clarify", scenario_reason="groq_quota_deferred",
+                "повторите вопрос немного позже."
+                if quota_deferred else
+                "Временно не удалось разобрать сообщение. Оно сохранено; "
+                "пожалуйста, повторите вопрос немного позже."
+            )
+            answer = Answer(
+                user_message, rag_engine="source_first",
+                generation_status="error",
+                generation_reason="groq_quota_deferred" if quota_deferred else "understanding_failed",
+                scenario="clarify",
+                scenario_reason="groq_quota_deferred" if quota_deferred else "understanding_failed",
                 provider="groq", model=settings.groq_model,
                 dialogue_state=dialogue_state.to_dict(),
                 generation_error={"stage": "understanding",
