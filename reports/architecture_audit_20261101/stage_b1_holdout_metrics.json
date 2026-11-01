@@ -1,0 +1,58 @@
+{
+  "head_sha256": "85890b22e6e527d604a98156c010464c5fc950eff7341817510bc75df447b45c",
+  "cases_sha256": "92c102912a965cc1f6e3cecaf96ac7c771955b72882704807ee35ea64de8992d",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "collection_points": 934,
+  "method": "lexical DialogueManager state plus frozen read-only Stage3 retrieval; no Groq/Planner/user response",
+  "total": 48,
+  "positive": 24,
+  "negative": 24,
+  "query_built": 48,
+  "positive_raw_gold": 24,
+  "positive_selected_gold": 18,
+  "positive_raw_hit_filtered": 6,
+  "negative_any_selected": 4,
+  "answer_quality_measured": false,
+  "by_family": {
+    "aqsi": {
+      "positive": 5,
+      "selected_gold": 4,
+      "negative_any_selected": 0
+    },
+    "atol": {
+      "positive": 4,
+      "selected_gold": 3,
+      "negative_any_selected": 2
+    },
+    "bifit": {
+      "positive": 0,
+      "selected_gold": 0,
+      "negative_any_selected": 1
+    },
+    "diadoc": {
+      "positive": 0,
+      "selected_gold": 0,
+      "negative_any_selected": 0
+    },
+    "directbank": {
+      "positive": 6,
+      "selected_gold": 4,
+      "negative_any_selected": 0
+    },
+    "evotor_ofd": {
+      "positive": 4,
+      "selected_gold": 3,
+      "negative_any_selected": 0
+    },
+    "fn": {
+      "positive": 5,
+      "selected_gold": 4,
+      "negative_any_selected": 0
+    },
+    "saby": {
+      "positive": 0,
+      "selected_gold": 0,
+      "negative_any_selected": 1
+    }
+  }
+}

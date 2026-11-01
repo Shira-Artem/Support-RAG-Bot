@@ -135,8 +135,9 @@ def main():
                                          if x["family"] == family and not x["source"]),
         } for family in sorted({x["family"] for x in results})},
     }
-    (HERE / "holdout_results.json").write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (HERE / "holdout_metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    output_prefix = os.environ.get("HOLDOUT_OUTPUT_PREFIX", "holdout")
+    (HERE / f"{output_prefix}_results.json").write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (HERE / f"{output_prefix}_metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
 
 

@@ -27,28 +27,29 @@ class QueryNeedsClarification(ValueError):
 
 def build_rag_query(state: DialogueState, max_chars: int = 500,
                     *, include_client_facts: bool = True) -> str:
+    frame = state.task_frame
     if state.analysis_required:
         raise QueryNeedsClarification("Message relationship is unresolved")
-    if state.intent == "receipt" and state.operation == "search":
+    if frame.intent == "receipt" and frame.operation == "search":
         task = "поиск чека"
-    elif state.intent == "receipt" and state.operation == "repeat_print":
+    elif frame.intent == "receipt" and frame.operation == "repeat_print":
         task = "повторная печать ранее выданного чека"
-    elif state.intent == "receipt" and state.operation == "transmit":
+    elif frame.intent == "receipt" and frame.operation == "transmit":
         task = "поиск документов, не переданных оператору ОФД"
-    elif state.intent == "unknown" or state.operation in {"explain", "unknown"}:
+    elif frame.intent == "unknown" or frame.operation in {"explain", "unknown"}:
         task = state.task.value if state.task else ""
     else:
-        task = OPERATIONS[state.operation]
-        if state.intent not in {"access", "credentials", "report"} and state.object and (
-                state.operation != 'list' or state.intent == 'bank_statement') and not (
-                    state.intent == 'receipt' and state.operation in {'repeat_print', 'transmit', 'search'}):
-            task += " " + state.object
-        if state.intent == "bank_statement" and state.operation == "list":
+        task = OPERATIONS[frame.operation]
+        if frame.intent not in {"access", "credentials", "report"} and frame.subject and (
+                frame.operation != 'list' or frame.intent == 'bank_statement') and not (
+                    frame.intent == 'receipt' and frame.operation in {'repeat_print', 'transmit', 'search'}):
+            task += " " + frame.subject
+        if frame.intent == "bank_statement" and frame.operation == "list":
             task = "просмотр списка банковских выписок"
     entities = [f"{label}: {state.task_entity(slot)}" for slot, label in (
         ("service", "сервис"), ("equipment", "оборудование"), ("manufacturer", "производитель"),
         ("ofd", "ОФД"), ("software", "ПО"), ("integration", "интеграция"))
-        if slot in state.task_entities and state.task_entity(slot)]
+        if frame.entities.get(slot) and state.task_entity(slot)]
     required = [*entities, task]
     if state.error:
         required.append("код ошибки " + state.error.value)
@@ -77,7 +78,7 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
         # transcript remains intact in ConversationStore; only retrieval scope
         # follows the current task facts.
         active_entities = {(slot, fact.value)
-                           for slot, facts in state.task_entities.items() for fact in facts}
+                           for slot, facts in frame.entities.items() for fact in facts}
         obsolete_entities = [
             fact
             for slot, facts in (state.task_context.entities.items() if state.task_context else [])

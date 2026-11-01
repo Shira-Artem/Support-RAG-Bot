@@ -424,7 +424,7 @@ def test_six_turn_pilot_dialogue_and_sqlite(pilot_trace):
     assert "Выясните модель" in trace[2]["final_reply"]
     assert "Настройки →" not in trace[2]["final_reply"]
     assert "Проверьте поля EoU" not in trace[2]["final_reply"]
-    assert trace[3]["state"]["relation"] == "continue"
+    assert trace[3]["state"]["relation"] == "answer_to_clarification"
     assert trace[3]["state"]["expected_slot"] == "equipment"
     assert trace[3]["reason"] == "grounded_section_followup_scope_needed"
     assert trace[3]["final_reply"] != trace[2]["final_reply"]
@@ -471,7 +471,7 @@ def test_independent_access_service_and_topic_switch_via_bot_sqlite(monkeypatch,
          "object": "чек", "object_quote": "чек", "goal": "найти чек"},
     ])
     assert trace[0]["state"]["expected_slot"] is None
-    assert trace[1]["state"]["relation"] == "parameter_update"
+    assert trace[1]["state"]["relation"] == "answer_to_clarification"
     assert not trace[1]["state"]["task_changed"]
     assert trace[1]["state"]["routing_service"] == "aQsi Online"
     assert trace[2]["state"]["task_changed"]

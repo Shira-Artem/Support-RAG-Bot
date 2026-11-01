@@ -71,6 +71,7 @@ class TaskContext:
     task_id: str | None = None
     topic_start_message_id: int | str | None = None
     intent: str = "unknown"
+    request_type: str = "unknown"
     operation: str = "unknown"
     object: str | None = None
     entities: dict[str, list[Fact]] = field(default_factory=dict)
@@ -103,6 +104,30 @@ class TaskContext:
     current_subgoal: Fact | None = None
     clarification_repeats: dict[str, int] = field(default_factory=dict)
     closed: bool = False
+
+
+@dataclass(frozen=True)
+class TaskFrame:
+    """Read-only projection of the active TaskContext, never another state store."""
+    task_id: str | None
+    closed: bool
+    request_type: str
+    intent: str  # legacy domain label; not a request type or document subject
+    subject: str | None
+    operation: str
+    symptom: Fact | None
+    task_fact: Fact | None
+    goals: tuple[Fact, ...]
+    constraints: tuple[Fact, ...]
+    details: tuple[Fact, ...]
+    entities: dict[str, tuple[Fact, ...]]
+    unknown_facts: tuple[str, ...]
+    checks: tuple[dict, ...]
+    relation: str
+    transition: str
+    expected_slot: str | None
+    analysis_required: bool
+    revision: int
 
 
 def _fact(value):
@@ -211,6 +236,22 @@ class DialogueState:
         self.task_context = value
 
     @property
+    def task_frame(self) -> TaskFrame:
+        task = self.task_context
+        return TaskFrame(
+            task_id=self.task_id, closed=bool(task and task.closed),
+            request_type=self.request_type, intent=self.intent, subject=self.object,
+            operation=self.operation, symptom=self.symptom, task_fact=self.task,
+            goals=tuple(self.goals), constraints=tuple(self.constraints),
+            details=tuple(self.details),
+            entities={slot: tuple(facts) for slot, facts in (task.entities if task else {}).items()},
+            unknown_facts=tuple(task.unknown_facts if task else ()),
+            checks=tuple(deepcopy(task.checks)) if task else (),
+            relation=self.relation, transition=self.transition,
+            expected_slot=self.expected.slot if self.expected else None,
+            analysis_required=self.analysis_required, revision=self.revision)
+
+    @property
     def task_id(self): return self.task_context.task_id if self.task_context else None
     @task_id.setter
     def task_id(self, value): self._ensure_task().task_id = value
@@ -222,6 +263,10 @@ class DialogueState:
     def intent(self): return self.task_context.intent if self.task_context else "unknown"
     @intent.setter
     def intent(self, value): self._ensure_task().intent = value
+    @property
+    def request_type(self): return self.task_context.request_type if self.task_context else "unknown"
+    @request_type.setter
+    def request_type(self, value): self._ensure_task().request_type = value
     @property
     def operation(self): return self.task_context.operation if self.task_context else "unknown"
     @operation.setter
@@ -375,7 +420,8 @@ class DialogueState:
             t = self.task_context
             task = {
                 "task_id": t.task_id, "topic_start_message_id": t.topic_start_message_id,
-                "intent": t.intent, "operation": t.operation, "object": t.object,
+                "intent": t.intent, "request_type": t.request_type,
+                "operation": t.operation, "object": t.object,
                 "entities": {k: [asdict(f) for f in values] for k, values in t.entities.items()},
                 "active_route": ({"slot": t.active_route.slot, "fact": asdict(t.active_route.fact)}
                                  if t.active_route else None),
@@ -403,7 +449,8 @@ class DialogueState:
             "schema_version": SCHEMA_VERSION, "revision": self.revision,
             "session": session, "task_context": task,
             "task_id": self.task_id, "topic_start_message_id": self.topic_start_message_id,
-            "intent": self.intent, "operation": self.operation, "object": self.object,
+            "intent": self.intent, "request_type": self.request_type,
+            "operation": self.operation, "object": self.object,
             "entities": session["entities"], "routing_slot": self.routing_slot,
             "parameters": [asdict(f) for f in self.parameters],
             "object_reference": asdict(self.object_reference) if self.object_reference else None,
@@ -440,7 +487,8 @@ class DialogueState:
                 task_entities["equipment"] = entities["equipment"]
         task_raw = {
             "task_id": raw.get("task_id"), "topic_start_message_id": raw.get("topic_start_message_id"),
-            "intent": intent, "operation": operation, "object": raw.get("object"),
+            "intent": intent, "request_type": raw.get("request_type", "unknown"),
+            "operation": operation, "object": raw.get("object"),
             "entities": {k: [asdict(f) for f in v] for k, v in task_entities.items()},
             "active_route": ({"slot": routing_slot, "fact": asdict(task_entities[routing_slot][0])}
                              if routing_slot in task_entities and len(task_entities[routing_slot]) == 1 else None),
@@ -477,6 +525,7 @@ class Observation:
     # never used as facts by the reducer.
     validation_diagnostics: list[dict] = field(default_factory=list)
     intent: str = "unknown"
+    request_type: str = "unknown"
     operation: str = "unknown"
     object: str | None = None
     evidence: Fact | None = None
@@ -662,8 +711,8 @@ OBJECTS = (
     ("access", "сотрудник", ("сотрудник", "коллег", "пользовател", "учетн", "учетк", "аккаунт", "доступ", "роль", "роли", "ролей", "прав", "полномоч")),
     ("report", "отчёт", ("отчет",)),
     ("fiscal_drive", "ФН", ("фн", "накопител")),
-    ("receipt", "чек", ("чек", "квитанц", "оператор")),
-    ("general", "ОФД", ("офд", "оператор фискальных данных")),
+    ("receipt", "чек", ("чек", "квитанц")),
+    ("general", "ОФД", ("офд", "оператор фискальн данн")),
     ("network", "соединение", ("интернет", "связь", "сети", "подключен")),
     ("marking", "маркировка", ("маркиров", "gtin")),
     ("tax", "налогообложение", ("налог", "ндс", "усн", "псн")),
@@ -785,6 +834,14 @@ class LexicalAnalyzer:
             if has(subject_tokens, stems):
                 obs.intent, obs.object = intent, obj
                 break
+        # Keep the deterministic analyzer on the same task/operation contract
+        # as validated Understanding. The resolver cannot assert a vendor or
+        # model and its result still passes through the reducer.
+        from app.task_operation_resolver import resolve_task_operation
+        resolved = resolve_task_operation(text, operation=obs.operation,
+                                          intent=obs.intent, subject=obs.object)
+        if obs.object == "ОФД" and resolved.task_category == "receipt_transmission":
+            obs.intent, obs.operation = resolved.intent, resolved.operation
         if (obs.intent == "unknown" and has(tokens, ("оплат",))
                 and not has(tokens, ("способ",))):
             obs.intent, obs.object = "billing", "оплата"
@@ -1028,6 +1085,9 @@ class LexicalAnalyzer:
             obs.operation_confidence = 0.9 if operation_has_local_evidence else 0.7
         else:
             obs.operation_confidence = 0.3 if obs.uncertain else 0.0
+        obs.request_type = ("diagnosis" if obs.symptom or obs.operation == "diagnose" else
+                            "information" if obs.operation in {"explain", "check", "status", "search", "list"} else
+                            "instruction" if obs.operation != "unknown" else "unknown")
         obs.relation_confidence = obs.confidence
         obs.relation_evidence = obs.evidence
         return obs
@@ -1091,8 +1151,6 @@ class DialogueManager:
         # Keep a slot clarification active until the client supplies that
         # slot (or explicitly says they do not know it); this lets new symptoms
         # and constraints accumulate without silently clearing the blocker.
-        elif relation == "answer_to_clarification" and previous.expected is None:
-            relation = "continue"
         elif (relation == "answer_to_clarification" and previous.expected
               and previous.expected.slot in ENTITY_SLOTS
               and not (obs.entities.keys() & {
@@ -1140,6 +1198,7 @@ class DialogueManager:
             state.topic_start_message_id = message_id
             state.task = obs.evidence
             state.intent = obs.intent
+            state.request_type = obs.request_type
             state.operation = obs.operation
             state.object = obs.object
             state.operation_evidence = obs.operation_evidence if known_task else None
@@ -1174,7 +1233,19 @@ class DialogueManager:
                 state.transition = "contradiction"
             elif relation in {"parameter_update", "constraint_update"}:
                 state.transition = "refine_requirements" if relation == "constraint_update" else "change_parameter"
-            if obs.intent != "unknown" and (obs.intent == state.intent or state.intent == "unknown"):
+            promotes_unresolved = (state.intent in {"general", "unknown"}
+                                   and state.operation == "unknown"
+                                   and obs.intent not in {"general", "unknown"}
+                                   and obs.operation != "unknown"
+                                   and relation in {"answer_to_clarification", "continue"})
+            if obs.request_type != "unknown":
+                state.request_type = obs.request_type
+            if promotes_unresolved:
+                # The vague opening is no longer the retrieval subject. Keep
+                # confirmed route/model facts and the same task identity.
+                state.task = obs.evidence
+            if obs.intent != "unknown" and (obs.intent == state.intent or state.intent == "unknown"
+                                            or promotes_unresolved):
                 state.intent = obs.intent
                 # Words inside a requested detail (for example «чек уже
                 # выдан») describe the active correction case; they are not a
@@ -1183,7 +1254,7 @@ class DialogueManager:
                                        and previous.expected
                                        and previous.expected.slot in {"service", "ofd", "software", "manufacturer",
                                                                       "equipment", "details", "goal"})
-                if obs.operation != "unknown" and not preserves_operation:
+                if obs.operation != "unknown" and (not preserves_operation or promotes_unresolved):
                     if (obs.operation != previous.operation and previous.operation_evidence):
                         _append_unique(state.superseded_facts, [previous.operation_evidence])
                     state.operation = obs.operation
@@ -1232,6 +1303,17 @@ class DialogueManager:
             route_changed = (previous.routing_slot != slot or previous.routing_service != values[0].value)
             old_route = previous.task_context.active_route if previous.task_context else None
             state.task_context.active_route = ActiveRoute(slot, values[0]) if len(values) == 1 else None
+            if (route_changed and old_route and old_route.slot != "manufacturer"
+                    and relation != "answer_to_clarification"):
+                # A switch away from a confirmed service/OFD/software route
+                # cannot carry that route's old hardware or provider scope.
+                # Session history remains available, but the active task and
+                # retrieval request contain only the new asserted scope.
+                for stale_slot in ("service", "ofd", "software", "integration",
+                                   "manufacturer", "equipment"):
+                    if stale_slot != slot and stale_slot not in obs.entities:
+                        stale = state.task_context.entities.pop(stale_slot, [])
+                        _append_unique(state.superseded_facts, stale)
             if route_changed and old_route and relation != "new_task":
                 current_values = {fact.value for values in state.task_entities.values() for fact in values}
                 if old_route.value not in current_values:

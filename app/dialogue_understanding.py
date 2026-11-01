@@ -448,9 +448,18 @@ def _parse_optional_fact(text: str, raw: Any, message_id: int | str,
 def _object_supported_by_quote(value: str, quote: str) -> bool:
     if value == "понятие":
         return True  # semantic description of the grounded subject, not a customer fact
-    folded = _fold(quote)
-    return any(value == canonical and _fold(alias) in folded
+    return any(value == canonical and _object_alias_pattern(alias).search(quote)
                for _, canonical, aliases in OBJECTS for alias in aliases)
+
+
+def _object_alias_pattern(alias: str) -> re.Pattern[str]:
+    # Registered noun stems may inflect independently in a multiword name.
+    # Registered identifiers must remain exact tokens; ordinary nouns such
+    # as «чек» inflect even when their stem is short.
+    identifiers = {"фн", "офд", "упд", "ккт", "ндс", "усн", "псн", "gtin"}
+    pieces = [re.escape(part) + ("" if part.casefold() in identifiers else r"[а-яё]*")
+              for part in alias.split()]
+    return re.compile(r"(?<!\w)" + r"\s+".join(pieces) + r"(?!\w)", re.I)
 
 
 def _unique_object_from_current_text(text: str) -> tuple[str, int, int] | None:
@@ -460,8 +469,7 @@ def _unique_object_from_current_text(text: str) -> tuple[str, int, int] | None:
         if canonical == "понятие":
             continue
         for alias in aliases:
-            pattern = re.escape(alias) + r"[а-яёa-z]*"
-            match = re.search(pattern, text, re.I)
+            match = _object_alias_pattern(alias).search(text)
             if match:
                 hits.append((canonical, match.start(), match.end(), match.end() - match.start()))
     values = {value for value, *_ in hits}
@@ -567,6 +575,9 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
     raw_obj = data["object"]
     if isinstance(raw_obj, str):
         normalized_obj = OBJECT_ALIASES.get(raw_obj.strip().casefold(), raw_obj.strip())
+        if normalized_obj not in OBJECT_VALUES:
+            registered = _unique_object_from_current_text(raw_obj)
+            normalized_obj = registered[0] if registered else normalized_obj
     else:
         normalized_obj = raw_obj
     obj = normalized_obj if normalized_obj is None or (isinstance(normalized_obj, str) and normalized_obj in OBJECT_VALUES) else None
@@ -756,7 +767,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
             intent = "general"
             _field_result(diagnostics, "intent", "accepted",
                           "general_information_intent_from_grounded_goal", value=intent)
-    resolution = resolve_task_operation(text, operation=operation, intent=intent)
+    resolution = resolve_task_operation(text, operation=operation, intent=intent, subject=obj)
     if resolution.task_category is not None:
         if operation != resolution.operation or intent != resolution.intent:
             _field_result(diagnostics, "task_operation_resolution", "accepted", resolution.reason,
@@ -793,7 +804,7 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
     evidence = Fact.span(text, message_id)
     observation = Observation(entities=entities, unknown_facts=unknown_evidence,
         validation_diagnostics=diagnostics,
-        intent=intent, operation=operation, object=obj, evidence=evidence,
+        intent=intent, request_type=kind, operation=operation, object=obj, evidence=evidence,
         object_evidence=object_ev, symptom=symptom,
         goals=[goal] if goal else [], relation=relation, confidence=float(confidence),
         intent_confidence=float(confidence), operation_confidence=float(confidence),
@@ -1014,7 +1025,8 @@ def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str
                                  code="persisted_unknown_slot_mismatch")
     unknown_evidence = {slot: parse(span) for slot, span in raw_unknown.items()}
     observation = Observation(entities=entities, unknown_facts=unknown_evidence,
-        intent=raw["intent"], operation=raw["operation"],
+        intent=raw["intent"], request_type=data.get("request_type", "unknown"),
+        operation=raw["operation"],
         object=raw.get("object"), evidence=parse(raw.get("evidence")) or Fact.span(text, message_id),
         intent_evidence=parse(raw.get("intent_evidence")), operation_evidence=parse(raw.get("operation_evidence")),
         object_evidence=parse(raw.get("object_evidence")), relation_evidence=parse(raw.get("relation_evidence")),

@@ -39,7 +39,8 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
     """
     request_type = str((understanding or {}).get("request_type") or "unknown")
     observation = (understanding or {}).get("observation") or {}
-    raw_relation = str(state.relation or "unknown")
+    frame = state.task_frame
+    raw_relation = str(frame.relation or "unknown")
     if raw_relation in {"new_task", "continue", "answer_to_clarification",
                         "parameter_update", "constraint_update", "contradiction"}:
         relation: TaskRelation = raw_relation
@@ -49,13 +50,13 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
     current_subgoal = next((str(item.get("value")) for item in reversed(goals)
                             if isinstance(item, dict) and item.get("value")), None)
 
-    operation = state.operation
+    operation = frame.operation
     # An absent enum projection is not an absent client task. A reducer-owned
     # goal/symptom plus its subject is sufficient to search for evidence;
     # it never authorizes a procedure or fills a missing scope fact.
     semantic_task_ready = bool(not state.analysis_required and state.task and
         (state.goals or state.symptom) and
-        (state.object or state.task_entities))
+        (frame.subject or state.task_entities))
     current_quote = ((observation.get("evidence") or {}).get("quote")
                      if isinstance(observation.get("evidence"), dict) else None)
     reports_check = bool(current_quote and state.active_task and any(
@@ -69,9 +70,9 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
         route: Route = "conversation"
         action = "respond_or_handoff"
         rationale = "social_or_handoff_turn"
-    elif state.expected and state.expected.slot in {"task", "goal", "details"}:
+    elif frame.expected_slot in {"task", "goal", "details"}:
         route, action, rationale = "conversation", "ask_for_missing_task_detail", "task_not_ready"
-    elif operation == "explain" and state.intent == "general":
+    elif operation == "explain" and frame.intent == "general":
         route, action, rationale = (
             "grounded_information", "retrieve_and_quote_focused_approved_evidence",
             "grounded_explanation_requires_scoped_evidence")

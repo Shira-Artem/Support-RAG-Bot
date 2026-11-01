@@ -400,7 +400,7 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     # The same evidence-bound projection used during Understanding wins only
     # when the reducer still holds its operation. It never consults a hit.
     resolved = resolve_task_operation(task_folded, operation=state.operation,
-                                      intent=state.intent)
+                                      intent=state.intent, subject=state.object)
     if (resolved.task_category and resolved.operation == state.operation):
         return resolved.task_category
     # Explanations are read-only concept questions. They still require

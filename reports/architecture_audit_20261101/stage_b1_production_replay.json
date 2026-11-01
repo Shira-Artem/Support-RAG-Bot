@@ -1,0 +1,450 @@
+{
+  "method": "saved raw Understanding -> current validator/reducer/query; read-only Stage3 fixed original query hits; no Groq, Planner, production writes",
+  "collection_points": 934,
+  "cases": [
+    {
+      "message_id": 557,
+      "baseline": {
+        "expected_task": "error_diagnosis",
+        "evidence_status": "none",
+        "sufficient": false,
+        "reason": "no_task_matched_candidates",
+        "selected_sources": [],
+        "gold_candidate": {
+          "selected": false,
+          "reasons": [
+            "task_mismatch:receipt_transmission!=error_diagnosis"
+          ]
+        }
+      },
+      "task_frame": {
+        "task_id": "task:557",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "receipt",
+        "subject": "ОФД",
+        "operation": "diagnose",
+        "symptom": {
+          "value": "оператор фискальных данных ничего не получает",
+          "message_id": 557,
+          "quote": "оператор фискальных данных ничего не получает",
+          "start": 35,
+          "end": 80
+        },
+        "task_fact": {
+          "value": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+          "message_id": 557,
+          "quote": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+          "start": 0,
+          "end": 96
+        },
+        "goals": [
+          {
+            "value": "С чего начать?",
+            "message_id": 557,
+            "quote": "С чего начать?",
+            "start": 82,
+            "end": 96
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 557,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 557,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки ОФД — запрос клиента: На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+      "task_category": "receipt_transmission",
+      "same_original_query_fixed_hits": {
+        "raw_hits": 2,
+        "gold_selected": true,
+        "gold_reasons": [],
+        "evidence_status": "partial",
+        "sufficient": true,
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ]
+      }
+    },
+    {
+      "message_id": 559,
+      "baseline": {
+        "expected_task": "error_diagnosis",
+        "evidence_status": "none",
+        "sufficient": false,
+        "reason": "no_task_matched_candidates",
+        "selected_sources": [],
+        "gold_candidate": {
+          "selected": false,
+          "reasons": [
+            "task_mismatch:receipt_transmission!=error_diagnosis"
+          ]
+        }
+      },
+      "task_frame": {
+        "task_id": "task:557",
+        "closed": false,
+        "request_type": "information",
+        "intent": "receipt",
+        "subject": "ОФД",
+        "operation": "diagnose",
+        "symptom": {
+          "value": "новые продажи не появляются",
+          "message_id": 559,
+          "quote": "новые продажи не появляются",
+          "start": 68,
+          "end": 95
+        },
+        "task_fact": {
+          "value": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+          "message_id": 557,
+          "quote": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+          "start": 0,
+          "end": 96
+        },
+        "goals": [
+          {
+            "value": "С чего начать?",
+            "message_id": 557,
+            "quote": "С чего начать?",
+            "start": 82,
+            "end": 96
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "У меня",
+            "message_id": 559,
+            "quote": "У меня",
+            "start": 0,
+            "end": 6
+          },
+          {
+            "value": "В кассе всё пробивается, а в личном кабинете ОФД",
+            "message_id": 559,
+            "quote": "В кассе всё пробивается, а в личном кабинете ОФД",
+            "start": 19,
+            "end": 67
+          }
+        ],
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 559,
+              "quote": "Эвотор 7.3",
+              "start": 7,
+              "end": 17
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 559,
+              "quote": "Эвотор",
+              "start": 7,
+              "end": 13
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "checks": [],
+        "relation": "continue",
+        "transition": "continue_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 2
+      },
+      "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки ОФД — запрос клиента: На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать? — уточнение клиента: У меня; В кассе всё пробивается, а в личном кабинете ОФД",
+      "task_category": "receipt_transmission",
+      "same_original_query_fixed_hits": {
+        "raw_hits": 2,
+        "gold_selected": true,
+        "gold_reasons": [],
+        "evidence_status": "partial",
+        "sufficient": true,
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ]
+      }
+    },
+    {
+      "message_id": 561,
+      "baseline": {
+        "expected_task": "receipt_transmission",
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ],
+        "gold_candidate": {
+          "selected": true,
+          "reasons": []
+        }
+      },
+      "task_frame": {
+        "task_id": "task:561",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "receipt",
+        "subject": null,
+        "operation": "diagnose",
+        "symptom": {
+          "value": "не передаёт документы",
+          "message_id": 561,
+          "quote": "не передаёт документы",
+          "start": 11,
+          "end": 32
+        },
+        "task_fact": {
+          "value": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+          "message_id": 561,
+          "quote": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+          "start": 0,
+          "end": 75
+        },
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 561,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 561,
+              "quote": "Эвотор 7.3",
+              "start": 0,
+              "end": 10
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки — запрос клиента: Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+      "task_category": "receipt_transmission",
+      "same_original_query_fixed_hits": {
+        "raw_hits": 2,
+        "gold_selected": true,
+        "gold_reasons": [],
+        "evidence_status": "partial",
+        "sufficient": true,
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ]
+      }
+    },
+    {
+      "message_id": 563,
+      "baseline": null,
+      "task_frame": {
+        "task_id": "task:563",
+        "closed": false,
+        "request_type": "information",
+        "intent": "general",
+        "subject": null,
+        "operation": "unknown",
+        "symptom": null,
+        "task_fact": {
+          "value": "Параметры ОФД тоже совпадают, но проблема осталась.",
+          "message_id": 563,
+          "quote": "Параметры ОФД тоже совпадают, но проблема осталась.",
+          "start": 0,
+          "end": 51
+        },
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "unknown_facts": [],
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "query": "Параметры ОФД тоже совпадают, но проблема осталась.",
+      "task_category": null
+    },
+    {
+      "message_id": 565,
+      "baseline": {
+        "expected_task": null,
+        "evidence_status": "none",
+        "sufficient": false,
+        "reason": "no_task_matched_candidates",
+        "selected_sources": [],
+        "gold_candidate": {
+          "selected": false,
+          "reasons": [
+            "task_unresolved"
+          ]
+        }
+      },
+      "task_frame": {
+        "task_id": "task:563",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "receipt",
+        "subject": null,
+        "operation": "diagnose",
+        "symptom": {
+          "value": "Эвотор 7.3 не передаёт документы в ОФД",
+          "message_id": 565,
+          "quote": "Эвотор 7.3 не передаёт документы в ОФД",
+          "start": 0,
+          "end": 38
+        },
+        "task_fact": {
+          "value": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+          "message_id": 565,
+          "quote": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+          "start": 0,
+          "end": 75
+        },
+        "goals": [],
+        "constraints": [],
+        "details": [
+          {
+            "value": "Интернет уже проверил, он работает",
+            "message_id": 565,
+            "quote": "Интернет уже проверил, он работает",
+            "start": 40,
+            "end": 74
+          }
+        ],
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 565,
+              "quote": "Эвотор",
+              "start": 0,
+              "end": 6
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 565,
+              "quote": "Эвотор 7.3",
+              "start": 0,
+              "end": 10
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "checks": [],
+        "relation": "answer_to_clarification",
+        "transition": "clarification",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 2
+      },
+      "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки — запрос клиента: Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+      "task_category": "receipt_transmission",
+      "same_original_query_fixed_hits": {
+        "raw_hits": 2,
+        "gold_selected": true,
+        "gold_reasons": [],
+        "evidence_status": "partial",
+        "sufficient": true,
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ]
+      }
+    },
+    {
+      "message_id": 569,
+      "baseline": {
+        "expected_task": null,
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "aqsi_online/receipts/partial-refund.md",
+          "atol_online/connection/add-shop-step3.md",
+          "atol_online/ofd/what-is-ofd.md"
+        ],
+        "gold_candidate": null
+      },
+      "task_frame": {
+        "task_id": "task:569",
+        "closed": false,
+        "request_type": "information",
+        "intent": "general",
+        "subject": "ОФД",
+        "operation": "explain",
+        "symptom": null,
+        "task_fact": {
+          "value": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+          "message_id": 569,
+          "quote": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+          "start": 0,
+          "end": 81
+        },
+        "goals": [
+          {
+            "value": "Объясни без сложных терминов.",
+            "message_id": 569,
+            "quote": "Объясни без сложных терминов.",
+            "start": 52,
+            "end": 81
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "entities": {},
+        "unknown_facts": [],
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "query": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+      "task_category": "ofd_connection"
+    }
+  ]
+}

@@ -24,7 +24,7 @@ def _has(text: str, pattern: str) -> bool:
 
 
 def resolve_task_operation(text: str, *, operation: str = "unknown",
-                           intent: str = "unknown") -> TaskOperation:
+                           intent: str = "unknown", subject: str | None = None) -> TaskOperation:
     """Resolve explicit semantics without asserting a vendor, model or outcome.
 
     The patterns describe fiscal support task families already present in
@@ -86,7 +86,17 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
     # subject, destination, and diagnostic context; never infer a vendor/model.
     receipt_at_ofd = (_has(s, r"\b(?:чек\w*|фискальн\w*\s+документ\w*)\b")
                       and _has(s, r"\b(?:офд|оператор\w*\s+фискальн\w*\s+данн\w*)\b"))
-    reported_problem = _has(s, r"\b(?:не|нет|сбой\w*|пропал\w*|очеред\w*)\b")
+    # The grounded subject can name the OFD while the symptom describes sales
+    # at the till rather than spelling out "receipt". This is still a
+    # transmission diagnostic, provided no distinct print/refund operation is
+    # requested. The subject is client-grounded by Understanding upstream.
+    reported_problem = _has(s, r"\b(?:не|нет|ничего|сбой\w*|пропал\w*|очеред\w*)\b")
+    if (subject == "ОФД" and operation in {"diagnose", "check", "status"}
+            and (operation == "diagnose" or reported_problem)
+            and _has(s, r"\b(?:касс\w*|ккт|продаж\w*|выручк\w*)\b")
+            and not _has(s, r"\b(?:печат\w*|распечат\w*|возврат\w*|вернут\w*)\b")):
+        return result("receipt_transmission", "diagnose", "receipt", "diagnostic",
+                      "ofd_subject_with_till_diagnostic")
     printing_failure = _has(s, r"\bне\s+печат\w*|\bпроблем\w*\s+с\s+печать\w*")
     if (receipt_at_ofd and not printing_failure
             and (operation == "diagnose" or
