@@ -1,0 +1,4315 @@
+[
+  {
+    "id": "EV01",
+    "family": "evotor_ofd",
+    "variant": "paraphrase",
+    "question": "После продаж на Эвотор 7.3 в кабинете оператора по-прежнему пусто. Какую проверку сделать сначала?",
+    "expected": "source",
+    "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+    "forbidden": "other_model_or_vendor_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": "Эвотор 7.3"
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — проверка чек — запрос клиента: После продаж на Эвотор 7.3 в кабинете оператора по-прежнему пусто. Какую проверку сделать сначала?",
+    "expected_task_category": "receipt_transmission",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "score": 0.049454
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "score": 0.041207
+      }
+    ],
+    "selected_sources": [
+      "evotor/ofd/evotor-7-3-ofd-connection.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9289,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.263",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": "Что проверить сначала",
+        "kind": "procedure",
+        "text": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт."
+      },
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": "Что проверить сначала",
+        "kind": "fact",
+        "text": "Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов."
+      }
+    ]
+  },
+  {
+    "id": "EV02",
+    "family": "evotor_ofd",
+    "variant": "paraphrase",
+    "question": "Эвотор 7.3 выдаёт покупателю чек, а в ОФД документ не доходит. Что посмотреть на кассе?",
+    "expected": "source",
+    "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+    "forbidden": "other_model_or_vendor_procedure",
+    "state": {
+      "intent": "device",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": "Эвотор 7.3"
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — проверка касса — запрос клиента: Эвотор 7.3 выдаёт покупателю чек, а в ОФД документ не доходит. Что посмотреть на кассе?",
+    "expected_task_category": null,
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "score": 0.05
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "score": 0.032787
+      }
+    ],
+    "selected_sources": [
+      "evotor/ofd/evotor-7-3-ofd-connection.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9333,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.278",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": "Что проверить сначала",
+        "kind": "procedure",
+        "text": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт."
+      },
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "section": "Что проверить сначала",
+        "kind": "procedure",
+        "text": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД."
+      }
+    ]
+  },
+  {
+    "id": "EV03",
+    "family": "evotor_ofd",
+    "variant": "continuation",
+    "prior": "На Эвотор 7.3 фискальные документы висят в очереди отправки ОФД.",
+    "question": "Сеть уже проверили: интернет есть. Какой следующий безопасный шаг?",
+    "expected": "source",
+    "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+    "forbidden": "other_model_or_vendor_procedure",
+    "state": {
+      "intent": "network",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": null,
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "проверка соединение — запрос клиента: Сеть уже проверили: интернет есть. Какой следующий безопасный шаг?",
+    "expected_task_category": "network_diagnostics",
+    "raw_gold": true,
+    "raw_gold_rank": 13,
+    "selected_gold": false,
+    "gold_rejection": [
+      "task_mismatch:receipt_transmission!=network_diagnostics"
+    ],
+    "raw_top5": [
+      {
+        "source": "aqsi_devices/start/first-start-internet.md",
+        "score": 0.047619
+      },
+      {
+        "source": "atol_online/connection/add-shop-step3.md",
+        "score": 0.046517
+      },
+      {
+        "source": "atol_online/connection/fns-preparation.md",
+        "score": 0.045379
+      },
+      {
+        "source": "evotor/network/mobile-internet-first-checks.md",
+        "score": 0.0417
+      },
+      {
+        "source": "platformaofd/atol/ofd-transmission-checks.md",
+        "score": 0.039611
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "EV04",
+    "family": "evotor_ofd",
+    "variant": "other_model",
+    "question": "На Эвотор 6 продажи есть, а ОФД не видит новые чеки. Что проверять?",
+    "expected": "source",
+    "source": "evotor/ofd/evotor-6-ofd-connection.md",
+    "forbidden": "evotor_7_3_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": "Эвотор 6"
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "оборудование: Эвотор 6 — производитель: Эвотор — проверка чек — запрос клиента: На Эвотор 6 продажи есть, а ОФД не видит новые чеки. Что проверять?",
+    "expected_task_category": "receipt_transmission",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/ofd/evotor-6-ofd-connection.md",
+        "score": 0.048172
+      },
+      {
+        "source": "evotor/cash/evotor-6-receipt-copy.md",
+        "score": 0.048131
+      },
+      {
+        "source": "evotor/ofd/evotor-6-ofd-connection.md",
+        "score": 0.044854
+      },
+      {
+        "source": "evotor/cash/evotor-6-shift.md",
+        "score": 0.042878
+      },
+      {
+        "source": "evotor/cash/evotor-6-receipt-copy.md",
+        "score": 0.033333
+      }
+    ],
+    "selected_sources": [
+      "evotor/ofd/evotor-6-ofd-connection.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "evotor/ofd/evotor-6-ofd-connection.md",
+        "metadata": {
+          "title": "Эвотор 6: нет связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 6",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-6-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Если диагностика сообщает об ошибке",
+          "operation": "check_transmission"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9438,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.312",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "evotor/ofd/evotor-6-ofd-connection.md",
+        "document_id": "evotor-6-ofd-connection-360014099534",
+        "section": "Первичная диагностика",
+        "kind": "procedure",
+        "text": "Проверьте в кабинете своего ОФД, действует ли обслуживание."
+      },
+      {
+        "source": "evotor/ofd/evotor-6-ofd-connection.md",
+        "document_id": "evotor-6-ofd-connection-360014099534",
+        "section": "Если диагностика сообщает об ошибке",
+        "kind": "interface",
+        "text": "В «Настройки → ОФД → Настроить ОФД» сверьте параметры подключения с данными своего оператора."
+      }
+    ]
+  },
+  {
+    "id": "EV05",
+    "family": "evotor_ofd",
+    "variant": "negation",
+    "question": "Эвотор 7.3 в ОФД передаёт всё нормально, но бумажный чек не печатается. Что делать?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "ofd_transmission_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "transmit",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": "Эвотор 7.3"
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — поиск документов, не переданных оператору ОФД — запрос клиента: Эвотор 7.3 в ОФД передаёт всё нормально, но бумажный чек не печатается. Что делать?",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "score": 0.05
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "score": 0.032787
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "EV06",
+    "family": "evotor_ofd",
+    "variant": "similar_operation",
+    "question": "Как на Эвотор 7.3 повторно распечатать старый чек по номеру ФД?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "evotor_6_receipt_copy_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "repeat_print",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": "Эвотор 7.3"
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "оборудование: Эвотор 7.3 — производитель: Эвотор — повторная печать ранее выданного чека — запрос клиента: Как на Эвотор 7.3 повторно распечатать старый чек по номеру ФД? — параметры клиента: номеру ФД",
+    "expected_task_category": "receipt_print",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "score": 0.042688
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "score": 0.033333
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "FN01",
+    "family": "fn",
+    "variant": "exact_code",
+    "question": "Эвотор показывает ошибку ФН 234. С чего безопасно начать диагностику?",
+    "expected": "source",
+    "source": "evotor/fn/fn-234.md",
+    "forbidden": "fn_235_procedure",
+    "state": {
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 234 — запрос клиента: Эвотор показывает ошибку ФН 234. С чего безопасно начать диагностику?",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "score": 0.045945
+      },
+      {
+        "source": "evotor/fn/fn-234.md",
+        "score": 0.045382
+      }
+    ],
+    "selected_sources": [
+      "evotor/fn/fn-234.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "metadata": {
+          "title": "Эвотор: ошибка ФН 234",
+          "category": "fn",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/fn/fn-234.md",
+          "service": "Эвотор",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Если ошибка сохранилась",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9143,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.214",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=3",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "section": "Первое различение причины",
+        "kind": "fact",
+        "text": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя."
+      },
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "section": "Первое различение причины",
+        "kind": "procedure",
+        "text": "До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+      }
+    ]
+  },
+  {
+    "id": "FN02",
+    "family": "fn",
+    "variant": "neighbor_code",
+    "question": "После продажи на Эвоторе возник код ФН 235. Что он означает?",
+    "expected": "source",
+    "source": "evotor/fn/fn-235.md",
+    "forbidden": "fn_234_procedure",
+    "state": {
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 235 — запрос клиента: После продажи на Эвоторе возник код ФН 235. Что он означает?",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/fn/fn-235.md",
+        "score": 0.05
+      },
+      {
+        "source": "evotor/fn/fn-235.md",
+        "score": 0.03928
+      }
+    ],
+    "selected_sources": [
+      "evotor/fn/fn-235.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "evotor/fn/fn-235.md",
+        "metadata": {
+          "title": "Эвотор: ошибка ФН 235 / -3979",
+          "category": "fn",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/fn/fn-235.md",
+          "service": "Эвотор",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Смысл и безопасная проверка",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9571,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.357",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=3",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "evotor/fn/fn-235.md",
+        "document_id": "evotor-fn-235-360004715213",
+        "section": "Признаки",
+        "kind": "procedure",
+        "text": "При продаже или закрытии смены может появиться код -3979, а на чеке — ФН 235."
+      },
+      {
+        "source": "evotor/fn/fn-235.md",
+        "document_id": "evotor-fn-235-360004715213",
+        "section": "Смысл и безопасная проверка",
+        "kind": "limitation",
+        "text": "Эвотор связывает этот случай с отсутствием передачи фискальных документов в ОФД более 30 дней."
+      }
+    ]
+  },
+  {
+    "id": "FN03",
+    "family": "fn",
+    "variant": "paraphrase",
+    "question": "На кассе Эвотор высветилось -3979, связанное с ФН. Где посмотреть подтверждённую причину?",
+    "expected": "source",
+    "source": "evotor/fn/fn-235.md",
+    "forbidden": "fn_234_procedure",
+    "state": {
+      "intent": "fiscal_drive",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: Эвотор — проверка ФН — запрос клиента: На кассе Эвотор высветилось -3979, связанное с ФН. Где посмотреть подтверждённую причину?",
+    "expected_task_category": "fiscal_drive",
+    "raw_gold": true,
+    "raw_gold_rank": 4,
+    "selected_gold": false,
+    "gold_rejection": [
+      "task_mismatch:error_diagnosis!=fiscal_drive"
+    ],
+    "raw_top5": [
+      {
+        "source": "evotor/fn/fn-210.md",
+        "score": 0.047643
+      },
+      {
+        "source": "evotor/fn/fn-212.md",
+        "score": 0.047222
+      },
+      {
+        "source": "evotor/fn/fn-234.md",
+        "score": 0.044758
+      },
+      {
+        "source": "evotor/fn/fn-235.md",
+        "score": 0.041961
+      },
+      {
+        "source": "evotor/models/evotor-7-2.md",
+        "score": 0.041181
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "applicability_context_missing",
+    "supported_steps": []
+  },
+  {
+    "id": "FN04",
+    "family": "fn",
+    "variant": "continuation",
+    "prior": "У Эвотора ошибка ФН 235.",
+    "question": "Теперь вижу ещё -3979. Это тот же случай или нужна другая ветка?",
+    "expected": "source",
+    "source": "evotor/fn/fn-235.md",
+    "forbidden": "fn_234_procedure",
+    "state": {
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "relation": "continue",
+      "task_start": "prior",
+      "routing_service": "Эвотор",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 235 — запрос клиента: У Эвотора ошибка ФН 235.",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/fn/fn-235.md",
+        "score": 0.048259
+      },
+      {
+        "source": "evotor/fn/fn-235.md",
+        "score": 0.032787
+      }
+    ],
+    "selected_sources": [
+      "evotor/fn/fn-235.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "evotor/fn/fn-235.md",
+        "metadata": {
+          "title": "Эвотор: ошибка ФН 235 / -3979",
+          "category": "fn",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/fn/fn-235.md",
+          "service": "Эвотор",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Признаки",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.97,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.400",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=3",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "evotor/fn/fn-235.md",
+        "document_id": "evotor-fn-235-360004715213",
+        "section": "Признаки",
+        "kind": "procedure",
+        "text": "При продаже или закрытии смены может появиться код -3979, а на чеке — ФН 235."
+      },
+      {
+        "source": "evotor/fn/fn-235.md",
+        "document_id": "evotor-fn-235-360004715213",
+        "section": "Смысл и безопасная проверка",
+        "kind": "limitation",
+        "text": "Эвотор связывает этот случай с отсутствием передачи фискальных документов в ОФД более 30 дней."
+      }
+    ]
+  },
+  {
+    "id": "FN05",
+    "family": "fn",
+    "variant": "unknown_code",
+    "question": "На Эвоторе код ФН 999. Можно ли применить инструкцию для ошибки 235?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "fn_235_procedure",
+    "state": {
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Эвотор",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: Эвотор — диагностика ошибки ФН — код ошибки 999 — запрос клиента: На Эвоторе код ФН 999. Можно ли применить инструкцию для ошибки 235?",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "FN06",
+    "family": "fn",
+    "variant": "similar_operation",
+    "question": "АТОЛ Онлайн пишет, что ФН заблокирован. Как выяснить состояние, не меняя регистрацию?",
+    "expected": "source",
+    "source": "atol_online/fn/blocked.md",
+    "forbidden": "evotor_fn_procedure",
+    "state": {
+      "intent": "fiscal_drive",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ Онлайн",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: АТОЛ Онлайн — проверка ФН — запрос клиента: АТОЛ Онлайн пишет, что ФН заблокирован. Как выяснить состояние, не меняя регистрацию?",
+    "expected_task_category": "fiscal_drive",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/fn/blocked.md",
+        "score": 0.045607
+      },
+      {
+        "source": "atol_online/fns/removed-from-register.md",
+        "score": 0.044758
+      },
+      {
+        "source": "atol_online/fn/blocked.md",
+        "score": 0.044103
+      },
+      {
+        "source": "atol_online/connection/step7-fn-activation.md",
+        "score": 0.044092
+      },
+      {
+        "source": "atol_online/connection/step7-fn-activation.md",
+        "score": 0.043022
+      }
+    ],
+    "selected_sources": [
+      "atol_online/fn/blocked.md",
+      "atol_online/fn/replacement-process.md",
+      "atol_online/fn/bring-own-fn.md",
+      "atol_online/fn/receive-old-fn.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "atol_online/fn/blocked.md",
+        "metadata": {
+          "title": "ФН заблокирован или ошибка 403 в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/fn/blocked.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive",
+            "diagnose_fiscal_drive_block"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "inspect_fiscal_drive"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9357,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.286",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=3",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      },
+      {
+        "source": "atol_online/fn/replacement-process.md",
+        "metadata": {
+          "title": "Как организована замена ФН в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/fn/replacement-process.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive",
+            "replace_fiscal_drive"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "inspect_fiscal_drive"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9357,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.286",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=1",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      },
+      {
+        "source": "atol_online/fn/bring-own-fn.md",
+        "metadata": {
+          "title": "Можно ли передать собственный купленный ФН в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/fn/bring-own-fn.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive",
+            "check_fiscal_drive_eligibility"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "inspect_fiscal_drive"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9357,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.286",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=1",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      },
+      {
+        "source": "atol_online/fn/receive-old-fn.md",
+        "metadata": {
+          "title": "Как получить отработанный фискальный накопитель у АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/fn/receive-old-fn.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive",
+            "receive_old_fiscal_drive"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "inspect_fiscal_drive"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9357,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.286",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=1",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "atol_online/fn/blocked.md",
+        "document_id": "atol-online-18220-blocked",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "Источник связывает остановку фискализации как с неактивным ОФД, так и с проблемами регистрации ККТ после замены ФН."
+      },
+      {
+        "source": "atol_online/fn/blocked.md",
+        "document_id": "atol-online-18220-blocked",
+        "section": "Важно / когда передать специалисту",
+        "kind": "limitation",
+        "text": "Если ФНС сняла кассу с учёта, нужна диагностика сервисом и специалистом по регистрации; не обещайте простую разблокировку."
+      }
+    ]
+  },
+  {
+    "id": "AT01",
+    "family": "atol",
+    "variant": "concept",
+    "question": "В АТОЛ Онлайн какую роль играет ОФД при передаче фискальных документов?",
+    "expected": "source",
+    "source": "atol_online/ofd/what-is-ofd.md",
+    "forbidden": "refund_or_contract_as_definition",
+    "state": {
+      "intent": "access",
+      "operation": "assign_role",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ Онлайн",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: АТОЛ Онлайн — назначение роли сотруднику — запрос клиента: В АТОЛ Онлайн какую роль играет ОФД при передаче фискальных документов?",
+    "expected_task_category": "access",
+    "raw_gold": true,
+    "raw_gold_rank": 14,
+    "selected_gold": false,
+    "gold_rejection": [
+      "task_mismatch:ofd_connection!=access"
+    ],
+    "raw_top5": [
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.05
+      },
+      {
+        "source": "atol_online/ofd/activate-taxcom.md",
+        "score": 0.044468
+      },
+      {
+        "source": "atol_online/connection/step7-fn-activation.md",
+        "score": 0.042982
+      },
+      {
+        "source": "atol_online/receipts/advance-closing.md",
+        "score": 0.042796
+      },
+      {
+        "source": "atol_online/billing/documents-operations.md",
+        "score": 0.04089
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "AT02",
+    "family": "atol",
+    "variant": "exact_error",
+    "question": "АТОЛ Онлайн вернул ошибку 26 при создании чека. Где искать проверенное объяснение?",
+    "expected": "source",
+    "source": "atol_online/errors/request-errors-26-1008.md",
+    "forbidden": "unrelated_error_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "diagnose",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ Онлайн",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: АТОЛ Онлайн — АТОЛ Онлайн вернул ошибку 26 при создании чека. Где искать проверенное объяснение? — код ошибки 26",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "score": 0.05
+      },
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "score": 0.047938
+      }
+    ],
+    "selected_sources": [
+      "atol_online/errors/request-errors-26-1008.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "metadata": {
+          "title": "Ошибки АТОЛ Онлайн [26] и тег 1008",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/errors/request-errors-26-1008.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос пользователя",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.93,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.267",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=3",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "document_id": "atol-online-22561-request-errors-26-1008",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "[26]: в запросе могут быть недопустимые управляющие символы или неправильно заполненные реквизиты."
+      },
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "document_id": "atol-online-22561-request-errors-26-1008",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "Тег 1008: в электронном чеке не переданы корректные контактные данные покупателя (почта или телефон)."
+      }
+    ]
+  },
+  {
+    "id": "AT03",
+    "family": "atol",
+    "variant": "paraphrase",
+    "question": "В облачной кассе АТОЛ не задан реквизит 1008. Что это за ошибка?",
+    "expected": "source",
+    "source": "atol_online/errors/request-errors-26-1008.md",
+    "forbidden": "other_error_code",
+    "state": {
+      "intent": "device",
+      "operation": "diagnose",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: АТОЛ — диагностика ошибки касса — запрос клиента: В облачной кассе АТОЛ не задан реквизит 1008. Что это за ошибка?",
+    "expected_task_category": "error_diagnosis",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "score": 0.05
+      },
+      {
+        "source": "atol_online/settings/bso-feature.md",
+        "score": 0.045445
+      },
+      {
+        "source": "atol_online/settings/bso-feature.md",
+        "score": 0.045139
+      },
+      {
+        "source": "atol_online/billing/service-blocked.md",
+        "score": 0.044854
+      },
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "score": 0.044453
+      }
+    ],
+    "selected_sources": [
+      "atol_online/errors/request-errors-26-1008.md",
+      "atol_online/errors/fn-and-marking-errors-116-414-421-148.md",
+      "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+      "atol_online/errors/amount-errors-16-23.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "metadata": {
+          "title": "Ошибки АТОЛ Онлайн [26] и тег 1008",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/errors/request-errors-26-1008.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос пользователя",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.99,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.467",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=5",
+            "subtask_body_topic_overlap=4"
+          ]
+        }
+      },
+      {
+        "source": "atol_online/errors/fn-and-marking-errors-116-414-421-148.md",
+        "metadata": {
+          "title": "Ошибки [116], [414], [421], [148] в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/errors/fn-and-marking-errors-116-414-421-148.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос пользователя",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.91,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.200",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=2",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      },
+      {
+        "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+        "metadata": {
+          "title": "Ошибки timeout, [128] и протокола группы АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос пользователя",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.91,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.200",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=2",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      },
+      {
+        "source": "atol_online/errors/amount-errors-16-23.md",
+        "metadata": {
+          "title": "Ошибки АТОЛ Онлайн [16] и [23]: суммы в чеке",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/errors/amount-errors-16-23.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Важно / когда передать специалисту",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.89,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.133",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "document_id": "atol-online-22561-request-errors-26-1008",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "[26]: в запросе могут быть недопустимые управляющие символы или неправильно заполненные реквизиты."
+      },
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "document_id": "atol-online-22561-request-errors-26-1008",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "Тег 1008: в электронном чеке не переданы корректные контактные данные покупателя (почта или телефон)."
+      }
+    ]
+  },
+  {
+    "id": "AT04",
+    "family": "atol",
+    "variant": "similar_operation",
+    "question": "В АТОЛ Онлайн нужны чеки за прошлый месяц из кабинета. Где взять выгрузку?",
+    "expected": "source",
+    "source": "atol_online/receipts/receipt-journal-export.md",
+    "forbidden": "receipt_issue_or_fn_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ Онлайн",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: АТОЛ Онлайн — В АТОЛ Онлайн нужны чеки за прошлый месяц из кабинета. Где взять выгрузку?",
+    "expected_task_category": "receipt_search",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "score": 0.05
+      },
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "score": 0.047883
+      },
+      {
+        "source": "atol_online/billing/debt-payment.md",
+        "score": 0.041667
+      },
+      {
+        "source": "atol_online/billing/renewal-invoice.md",
+        "score": 0.040865
+      },
+      {
+        "source": "atol_online/billing/renewal-invoice.md",
+        "score": 0.040827
+      }
+    ],
+    "selected_sources": [
+      "atol_online/receipts/receipt-journal-export.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "metadata": {
+          "title": "Поиск и выгрузка чеков в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/receipts/receipt-journal-export.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "receipt_search",
+          "operations": [
+            "search_receipt",
+            "export_receipts"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос пользователя",
+          "operation": "search_receipt"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 1.0,
+          "reasons": [
+            "task_category=receipt_search",
+            "lexical_overlap=0.545",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=4",
+            "subtask_body_topic_overlap=3"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "document_id": "atol-online-22560-receipt-journal-export",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков."
+      },
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "document_id": "atol-online-22560-receipt-journal-export",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку."
+      }
+    ]
+  },
+  {
+    "id": "AT05",
+    "family": "atol",
+    "variant": "incident_gap",
+    "question": "Покупатель оплатил, API АТОЛ Онлайн ответил без ясного статуса, а чек не виден. Можно ли повторить фискальный запрос?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "blind_fiscal_retry",
+    "state": {
+      "intent": "receipt",
+      "operation": "status",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ Онлайн",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: АТОЛ Онлайн — проверка статуса чек — запрос клиента: Покупатель оплатил, API АТОЛ Онлайн ответил без ясного статуса, а чек не виден. Можно ли повторить фискальный запрос? — ограничения: без ясного статуса; а чек не виден",
+    "expected_task_category": "receipt_search",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/errors/amount-errors-16-23.md",
+        "score": 0.049727
+      },
+      {
+        "source": "atol_online/receipts/mass-correction.md",
+        "score": 0.047938
+      },
+      {
+        "source": "atol_online/billing/renewal-payment.md",
+        "score": 0.045743
+      },
+      {
+        "source": "atol_online/integration/api-test.md",
+        "score": 0.045688
+      },
+      {
+        "source": "atol_online/errors/gateway-errors-timeout-128-protocol.md",
+        "score": 0.044567
+      }
+    ],
+    "selected_sources": [
+      "atol_online/receipts/receipt-journal-export.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "metadata": {
+          "title": "Поиск и выгрузка чеков в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/receipts/receipt-journal-export.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "receipt_search",
+          "operations": [
+            "search_receipt",
+            "export_receipts"
+          ],
+          "evidence_coverage": {},
+          "section": "Важно / когда передать специалисту",
+          "operation": "search_receipt"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8974,
+          "reasons": [
+            "task_category=receipt_search",
+            "lexical_overlap=0.158",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=2",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "document_id": "atol-online-22560-receipt-journal-export",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков."
+      },
+      {
+        "source": "atol_online/receipts/receipt-journal-export.md",
+        "document_id": "atol-online-22560-receipt-journal-export",
+        "section": "Подтверждённые сведения",
+        "kind": "fact",
+        "text": "По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку."
+      }
+    ]
+  },
+  {
+    "id": "AT06",
+    "family": "atol",
+    "variant": "other_vendor",
+    "question": "На физической кассе АТОЛ 30Ф чеки перестали уходить в ОФД. Дайте первый шаг именно для этой модели.",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "evotor_7_3_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "diagnose",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "АТОЛ",
+      "equipment": "АТОЛ 30Ф"
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "оборудование: АТОЛ 30Ф — производитель: АТОЛ — диагностика ошибки чек — запрос клиента: На физической кассе АТОЛ 30Ф чеки перестали уходить в ОФД. Дайте первый шаг именно для этой модели.",
+    "expected_task_category": "receipt_transmission",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/receipts/mass-correction.md",
+        "score": 0.043321
+      },
+      {
+        "source": "atol_online/errors/amount-errors-16-23.md",
+        "score": 0.038075
+      },
+      {
+        "source": "atol_online/connection/step4-invoice.md",
+        "score": 0.037658
+      },
+      {
+        "source": "atol_online/billing/service-blocked.md",
+        "score": 0.037412
+      },
+      {
+        "source": "atol_online/receipts/correct-ffd105.md",
+        "score": 0.037231
+      }
+    ],
+    "selected_sources": [
+      "platformaofd/atol/ofd-transmission-checks.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "platformaofd/atol/ofd-transmission-checks.md",
+        "metadata": {
+          "title": "АТОЛ: проверка передачи документов в Платформу ОФД",
+          "category": "ofd",
+          "manufacturer": "АТОЛ",
+          "source_type": "ofd_knowledge_base",
+          "status": "approved",
+          "source": "platformaofd/atol/ofd-transmission-checks.md",
+          "service": "Платформа ОФД",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Проверки из раздела «Неполадки и их устранение»",
+          "operation": "check_transmission"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.182",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "platformaofd/atol/ofd-transmission-checks.md",
+        "document_id": "platformaofd-atol-transmission-checks",
+        "section": "Проверки из раздела «Неполадки и их устранение»",
+        "kind": "fact",
+        "text": "Если после настройки документы не поступают в ОФД или передача прервалась позже, сначала сопоставьте заводской номер ФН в личном кабинете ОФД с паспортными данными ККТ и ФН."
+      },
+      {
+        "source": "platformaofd/atol/ofd-transmission-checks.md",
+        "document_id": "platformaofd-atol-transmission-checks",
+        "section": "Проверки из раздела «Неполадки и их устранение»",
+        "kind": "procedure",
+        "text": "Проверьте доступность порта рабочего сервера ОФД, соединение кассы с интернетом и работу службы Ethernet over USB (EoU), если она используется."
+      }
+    ]
+  },
+  {
+    "id": "AQ01",
+    "family": "aqsi",
+    "variant": "partial_refund",
+    "question": "В aQsi Online клиент вернул одну позицию из нескольких. Как оформить только её возврат?",
+    "expected": "source",
+    "source": "aqsi_online/receipts/partial-refund.md",
+    "forbidden": "full_refund_or_physical_device",
+    "state": {
+      "intent": "unknown",
+      "operation": "return",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "aQsi Online",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: aQsi Online — В aQsi Online клиент вернул одну позицию из нескольких. Как оформить только её возврат? — ограничения: только её возврат",
+    "expected_task_category": null,
+    "raw_gold": true,
+    "raw_gold_rank": 3,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_online/receipts/full-refund.md",
+        "score": 0.047917
+      },
+      {
+        "source": "aqsi_devices/sales/standard-refund.md",
+        "score": 0.047875
+      },
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "score": 0.047073
+      },
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "score": 0.045591
+      },
+      {
+        "source": "aqsi_devices/sales/deferred-order-refund.md",
+        "score": 0.045379
+      }
+    ],
+    "selected_sources": [
+      "aqsi_online/receipts/partial-refund.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "metadata": {
+          "title": "aQsi Online: частичный возврат по чеку",
+          "category": "receipts",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/receipts/partial-refund.md",
+          "service": "aQsi Online",
+          "task_category": "refund",
+          "operations": [
+            "issue_refund"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос клиента",
+          "operation": "issue_refund"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9423,
+          "reasons": [
+            "task_category=refund",
+            "lexical_overlap=0.308",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "document_id": "aqsi-online-receipts-partial-refund",
+        "section": "Что можно объяснить и проверить",
+        "kind": "fact",
+        "text": "В истории выбирают первоначальный чек и запускают возврат."
+      },
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "document_id": "aqsi-online-receipts-partial-refund",
+        "section": "Что можно объяснить и проверить",
+        "kind": "limitation",
+        "text": "В сформированном документе оставляют только возвращаемые позиции и сверяют общую сумму, чтобы чек соответствовал реальному частичному возврату."
+      }
+    ]
+  },
+  {
+    "id": "AQ02",
+    "family": "aqsi",
+    "variant": "full_refund",
+    "question": "Нужно отменить весь ранее выданный чек в aQsi Online, без частичных позиций. Где инструкция?",
+    "expected": "source",
+    "source": "aqsi_online/receipts/full-refund.md",
+    "forbidden": "partial_refund",
+    "state": {
+      "intent": "receipt",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "aQsi Online",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: aQsi Online — Нужно отменить весь ранее выданный чек в aQsi Online, без частичных позиций. Где инструкция? — ограничения: без частичных позиций",
+    "expected_task_category": null,
+    "raw_gold": true,
+    "raw_gold_rank": 3,
+    "selected_gold": false,
+    "gold_rejection": [
+      "task_unresolved"
+    ],
+    "raw_top5": [
+      {
+        "source": "aqsi_online/account/my-cash-registers.md",
+        "score": 0.043124
+      },
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "score": 0.042534
+      },
+      {
+        "source": "aqsi_online/receipts/full-refund.md",
+        "score": 0.042319
+      },
+      {
+        "source": "aqsi_online/receipts/full-refund.md",
+        "score": 0.038221
+      },
+      {
+        "source": "aqsi_online/receipts/enable-manual-receipt.md",
+        "score": 0.035261
+      }
+    ],
+    "selected_sources": [
+      "aqsi_online/account/my-cash-registers.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_online/account/my-cash-registers.md",
+        "metadata": {
+          "title": "aQsi Online: где посмотреть кассы и их состояние",
+          "category": "account",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/account/my-cash-registers.md",
+          "service": "aQsi Online",
+          "task_category": "cash_list",
+          "operations": [
+            "list_cash_registers"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "list_cash_registers"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.95,
+          "reasons": [
+            "task_category=cash_list",
+            "lexical_overlap=0.333",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "aqsi_online/account/my-cash-registers.md",
+        "document_id": "aqsi-online-account-my-cash-registers",
+        "section": "Просмотр",
+        "kind": "fact",
+        "text": "На официальном рисунке 27 видны колонки номера ККТ, ФН, количества чеков, статуса и даты выдачи, а также кнопка фильтра."
+      },
+      {
+        "source": "aqsi_online/account/my-cash-registers.md",
+        "document_id": "aqsi-online-account-my-cash-registers",
+        "section": "Ограничения",
+        "kind": "limitation",
+        "text": "Карточка относится к облачному сервису aQsi Online."
+      }
+    ]
+  },
+  {
+    "id": "AQ03",
+    "family": "aqsi",
+    "variant": "physical_hub",
+    "question": "Физическая касса aQsi перестала заряжаться со сканером через Hub. Что проверить с питанием?",
+    "expected": "source",
+    "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+    "forbidden": "cloud_aqsi_procedure",
+    "state": {
+      "intent": "device",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "aQsi",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "производитель: aQsi — проверка касса — запрос клиента: Физическая касса aQsi перестала заряжаться со сканером через Hub. Что проверить с питанием?",
+    "expected_task_category": null,
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+        "score": 0.05
+      },
+      {
+        "source": "aqsi_devices/peripherals/scanner.md",
+        "score": 0.045115
+      },
+      {
+        "source": "aqsi_online/fns/register-ooo.md",
+        "score": 0.042103
+      },
+      {
+        "source": "aqsi_devices/errors/marking-178.md",
+        "score": 0.040751
+      },
+      {
+        "source": "aqsi_online/fns/finish-reg.md",
+        "score": 0.04062
+      }
+    ],
+    "selected_sources": [
+      "aqsi_devices/peripherals/scanner-hub-power.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+        "metadata": {
+          "title": "aQsi Hub: питание при подключении внешних устройств",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+          "service": "aQsi",
+          "task_category": "peripheral_setup",
+          "operations": [
+            "configure_peripheral"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос клиента",
+          "operation": "configure_peripheral"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.93,
+          "reasons": [
+            "task_category=peripheral_setup",
+            "lexical_overlap=0.267",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+        "document_id": "aqsi-device-scanner-hub-power",
+        "section": "Проверенная информация и первичная диагностика",
+        "kind": "fact",
+        "text": "Изготовитель указывает, что при некоторых конфигурациях aQsi Hub одновременная зарядка и работа USB-устройств требуют отдельного системного режима."
+      },
+      {
+        "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+        "document_id": "aqsi-device-scanner-hub-power",
+        "section": "Проверенная информация и первичная диагностика",
+        "kind": "procedure",
+        "text": "Перед изменением настроек проверьте модель кассы, совместимость USB-хаба, способ питания и фактическую зарядку."
+      }
+    ]
+  },
+  {
+    "id": "AQ04",
+    "family": "aqsi",
+    "variant": "access",
+    "question": "Как в aQsi Online добавить нового сотрудника в личный кабинет?",
+    "expected": "source",
+    "source": "aqsi_online/account/add-user.md",
+    "forbidden": "physical_device_procedure",
+    "state": {
+      "intent": "access",
+      "operation": "add_employee",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "aQsi Online",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: aQsi Online — добавление сотрудника — запрос клиента: Как в aQsi Online добавить нового сотрудника в личный кабинет?",
+    "expected_task_category": "access",
+    "raw_gold": true,
+    "raw_gold_rank": 4,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "score": 0.048925
+      },
+      {
+        "source": "aqsi_online/setup/add-store.md",
+        "score": 0.046635
+      },
+      {
+        "source": "aqsi_online/receipts/enable-manual-receipt.md",
+        "score": 0.044904
+      },
+      {
+        "source": "aqsi_online/account/add-user.md",
+        "score": 0.044444
+      },
+      {
+        "source": "aqsi_online/setup/sign-contract.md",
+        "score": 0.043697
+      }
+    ],
+    "selected_sources": [
+      "aqsi_online/account/add-user.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_online/account/add-user.md",
+        "metadata": {
+          "title": "aQsi Online: добавление сотрудника в личный кабинет",
+          "category": "account",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/account/add-user.md",
+          "service": "aQsi Online",
+          "task_category": "access",
+          "operations": [
+            "add_employee",
+            "assign_role"
+          ],
+          "evidence_coverage": {
+            "add_employee": "full",
+            "assign_role": "partial"
+          },
+          "section": "Создать пользователя",
+          "operation": "add_employee"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 1.0,
+          "reasons": [
+            "task_category=access",
+            "lexical_overlap=0.583",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "full",
+    "sufficient": true,
+    "insufficiency_reason": null,
+    "supported_steps": [
+      {
+        "source": "aqsi_online/account/add-user.md",
+        "document_id": "aqsi-online-account-add-user",
+        "section": "Создать пользователя",
+        "text": "Откройте «Пользователи» → «Добавить пользователя»."
+      },
+      {
+        "source": "aqsi_online/account/add-user.md",
+        "document_id": "aqsi-online-account-add-user",
+        "section": "Создать пользователя",
+        "text": "Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму."
+      }
+    ]
+  },
+  {
+    "id": "AQ05",
+    "family": "aqsi",
+    "variant": "similar_operation",
+    "question": "В aQsi Online не помню пароль от кабинета. Как восстановить доступ?",
+    "expected": "source",
+    "source": "aqsi_online/account/reset-password.md",
+    "forbidden": "add_user_procedure",
+    "state": {
+      "intent": "access",
+      "operation": "reset_password",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "aQsi Online",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: aQsi Online — восстановление пароля учётной записи — запрос клиента: В aQsi Online не помню пароль от кабинета. Как восстановить доступ?",
+    "expected_task_category": "access",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_online/account/reset-password.md",
+        "score": 0.05
+      },
+      {
+        "source": "aqsi_online/account/reset-password.md",
+        "score": 0.048916
+      },
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "score": 0.047131
+      },
+      {
+        "source": "aqsi_online/account/reset-password.md",
+        "score": 0.045335
+      },
+      {
+        "source": "aqsi_online/setup/sign-contract.md",
+        "score": 0.043364
+      }
+    ],
+    "selected_sources": [
+      "aqsi_online/account/reset-password.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_online/account/reset-password.md",
+        "metadata": {
+          "title": "aQsi Online: восстановление доступа к личному кабинету",
+          "category": "account",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/account/reset-password.md",
+          "service": "aQsi Online",
+          "task_category": "access",
+          "operations": [
+            "reset_password"
+          ],
+          "evidence_coverage": {
+            "reset_password": "partial"
+          },
+          "section": "Вопрос клиента",
+          "operation": "reset_password"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.97,
+          "reasons": [
+            "task_category=access",
+            "lexical_overlap=0.400",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=5",
+            "subtask_body_topic_overlap=1"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": false,
+    "insufficiency_reason": "access_evidence_incomplete",
+    "supported_steps": [
+      {
+        "source": "aqsi_online/account/reset-password.md",
+        "document_id": "aqsi-online-account-reset-password",
+        "section": "Что можно объяснить и проверить",
+        "text": "На форме авторизации есть восстановление пароля."
+      }
+    ]
+  },
+  {
+    "id": "AQ06",
+    "family": "aqsi",
+    "variant": "negation",
+    "question": "У облачной aQsi Online нет физического сканера. Почему инструкция про питание aQsi Hub не помогает с моими чеками?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "physical_hub_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "aQsi Online",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: aQsi Online — У облачной aQsi Online нет физического сканера. Почему инструкция про питание aQsi Hub не помогает с моими чеками? — запрос клиента: У облачной Online нет физического сканера. Почему инструкция про питание Hub не помогает с моими чеками? — ограничения: У облачной aQsi Online нет физического сканера; Почему инструкция про питание aQsi Hub не помогает с моими чеками",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+        "score": 0.046154
+      },
+      {
+        "source": "aqsi_online/receipts/incorrect-105.md",
+        "score": 0.044064
+      },
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "score": 0.043956
+      },
+      {
+        "source": "aqsi_devices/peripherals/scanner-hub-power.md",
+        "score": 0.042462
+      },
+      {
+        "source": "aqsi_online/receipts/enable-manual-receipt.md",
+        "score": 0.041952
+      }
+    ],
+    "selected_sources": [
+      "aqsi_online/account/register-account.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "metadata": {
+          "title": "aQsi Online: регистрация личного кабинета",
+          "category": "account",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/account/register-account.md",
+          "service": "aQsi Online",
+          "task_category": "access",
+          "operations": [
+            "register_account"
+          ],
+          "evidence_coverage": {},
+          "section": "Перед выполнением действий",
+          "operation": "register_account"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8833,
+          "reasons": [
+            "task_category=access",
+            "lexical_overlap=0.111",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "document_id": "aqsi-online-account-register-account",
+        "section": "Что можно объяснить и проверить",
+        "kind": "procedure",
+        "text": "На сайте lk.aqsi.online откройте регистрацию, заполните поля учётной записи."
+      },
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "document_id": "aqsi-online-account-register-account",
+        "section": "Перед выполнением действий",
+        "kind": "fact",
+        "text": "Подтвердите, что клиент регистрируется именно в облачном сервисе aQsi Online, а не в приложении физической кассы aQsi."
+      }
+    ]
+  },
+  {
+    "id": "DB01",
+    "family": "directbank",
+    "variant": "all_accounts",
+    "question": "В 1С:Бухгалтерии 8 ред. 3.0 через ДиректБанк нужно получить выписки сразу по всем счетам. Как?",
+    "expected": "source",
+    "source": "1c/bank/directbank-all-accounts.md",
+    "forbidden": "single_file_or_intermediary",
+    "state": {
+      "intent": "bank_statement",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "1С",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "ПО: 1С — интеграция: DirectBank — В 1С:Бухгалтерии 8 ред. 3.0 через ДиректБанк нужно получить выписки сразу по всем счетам. Как?",
+    "expected_task_category": "bank_statement",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.05
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.048916
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "score": 0.048139
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.048131
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.045688
+      }
+    ],
+    "selected_sources": [
+      "1c/bank/directbank-all-accounts.md",
+      "1c/bank/directbank-auto-schedule.md",
+      "1c/bank/import-file-directbank.md",
+      "1c/bank/directbank-other-banks.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "metadata": {
+          "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-all-accounts.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "load_bank_statements",
+            "list_bank_statements"
+          ],
+          "evidence_coverage": {
+            "load_bank_statements": "partial"
+          },
+          "section": "Подтверждённая возможность",
+          "operation": "load_bank_statements"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 1.0,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.529",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=3",
+            "subtask_question_topic_overlap=8",
+            "subtask_body_topic_overlap=7"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "metadata": {
+          "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-auto-schedule.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "schedule_bank_statement_import"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "schedule_bank_statement_import"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9382,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.294",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=3",
+            "subtask_body_topic_overlap=3"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "metadata": {
+          "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/import-file-directbank.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statement_file"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "import_bank_statement_file"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9735,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.412",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=7",
+            "subtask_body_topic_overlap=6"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "metadata": {
+          "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-other-banks.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statements_via_intermediary"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "import_bank_statements_via_intermediary"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9559,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.353",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=6",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "section": "Подтверждённая возможность",
+        "kind": "procedure",
+        "text": "С версии 3.0.148 для настроенного обмена через 1С:ДиректБанк доступна загрузка выписки сразу по всем банковским счетам организации, указанным в настройках взаимодействия с банком."
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "section": "Безопасная диагностика",
+        "kind": "procedure",
+        "text": "Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка."
+      }
+    ]
+  },
+  {
+    "id": "DB02",
+    "family": "directbank",
+    "variant": "schedule",
+    "question": "В 1С:Бухгалтерии 8 ред. 3.0 можно настроить получение банковских выписок по расписанию?",
+    "expected": "source",
+    "source": "1c/bank/directbank-auto-schedule.md",
+    "forbidden": "manual_import",
+    "state": {
+      "intent": "bank_statement",
+      "operation": "configure",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "1С",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "ПО: 1С — настройка банковская выписка — запрос клиента: В 1С:Бухгалтерии 8 ред. 3.0 можно настроить получение банковских выписок по расписанию?",
+    "expected_task_category": "bank_statement",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": false,
+    "gold_rejection": [
+      "operation_mismatch:configure"
+    ],
+    "raw_top5": [
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "score": 0.049454
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.048958
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.048387
+      },
+      {
+        "source": "1c/closing/monthly-schedule.md",
+        "score": 0.046898
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "score": 0.045805
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DB03",
+    "family": "directbank",
+    "variant": "other_bank",
+    "question": "В 1С:Бухгалтерии 8 ред. 3.0 банк не поддерживает прямой ДиректБанк. Есть ли вариант через другой банк?",
+    "expected": "source",
+    "source": "1c/bank/directbank-other-banks.md",
+    "forbidden": "all_accounts_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "1С",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "ПО: 1С — интеграция: DirectBank — В 1С:Бухгалтерии 8 ред. 3.0 банк не поддерживает прямой ДиректБанк. Есть ли вариант через другой банк?",
+    "expected_task_category": "bank_statement",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.05
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.048387
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.047493
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.047131
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.046875
+      }
+    ],
+    "selected_sources": [
+      "1c/bank/directbank-other-banks.md",
+      "1c/bank/directbank-all-accounts.md",
+      "1c/bank/import-file-directbank.md",
+      "1c/bank/directbank-auto-schedule.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "metadata": {
+          "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-other-banks.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statements_via_intermediary"
+          ],
+          "evidence_coverage": {},
+          "section": "Диагностика",
+          "operation": "import_bank_statements_via_intermediary"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9813,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.438",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=3",
+            "subtask_question_topic_overlap=6",
+            "subtask_body_topic_overlap=4"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "metadata": {
+          "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-all-accounts.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "load_bank_statements",
+            "list_bank_statements"
+          ],
+          "evidence_coverage": {
+            "load_bank_statements": "partial"
+          },
+          "section": "Безопасная диагностика",
+          "operation": "load_bank_statements"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9625,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.375",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=5",
+            "subtask_body_topic_overlap=4"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "metadata": {
+          "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/import-file-directbank.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statement_file"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "import_bank_statement_file"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9625,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.375",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=6",
+            "subtask_body_topic_overlap=5"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "metadata": {
+          "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-auto-schedule.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "schedule_bank_statement_import"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "schedule_bank_statement_import"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9625,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.375",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=5",
+            "subtask_body_topic_overlap=5"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "document_id": "batch-20261013-bank-directbank-other-banks",
+        "section": "Вопрос",
+        "kind": "fact",
+        "text": "Банк не подключён к прямому обмену с 1С:ДиректБанк."
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "document_id": "batch-20261013-bank-directbank-other-banks",
+        "section": "Подтверждённая возможность",
+        "kind": "procedure",
+        "text": "С версии 3.0.203 предусмотрена загрузка выписок из других банков через банк-посредник."
+      }
+    ]
+  },
+  {
+    "id": "DB04",
+    "family": "directbank",
+    "variant": "file_import",
+    "question": "ДиректБанк уже подключён в 1С:Бухгалтерии 8 ред. 3.0. Можно ли вручную загрузить файл выписки?",
+    "expected": "source",
+    "source": "1c/bank/import-file-directbank.md",
+    "forbidden": "scheduled_import",
+    "state": {
+      "intent": "bank_statement",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "1С",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "ПО: 1С — интеграция: DirectBank — ДиректБанк уже подключён в 1С:Бухгалтерии 8 ред. 3.0. Можно ли вручную загрузить файл выписки?",
+    "expected_task_category": "bank_statement",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.049727
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.049454
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.047643
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.046898
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.045037
+      }
+    ],
+    "selected_sources": [
+      "1c/bank/import-file-directbank.md",
+      "1c/bank/directbank-other-banks.md",
+      "1c/bank/directbank-all-accounts.md",
+      "1c/bank/directbank-auto-schedule.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "metadata": {
+          "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/import-file-directbank.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statement_file"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "import_bank_statement_file"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 1.0,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.500",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=3",
+            "subtask_question_topic_overlap=9",
+            "subtask_body_topic_overlap=7"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "metadata": {
+          "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-other-banks.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statements_via_intermediary"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос",
+          "operation": "import_bank_statements_via_intermediary"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9438,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.312",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=2",
+            "subtask_question_topic_overlap=5",
+            "subtask_body_topic_overlap=2"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "metadata": {
+          "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-all-accounts.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "load_bank_statements",
+            "list_bank_statements"
+          ],
+          "evidence_coverage": {
+            "load_bank_statements": "partial"
+          },
+          "section": "Подтверждённая возможность",
+          "operation": "load_bank_statements"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9438,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.312",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=6",
+            "subtask_body_topic_overlap=4"
+          ]
+        }
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "metadata": {
+          "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-auto-schedule.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "schedule_bank_statement_import"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённая возможность",
+          "operation": "schedule_bank_statement_import"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.925,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.250",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=3",
+            "subtask_body_topic_overlap=3"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "document_id": "batch-20261013-bank-import-file-directbank",
+        "section": "Подтверждённая возможность",
+        "kind": "procedure",
+        "text": "В «1С:Бухгалтерии 8» с версии 3.0.117 можно загружать выписки из файла, не отключая сервис 1С:ДиректБанк."
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "document_id": "batch-20261013-bank-import-file-directbank",
+        "section": "Безопасный порядок проверки",
+        "kind": "limitation",
+        "text": "Уточнить версию 1С и банковский счёт."
+      }
+    ]
+  },
+  {
+    "id": "DB05",
+    "family": "directbank",
+    "variant": "continuation",
+    "prior": "В 1С:Бухгалтерии 8 ред. 3.0 ДиректБанк подключён.",
+    "question": "Нужно увидеть выписки сразу по нескольким счетам, а не подключать банк заново. Где список?",
+    "expected": "source",
+    "source": "1c/bank/directbank-all-accounts.md",
+    "forbidden": "bank_connection_procedure",
+    "state": {
+      "intent": "bank_statement",
+      "operation": "list",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "1С",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "ПО: 1С — просмотр списка банковских выписок — запрос клиента: Нужно увидеть выписки сразу по нескольким счетам, а не подключать банк заново. Где список? — ограничения: а не подключать банк заново",
+    "expected_task_category": "bank_statement",
+    "raw_gold": true,
+    "raw_gold_rank": 1,
+    "selected_gold": true,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.049462
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.048412
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.047619
+      },
+      {
+        "source": "1c/bank/directbank-other-banks.md",
+        "score": 0.047183
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "score": 0.046244
+      }
+    ],
+    "selected_sources": [
+      "1c/bank/directbank-all-accounts.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "metadata": {
+          "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-all-accounts.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "load_bank_statements",
+            "list_bank_statements"
+          ],
+          "evidence_coverage": {
+            "load_bank_statements": "partial"
+          },
+          "section": "Безопасная диагностика",
+          "operation": "load_bank_statements"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9763,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.421",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=4",
+            "subtask_question_topic_overlap=5",
+            "subtask_body_topic_overlap=4"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "section": "Подтверждённая возможность",
+        "kind": "procedure",
+        "text": "С версии 3.0.148 для настроенного обмена через 1С:ДиректБанк доступна загрузка выписки сразу по всем банковским счетам организации, указанным в настройках взаимодействия с банком."
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "document_id": "batch-20261013-bank-directbank-all-accounts",
+        "section": "Безопасная диагностика",
+        "kind": "procedure",
+        "text": "Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка."
+      }
+    ]
+  },
+  {
+    "id": "DB06",
+    "family": "directbank",
+    "variant": "similar_operation",
+    "question": "В 1С:Бухгалтерии 8 ред. 3.0 возврат по эквайрингу списался. Это загрузка банковской выписки или отдельная операция?",
+    "expected": "source",
+    "source": "1c/bank/acquiring-returns.md",
+    "forbidden": "directbank_all_accounts_procedure",
+    "state": {
+      "intent": "bank_statement",
+      "operation": "return",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "1С",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "ПО: 1С — возврат банковская выписка — запрос клиента: В 1С:Бухгалтерии 8 ред. 3.0 возврат по эквайрингу списался. Это загрузка банковской выписки или отдельная операция?",
+    "expected_task_category": "bank_statement",
+    "raw_gold": true,
+    "raw_gold_rank": 2,
+    "selected_gold": false,
+    "gold_rejection": [
+      "operation_mismatch:return"
+    ],
+    "raw_top5": [
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.048916
+      },
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "score": 0.048485
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.048413
+      },
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "score": 0.047123
+      },
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "score": 0.046964
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "SA01",
+    "family": "saby",
+    "variant": "incoming",
+    "question": "В web-Saby отправитель говорит, что УПД пришёл, а я не вижу входящий документ. Где его искать?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "receipt_search_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "search",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Saby",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Saby — В web-Saby отправитель говорит, что УПД пришёл, а я не вижу входящий документ. Где его искать?",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/taxes/ens-menu-2026.md",
+        "score": 0.047938
+      },
+      {
+        "source": "atol_online/billing/renewal-invoice.md",
+        "score": 0.047183
+      },
+      {
+        "source": "atol_online/billing/closing-docs.md",
+        "score": 0.045688
+      },
+      {
+        "source": "atol_online/billing/reconciliation-acts.md",
+        "score": 0.045139
+      },
+      {
+        "source": "atol_online/billing/fn-invoice.md",
+        "score": 0.042424
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "SA02",
+    "family": "saby",
+    "variant": "paraphrase",
+    "question": "В СБИС веб-кабинете пропала накладная от поставщика. Как проверить входящие?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "cash_receipt_procedure",
+    "state": {
+      "intent": "delivery_document",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Saby",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Saby — проверка УПД — запрос клиента: В СБИС веб-кабинете пропала накладная от поставщика. Как проверить входящие?",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/billing/closing-docs.md",
+        "score": 0.040625
+      },
+      {
+        "source": "atol_online/billing/renewal-invoice.md",
+        "score": 0.037468
+      },
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "score": 0.036797
+      },
+      {
+        "source": "aqsi_online/account/reset-password.md",
+        "score": 0.036589
+      },
+      {
+        "source": "aqsi_online/receipts/enable-manual-receipt.md",
+        "score": 0.035187
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "SA03",
+    "family": "saby",
+    "variant": "continuation",
+    "prior": "Жду входящий УПД в Saby.",
+    "question": "Поставщик отправил вчера, но во входящих пусто. Что уточнить?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "other_edo_vendor_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "transmit",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": null,
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "Поставщик отправил вчера, но во входящих пусто. Что уточнить?",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "score": 0.039925
+      },
+      {
+        "source": "evotor/marking/receive-marked-upd-prereqs.md",
+        "score": 0.039412
+      },
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "score": 0.039385
+      },
+      {
+        "source": "atol_online/connection/sender-email.md",
+        "score": 0.038676
+      },
+      {
+        "source": "platformaofd/marking/crpt-indicators.md",
+        "score": 0.036644
+      }
+    ],
+    "selected_sources": [
+      "1c/edo/connect-1c-edo.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "metadata": {
+          "title": "С чего начать подключение 1С-ЭДО к контрагенту",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/edo/connect-1c-edo.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "edo",
+          "operations": [
+            "exchange_edo_documents"
+          ],
+          "evidence_coverage": {},
+          "section": "Что уточнить перед инструкцией",
+          "operation": "exchange_edo_documents"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9357,
+          "reasons": [
+            "task_category=edo",
+            "lexical_overlap=0.286",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "document_id": "batch-20261013-edo-connect-1c-edo",
+        "section": "Общие принципы",
+        "kind": "fact",
+        "text": "Для работы 1С-ЭДО нужны подходящая электронная подпись, подключение к оператору ЭДО и согласованный электронный документооборот с контрагентом."
+      },
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "document_id": "batch-20261013-edo-connect-1c-edo",
+        "section": "Общие принципы",
+        "kind": "fact",
+        "text": "В 1С предусмотрен помощник подключения."
+      }
+    ]
+  },
+  {
+    "id": "SA04",
+    "family": "saby",
+    "variant": "similar_operation",
+    "question": "Saby показывает исходящий документ без подтверждения. Как узнать его статус?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "incoming_receipt_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Saby",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Saby — Saby показывает исходящий документ без подтверждения. Как узнать его статус? — ограничения: без подтверждения",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "platformaofd/fn/reregistration-kkt.md",
+        "score": 0.044002
+      },
+      {
+        "source": "atol_online/fns/deregister-kkt.md",
+        "score": 0.036473
+      },
+      {
+        "source": "atol_online/ofd/activate-taxcom.md",
+        "score": 0.035884
+      },
+      {
+        "source": "atol_online/fns/removed-from-register.md",
+        "score": 0.03383
+      },
+      {
+        "source": "evotor/ffd/how-to-check-ffd.md",
+        "score": 0.033333
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "SA05",
+    "family": "saby",
+    "variant": "negation",
+    "question": "Это не кассовый чек: в Saby не нахожу входящий электронный акт от контрагента.",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "cash_receipt_procedure",
+    "state": {
+      "intent": "receipt",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Saby",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Saby — Это не кассовый чек: в Saby не нахожу входящий электронный акт от контрагента.",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/edo/epd-vs-edo.md",
+        "score": 0.040911
+      },
+      {
+        "source": "evotor/ofd/ofd-unable-to-connect.md",
+        "score": 0.038862
+      },
+      {
+        "source": "aqsi_devices/shifts/cash-in-out.md",
+        "score": 0.038776
+      },
+      {
+        "source": "accounting/vat_usn/exemption-threshold-2026.md",
+        "score": 0.03618
+      },
+      {
+        "source": "atol_online/errors/request-errors-26-1008.md",
+        "score": 0.035769
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "SA06",
+    "family": "saby",
+    "variant": "different_interface",
+    "question": "В модуле СБИС для 1С не вижу входящий УПД. Совпадают ли шаги с web-Saby?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "web_saby_as_1c_procedure",
+    "state": {
+      "intent": "delivery_document",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Saby",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Saby — ПО: 1С — В модуле СБИС для 1С не вижу входящий УПД. Совпадают ли шаги с web-Saby?",
+    "expected_task_category": "document_discrepancy",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.044776
+      },
+      {
+        "source": "atol_online/integration/integration-1c-versions.md",
+        "score": 0.041941
+      },
+      {
+        "source": "atol_online/integration/integration-1c-versions.md",
+        "score": 0.040873
+      },
+      {
+        "source": "atol_online/integration/integration-1c-versions.md",
+        "score": 0.035624
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "score": 0.033541
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DI01",
+    "family": "diadoc",
+    "variant": "incoming",
+    "question": "В Диадоке контрагент прислал УПД, но он не появился во входящих. Что проверить?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "cash_receipt_procedure",
+    "state": {
+      "intent": "delivery_document",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Диадок",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Диадок — В Диадоке контрагент прислал УПД, но он не появился во входящих. Что проверить?",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/billing/closing-docs.md",
+        "score": 0.045956
+      },
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.044023
+      },
+      {
+        "source": "1c/edo/epd-vs-edo.md",
+        "score": 0.039121
+      },
+      {
+        "source": "aqsi_online/fns/finish-reg.md",
+        "score": 0.039118
+      },
+      {
+        "source": "aqsi_devices/sales/deferred-order-refund.md",
+        "score": 0.038508
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DI02",
+    "family": "diadoc",
+    "variant": "outgoing",
+    "question": "Исходящий акт в Диадоке завис без подтверждения. Как безопасно проверить статус?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "incoming_document_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Диадок",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Диадок — Исходящий акт в Диадоке завис без подтверждения. Как безопасно проверить статус? — ограничения: без подтверждения",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/billing/change-plan.md",
+        "score": 0.045416
+      },
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "score": 0.041514
+      },
+      {
+        "source": "atol_online/fns/deregister-kkt.md",
+        "score": 0.040899
+      },
+      {
+        "source": "atol_online/fn/blocked.md",
+        "score": 0.040281
+      },
+      {
+        "source": "evotor/fn/fn-212.md",
+        "score": 0.037857
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DI03",
+    "family": "diadoc",
+    "variant": "continuation",
+    "prior": "Отправили документ через Диадок.",
+    "question": "Партнёр говорит, что не получил его. Какую информацию собрать для поддержки?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "repeat_send_without_status",
+    "state": {
+      "intent": "unknown",
+      "operation": "transmit",
+      "relation": "continue",
+      "task_start": "prior",
+      "routing_service": "Диадок",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Диадок — Отправили документ через Диадок.",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/billing/closing-docs.md",
+        "score": 0.049454
+      },
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.04741
+      },
+      {
+        "source": "atol_online/billing/renewal-invoice.md",
+        "score": 0.042534
+      },
+      {
+        "source": "atol_online/receipts/receipt-creation-modes.md",
+        "score": 0.040012
+      },
+      {
+        "source": "atol_online/billing/reconciliation-acts.md",
+        "score": 0.038977
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DI04",
+    "family": "diadoc",
+    "variant": "negation",
+    "question": "Это не чек в ОФД, а электронный УПД в Диадоке. Где смотреть доставку?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "ofd_receipt_search",
+    "state": {
+      "intent": "delivery_document",
+      "operation": "check",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Диадок",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Диадок — проверка УПД — запрос клиента: Это не чек в ОФД, а электронный УПД в Диадоке. Где смотреть доставку?",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/billing/closing-docs.md",
+        "score": 0.045235
+      },
+      {
+        "source": "atol_online/billing/closing-docs.md",
+        "score": 0.043794
+      },
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.042549
+      },
+      {
+        "source": "aqsi_devices/ofd/connection-fields.md",
+        "score": 0.042103
+      },
+      {
+        "source": "atol_online/connection/sender-email.md",
+        "score": 0.041486
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DI05",
+    "family": "diadoc",
+    "variant": "similar_operation",
+    "question": "Как в Диадоке подписать входящий УПД от поставщика?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "unauthorized_signing_instruction",
+    "state": {
+      "intent": "delivery_document",
+      "operation": "reconcile",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Диадок",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Диадок — сверка расхождений УПД — запрос клиента: Как в Диадоке подписать входящий УПД от поставщика?",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "evotor/marking/receive-marked-upd-prereqs.md",
+        "score": 0.047418
+      },
+      {
+        "source": "aqsi_online/setup/sign-contract.md",
+        "score": 0.046517
+      },
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.045921
+      },
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.043794
+      },
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "score": 0.040899
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "DI06",
+    "family": "diadoc",
+    "variant": "new_counterparty",
+    "question": "У нового контрагента в Диадоке нет приглашения, а документы ждут. Что выяснить сначала?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "other_vendor_invitation_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "Диадок",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: Диадок — У нового контрагента в Диадоке нет приглашения, а документы ждут. Что выяснить сначала? — ограничения: У нового контрагента в Диадоке нет приглашения",
+    "expected_task_category": "edo",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/edo/epd-vs-edo.md",
+        "score": 0.04918
+      },
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "score": 0.04697
+      },
+      {
+        "source": "atol_online/edo/incoming-documents.md",
+        "score": 0.045992
+      },
+      {
+        "source": "1c/edo/epd-vs-edo.md",
+        "score": 0.041432
+      },
+      {
+        "source": "1c/edo/epd-vs-edo.md",
+        "score": 0.041351
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "BI01",
+    "family": "bifit",
+    "variant": "terminal",
+    "question": "БИФИТ Касса видит терминал, но банковская операция отклоняется. Что можно проверить без повторного списания?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "blind_payment_retry",
+    "state": {
+      "intent": "device",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "БИФИТ Касса",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: БИФИТ Касса — БИФИТ Касса видит терминал, но банковская операция отклоняется. Что можно проверить без повторного списания? — ограничения: без повторного списания",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "score": 0.05
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.046696
+      },
+      {
+        "source": "platformaofd/ofd/tariff-activation.md",
+        "score": 0.041214
+      },
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "score": 0.033699
+      },
+      {
+        "source": "evotor/ofd/ofd-subscription.md",
+        "score": 0.033114
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "BI02",
+    "family": "bifit",
+    "variant": "paraphrase",
+    "question": "В БИФИТ Общепит не понимаю, где включить столы для зала. Есть точная инструкция для версии?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "web_booking_as_pos_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "БИФИТ",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: БИФИТ — В БИФИТ Общепит не понимаю, где включить столы для зала. Есть точная инструкция для версии?",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/connection/integrator-settings.md",
+        "score": 0.04697
+      },
+      {
+        "source": "aqsi_online/account/my-cash-registers.md",
+        "score": 0.045037
+      },
+      {
+        "source": "atol_online/integration/integration-1c-versions.md",
+        "score": 0.041126
+      },
+      {
+        "source": "aqsi_devices/catalog/shop-assignment.md",
+        "score": 0.037663
+      },
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "score": 0.037662
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "BI03",
+    "family": "bifit",
+    "variant": "continuation",
+    "prior": "Нужно проверить работу столов в БИФИТ Общепит.",
+    "question": "В приложении на кассе столы не появляются. Какую версию уточнить?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "retail_desktop_as_horeca_procedure",
+    "state": {
+      "intent": "device",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": null,
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "В приложении на кассе столы не появляются. Какую версию уточнить?",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "score": 0.04918
+      },
+      {
+        "source": "platformaofd/ofd/partner-kkt-diagnostics.md",
+        "score": 0.046898
+      },
+      {
+        "source": "evotor/tspiot/local-module-startup.md",
+        "score": 0.042005
+      },
+      {
+        "source": "evotor/network/mobile-internet-first-checks.md",
+        "score": 0.039649
+      },
+      {
+        "source": "aqsi_online/account/contact-support.md",
+        "score": 0.038614
+      }
+    ],
+    "selected_sources": [
+      "aqsi_devices/errors/goods-not-on-device.md"
+    ],
+    "selected_candidates": [
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "metadata": {
+          "title": "aQsi: товары есть в личном кабинете, но не видны на кассе",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/errors/goods-not-on-device.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос клиента",
+          "operation": "diagnose_error"
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9357,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.286",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        }
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "supported_steps": [
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "document_id": "aqsi-device-goods-not-on-device",
+        "section": "Проверенная информация и первичная диагностика",
+        "kind": "fact",
+        "text": "Сначала убедитесь, что касса подключена к интернету и привязана к правильному магазину в разделе «Магазины/кассы» личного кабинета."
+      },
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "document_id": "aqsi-device-goods-not-on-device",
+        "section": "Проверенная информация и первичная диагностика",
+        "kind": "procedure",
+        "text": "Если товары есть в базе кассы, но не отображаются в режиме продажи, проверьте фильтр диапазона цен."
+      }
+    ]
+  },
+  {
+    "id": "BI04",
+    "family": "bifit",
+    "variant": "negation",
+    "question": "Не web-бронирование: в БИФИТ Общепит нужны столы прямо на POS. Где подтверждённый порядок?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "web_booking_as_pos_procedure",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "БИФИТ",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: БИФИТ — Не web-бронирование: в БИФИТ Общепит нужны столы прямо на POS. Где подтверждённый порядок? — ограничения: Не web-бронирование: в БИФИТ Общепит нужны столы прямо на POS",
+    "expected_task_category": null,
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "1c/edo/epd-vs-edo.md",
+        "score": 0.037116
+      },
+      {
+        "source": "atol_online/billing/change-plan.md",
+        "score": 0.036295
+      },
+      {
+        "source": "aqsi_online/integration/direct-api.md",
+        "score": 0.034603
+      },
+      {
+        "source": "aqsi_online/account/my-cash-registers.md",
+        "score": 0.034377
+      },
+      {
+        "source": "aqsi_devices/ofd/connection-fields.md",
+        "score": 0.033357
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "BI05",
+    "family": "bifit",
+    "variant": "similar_operation",
+    "question": "БИФИТ Касса не проводит возврат по банковской карте. Может ли кассовое приложение исправить отказ эквайера?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "other_vendor_refund_procedure",
+    "state": {
+      "intent": "device",
+      "operation": "correct",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "БИФИТ Касса",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: БИФИТ Касса — исправление касса — запрос клиента: БИФИТ Касса не проводит возврат по банковской карте. Может ли кассовое приложение исправить отказ эквайера?",
+    "expected_task_category": "correction_receipt",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "aqsi_devices/sales/standard-refund.md",
+        "score": 0.049727
+      },
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "score": 0.045139
+      },
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "score": 0.044733
+      },
+      {
+        "source": "aqsi_online/receipts/full-refund.md",
+        "score": 0.043549
+      },
+      {
+        "source": "aqsi_devices/shifts/cash-in-out.md",
+        "score": 0.042929
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  },
+  {
+    "id": "BI06",
+    "family": "bifit",
+    "variant": "unknown_version",
+    "question": "Поставили БИФИТ Кассу, но не знаем версию и модель терминала. С чего начать выяснение совместимости?",
+    "expected": "clarify_or_handoff",
+    "source": null,
+    "forbidden": "unscoped_pairing_procedure",
+    "state": {
+      "intent": "device",
+      "operation": "unknown",
+      "relation": "new_task",
+      "task_start": "current",
+      "routing_service": "БИФИТ",
+      "equipment": null
+    },
+    "actual_user_answer": null,
+    "answer_status": "not_run_retrieval_only",
+    "query": "сервис: БИФИТ — Поставили БИФИТ Кассу, но не знаем версию и модель терминала. С чего начать выяснение совместимости?",
+    "expected_task_category": "integration",
+    "raw_gold": false,
+    "raw_gold_rank": null,
+    "selected_gold": false,
+    "gold_rejection": [],
+    "raw_top5": [
+      {
+        "source": "atol_online/integration/catalog-cms-banks.md",
+        "score": 0.047883
+      },
+      {
+        "source": "evotor/marking/receive-marked-upd-prereqs.md",
+        "score": 0.047163
+      },
+      {
+        "source": "1c/bank/directbank-all-accounts.md",
+        "score": 0.045743
+      },
+      {
+        "source": "evotor/network/mobile-internet-first-checks.md",
+        "score": 0.040564
+      },
+      {
+        "source": "1c/goods/single-upd-many-warehouses.md",
+        "score": 0.038936
+      }
+    ],
+    "selected_sources": [],
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "supported_steps": []
+  }
+]

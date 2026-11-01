@@ -1,0 +1,21 @@
+{
+  "review_method": "Manual source/operation review after labels were frozen; this is retrieval-level evidence review, not final-answer scoring.",
+  "positive_gold_filtered": [
+    {"id":"EV03","cause":"lexical follow-up started a new network task; gold rejected task_mismatch:receipt_transmission!=network_diagnostics"},
+    {"id":"FN03","cause":"exact -3979 gold at raw rank 4; coarse fiscal_drive task rejected error_diagnosis document"},
+    {"id":"AT01","cause":"phrase 'какую роль играет' misread as access/assign_role; OFD explanation gold rejected"},
+    {"id":"AQ02","cause":"full-refund gold at raw rank 3 rejected task_unresolved; unrelated my-cash-registers selected"},
+    {"id":"DB02","cause":"schedule gold at raw rank 1 rejected operation_mismatch:configure"},
+    {"id":"DB06","cause":"acquiring return gold at raw rank 2 rejected operation_mismatch:return"}
+  ],
+  "negative_selected_evidence_review": [
+    {"id":"AT05","selected":"atol_online/receipts/receipt-journal-export.md","assessment":"Partially useful read-only lookup, but does not answer whether an API fiscal request may be repeated; exact status/history remain unknown."},
+    {"id":"AT06","selected":"platformaofd/atol/ofd-transmission-checks.md","assessment":"Article is scoped to Платформа ОФД, while the client did not confirm that operator or an exact АТОЛ 30Ф procedure; unsafe to render as universal."},
+    {"id":"AQ06","selected":"aqsi_online/account/register-account.md","assessment":"Account registration does not answer the cloud-versus-physical-scanner question."},
+    {"id":"SA03","selected":"1c/edo/connect-1c-edo.md","assessment":"1С-ЭДО connection is a different product and task from locating a missing incoming Saby document."},
+    {"id":"BI03","selected":"aqsi_devices/errors/goods-not-on-device.md","assessment":"aQsi goods visibility is unrelated to BIFIT horeca POS tables."}
+  ],
+  "counts": {"positive_gold_filtered":6,"negative_selected_without_sufficient_question_specific_evidence":5,
+             "negative_selected_clearly_unrelated_or_unconfirmed_scope":4},
+  "limitation": "No final responses were produced for these 48 lexical-state retrieval probes; selection risk is not a measured user-facing error rate."
+}

@@ -1,0 +1,12 @@
+{
+  "rubric": "Useful means the answer advances the client's actual task using applicable approved evidence, or asks one necessary clarification. A safe error or unrelated approved quote is not useful.",
+  "cases": [
+    {"id":"EV01","outcome":"provider_error","useful":false,"false_refusal":false,"nonanswer_evidence":false,"reason":"Groq Understanding returned HTTP 400; no retrieval or answer. Provider response body is deliberately not retained, so precise 400 cause is unknown."},
+    {"id":"AQ02","outcome":"unhelpful_approved_quote","useful":false,"false_refusal":false,"nonanswer_evidence":true,"reason":"The full-refund article was selected, but the final quote was its specialist warning, not the requested full-refund procedure. Exact SHA/quote checks passed while question coverage failed."},
+    {"id":"DB02","outcome":"false_refusal","useful":false,"false_refusal":true,"nonanswer_evidence":false,"reason":"The approved schedule article was retrieved and rejected by operation_mismatch:check; the bot claimed no applicable instruction."},
+    {"id":"AT01","outcome":"false_refusal","useful":false,"false_refusal":true,"nonanswer_evidence":false,"reason":"The OFD explanatory article exists, but the general/explain candidate set was marked unresolved_task_ambiguous and the bot claimed no applicable instruction."},
+    {"id":"SA01","outcome":"safe_kb_gap_escalation","useful":false,"false_refusal":false,"nonanswer_evidence":false,"reason":"No approved web-Saby incoming-document guide exists in the current corpus; the bot safely reported an evidence gap, though it did not collect document type/organization for handoff."}
+  ],
+  "counts": {"attempted":5,"http_calls":5,"useful":0,"false_refusal":2,"nonanswer_evidence":1,"provider_error":1,"safe_kb_gap_escalation":1},
+  "limitations": "Five selected new cases, not a representative production sample; one Groq HTTP 400. No 429, Telegram send, or production SQLite write."
+}

@@ -1,0 +1,5190 @@
+[
+  {
+    "question_message_id": 557,
+    "answer_message_id": 558,
+    "timestamp_utc": "2026-11-01T15:23:38.780944+00:00",
+    "question": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+    "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+    "raw_understanding_status": "validated_with_field_rejections",
+    "raw_understanding_sha256": "5c195d8651b4491e2b897a39ebaa8b82529bd083e3e7257bf8711fd8c473bffe",
+    "raw_understanding": {
+      "request_type": "diagnosis",
+      "relation": "new_task",
+      "intent": "general",
+      "operation": "diagnose",
+      "object": "оператор фискальных данных",
+      "object_evidence": {
+        "quote": "оператор фискальных данных"
+      },
+      "goal": {
+        "quote": "С чего начать?"
+      },
+      "symptom": {
+        "quote": "оператор фискальных данных ничего не получает"
+      },
+      "entities": [
+        {
+          "slot": "equipment",
+          "value": "Эвотор 7.3",
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          }
+        },
+        {
+          "slot": "service",
+          "value": "оператор фискальных данных",
+          "evidence": {
+            "quote": "оператор фискальных данных"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    },
+    "raw_understanding_error_code": null,
+    "validated_observation": {
+      "intent": "general",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "new_task",
+      "confidence": 0.9,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": {
+        "value": "оператор фискальных данных",
+        "message_id": 557,
+        "quote": "оператор фискальных данных",
+        "start": 35,
+        "end": 61
+      },
+      "relation_evidence": null,
+      "evidence": {
+        "value": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+        "message_id": 557,
+        "quote": "На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+        "start": 0,
+        "end": 96
+      },
+      "symptom": {
+        "value": "оператор фискальных данных ничего не получает",
+        "message_id": 557,
+        "quote": "оператор фискальных данных ничего не получает",
+        "start": 35,
+        "end": 80
+      },
+      "goals": [
+        {
+          "value": "С чего начать?",
+          "message_id": 557,
+          "quote": "С чего начать?",
+          "start": 82,
+          "end": 96
+        }
+      ],
+      "unknown_facts": {},
+      "entities": {
+        "equipment": [
+          {
+            "value": "Эвотор 7.3",
+            "message_id": 557,
+            "quote": "Эвотор 7.3",
+            "start": 3,
+            "end": 13
+          }
+        ],
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 557,
+            "quote": "Эвотор",
+            "start": 3,
+            "end": 9
+          }
+        ]
+      }
+    },
+    "validated_request_type": "diagnosis",
+    "rejected_claims": [
+      {
+        "field": "object",
+        "status": "rejected",
+        "reason": "unsupported_object_value",
+        "claimed": "оператор фискальных данных"
+      },
+      {
+        "field": "entities[1]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "service",
+        "claimed": "оператор фискальных данных",
+        "start": 35,
+        "end": 61
+      }
+    ],
+    "resolver_decisions": [],
+    "understanding_error": null,
+    "state_before": null,
+    "state_after": {
+      "revision": 1,
+      "task_start_message_id": 557,
+      "intent": "general",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "new_task",
+      "transition": "new_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": "оператор фискальных данных ничего не получает",
+      "goal": [
+        "С чего начать?"
+      ],
+      "session_entities": {
+        "equipment": [
+          "Эвотор 7.3"
+        ],
+        "manufacturer": [
+          "Эвотор"
+        ]
+      },
+      "task_entities": {
+        "equipment": [
+          "Эвотор 7.3"
+        ],
+        "manufacturer": [
+          "Эвотор"
+        ]
+      }
+    },
+    "coordinator": {
+      "request_type": "diagnosis",
+      "route": "technical_action",
+      "task_relation": "new_task",
+      "current_subgoal": "С чего начать?",
+      "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+      "rationale": "task_requires_applicability_checked_action"
+    },
+    "rag_query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки — запрос клиента: На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать?",
+    "persisted_evaluated_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.05,
+          "dense": 0.64475375,
+          "bm25": 21.08203
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3667,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.222",
+            "operation_match=False",
+            "operation_compatibility=mismatch",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_mismatch:receipt_transmission!=error_diagnosis"
+        ],
+        "selected": false
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "document_id": "evotor-model-[PHONE]",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: питание и индикация",
+          "category": "kkt",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_model_article",
+          "status": "approved",
+          "source": "evotor/models/evotor-7-3.md",
+          "service": "Эвотор",
+          "task_category": "model_features",
+          "operations": [
+            "check_model_features"
+          ],
+          "evidence_coverage": {},
+          "section": "Что важно при первичной проверке",
+          "operation": "check_model_features"
+        },
+        "retrieval": {
+          "rrf": 0.032787,
+          "dense": null,
+          "bm25": 19.37476
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.35,
+          "reasons": [
+            "task_category=model_features",
+            "lexical_overlap=0.167",
+            "operation_match=False",
+            "operation_compatibility=mismatch",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:model_features!=error_diagnosis"
+        ],
+        "selected": false
+      }
+    ],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "source_scope_gate": null,
+    "conceptual_evidence_gate": null,
+    "coordinator_evidence": null,
+    "planner": null,
+    "validation_status": "not_run",
+    "validation_reason": null,
+    "scenario": "escalate",
+    "scenario_reason": "insufficient_applicable_evidence",
+    "generation_status": "no_context",
+    "generation_reason": "no_task_matched_candidates",
+    "generation_error": null,
+    "llm_call_attempted_after_understanding": false
+  },
+  {
+    "question_message_id": 559,
+    "answer_message_id": 560,
+    "timestamp_utc": "2026-11-01T15:23:50.595908+00:00",
+    "question": "У меня Эвотор 7.3. В кассе всё пробивается, а в личном кабинете ОФД новые продажи не появляются.",
+    "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+    "raw_understanding_status": "validated_with_field_rejections",
+    "raw_understanding_sha256": "0a7301e61ec48a9e6decd8d667fbf31323bdf3d3731a6df3f7ad508eafaa2fca",
+    "raw_understanding": {
+      "confidence": 0.95,
+      "entities": [
+        {
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          },
+          "slot": "equipment",
+          "value": "Эвотор 7.3"
+        },
+        {
+          "evidence": {
+            "quote": "ОФД"
+          },
+          "slot": "ofd",
+          "value": "ОФД"
+        }
+      ],
+      "goal": null,
+      "intent": "general",
+      "object": null,
+      "object_evidence": null,
+      "operation": "diagnose",
+      "relation": "continue",
+      "request_type": "information",
+      "specialist_evidence": null,
+      "specialist_requested": false,
+      "symptom": {
+        "quote": "новые продажи не появляются"
+      },
+      "unknown_facts": []
+    },
+    "raw_understanding_error_code": null,
+    "validated_observation": {
+      "intent": "general",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "continue",
+      "confidence": 0.95,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": null,
+      "relation_evidence": null,
+      "evidence": {
+        "value": "У меня Эвотор 7.3. В кассе всё пробивается, а в личном кабинете ОФД новые продажи не появляются.",
+        "message_id": 559,
+        "quote": "У меня Эвотор 7.3. В кассе всё пробивается, а в личном кабинете ОФД новые продажи не появляются.",
+        "start": 0,
+        "end": 96
+      },
+      "symptom": {
+        "value": "новые продажи не появляются",
+        "message_id": 559,
+        "quote": "новые продажи не появляются",
+        "start": 68,
+        "end": 95
+      },
+      "goals": [],
+      "unknown_facts": {},
+      "entities": {
+        "equipment": [
+          {
+            "value": "Эвотор 7.3",
+            "message_id": 559,
+            "quote": "Эвотор 7.3",
+            "start": 7,
+            "end": 17
+          }
+        ],
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 559,
+            "quote": "Эвотор",
+            "start": 7,
+            "end": 13
+          }
+        ]
+      }
+    },
+    "validated_request_type": "information",
+    "rejected_claims": [
+      {
+        "field": "entities[1]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "ofd",
+        "claimed": "ОФД",
+        "start": 64,
+        "end": 67
+      }
+    ],
+    "resolver_decisions": [],
+    "understanding_error": null,
+    "state_before": {
+      "revision": 1,
+      "task_start_message_id": 557,
+      "intent": "general",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "new_task",
+      "transition": "new_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": "оператор фискальных данных ничего не получает",
+      "goal": [
+        "С чего начать?"
+      ],
+      "session_entities": {
+        "equipment": [
+          "Эвотор 7.3"
+        ],
+        "manufacturer": [
+          "Эвотор"
+        ]
+      },
+      "task_entities": {
+        "equipment": [
+          "Эвотор 7.3"
+        ],
+        "manufacturer": [
+          "Эвотор"
+        ]
+      }
+    },
+    "state_after": {
+      "revision": 2,
+      "task_start_message_id": 557,
+      "intent": "general",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "continue",
+      "transition": "continue_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": "новые продажи не появляются",
+      "goal": [
+        "С чего начать?"
+      ],
+      "session_entities": {
+        "equipment": [
+          "Эвотор 7.3"
+        ],
+        "manufacturer": [
+          "Эвотор"
+        ]
+      },
+      "task_entities": {
+        "equipment": [
+          "Эвотор 7.3"
+        ],
+        "manufacturer": [
+          "Эвотор"
+        ]
+      }
+    },
+    "coordinator": {
+      "request_type": "information",
+      "route": "technical_action",
+      "task_relation": "continue",
+      "current_subgoal": null,
+      "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+      "rationale": "task_requires_applicability_checked_action"
+    },
+    "rag_query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки — запрос клиента: На Эвотор 7.3 продажи проходят, но оператор фискальных данных ничего не получает. С чего начать? — уточнение клиента: У меня; В кассе всё пробивается, а в личном кабинете ОФД",
+    "persisted_evaluated_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.05,
+          "dense": 0.6775615,
+          "bm25": 23.19076
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3577,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.192",
+            "operation_match=False",
+            "operation_compatibility=mismatch",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        },
+        "reasons": [
+          "task_mismatch:receipt_transmission!=error_diagnosis"
+        ],
+        "selected": false
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "document_id": "evotor-model-[PHONE]",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: питание и индикация",
+          "category": "kkt",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_model_article",
+          "status": "approved",
+          "source": "evotor/models/evotor-7-3.md",
+          "service": "Эвотор",
+          "task_category": "model_features",
+          "operations": [
+            "check_model_features"
+          ],
+          "evidence_coverage": {},
+          "section": "Что важно при первичной проверке",
+          "operation": "check_model_features"
+        },
+        "retrieval": {
+          "rrf": 0.032787,
+          "dense": null,
+          "bm25": 19.37476
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3346,
+          "reasons": [
+            "task_category=model_features",
+            "lexical_overlap=0.115",
+            "operation_match=False",
+            "operation_compatibility=mismatch",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:model_features!=error_diagnosis"
+        ],
+        "selected": false
+      }
+    ],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "source_scope_gate": null,
+    "conceptual_evidence_gate": null,
+    "coordinator_evidence": null,
+    "planner": null,
+    "validation_status": "not_run",
+    "validation_reason": null,
+    "scenario": "escalate",
+    "scenario_reason": "insufficient_applicable_evidence",
+    "generation_status": "no_context",
+    "generation_reason": "no_task_matched_candidates",
+    "generation_error": null,
+    "llm_call_attempted_after_understanding": false
+  },
+  {
+    "question_message_id": 561,
+    "answer_message_id": 562,
+    "timestamp_utc": "2026-11-01T15:23:58.068746+00:00",
+    "question": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+    "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+    "raw_understanding_status": "validated_with_field_rejections",
+    "raw_understanding_sha256": "bb7262c0613ac9bbbb0071b5fd76d36e9133677260a336be37f9e58cef314fd5",
+    "raw_understanding": {
+      "request_type": "diagnosis",
+      "relation": "new_task",
+      "intent": "general",
+      "operation": "diagnose",
+      "object": "Эвотор 7.3",
+      "object_evidence": {
+        "quote": "Эвотор 7.3"
+      },
+      "goal": null,
+      "symptom": {
+        "quote": "не передаёт документы"
+      },
+      "entities": [
+        {
+          "slot": "software",
+          "value": "Эвотор 7.3",
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          }
+        },
+        {
+          "slot": "ofd",
+          "value": "ОФД",
+          "evidence": {
+            "quote": "ОФД"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    },
+    "raw_understanding_error_code": null,
+    "validated_observation": {
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "new_task",
+      "confidence": 0.9,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": {
+        "value": "Эвотор 7.3",
+        "message_id": 561,
+        "quote": "Эвотор 7.3",
+        "start": 0,
+        "end": 10
+      },
+      "relation_evidence": null,
+      "evidence": {
+        "value": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+        "message_id": 561,
+        "quote": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+        "start": 0,
+        "end": 75
+      },
+      "symptom": {
+        "value": "не передаёт документы",
+        "message_id": 561,
+        "quote": "не передаёт документы",
+        "start": 11,
+        "end": 32
+      },
+      "goals": [],
+      "unknown_facts": {},
+      "entities": {
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 561,
+            "quote": "Эвотор",
+            "start": 0,
+            "end": 6
+          }
+        ],
+        "equipment": [
+          {
+            "value": "Эвотор 7.3",
+            "message_id": 561,
+            "quote": "Эвотор 7.3",
+            "start": 0,
+            "end": 10
+          }
+        ]
+      }
+    },
+    "validated_request_type": "diagnosis",
+    "rejected_claims": [
+      {
+        "field": "object",
+        "status": "rejected",
+        "reason": "unsupported_object_value",
+        "claimed": "Эвотор 7.3"
+      },
+      {
+        "field": "entities[0]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "software",
+        "claimed": "Эвотор 7.3",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "field": "entities[1]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "ofd",
+        "claimed": "ОФД",
+        "start": 35,
+        "end": 38
+      }
+    ],
+    "resolver_decisions": [
+      {
+        "field": "task_operation_resolution",
+        "status": "accepted",
+        "reason": "receipt_transmission_failure",
+        "task_category": "receipt_transmission",
+        "previous_operation": "diagnose",
+        "value": "diagnose"
+      }
+    ],
+    "understanding_error": null,
+    "state_before": null,
+    "state_after": {
+      "revision": 1,
+      "task_start_message_id": 561,
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "new_task",
+      "transition": "new_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": "не передаёт документы",
+      "goal": [],
+      "session_entities": {
+        "manufacturer": [
+          "Эвотор"
+        ],
+        "equipment": [
+          "Эвотор 7.3"
+        ]
+      },
+      "task_entities": {
+        "manufacturer": [
+          "Эвотор"
+        ],
+        "equipment": [
+          "Эвотор 7.3"
+        ]
+      }
+    },
+    "coordinator": {
+      "request_type": "diagnosis",
+      "route": "technical_action",
+      "task_relation": "new_task",
+      "current_subgoal": null,
+      "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+      "rationale": "task_requires_applicability_checked_action"
+    },
+    "rag_query": "оборудование: Эвотор 7.3 — производитель: Эвотор — диагностика ошибки — запрос клиента: Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+    "persisted_evaluated_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.05,
+          "dense": 0.672838,
+          "bm25": 27.74674
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9625,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.375",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "document_id": "evotor-model-[PHONE]",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: питание и индикация",
+          "category": "kkt",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_model_article",
+          "status": "approved",
+          "source": "evotor/models/evotor-7-3.md",
+          "service": "Эвотор",
+          "task_category": "model_features",
+          "operations": [
+            "check_model_features"
+          ],
+          "evidence_coverage": {},
+          "section": "Что важно при первичной проверке",
+          "operation": "check_model_features"
+        },
+        "retrieval": {
+          "rrf": 0.032787,
+          "dense": null,
+          "bm25": 22.37509
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3562,
+          "reasons": [
+            "task_category=model_features",
+            "lexical_overlap=0.188",
+            "operation_match=False",
+            "operation_compatibility=mismatch",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "subtask_anchor_uncovered",
+          "task_mismatch:model_features!=receipt_transmission"
+        ],
+        "selected": false
+      }
+    ],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.05,
+          "dense": 0.672838,
+          "bm25": 27.74674
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9625,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.375",
+            "operation_match=True",
+            "operation_compatibility=match",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "source_scope_gate": {
+      "inapplicable": [],
+      "eligible_source_count": 1,
+      "reason": "customer_confirmed_scope_required_for_procedures"
+    },
+    "conceptual_evidence_gate": null,
+    "coordinator_evidence": null,
+    "planner": {
+      "mode": "select",
+      "section_id": "evotor-7-3-ofd-connection-360014099534::Что проверить сначала",
+      "reason": "The task is about Evotor 7.3 not sending documents to OFD, and the candidate section provides a step‑by‑step diagnostic procedure for this exact issue, matching the manufacturer, model, and task category.",
+      "applicability_confirmed": true,
+      "source_order_complete": true,
+      "selection_policy": "customer_scope_and_source_order_complete",
+      "duration_ms": 1733,
+      "retry_count": 0,
+      "retry_wait_seconds": 0.0,
+      "finish_reason": "stop",
+      "candidate_sections": [
+        {
+          "id": "evotor-7-3-ofd-connection-360014099534::Что проверить сначала",
+          "document_id": "evotor-7-3-ofd-connection-360014099534",
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "section": "Что проверить сначала",
+          "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+          "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+          "scope": {
+            "status": "approved",
+            "service": "Эвотор",
+            "task_category": "receipt_transmission",
+            "manufacturer": "Эвотор",
+            "model": "Эвотор 7.3",
+            "procedure_service": null
+          },
+          "qdrant_scope": {
+            "status": "approved",
+            "service": "Эвотор",
+            "task_category": "receipt_transmission",
+            "manufacturer": "Эвотор",
+            "model": "Эвотор 7.3",
+            "procedure_service": null
+          }
+        }
+      ]
+    },
+    "validation_status": "exact_source_copy",
+    "validation_reason": "approved local section hash and heading reverified",
+    "scenario": "answer",
+    "scenario_reason": "source_first_exact_section",
+    "generation_status": "generated",
+    "generation_reason": null,
+    "generation_error": null,
+    "llm_call_attempted_after_understanding": true
+  },
+  {
+    "question_message_id": 563,
+    "answer_message_id": 564,
+    "timestamp_utc": "2026-11-01T15:24:14.164757+00:00",
+    "question": "Параметры ОФД тоже совпадают, но проблема осталась.",
+    "answer": "Что именно нужно сделать или что сейчас не работает?",
+    "raw_understanding_status": "validated_with_field_rejections",
+    "raw_understanding_sha256": "f3aa8f117f62bcab43a0ca64084742b075e96cfcc5b2efa0429a4746b0230c96",
+    "raw_understanding": {
+      "request_type": "information",
+      "relation": "continue",
+      "intent": "general",
+      "operation": "unknown",
+      "object": null,
+      "object_evidence": null,
+      "goal": null,
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "ofd",
+          "value": "ОФД",
+          "evidence": {
+            "quote": "ОФД"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    },
+    "raw_understanding_error_code": null,
+    "validated_observation": {
+      "intent": "general",
+      "operation": "unknown",
+      "object": null,
+      "relation": "continue",
+      "confidence": 0.9,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": null,
+      "relation_evidence": null,
+      "evidence": {
+        "value": "Параметры ОФД тоже совпадают, но проблема осталась.",
+        "message_id": 563,
+        "quote": "Параметры ОФД тоже совпадают, но проблема осталась.",
+        "start": 0,
+        "end": 51
+      },
+      "symptom": null,
+      "goals": [],
+      "unknown_facts": {},
+      "entities": {}
+    },
+    "validated_request_type": "information",
+    "rejected_claims": [
+      {
+        "field": "entities[0]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "ofd",
+        "claimed": "ОФД",
+        "start": 10,
+        "end": 13
+      }
+    ],
+    "resolver_decisions": [],
+    "understanding_error": null,
+    "state_before": null,
+    "state_after": {
+      "revision": 1,
+      "task_start_message_id": 563,
+      "intent": "general",
+      "operation": "unknown",
+      "object": null,
+      "relation": "new_task",
+      "transition": "new_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": null,
+      "goal": [],
+      "session_entities": {},
+      "task_entities": {}
+    },
+    "coordinator": {
+      "request_type": "information",
+      "route": "conversation",
+      "task_relation": "new_task",
+      "current_subgoal": null,
+      "required_action": "ask_for_task_or_goal",
+      "rationale": "task_not_ready"
+    },
+    "rag_query": null,
+    "persisted_evaluated_candidates": [],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [],
+    "evidence_status": null,
+    "sufficient": null,
+    "insufficiency_reason": null,
+    "source_scope_gate": null,
+    "conceptual_evidence_gate": null,
+    "coordinator_evidence": null,
+    "planner": null,
+    "validation_status": "not_run",
+    "validation_reason": null,
+    "scenario": "clarify",
+    "scenario_reason": "dialogue_state_task_incomplete",
+    "generation_status": "clarification",
+    "generation_reason": null,
+    "generation_error": null,
+    "llm_call_attempted_after_understanding": false
+  },
+  {
+    "question_message_id": 565,
+    "answer_message_id": 566,
+    "timestamp_utc": "2026-11-01T15:24:26.922467+00:00",
+    "question": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+    "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+    "raw_understanding_status": "validated_with_field_rejections",
+    "raw_understanding_sha256": "5ca8274df2243b65923203b731bc18e4c050d05daefd417e5ac2196208e59b1f",
+    "raw_understanding": {
+      "request_type": "diagnosis",
+      "relation": "answer_to_clarification",
+      "intent": "general",
+      "operation": "diagnose",
+      "object": "документы",
+      "object_evidence": {
+        "quote": "документы"
+      },
+      "goal": null,
+      "symptom": {
+        "quote": "Эвотор 7.3 не передаёт документы в ОФД"
+      },
+      "entities": [
+        {
+          "slot": "software",
+          "value": "Эвотор 7.3",
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          }
+        },
+        {
+          "slot": "ofd",
+          "value": "ОФД",
+          "evidence": {
+            "quote": "ОФД"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    },
+    "raw_understanding_error_code": null,
+    "validated_observation": {
+      "intent": "receipt",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "answer_to_clarification",
+      "confidence": 0.9,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": {
+        "value": "документы",
+        "message_id": 565,
+        "quote": "документы",
+        "start": 23,
+        "end": 32
+      },
+      "relation_evidence": null,
+      "evidence": {
+        "value": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+        "message_id": 565,
+        "quote": "Эвотор 7.3 не передаёт документы в ОФД. Интернет уже проверил, он работает.",
+        "start": 0,
+        "end": 75
+      },
+      "symptom": {
+        "value": "Эвотор 7.3 не передаёт документы в ОФД",
+        "message_id": 565,
+        "quote": "Эвотор 7.3 не передаёт документы в ОФД",
+        "start": 0,
+        "end": 38
+      },
+      "goals": [],
+      "unknown_facts": {},
+      "entities": {
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 565,
+            "quote": "Эвотор",
+            "start": 0,
+            "end": 6
+          }
+        ],
+        "equipment": [
+          {
+            "value": "Эвотор 7.3",
+            "message_id": 565,
+            "quote": "Эвотор 7.3",
+            "start": 0,
+            "end": 10
+          }
+        ]
+      }
+    },
+    "validated_request_type": "diagnosis",
+    "rejected_claims": [
+      {
+        "field": "object",
+        "status": "rejected",
+        "reason": "unsupported_object_value",
+        "claimed": "документы"
+      },
+      {
+        "field": "entities[0]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "software",
+        "claimed": "Эвотор 7.3",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "field": "entities[1]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "ofd",
+        "claimed": "ОФД",
+        "start": 35,
+        "end": 38
+      }
+    ],
+    "resolver_decisions": [
+      {
+        "field": "task_operation_resolution",
+        "status": "accepted",
+        "reason": "receipt_transmission_failure",
+        "task_category": "receipt_transmission",
+        "previous_operation": "diagnose",
+        "value": "diagnose"
+      }
+    ],
+    "understanding_error": null,
+    "state_before": {
+      "revision": 1,
+      "task_start_message_id": 563,
+      "intent": "general",
+      "operation": "unknown",
+      "object": null,
+      "relation": "new_task",
+      "transition": "new_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": null,
+      "goal": [],
+      "session_entities": {},
+      "task_entities": {}
+    },
+    "state_after": {
+      "revision": 2,
+      "task_start_message_id": 563,
+      "intent": "general",
+      "operation": "unknown",
+      "object": null,
+      "relation": "answer_to_clarification",
+      "transition": "clarification",
+      "expected": null,
+      "unresolved": null,
+      "symptom": "Эвотор 7.3 не передаёт документы в ОФД",
+      "goal": [],
+      "session_entities": {
+        "manufacturer": [
+          "Эвотор"
+        ],
+        "equipment": [
+          "Эвотор 7.3"
+        ]
+      },
+      "task_entities": {
+        "manufacturer": [
+          "Эвотор"
+        ],
+        "equipment": [
+          "Эвотор 7.3"
+        ]
+      }
+    },
+    "coordinator": {
+      "request_type": "diagnosis",
+      "route": "technical_action",
+      "task_relation": "answer_to_clarification",
+      "current_subgoal": null,
+      "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+      "rationale": "semantic_goal_ready_for_evidence_search"
+    },
+    "rag_query": "оборудование: Эвотор 7.3 — производитель: Эвотор — Параметры ОФД тоже совпадают, но проблема осталась. — уточнение клиента: Интернет уже проверил, он работает",
+    "persisted_evaluated_candidates": [
+      {
+        "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "document_id": "evotor-7-3-ofd-connection-360014099534",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить сначала",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.049727,
+          "dense": 0.59684587,
+          "bm25": 17.83841
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3882,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.294",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "evotor/models/evotor-7-3.md",
+        "document_id": "evotor-model-[PHONE]",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор 7.3: питание и индикация",
+          "category": "kkt",
+          "manufacturer": "Эвотор",
+          "model": "Эвотор 7.3",
+          "source_type": "vendor_model_article",
+          "status": "approved",
+          "source": "evotor/models/evotor-7-3.md",
+          "service": "Эвотор",
+          "task_category": "model_features",
+          "operations": [
+            "check_model_features"
+          ],
+          "evidence_coverage": {},
+          "section": "Что важно при первичной проверке",
+          "operation": "check_model_features"
+        },
+        "retrieval": {
+          "rrf": 0.045607,
+          "dense": 0.48899895,
+          "bm25": 16.83106
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3529,
+          "reasons": [
+            "task_category=model_features",
+            "lexical_overlap=0.176",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      }
+    ],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [],
+    "evidence_status": "none",
+    "sufficient": false,
+    "insufficiency_reason": "no_task_matched_candidates",
+    "source_scope_gate": null,
+    "conceptual_evidence_gate": null,
+    "coordinator_evidence": null,
+    "planner": null,
+    "validation_status": "not_run",
+    "validation_reason": null,
+    "scenario": "escalate",
+    "scenario_reason": "insufficient_applicable_evidence",
+    "generation_status": "no_context",
+    "generation_reason": "no_task_matched_candidates",
+    "generation_error": null,
+    "llm_call_attempted_after_understanding": false
+  },
+  {
+    "question_message_id": 567,
+    "answer_message_id": 568,
+    "timestamp_utc": "2026-11-01T15:24:32.665582+00:00",
+    "question": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+    "answer": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+    "raw_understanding_status": "provider_http_error",
+    "raw_understanding_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "raw_understanding": null,
+    "raw_understanding_error_code": "groq_http_429",
+    "validated_observation": null,
+    "validated_request_type": null,
+    "rejected_claims": [],
+    "resolver_decisions": [],
+    "understanding_error": {
+      "type": "UnderstandingError",
+      "message": "Groq HTTP 429",
+      "http_status": 429,
+      "tokens": null,
+      "duration_ms": 777,
+      "model": "openai/gpt-oss-20b",
+      "phase": "provider",
+      "error_code": "groq_http_429",
+      "retry_after_seconds": 8.0,
+      "rate_limit_headers": {
+        "retry-after": "8",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "994",
+        "x-ratelimit-reset-requests": "8m38.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1375",
+        "x-ratelimit-reset-tokens": "49.687s"
+      },
+      "structured_response": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "groq_http_429"
+        }
+      ]
+    },
+    "state_before": null,
+    "state_after": null,
+    "coordinator": null,
+    "rag_query": null,
+    "persisted_evaluated_candidates": [],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [],
+    "evidence_status": null,
+    "sufficient": null,
+    "insufficiency_reason": null,
+    "source_scope_gate": null,
+    "conceptual_evidence_gate": null,
+    "coordinator_evidence": null,
+    "planner": null,
+    "validation_status": "not_run",
+    "validation_reason": null,
+    "scenario": "clarify",
+    "scenario_reason": "groq_quota_deferred",
+    "generation_status": "error",
+    "generation_reason": "groq_quota_deferred",
+    "generation_error": {
+      "stage": "understanding",
+      "http_status": 429,
+      "retry_after_seconds": 8.0,
+      "rate_limit_headers": {
+        "retry-after": "8",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "994",
+        "x-ratelimit-reset-requests": "8m38.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1375",
+        "x-ratelimit-reset-tokens": "49.687s"
+      }
+    },
+    "llm_call_attempted_after_understanding": false
+  },
+  {
+    "question_message_id": 569,
+    "answer_message_id": 570,
+    "timestamp_utc": "2026-11-01T15:24:49.225067+00:00",
+    "question": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+    "answer": "Сложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.\n\nСведения из справки «aQsi Online»; отдельный общий источник по этому вопросу пока не проверен.\nИсточник: data/knowledge/aqsi_online/receipts/partial-refund.md — Когда нужен специалист",
+    "raw_understanding_status": "validated_with_field_rejections",
+    "raw_understanding_sha256": "a7423a5af42bac0c19b68efed6c96799600adf8e3abe93bd4e57db644735b83c",
+    "raw_understanding": {
+      "request_type": "information",
+      "relation": "new_task",
+      "intent": "general",
+      "operation": "explain",
+      "object": "оператор фискальных данных",
+      "object_evidence": {
+        "quote": "оператор фискальных данных"
+      },
+      "goal": {
+        "quote": "Объясни без сложных терминов."
+      },
+      "symptom": null,
+      "entities": [
+        {
+          "slot": "service",
+          "value": "оператор фискальных данных",
+          "evidence": {
+            "quote": "оператор фискальных данных"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.9
+    },
+    "raw_understanding_error_code": null,
+    "validated_observation": {
+      "intent": "general",
+      "operation": "explain",
+      "object": null,
+      "relation": "new_task",
+      "confidence": 0.9,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": {
+        "value": "оператор фискальных данных",
+        "message_id": 569,
+        "quote": "оператор фискальных данных",
+        "start": 24,
+        "end": 50
+      },
+      "relation_evidence": null,
+      "evidence": {
+        "value": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+        "message_id": 569,
+        "quote": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+        "start": 0,
+        "end": 81
+      },
+      "symptom": null,
+      "goals": [
+        {
+          "value": "Объясни без сложных терминов.",
+          "message_id": 569,
+          "quote": "Объясни без сложных терминов.",
+          "start": 52,
+          "end": 81
+        }
+      ],
+      "unknown_facts": {},
+      "entities": {}
+    },
+    "validated_request_type": "information",
+    "rejected_claims": [
+      {
+        "field": "object",
+        "status": "rejected",
+        "reason": "unsupported_object_value",
+        "claimed": "оператор фискальных данных"
+      },
+      {
+        "field": "entities[0]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "service",
+        "claimed": "оператор фискальных данных",
+        "start": 24,
+        "end": 50
+      }
+    ],
+    "resolver_decisions": [
+      {
+        "field": "operation_resolution",
+        "status": "accepted",
+        "reason": "explicit_conceptual_information_request",
+        "raw_normalized_operation": "explain",
+        "value": "explain"
+      }
+    ],
+    "understanding_error": null,
+    "state_before": null,
+    "state_after": {
+      "revision": 1,
+      "task_start_message_id": 569,
+      "intent": "general",
+      "operation": "explain",
+      "object": null,
+      "relation": "new_task",
+      "transition": "new_task",
+      "expected": null,
+      "unresolved": null,
+      "symptom": null,
+      "goal": [
+        "Объясни без сложных терминов."
+      ],
+      "session_entities": {},
+      "task_entities": {}
+    },
+    "coordinator": {
+      "request_type": "information",
+      "route": "grounded_information",
+      "task_relation": "new_task",
+      "current_subgoal": "Объясни без сложных терминов.",
+      "required_action": "retrieve_and_quote_focused_approved_evidence",
+      "rationale": "grounded_explanation_requires_scoped_evidence"
+    },
+    "rag_query": "Для чего магазину нужен оператор фискальных данных? Объясни без сложных терминов.",
+    "persisted_evaluated_candidates": [
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "document_id": "aqsi-online-receipts-partial-refund",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: частичный возврат по чеку",
+          "category": "receipts",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/receipts/partial-refund.md",
+          "service": "aQsi Online",
+          "task_category": "refund",
+          "operations": [
+            "issue_refund"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "issue_refund"
+        },
+        "retrieval": {
+          "rrf": 0.047883,
+          "dense": 0.5749917,
+          "bm25": 11.60951
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=refund",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      },
+      {
+        "source": "atol_online/settings/change-parameters.md",
+        "document_id": "atol-online-22060-change-parameters",
+        "status": "approved",
+        "metadata": {
+          "title": "Какие настройки кассы можно изменить в ЛК АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/settings/change-parameters.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "settings",
+          "operations": [
+            "configure_settings"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "configure_settings"
+        },
+        "retrieval": {
+          "rrf": 0.045285,
+          "dense": 0.57762164,
+          "bm25": 8.56723
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=settings",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/connection/add-shop-step3.md",
+        "document_id": "atol-online-12161-add-shop-step3",
+        "status": "approved",
+        "metadata": {
+          "title": "Шаг 3 подключения АТОЛ Онлайн: магазин, URL и параметры",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/connection/add-shop-step3.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "add_shop"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.044583,
+          "dense": 0.5259671,
+          "bm25": 9.5895
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9591,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.364",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=4",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      },
+      {
+        "source": "1c/taxes/ens-menu-2026.md",
+        "document_id": "batch-20261013-taxes-ens-menu-2026",
+        "status": "approved",
+        "metadata": {
+          "title": "Где в 1С находятся документы ЕНС в простом интерфейсе",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/taxes/ens-menu-2026.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "ens",
+          "operations": [
+            "check_ens"
+          ],
+          "evidence_coverage": {},
+          "section": "Эскалация",
+          "operation": "check_ens"
+        },
+        "retrieval": {
+          "rrf": 0.043162,
+          "dense": 0.56663895,
+          "bm25": 7.78646
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9318,
+          "reasons": [
+            "task_category=ens",
+            "lexical_overlap=0.273",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/connection/select-ofd.md",
+        "document_id": "atol-online-12149-select-ofd",
+        "status": "approved",
+        "metadata": {
+          "title": "Выбор ОФД при подключении АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/connection/select-ofd.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "select_ofd"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.040203,
+          "dense": 0.48896998,
+          "bm25": 8.89371
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9318,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.273",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=4",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "document_id": "atol-online-11256-what-is-ofd",
+        "status": "approved",
+        "metadata": {
+          "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/ofd/what-is-ofd.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "ofd_connection",
+          "operations": [
+            "explain_ofd"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "explain_ofd"
+        },
+        "retrieval": {
+          "rrf": 0.03894,
+          "dense": 0.4402173,
+          "bm25": 11.18288
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 1.0,
+          "reasons": [
+            "task_category=ofd_connection",
+            "lexical_overlap=0.545",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=5",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      },
+      {
+        "source": "aqsi_online/receipts/incorrect-105.md",
+        "document_id": "aqsi-online-receipts-incorrect-105",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: ошибочный чек при ФФД 1.05",
+          "category": "receipts",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/receipts/incorrect-105.md",
+          "service": "aQsi Online",
+          "task_category": "correction_receipt",
+          "operations": [
+            "correct_receipt"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "correct_receipt"
+        },
+        "retrieval": {
+          "rrf": 0.038406,
+          "dense": 0.61060816,
+          "bm25": 5.69701
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=correction_receipt",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/receipts/enable-manual-receipt.md",
+        "document_id": "aqsi-online-receipts-enable-manual-receipt",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: ручное создание чека из личного кабинета",
+          "category": "receipts",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/receipts/enable-manual-receipt.md",
+          "service": "aQsi Online",
+          "task_category": "receipt_issue",
+          "operations": [
+            "issue_receipt"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "issue_receipt"
+        },
+        "retrieval": {
+          "rrf": 0.035261,
+          "dense": 0.6033523,
+          "bm25": 5.15193
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=receipt_issue",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/setup/add-store.md",
+        "document_id": "aqsi-online-setup-add-store",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: добавление интернет-магазина",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/setup/add-store.md",
+          "service": "aQsi Online",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "add_store"
+          ],
+          "evidence_coverage": {},
+          "section": "Перед выполнением действий",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.034194,
+          "dense": 0.49092478,
+          "bm25": 6.62175
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/ofd/ofd-oism-current-credentials.md",
+        "document_id": "aqsi-device-ofd-oism-current-credentials",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: как проверять реквизиты ОФД и ОИСМ",
+          "category": "ofd",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/ofd/ofd-oism-current-credentials.md",
+          "service": "aQsi",
+          "task_category": "ofd_connection",
+          "operations": [
+            "configure_ofd_connection"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда передавать специалисту",
+          "operation": "configure_ofd_connection"
+        },
+        "retrieval": {
+          "rrf": 0.034119,
+          "dense": 0.49373436,
+          "bm25": 6.35024
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=ofd_connection",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/settings/agent-status.md",
+        "document_id": "atol-online-22559-agent-status",
+        "status": "approved",
+        "metadata": {
+          "title": "Как указать агентский признак у облачной кассы АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/settings/agent-status.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "settings",
+          "operations": [
+            "configure_settings"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "configure_settings"
+        },
+        "retrieval": {
+          "rrf": 0.033978,
+          "dense": 0.50214744,
+          "bm25": 6.12412
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=settings",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "accounting/vat_usn/advance-invoice.md",
+        "document_id": "batch-20261013-vat-usn-advance-invoice",
+        "status": "approved",
+        "metadata": {
+          "title": "НДС на УСН: нужен ли авансовый счёт-фактура при ставке 5% или 7%",
+          "category": "accounting",
+          "source_type": "fns_guidance",
+          "status": "approved",
+          "source": "accounting/vat_usn/advance-invoice.md",
+          "service": "Налоги и бухгалтерский учёт",
+          "task_category": "vat_usn",
+          "operations": [
+            "check_vat_rules"
+          ],
+          "evidence_coverage": {},
+          "section": "Эскалация",
+          "operation": "check_vat_rules"
+        },
+        "retrieval": {
+          "rrf": 0.033836,
+          "dense": 0.5083152,
+          "bm25": 5.94538
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=vat_usn",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "1c/bank/import-file-directbank.md",
+        "document_id": "batch-20261013-bank-import-file-directbank",
+        "status": "approved",
+        "metadata": {
+          "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/import-file-directbank.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "import_bank_statement_file"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "import_bank_statement_file"
+        },
+        "retrieval": {
+          "rrf": 0.033119,
+          "dense": 0.43686622,
+          "bm25": 7.28868
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/ofd/taxcom-account.md",
+        "document_id": "aqsi-online-ofd-taxcom-account",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: подключение к ОФД Такском",
+          "category": "ofd",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/ofd/taxcom-account.md",
+          "service": "aQsi Online",
+          "task_category": "ofd_connection",
+          "operations": [
+            "open_ofd_account"
+          ],
+          "evidence_coverage": {},
+          "section": "Что можно объяснить и проверить",
+          "operation": "open_ofd_account"
+        },
+        "retrieval": {
+          "rrf": 0.032504,
+          "dense": 0.4541673,
+          "bm25": 6.75629
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=ofd_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/connection/step7-fn-activation.md",
+        "document_id": "atol-online-16568-step7-fn-activation",
+        "status": "approved",
+        "metadata": {
+          "title": "Шаг 7 подключения АТОЛ Онлайн: завершение регистрации по отчёту ФН",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/connection/step7-fn-activation.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "activate_fiscal_drive"
+          ],
+          "evidence_coverage": {},
+          "section": "Важное ограничение / передача специалисту",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.032184,
+          "dense": 0.47759548,
+          "bm25": 6.22124
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9318,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.273",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "evotor/ffd/how-to-check-ffd.md",
+        "document_id": "evotor-ffd-version-check-20261019",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор: как узнать используемую версию ФФД",
+          "category": "ffd",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ffd/how-to-check-ffd.md",
+          "service": "Эвотор",
+          "task_category": "fiscal_format",
+          "operations": [
+            "check_ffd"
+          ],
+          "evidence_coverage": {},
+          "section": "Быстрый способ",
+          "operation": "check_ffd"
+        },
+        "retrieval": {
+          "rrf": 0.028499,
+          "dense": 0.5594287,
+          "bm25": 4.47855
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=fiscal_format",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/catalog/excel-import.md",
+        "document_id": "aqsi-device-excel-import",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: импорт Excel-каталога товаров и категорий",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/catalog/excel-import.md",
+          "service": "aQsi",
+          "task_category": "product_catalog",
+          "operations": [
+            "manage_product_catalog",
+            "import_product_catalog"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда передавать специалисту",
+          "operation": "manage_product_catalog"
+        },
+        "retrieval": {
+          "rrf": 0.025828,
+          "dense": 0.4295882,
+          "bm25": 5.17603
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=product_catalog",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/integration/api-test.md",
+        "document_id": "atol-online-11244-api-test",
+        "status": "approved",
+        "metadata": {
+          "title": "Как тестировать прямую API-интеграцию с АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/integration/api-test.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "integration",
+          "operations": [
+            "configure_integration"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "configure_integration"
+        },
+        "retrieval": {
+          "rrf": 0.025641,
+          "dense": null,
+          "bm25": 7.22089
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9318,
+          "reasons": [
+            "task_category=integration",
+            "lexical_overlap=0.273",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/setup/order-cash-register.md",
+        "document_id": "aqsi-online-setup-order-cash-register",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: заказ облачной ККТ",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/setup/order-cash-register.md",
+          "service": "aQsi Online",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "order_cash_register"
+          ],
+          "evidence_coverage": {},
+          "section": "Что можно объяснить и проверить",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.024524,
+          "dense": 0.49023482,
+          "bm25": 4.76998
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/shifts/cash-in-out.md",
+        "document_id": "aqsi-device-cash-in-out",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: внесение и изъятие наличных в смене",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/shifts/cash-in-out.md",
+          "service": "aQsi",
+          "task_category": "shift_management",
+          "operations": [
+            "manage_shift",
+            "record_cash_in_out"
+          ],
+          "evidence_coverage": {},
+          "section": "Проверенная информация и первичная диагностика",
+          "operation": "manage_shift"
+        },
+        "retrieval": {
+          "rrf": 0.024096,
+          "dense": 0.5326835,
+          "bm25": 3.52279
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=shift_management",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi/aqsi-error-115.md",
+        "document_id": "aqsi-kkt-error-115",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: ошибка 115 при операциях и закрытии ФН",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "source_type": "vendor_knowledge_base",
+          "status": "approved",
+          "source": "aqsi/aqsi-error-115.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Возможные причины по базе aQsi",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.023348,
+          "dense": 0.51562953,
+          "bm25": 3.65226
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9045,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi/aqsi-error-126.md",
+        "document_id": "aqsi-kkt-error-126",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: ошибка ККТ 126 — длина кадра приёма",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "source_type": "vendor_knowledge_base",
+          "status": "approved",
+          "source": "aqsi/aqsi-error-126.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.023087,
+          "dense": 0.5058829,
+          "bm25": 3.77217
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.85,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "platformaofd/ofd/connect-kkt.md",
+        "document_id": "platformaofd-connect-kkt-to-lkk",
+        "status": "approved",
+        "metadata": {
+          "title": "Платформа ОФД: подключение ККТ к личному кабинету",
+          "category": "ofd",
+          "source_type": "ofd_knowledge_base",
+          "status": "approved",
+          "source": "platformaofd/ofd/connect-kkt.md",
+          "service": "Платформа ОФД",
+          "task_category": "ofd_connection",
+          "operations": [
+            "connect_cash_register"
+          ],
+          "evidence_coverage": {},
+          "section": "Предварительные условия",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.022399,
+          "dense": 0.49368447,
+          "bm25": 3.79402
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.85,
+          "reasons": [
+            "task_category=ofd_connection",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "evotor/ofd/ofd-unable-to-connect.md",
+        "document_id": "evotor-ofd-error-not-connected-20261019",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор: «Касса не может связаться с ОФД» — первичная диагностика",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/ofd-unable-to-connect.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Признаки",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.019508,
+          "dense": 0.48234946,
+          "bm25": 3.50581
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.85,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "platformaofd/flk/flk-507.md",
+        "document_id": "platformaofd-flk-507",
+        "status": "approved",
+        "metadata": {
+          "title": "Платформа ОФД: код ФЛК 507 — сумма оплат в чеке",
+          "category": "flk",
+          "source_type": "ofd_knowledge_base",
+          "status": "approved",
+          "source": "platformaofd/flk/flk-507.md",
+          "service": "Платформа ОФД",
+          "task_category": "fiscal_document_control",
+          "operations": [
+            "diagnose_fiscal_document"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверить",
+          "operation": "diagnose_fiscal_document"
+        },
+        "retrieval": {
+          "rrf": 0.01911,
+          "dense": 0.52324843,
+          "bm25": 1.87659
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=fiscal_document_control",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/errors/fn161-document-not-saved.md",
+        "document_id": "aqsi-device-fn161-document-not-saved",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: ошибка 161, чек не записался в ФН",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/errors/fn161-document-not-saved.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда передавать специалисту",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.01619,
+          "dense": 0.4890864,
+          "bm25": 2.04512
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "atol_online/receipts/receipt-creation-modes.md",
+        "document_id": "atol-online-11242-receipt-creation-modes",
+        "status": "approved",
+        "metadata": {
+          "title": "Три способа формирования чеков в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/receipts/receipt-creation-modes.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "receipt_issue",
+          "operations": [
+            "issue_receipt"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "issue_receipt"
+        },
+        "retrieval": {
+          "rrf": 0.01695,
+          "dense": 0.4685833,
+          "bm25": 2.89298
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.85,
+          "reasons": [
+            "task_category=receipt_issue",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/fn/fn-close-safety.md",
+        "document_id": "aqsi-device-fn-close-safety",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: что проверить перед закрытием ФН",
+          "category": "fn",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/fn/fn-close-safety.md",
+          "service": "aQsi",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive"
+          ],
+          "evidence_coverage": {},
+          "section": "Проверенная информация и первичная диагностика",
+          "operation": "inspect_fiscal_drive"
+        },
+        "retrieval": {
+          "rrf": 0.01627,
+          "dense": 0.45698828,
+          "bm25": 2.85659
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.85,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/setup/fiscalize.md",
+        "document_id": "aqsi-online-setup-fiscalize",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: фискализация после регистрации в ФНС",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/setup/fiscalize.md",
+          "service": "aQsi Online",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "fiscalize_cash_register"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.024096,
+          "dense": null,
+          "bm25": 6.45646
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/receipts/receipt-location.md",
+        "document_id": "atol-online-11258-receipt-location",
+        "status": "approved",
+        "metadata": {
+          "title": "Почему в чеке АТОЛ Онлайн указан московский адрес",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/receipts/receipt-location.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "receipt_issue",
+          "operations": [
+            "issue_receipt"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "issue_receipt"
+        },
+        "retrieval": {
+          "rrf": 0.028571,
+          "dense": null,
+          "bm25": 8.15933
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=receipt_issue",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/settings/add-more-shop-urls.md",
+        "document_id": "atol-online-11238-add-more-shop-urls",
+        "status": "approved",
+        "metadata": {
+          "title": "Как добавить ещё один интернет-магазин к кассе АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/settings/add-more-shop-urls.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "settings",
+          "operations": [
+            "configure_settings"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "configure_settings"
+        },
+        "retrieval": {
+          "rrf": 0.028169,
+          "dense": null,
+          "bm25": 8.02692
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=settings",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/account/register-account.md",
+        "document_id": "aqsi-online-account-register-account",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: регистрация личного кабинета",
+          "category": "account",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/account/register-account.md",
+          "service": "aQsi Online",
+          "task_category": "access",
+          "operations": [
+            "register_account"
+          ],
+          "evidence_coverage": {},
+          "section": "Что можно объяснить и проверить",
+          "operation": "register_account"
+        },
+        "retrieval": {
+          "rrf": 0.027397,
+          "dense": null,
+          "bm25": 7.65048
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=access",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/catalog/shop-assignment.md",
+        "document_id": "aqsi-device-shop-assignment",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: товар есть в кабинете, но не привязан к магазину",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/catalog/shop-assignment.md",
+          "service": "aQsi",
+          "task_category": "product_catalog",
+          "operations": [
+            "manage_product_catalog",
+            "assign_products_to_shop"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "manage_product_catalog"
+        },
+        "retrieval": {
+          "rrf": 0.027027,
+          "dense": null,
+          "bm25": 7.57754
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=product_catalog",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "evotor/marking/receive-marked-upd-prereqs.md",
+        "document_id": "evotor-marked-goods-upd-20261019",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор: условия приёмки маркированного товара по УПД",
+          "category": "marking",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/marking/receive-marked-upd-prereqs.md",
+          "service": "Эвотор",
+          "task_category": "marking",
+          "operations": [
+            "check_marking_code"
+          ],
+          "evidence_coverage": {},
+          "section": "Что потребуется",
+          "operation": "check_marking_code"
+        },
+        "retrieval": {
+          "rrf": 0.026667,
+          "dense": null,
+          "bm25": 7.49207
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=marking",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "evotor/settings/time-mismatch-first-checks.md",
+        "document_id": "evotor-time-mismatch-check-20261019",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор: расхождение времени кассы и планшета",
+          "category": "settings",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/settings/time-mismatch-first-checks.md",
+          "service": "Эвотор",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Безопасная диагностика",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.025316,
+          "dense": null,
+          "bm25": 7.18005
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/setup/company-details.md",
+        "document_id": "aqsi-online-setup-company-details",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: реквизиты организации и банка",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/setup/company-details.md",
+          "service": "aQsi Online",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "edit_company_details"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.023141,
+          "dense": 0.5125407,
+          "bm25": 3.64502
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/fn/fn-basics.md",
+        "document_id": "atol-online-11253-fn-basics",
+        "status": "approved",
+        "metadata": {
+          "title": "Что такое фискальный накопитель в облачной кассе АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/fn/fn-basics.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive",
+            "explain_fiscal_drive"
+          ],
+          "evidence_coverage": {},
+          "section": "Вопрос пользователя",
+          "operation": "inspect_fiscal_drive"
+        },
+        "retrieval": {
+          "rrf": 0.022727,
+          "dense": null,
+          "bm25": 6.07176
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/taxes/ens-automatic-data.md",
+        "document_id": "batch-20261013-taxes-ens-automatic-data",
+        "status": "approved",
+        "metadata": {
+          "title": "Начисления на ЕНС по данным ФНС в 1С",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/taxes/ens-automatic-data.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "ens",
+          "operations": [
+            "check_ens"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничение",
+          "operation": "check_ens"
+        },
+        "retrieval": {
+          "rrf": 0.022601,
+          "dense": 0.517213,
+          "bm25": 3.41612
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=ens",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/setup/sign-contract.md",
+        "document_id": "aqsi-online-setup-sign-contract",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: получение и подписание договора",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/setup/sign-contract.md",
+          "service": "aQsi Online",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "sign_contract"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.022347,
+          "dense": 0.5076695,
+          "bm25": 3.64502
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/edo/connect-1c-edo.md",
+        "document_id": "batch-20261013-edo-connect-1c-edo",
+        "status": "approved",
+        "metadata": {
+          "title": "С чего начать подключение 1С-ЭДО к контрагенту",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/edo/connect-1c-edo.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "edo",
+          "operations": [
+            "exchange_edo_documents"
+          ],
+          "evidence_coverage": {},
+          "section": "Общие принципы",
+          "operation": "exchange_edo_documents"
+        },
+        "retrieval": {
+          "rrf": 0.022222,
+          "dense": null,
+          "bm25": 5.85747
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=edo",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/billing/invoice-composition.md",
+        "document_id": "atol-online-17627-invoice-composition",
+        "status": "approved",
+        "metadata": {
+          "title": "Из чего состоит счёт АТОЛ Онлайн: лицензия, аренда и ФН",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/billing/invoice-composition.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "billing",
+          "operations": [
+            "manage_billing",
+            "inspect_invoice"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "manage_billing"
+        },
+        "retrieval": {
+          "rrf": 0.021961,
+          "dense": 0.52065665,
+          "bm25": 3.19195
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=billing",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/settings/android-clock.md",
+        "document_id": "aqsi-device-android-clock",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: проверка времени Android и фискального ядра",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/settings/android-clock.md",
+          "service": "aQsi",
+          "task_category": "settings",
+          "operations": [
+            "configure_settings"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "configure_settings"
+        },
+        "retrieval": {
+          "rrf": 0.021505,
+          "dense": null,
+          "bm25": 5.5914
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=settings",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/fn/replacement-reasons.md",
+        "document_id": "atol-online-11251-replacement-reasons",
+        "status": "approved",
+        "metadata": {
+          "title": "Когда нужно менять ФН облачной кассы",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/fn/replacement-reasons.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "fiscal_drive",
+          "operations": [
+            "inspect_fiscal_drive",
+            "check_replacement_need"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "inspect_fiscal_drive"
+        },
+        "retrieval": {
+          "rrf": 0.021017,
+          "dense": 0.56452906,
+          "bm25": 1.712
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=fiscal_drive",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/start/first-start-internet.md",
+        "document_id": "aqsi-device-first-start-internet",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: первый запуск, Wi-Fi и SIM",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/start/first-start-internet.md",
+          "service": "aQsi",
+          "task_category": "equipment_setup",
+          "operations": [
+            "setup_cash_register"
+          ],
+          "evidence_coverage": {},
+          "section": "Проверенная информация и первичная диагностика",
+          "operation": "setup_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.020833,
+          "dense": null,
+          "bm25": 5.36392
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=equipment_setup",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/receipts/advance-closing.md",
+        "document_id": "atol-online-26774-advance-closing",
+        "status": "approved",
+        "metadata": {
+          "title": "Авансовый и закрывающий чеки в АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/receipts/advance-closing.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "receipt_issue",
+          "operations": [
+            "issue_receipt"
+          ],
+          "evidence_coverage": {},
+          "section": "Важно / когда передать специалисту",
+          "operation": "issue_receipt"
+        },
+        "retrieval": {
+          "rrf": 0.020685,
+          "dense": 0.5567754,
+          "bm25": 1.85117
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=receipt_issue",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/errors/marking-178.md",
+        "document_id": "aqsi-device-marking-178",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: ошибка 178 при продаже маркированного товара",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi 5Ф",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/errors/marking-178.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда передавать специалисту",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.020619,
+          "dense": null,
+          "bm25": 5.33827
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=2"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/taxes/ens-accounting-settings.md",
+        "document_id": "batch-20261013-taxes-ens-accounting-settings",
+        "status": "approved",
+        "metadata": {
+          "title": "Способ учёта операций по ЕНС в настройках 1С",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/taxes/ens-accounting-settings.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "ens",
+          "operations": [
+            "check_ens"
+          ],
+          "evidence_coverage": {},
+          "section": "Безопасный алгоритм",
+          "operation": "check_ens"
+        },
+        "retrieval": {
+          "rrf": 0.020408,
+          "dense": null,
+          "bm25": 5.33246
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=ens",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/vat/vat-usn-settings.md",
+        "document_id": "batch-20261013-vat-vat-usn-settings",
+        "status": "approved",
+        "metadata": {
+          "title": "Настройка НДС на УСН в 1С:Бухгалтерии в 2026 году",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/vat/vat-usn-settings.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "vat_accounting",
+          "operations": [
+            "configure_vat_accounting"
+          ],
+          "evidence_coverage": {},
+          "section": "Важно",
+          "operation": "configure_vat_accounting"
+        },
+        "retrieval": {
+          "rrf": 0.020331,
+          "dense": 0.5595794,
+          "bm25": 1.47226
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=vat_accounting",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/fns/register-ooo.md",
+        "document_id": "aqsi-online-fns-register-ooo",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: регистрация облачной ККТ в ФНС организацией",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/fns/register-ooo.md",
+          "service": "aQsi Online",
+          "task_category": "fns_registration",
+          "operations": [
+            "check_registration"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "check_registration"
+        },
+        "retrieval": {
+          "rrf": 0.01972,
+          "dense": 0.47117487,
+          "bm25": 3.64502
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=fns_registration",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/receipts/correct-ffd12.md",
+        "document_id": "atol-online-11243-correct-ffd12",
+        "status": "approved",
+        "metadata": {
+          "title": "Исправление ошибочного чека при ФФД 1.2",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/receipts/correct-ffd12.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "correction_receipt",
+          "operations": [
+            "correct_receipt"
+          ],
+          "evidence_coverage": {},
+          "section": "Подтверждённые сведения",
+          "operation": "correct_receipt"
+        },
+        "retrieval": {
+          "rrf": 0.019802,
+          "dense": null,
+          "bm25": 5.1859
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=correction_receipt",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "evotor/ofd/ofd-settings-check.md",
+        "document_id": "evotor-ofd-settings-reference-20261019",
+        "status": "approved",
+        "metadata": {
+          "title": "Эвотор: где проверять параметры ОФД и ОИСМ",
+          "category": "ofd",
+          "manufacturer": "Эвотор",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "evotor/ofd/ofd-settings-check.md",
+          "service": "Эвотор",
+          "task_category": "receipt_transmission",
+          "operations": [
+            "check_transmission"
+          ],
+          "evidence_coverage": {},
+          "section": "Навигация",
+          "operation": "check_transmission"
+        },
+        "retrieval": {
+          "rrf": 0.019608,
+          "dense": null,
+          "bm25": 5.1859
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3545,
+          "reasons": [
+            "task_category=receipt_transmission",
+            "lexical_overlap=0.182",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=3"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/shifts/x-report.md",
+        "document_id": "aqsi-device-x-report",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: как сформировать X-отчёт",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/shifts/x-report.md",
+          "service": "aQsi",
+          "task_category": "shift_management",
+          "operations": [
+            "manage_shift",
+            "print_x_report"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "manage_shift"
+        },
+        "retrieval": {
+          "rrf": 0.019231,
+          "dense": null,
+          "bm25": 5.17314
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=shift_management",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/connection/company-registration.md",
+        "document_id": "atol-online-12148-company-registration",
+        "status": "approved",
+        "metadata": {
+          "title": "Добавление компании в личном кабинете АТОЛ Онлайн",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/connection/company-registration.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "register_company"
+          ],
+          "evidence_coverage": {},
+          "section": "Важно / когда передать специалисту",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.019164,
+          "dense": 0.51652354,
+          "bm25": 2.1781
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/sales/deferred-order-refund.md",
+        "document_id": "aqsi-device-deferred-order-refund",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: возврат прихода через отложенный заказ",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/sales/deferred-order-refund.md",
+          "service": "aQsi",
+          "task_category": "sales",
+          "operations": [
+            "issue_refund"
+          ],
+          "evidence_coverage": {},
+          "section": "Проверенная информация и первичная диагностика",
+          "operation": "issue_refund"
+        },
+        "retrieval": {
+          "rrf": 0.019048,
+          "dense": null,
+          "bm25": 5.1721
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=sales",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/ofd/connection-fields.md",
+        "document_id": "aqsi-device-connection-fields",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: где находятся параметры подключения ОФД и ОИСМ",
+          "category": "ofd",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/ofd/connection-fields.md",
+          "service": "aQsi",
+          "task_category": "ofd_connection",
+          "operations": [
+            "configure_ofd_connection"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "configure_ofd_connection"
+        },
+        "retrieval": {
+          "rrf": 0.016129,
+          "dense": null,
+          "bm25": 4.86815
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=ofd_connection",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/atol_pay/refund-full-partial.md",
+        "document_id": "atol-online-22853-refund-full-partial",
+        "status": "approved",
+        "metadata": {
+          "title": "АТОЛ Pay: полный и частичный возврат — чек «Возврат прихода»",
+          "category": "atol_pay",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Pay",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/atol_pay/refund-full-partial.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "refund",
+          "operations": [
+            "issue_refund"
+          ],
+          "evidence_coverage": {},
+          "section": "Важное ограничение / передача специалисту",
+          "operation": "issue_refund"
+        },
+        "retrieval": {
+          "rrf": 0.018856,
+          "dense": 0.5259613,
+          "bm25": 1.64998
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=refund",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/taxes/ens-operations-name.md",
+        "document_id": "batch-20261013-taxes-ens-operations-name",
+        "status": "approved",
+        "metadata": {
+          "title": "Документ «Операции ЕНС» вместо «Корректировка ЕНС»",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/taxes/ens-operations-name.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "ens",
+          "operations": [
+            "check_ens"
+          ],
+          "evidence_coverage": {},
+          "section": "Безопасность",
+          "operation": "check_ens"
+        },
+        "retrieval": {
+          "rrf": 0.018685,
+          "dense": 0.51233244,
+          "bm25": 2.16621
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=ens",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/bank/directbank-auto-schedule.md",
+        "document_id": "batch-20261013-bank-directbank-auto-schedule",
+        "status": "approved",
+        "metadata": {
+          "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/directbank-auto-schedule.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "schedule_bank_statement_import"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "schedule_bank_statement_import"
+        },
+        "retrieval": {
+          "rrf": 0.018349,
+          "dense": null,
+          "bm25": 5.07595
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/errors/goods-not-on-device.md",
+        "document_id": "aqsi-device-goods-not-on-device",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: товары есть в личном кабинете, но не видны на кассе",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/errors/goods-not-on-device.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Проверенная информация и первичная диагностика",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.018163,
+          "dense": 0.4260152,
+          "bm25": 3.76192
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/catalog/create-product.md",
+        "document_id": "aqsi-device-create-product",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: создание карточки товара на кассе",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/catalog/create-product.md",
+          "service": "aQsi",
+          "task_category": "product_catalog",
+          "operations": [
+            "manage_product_catalog",
+            "create_product"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "manage_product_catalog"
+        },
+        "retrieval": {
+          "rrf": 0.018018,
+          "dense": null,
+          "bm25": 4.98573
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=product_catalog",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/marking/permission-setup.md",
+        "document_id": "aqsi-device-permission-setup",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: разрешительный режим «Честного ЗНАКа»",
+          "category": "marking",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/marking/permission-setup.md",
+          "service": "aQsi",
+          "task_category": "marking",
+          "operations": [
+            "check_marking_code"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "check_marking_code"
+        },
+        "retrieval": {
+          "rrf": 0.017857,
+          "dense": null,
+          "bm25": 4.98573
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=marking",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/receipts/full-refund.md",
+        "document_id": "aqsi-online-receipts-full-refund",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: полный возврат по ранее пробитому чеку",
+          "category": "receipts",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/receipts/full-refund.md",
+          "service": "aQsi Online",
+          "task_category": "refund",
+          "operations": [
+            "issue_refund"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "issue_refund"
+        },
+        "retrieval": {
+          "rrf": 0.017609,
+          "dense": 0.44363424,
+          "bm25": 3.43
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=refund",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/integration/direct-api.md",
+        "document_id": "aqsi-online-integration-direct-api",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: прямое подключение API или CMS",
+          "category": "integration",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/integration/direct-api.md",
+          "service": "aQsi Online",
+          "task_category": "integration",
+          "operations": [
+            "configure_integration"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "configure_integration"
+        },
+        "retrieval": {
+          "rrf": 0.017568,
+          "dense": 0.4325559,
+          "bm25": 3.64502
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=integration",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/peripherals/scales.md",
+        "document_id": "aqsi-device-scales",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: подключение весов ШТРИХ-СЛИМ 200",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/peripherals/scales.md",
+          "service": "aQsi",
+          "task_category": "peripheral_setup",
+          "operations": [
+            "configure_peripheral"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "configure_peripheral"
+        },
+        "retrieval": {
+          "rrf": 0.017544,
+          "dense": null,
+          "bm25": 4.98573
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=peripheral_setup",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/sales/marked-beer.md",
+        "document_id": "aqsi-device-marked-beer",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: продажа пива в упаковке и на розлив",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/sales/marked-beer.md",
+          "service": "aQsi",
+          "task_category": "sales",
+          "operations": [
+            "process_sale"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "process_sale"
+        },
+        "retrieval": {
+          "rrf": 0.017391,
+          "dense": null,
+          "bm25": 4.98573
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=sales",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "platformaofd/flk/flk-508.md",
+        "document_id": "platformaofd-flk-508",
+        "status": "approved",
+        "metadata": {
+          "title": "Платформа ОФД: код ФЛК 508 — итог и позиции чека",
+          "category": "flk",
+          "source_type": "ofd_knowledge_base",
+          "status": "approved",
+          "source": "platformaofd/flk/flk-508.md",
+          "service": "Платформа ОФД",
+          "task_category": "fiscal_document_control",
+          "operations": [
+            "diagnose_fiscal_document"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничение",
+          "operation": "diagnose_fiscal_document"
+        },
+        "retrieval": {
+          "rrf": 0.017346,
+          "dense": 0.48842302,
+          "bm25": 2.71583
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=fiscal_document_control",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "atol_online/billing/service-blocked.md",
+        "document_id": "atol-online-11077-service-blocked",
+        "status": "approved",
+        "metadata": {
+          "title": "Ошибка 403: сервис АТОЛ Онлайн заблокирован за неоплату",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/billing/service-blocked.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "billing",
+          "operations": [
+            "manage_billing",
+            "diagnose_service_block"
+          ],
+          "evidence_coverage": {},
+          "section": "Важно / когда передать специалисту",
+          "operation": "manage_billing"
+        },
+        "retrieval": {
+          "rrf": 0.017342,
+          "dense": 0.5088992,
+          "bm25": 1.712
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=billing",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/start/unbox-hardware.md",
+        "document_id": "aqsi-device-unbox-hardware",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi 5 и 6: подготовка кассы к первому использованию",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi 5 / aQsi 6",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/start/unbox-hardware.md",
+          "service": "aQsi",
+          "task_category": "equipment_setup",
+          "operations": [
+            "setup_cash_register"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "setup_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.016949,
+          "dense": null,
+          "bm25": 4.92624
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=equipment_setup",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/peripherals/scanner.md",
+        "document_id": "aqsi-device-scanner",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: внешний сканер не считывает DataMatrix",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/peripherals/scanner.md",
+          "service": "aQsi",
+          "task_category": "peripheral_setup",
+          "operations": [
+            "configure_peripheral"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "configure_peripheral"
+        },
+        "retrieval": {
+          "rrf": 0.016807,
+          "dense": null,
+          "bm25": 4.92624
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=peripheral_setup",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/marking/permission-diagnostics.md",
+        "document_id": "aqsi-device-permission-diagnostics",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: почему не проходит проверка кода маркировки",
+          "category": "marking",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/marking/permission-diagnostics.md",
+          "service": "aQsi",
+          "task_category": "marking",
+          "operations": [
+            "check_marking_code"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "check_marking_code"
+        },
+        "retrieval": {
+          "rrf": 0.016667,
+          "dense": null,
+          "bm25": 4.92624
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=marking",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/errors/fn18-expired.md",
+        "document_id": "aqsi-device-fn18-expired",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: ошибка 18 — срок ФН истёк",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/errors/fn18-expired.md",
+          "service": "aQsi",
+          "task_category": "error_diagnosis",
+          "operations": [
+            "diagnose_error"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "diagnose_error"
+        },
+        "retrieval": {
+          "rrf": 0.016529,
+          "dense": null,
+          "bm25": 4.92624
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=error_diagnosis",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "1c/bank/acquiring-returns.md",
+        "document_id": "batch-20261013-bank-acquiring-returns",
+        "status": "approved",
+        "metadata": {
+          "title": "Возврат покупателю по эквайрингу: новая операция списания в 1С",
+          "category": "1c",
+          "manufacturer": "1С",
+          "model": "1С:Бухгалтерия 8, редакция 3.0",
+          "source_type": "vendor_article",
+          "status": "approved",
+          "source": "1c/bank/acquiring-returns.md",
+          "service": "1С:Бухгалтерия 8",
+          "task_category": "bank_statement",
+          "operations": [
+            "load_bank_statements"
+          ],
+          "evidence_coverage": {},
+          "section": "Передать бухгалтеру",
+          "operation": "load_bank_statements"
+        },
+        "retrieval": {
+          "rrf": 0.016405,
+          "dense": 0.49489447,
+          "bm25": 1.77698
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=bank_statement",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_devices/shifts/fiscal-status-report.md",
+        "document_id": "aqsi-device-fiscal-status-report",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi: отчёт о текущем состоянии расчётов",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi (физическая ККТ)",
+          "source_type": "manufacturer_support_article",
+          "status": "approved",
+          "source": "aqsi_devices/shifts/fiscal-status-report.md",
+          "service": "aQsi",
+          "task_category": "shift_management",
+          "operations": [
+            "manage_shift",
+            "print_fiscal_status_report"
+          ],
+          "evidence_coverage": {},
+          "section": "Ограничения",
+          "operation": "manage_shift"
+        },
+        "retrieval": {
+          "rrf": 0.01626,
+          "dense": null,
+          "bm25": 4.86815
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3273,
+          "reasons": [
+            "task_category=shift_management",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      },
+      {
+        "source": "aqsi_online/fns/finish-reg.md",
+        "document_id": "aqsi-online-fns-finish-reg",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: завершение регистрации и проверка статуса ФНС",
+          "category": "kkt",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/fns/finish-reg.md",
+          "service": "aQsi Online",
+          "task_category": "fns_registration",
+          "operations": [
+            "check_registration"
+          ],
+          "evidence_coverage": {},
+          "section": "Перед выполнением действий",
+          "operation": "check_registration"
+        },
+        "retrieval": {
+          "rrf": 0.016121,
+          "dense": 0.4468684,
+          "bm25": 2.94288
+        },
+        "relevance": {
+          "service": "match",
+          "task": "mismatch",
+          "score": 0.3,
+          "reasons": [
+            "task_category=fns_registration",
+            "lexical_overlap=0.000",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0"
+          ]
+        },
+        "reasons": [
+          "task_unresolved"
+        ],
+        "selected": false
+      }
+    ],
+    "raw_chunk_ranking_status": "not_persisted; diagnostics deduplicate and evaluate candidates by document",
+    "selected_candidates": [
+      {
+        "source": "aqsi_online/receipts/partial-refund.md",
+        "document_id": "aqsi-online-receipts-partial-refund",
+        "status": "approved",
+        "metadata": {
+          "title": "aQsi Online: частичный возврат по чеку",
+          "category": "receipts",
+          "manufacturer": "aQsi",
+          "model": "aQsi Online (облачная касса)",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "aqsi_online/receipts/partial-refund.md",
+          "service": "aQsi Online",
+          "task_category": "refund",
+          "operations": [
+            "issue_refund"
+          ],
+          "evidence_coverage": {},
+          "section": "Когда нужен специалист",
+          "operation": "issue_refund"
+        },
+        "retrieval": {
+          "rrf": 0.047883,
+          "dense": 0.5749917,
+          "bm25": 11.60951
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.8773,
+          "reasons": [
+            "task_category=refund",
+            "lexical_overlap=0.091",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=0",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=1",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      },
+      {
+        "source": "atol_online/connection/add-shop-step3.md",
+        "document_id": "atol-online-12161-add-shop-step3",
+        "status": "approved",
+        "metadata": {
+          "title": "Шаг 3 подключения АТОЛ Онлайн: магазин, URL и параметры",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/connection/add-shop-step3.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "service_connection",
+          "operations": [
+            "connect_cash_register",
+            "add_shop"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "connect_cash_register"
+        },
+        "retrieval": {
+          "rrf": 0.044583,
+          "dense": 0.5259671,
+          "bm25": 9.5895
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 0.9591,
+          "reasons": [
+            "task_category=service_connection",
+            "lexical_overlap=0.364",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=1",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=4",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      },
+      {
+        "source": "atol_online/ofd/what-is-ofd.md",
+        "document_id": "atol-online-11256-what-is-ofd",
+        "status": "approved",
+        "metadata": {
+          "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных",
+          "category": "atol_online",
+          "manufacturer": "АТОЛ",
+          "model": "АТОЛ Онлайн — облачная ККТ",
+          "source_type": "vendor_support_article",
+          "status": "approved",
+          "source": "atol_online/ofd/what-is-ofd.md",
+          "service": "АТОЛ Онлайн",
+          "task_category": "ofd_connection",
+          "operations": [
+            "explain_ofd"
+          ],
+          "evidence_coverage": {},
+          "section": "Что проверено по инструкции производителя",
+          "operation": "explain_ofd"
+        },
+        "retrieval": {
+          "rrf": 0.03894,
+          "dense": 0.4402173,
+          "bm25": 11.18288
+        },
+        "relevance": {
+          "service": "match",
+          "task": "match",
+          "score": 1.0,
+          "reasons": [
+            "task_category=ofd_connection",
+            "lexical_overlap=0.545",
+            "operation_match=False",
+            "operation_compatibility=unknown",
+            "related_search_task=False",
+            "procedure_service=unreviewed",
+            "subtask_title_topic_overlap=5",
+            "subtask_question_topic_overlap=0",
+            "subtask_body_topic_overlap=0",
+            "unresolved_task_fallback"
+          ]
+        },
+        "reasons": [],
+        "selected": true
+      }
+    ],
+    "evidence_status": "partial",
+    "sufficient": true,
+    "insufficiency_reason": "evidence_coverage_incomplete",
+    "source_scope_gate": null,
+    "conceptual_evidence_gate": {
+      "question_kind": "conceptual",
+      "candidate_sections": 9,
+      "conceptual_fact_sections": 5,
+      "excluded_nonconceptual_or_noncovering_sections": 4,
+      "comparison_requires_both_concepts_in_one_supported_fact": false
+    },
+    "coordinator_evidence": {
+      "document_id": "aqsi-online-receipts-partial-refund",
+      "source": "data/knowledge/aqsi_online/receipts/partial-refund.md",
+      "section": "Когда нужен специалист",
+      "sentence": "Сложные расчёты, частичные оплаты, неоднократные возвраты — бухгалтеру.",
+      "focus": "Объясни без сложных терминов.",
+      "selection": "generic_content_term_overlap",
+      "source_sha256_verified": true
+    },
+    "planner": null,
+    "validation_status": "exact_approved_sentence",
+    "validation_reason": "exact local section hash, approved status, exact quote, applicability and final safety gates passed",
+    "scenario": "answer",
+    "scenario_reason": "ai_coordinator_grounded_information",
+    "generation_status": "generated",
+    "generation_reason": null,
+    "generation_error": null,
+    "llm_call_attempted_after_understanding": false
+  }
+]

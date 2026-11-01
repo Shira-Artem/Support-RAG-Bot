@@ -1,0 +1,139 @@
+{
+  "method": "read-only Stage3; fixed raw hit list per saved RAG query; one state factor changed at a time",
+  "collection_points": 934,
+  "cases": [
+    {
+      "message_id": 557,
+      "raw_hits": 2,
+      "baseline": {
+        "expected_task": "error_diagnosis",
+        "evidence_status": "none",
+        "sufficient": false,
+        "reason": "no_task_matched_candidates",
+        "selected_sources": [],
+        "gold_candidate": {
+          "selected": false,
+          "reasons": [
+            "task_mismatch:receipt_transmission!=error_diagnosis"
+          ]
+        }
+      },
+      "intent_receipt_only": {
+        "expected_task": "receipt_transmission",
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ],
+        "gold_candidate": {
+          "selected": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "message_id": 559,
+      "raw_hits": 2,
+      "baseline": {
+        "expected_task": "error_diagnosis",
+        "evidence_status": "none",
+        "sufficient": false,
+        "reason": "no_task_matched_candidates",
+        "selected_sources": [],
+        "gold_candidate": {
+          "selected": false,
+          "reasons": [
+            "task_mismatch:receipt_transmission!=error_diagnosis"
+          ]
+        }
+      },
+      "intent_receipt_only": {
+        "expected_task": "receipt_transmission",
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ],
+        "gold_candidate": {
+          "selected": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "message_id": 561,
+      "raw_hits": 2,
+      "baseline": {
+        "expected_task": "receipt_transmission",
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ],
+        "gold_candidate": {
+          "selected": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "message_id": 565,
+      "raw_hits": 2,
+      "baseline": {
+        "expected_task": null,
+        "evidence_status": "none",
+        "sufficient": false,
+        "reason": "no_task_matched_candidates",
+        "selected_sources": [],
+        "gold_candidate": {
+          "selected": false,
+          "reasons": [
+            "task_unresolved"
+          ]
+        }
+      },
+      "same_observation_empty_prior_state": {
+        "expected_task": "receipt_transmission",
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "evotor/ofd/evotor-7-3-ofd-connection.md"
+        ],
+        "gold_candidate": {
+          "selected": true,
+          "reasons": []
+        }
+      },
+      "empty_prior_state_task_start": 565
+    },
+    {
+      "message_id": 569,
+      "raw_hits": 100,
+      "baseline": {
+        "expected_task": null,
+        "evidence_status": "partial",
+        "sufficient": true,
+        "reason": "evidence_coverage_incomplete",
+        "selected_sources": [
+          "aqsi_online/receipts/partial-refund.md",
+          "atol_online/connection/add-shop-step3.md",
+          "atol_online/ofd/what-is-ofd.md"
+        ],
+        "gold_candidate": null
+      }
+    }
+  ],
+  "conceptual_gate": {
+    "message_id": 569,
+    "question_subject_in_validated_state": null,
+    "wrong_sentence_accepted_without_subject": true,
+    "wrong_sentence_accepted_with_subject": false,
+    "right_sentence_accepted_with_subject": true,
+    "two_section_choice_without_subject": "aqsi_online/receipts/partial-refund.md",
+    "two_section_choice_with_subject": "atol_online/ofd/what-is-ofd.md"
+  }
+}
