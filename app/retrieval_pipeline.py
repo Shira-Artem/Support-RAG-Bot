@@ -406,10 +406,10 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     # Explanations are read-only concept questions. They still require
     # approved, exact evidence, but no service/model/task-category label is a
     # prerequisite for retrieving a relevant definition.
-    if state.intent == "general" and state.operation == "explain":
-        return None
     if state.object == "ОФД" and state.operation == "explain":
         return "ofd_connection"
+    if state.intent == "general" and state.operation == "explain":
+        return None
     # A confirmed technical component can define a narrower diagnostic family
     # than the coarse hardware symptom. This affects candidate relevance only;
     # manufacturer/service, approval, SHA, and procedure applicability gates

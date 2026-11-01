@@ -90,6 +90,7 @@ _GENERAL_CONCEPTUAL_FORM = re.compile(
     r"зачем\b|для\s+чего\b|с\s+какой\s+целью\b|"
     r"почему\s+(?:нуж\w*|использу\w*|применя\w*|создан\w*)|"
     r"объясни\w*|расскажи\w*|what\s+is|define|compare)\b", re.I)
+_GENERAL_PURPOSE_FORM = re.compile(r"\b(?:зачем|для\s+чего|почему\s+нуж\w*)\b", re.I)
 _GENERAL_KNOWLEDGE_BLOCK = re.compile(
     r"\b(?:ошибк\w*|код\s*\d|\d{2,}|не\s+работ\w*|перестал\w*|не\s+переда\w*|"
     r"не\s+загружа\w*|как\s+(?:настро\w*|подключ\w*|исправ\w*|провер\w*|выполн\w*)|"
@@ -100,6 +101,10 @@ _GENERAL_KNOWLEDGE_BLOCK = re.compile(
 _GENERAL_UNSOURCED_CITATION = re.compile(
     r"https?://|www\.|\bисточник\s*:|\bсогласно\s+(?:документ|инструкц|сайт)|"
     r"\bпо\s+данным\s+(?:документ|инструкц|сайт)", re.I)
+_GENERAL_UNSOURCED_RULE = re.compile(
+    r"\b(?:сертификат\w*|подтвержден\w*\s+от\s+налог\w*|"
+    r"обязательн\w*|закон\w*|законодательств\w*|требовани\w*|"
+    r"должен|должна|должны|необходимо|тариф\w*|договор\w*)\b", re.I)
 _CONCEPTUAL_ACTION_SENTENCE = re.compile(
     r"^\s*(?:попрос\w*|сопостав\w*|свер\w*|уточн\w*|убед\w*|"
     r"проверь\w*|провер\w*|открой\w*|перейд\w*|нажм\w*|выбер\w*|"
@@ -199,8 +204,11 @@ def _names_concept(sentence: str, subject: set[str]) -> bool:
 
 
 def _focused_approved_sentence(sections: list[dict], focus: str, *,
-                               conceptual_question: str | None = None) -> tuple[dict, str] | None:
+                               conceptual_question: str | None = None,
+                               conceptual_subject: str | None = None) -> tuple[dict, str] | None:
     focus_terms = _focus_terms(focus)
+    if conceptual_subject:
+        focus_terms |= _focus_terms(conceptual_subject)
     if not focus_terms:
         return None
     ranked = []
@@ -216,7 +224,7 @@ def _focused_approved_sentence(sections: list[dict], focus: str, *,
                     or unsafe_operation_issue(sentence)):
                 continue
             if conceptual_question and not _conceptually_answering_sentence(
-                    sentence, conceptual_question):
+                    sentence, conceptual_question, conceptual_subject):
                 continue
             sentence_terms = _focus_terms(sentence)
             overlap = len(focus_terms & sentence_terms)
@@ -239,7 +247,8 @@ def _comparison_concepts(question: str) -> tuple[set[str], set[str]] | None:
     return None
 
 
-def _conceptually_answering_sentence(sentence: str, question: str) -> bool:
+def _conceptually_answering_sentence(sentence: str, question: str,
+                                     grounded_subject: str | None = None) -> bool:
     """Require a conceptual fact, and both sides of a comparison in that fact."""
     if (_CONCEPTUAL_ACTION_SENTENCE.search(sentence)
             or evidence_role(sentence) != "fact"
@@ -248,7 +257,10 @@ def _conceptually_answering_sentence(sentence: str, question: str) -> bool:
         return False
     concepts = _comparison_concepts(question)
     if not concepts:
-        subject = _concept_subject_terms(question)
+        # The validated object is an exact client span. In a purpose question
+        # it avoids treating a beneficiary ("for the shop owner") as part of
+        # the concept that the source must define.
+        subject = _focus_terms(grounded_subject) if grounded_subject else _concept_subject_terms(question)
         if subject:
             return _names_concept(sentence, subject)
         return bool(_focus_terms(question) & _focus_terms(sentence))
@@ -827,7 +839,8 @@ class SourceFirstService:
                 "Approved-source retrieval was already checked and gave no focused answer. "
                 "This is not a support procedure. Do not give steps, settings, fiscal or legal "
                 "requirements, current facts, prices, product-specific claims, sources, citations, "
-                "or URLs. If uncertain, say so. Return only 1-3 sentences of answer text.")},
+                "or URLs. Do not mention certificates, legal obligations, or tax-office confirmations. "
+                "If uncertain, say so. Return only 1-3 sentences of answer text.")},
             {"role": "user", "content": user_message},
         ]
         try:
@@ -847,6 +860,7 @@ class SourceFirstService:
         response_terms = content_terms(text)
         invalid = (not text or len(text) > 1000 or not 1 <= len(claims) <= 3
                    or bool(_GENERAL_UNSOURCED_CITATION.search(text))
+                   or bool(_GENERAL_UNSOURCED_RULE.search(text))
                    or bool(unsafe_operation_issue(text))
                    or bool(instruction_issue(text, ""))
                    or not question_terms.intersection(response_terms))
@@ -878,7 +892,7 @@ class SourceFirstService:
                 "Не получилось безопасно проверить общее объяснение. Запросите специалиста.",
                 "general_knowledge_output_rejected", "conceptual_scope_or_safety_gate",
                 started, **base, generation_status="rejected")
-        text = "Общее объяснение (сформулировано моделью, не по approved-документации):\n" + text
+        text += "\n\nПодтверждённого общего источника по этому вопросу в базе пока нет."
         return Answer(text, scenario="answer", scenario_reason="general_knowledge_fallback",
                       generation_status="generated", validation_status="general_knowledge_scope_checked",
                       validation_reason="conceptual question; no actions, current rules, citations or URLs",
@@ -898,7 +912,7 @@ class SourceFirstService:
         history = base.pop("history", [])
         conceptual_sections = []
         for item in sections:
-            if any(_conceptually_answering_sentence(sentence, user_message)
+            if any(_conceptually_answering_sentence(sentence, user_message, state.object)
                    for sentence in statements(item["text"])):
                 conceptual_sections.append(item)
         base.setdefault("retrieval_diagnostics", {})["conceptual_evidence_gate"] = {
@@ -1020,7 +1034,7 @@ class SourceFirstService:
                     return fallback
                 return self._escalate("В найденных approved-источниках нет подтверждённого ответа именно на этот вопрос. Запросите специалиста.",
                     "semantic_selector_no_evidence", selected_decision.reason_code, started, **base)
-            if not all(_conceptually_answering_sentence(unit.text, user_message)
+            if not all(_conceptually_answering_sentence(unit.text, user_message, state.object)
                        for unit in selected):
                 fallback = await self._general_knowledge_fallback(
                     user_message, state, started, base)
@@ -1055,13 +1069,13 @@ class SourceFirstService:
                 validation_reason="ID membership, approved status, SHA, section text, grounding and safety verified",
                 duration_ms=round((perf_counter()-started)*1000), **base)
         match = _focused_approved_sentence(
-            sections, focus, conceptual_question=user_message)
+            sections, focus, conceptual_question=user_message, conceptual_subject=state.object)
         # The coordinator subgoal may omit the defining term (for example,
         # «что она означает»). Retry focus against the whole current question,
         # which remains untrusted query text and never becomes client evidence.
         if not match and focus != user_message:
             match = _focused_approved_sentence(
-                sections, user_message, conceptual_question=user_message)
+                sections, user_message, conceptual_question=user_message, conceptual_subject=state.object)
         if not match:
             fallback = await self._general_knowledge_fallback(
                 user_message, state, started, base)
@@ -1119,13 +1133,19 @@ class SourceFirstService:
             attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}. "
                           "Модель оборудования не подтверждена; привожу только общий факт из источника.\n")
         else:
-            if scope_labels and scope.get("manufacturer") and not scope.get("model"):
+            if (state.intent == "general" and state.operation == "explain"
+                    and scope.get("service") and not state.routing_service):
+                attribution = (f"Сведения из справки «{scope['service']}»; "
+                               "отдельный общий источник по этому вопросу пока не проверен.\n")
+            elif scope_labels and scope.get("manufacturer") and not scope.get("model"):
                 attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}; "
                                "модель оборудования в статье не указана.\n")
             else:
                 attribution = (f"Область источника: {', '.join(dict.fromkeys(scope_labels))}.\n"
                                if scope_labels else "")
-        text = (f"{sentence}\n\n{attribution}Источник: {selected['source']} — "
+        lead = ("Проще говоря: " if state.relation == "continue"
+                and _GENERAL_PURPOSE_FORM.search(user_message) else "")
+        text = (f"{lead}{sentence}\n\n{attribution}Источник: {selected['source']} — "
                 f"{selected['section']}")
         if unsafe_operation_issue(text) or instruction_issue(sentence, evidence):
             return self._escalate(
@@ -2073,6 +2093,10 @@ class SourceFirstService:
                     return self._escalate("Источник изменился во время формирования ответа. Попробуйте ещё раз или запросите специалиста.",
                                           "source_changed_during_answer_composition", selected["source"], started, **base,
                                           generation_status="error")
+                if (state.relation == "continue" and _GENERAL_PURPOSE_FORM.search(user_message)
+                        and any(summary in str(item.get("content") or "")
+                                for item in (history or []) if item.get("role") == "assistant")):
+                    summary = "Для кассы это означает следующее: " + summary
                 text = f"{attribution}{summary}\n\nИсточник: {selected['source']} — {selected['section']}"
                 validation_status = "claim_supported_selected_section"
                 scenario_reason = "source_first_grounded_information_summary"

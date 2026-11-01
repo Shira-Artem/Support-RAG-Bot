@@ -6,6 +6,9 @@ from app.dialogue_understanding import validate_response
 from app.procedure_policy import operation_compatibility
 from app.response_grounding import unsafe_operation_issue
 from app.task_operation_resolver import resolve_task_operation
+from app.scope_policy import assess_source_scope
+from app.retrieval_pipeline import _state_task_category
+from app.rag_query import build_rag_query
 
 
 @pytest.mark.parametrize("text,task,operation", [
@@ -19,6 +22,9 @@ from app.task_operation_resolver import resolve_task_operation
     ("Внешний сканер не считывает штрихкоды; как проверить подключение?", "peripheral_setup", "check"),
     ("Добавьте нового пользователя кабинета и назначьте роль.", "access", "add_employee"),
     ("Чеки перестали передаваться оператору; как выяснить причину?", "receipt_transmission", "diagnose"),
+    ("Эвотор 7.3 пробивает чеки, но они не уходят оператору ОФД. Что посмотреть первым делом?", "receipt_transmission", "diagnose"),
+    ("Касса печатает фискальные документы, а в ОФД их нет. С чего начать диагностику?", "receipt_transmission", "diagnose"),
+    ("Чеки накопились в очереди и отсутствуют у оператора фискальных данных. Что проверить?", "receipt_transmission", "diagnose"),
     ("Через ДиректБанк не виден второй банковский счёт организации.", "bank_statement", "diagnose"),
     ("В 1С:ДиректБанк пропал расчётный счёт банка.", "bank_statement", "diagnose"),
     ("При обмене с банком ошибка получения выписки.", "bank_statement", "diagnose"),
@@ -110,3 +116,40 @@ def test_new_resolution_does_not_reclassify_followup_result():
 def test_dangerous_fiscal_actions_still_trigger_existing_guard():
     for text in ("Закрыть архив ФН самостоятельно", "Перерегистрировать ККТ без специалиста"):
         assert unsafe_operation_issue(text)
+
+
+def test_receipt_at_ofd_scope_does_not_absorb_other_operations():
+    cases = [
+        ("Чек не печатается, а ОФД подключён. Как исправить печать?", "diagnose", None),
+        ("Как найти чек в кабинете ОФД?", "search", None),
+        ("Что означает статус чека в ФНС и ОФД?", "status", "receipt_status"),
+    ]
+    for text, operation, expected in cases:
+        assert resolve_task_operation(text, operation=operation).task_category == expected
+
+
+def test_provider_mislabel_is_corrected_from_receipt_and_ofd_subject():
+    text = "Эвотор 7.3 пробивает чеки, но они не уходят оператору ОФД. Что посмотреть первым делом?"
+    payload = _payload(text, operation="diagnose", intent="fiscal_drive")
+    payload.update(request_type="diagnosis", symptom={"quote": "не уходят оператору ОФД"})
+    _, _, _, obs = validate_response(payload, text, 1)
+    state = DialogueManager().advance(DialogueState(), text, 1, observation=obs)
+    assert (state.intent, state.operation) == ("receipt", "diagnose")
+    assert state.task_entity("equipment") == "Эвотор 7.3"
+    assert _state_task_category(state, build_rag_query(state)) == "receipt_transmission"
+
+
+@pytest.mark.parametrize("text,model,manufacturer", [
+    ("Эвотор 6 печатает чеки, но у ОФД их нет. Как проверить?", "Эвотор 6", "Эвотор"),
+    ("АТОЛ 30Ф печатает чеки, но у ОФД их нет. Как проверить?", "АТОЛ 30Ф", "АТОЛ"),
+])
+def test_transmission_scope_keeps_model_and_manufacturer_boundaries(text, model, manufacturer):
+    payload = _payload(text, operation="diagnose", intent="fiscal_drive")
+    _, _, _, obs = validate_response(payload, text, 1)
+    state = DialogueManager().advance(DialogueState(), text, 1, observation=obs)
+    assert state.task_entity("equipment") == model
+    assert state.task_entity("manufacturer") == manufacturer
+    scope = {"task_category": "receipt_transmission", "service": "Эвотор",
+             "manufacturer": "Эвотор", "model": "Эвотор 7.3"}
+    assessment = assess_source_scope(state, scope)
+    assert assessment.mismatches

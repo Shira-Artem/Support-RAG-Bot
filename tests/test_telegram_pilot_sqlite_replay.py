@@ -601,10 +601,12 @@ def test_p0_gate_s2_wrong_error_candidate_diagnostic(monkeypatch, tmp_path):
     assert not any("fn-234" in item["source"] for item in answer["selected_sources"])
 
 
-def test_p0_gate_d13_adds_purpose_not_repeated_definition(monkeypatch, tmp_path):
+def test_p0_gate_d13_followup_does_not_repeat_verbatim_or_add_vendor_conditions(monkeypatch, tmp_path):
     cases = json.loads(GATE_FIXTURE.read_text(encoding="utf-8"))["dialogue"][:3]
     trace = _run_replay(monkeypatch, tmp_path, cases, sources=GATE_DIALOGUE_SOURCES)
     assert trace[2]["final_reply"] != trace[1]["final_reply"]
+    assert "Для кассы" in trace[2]["final_reply"]
+    assert "действующий тариф" not in trace[2]["final_reply"]
 
 
 @pytest.mark.xfail(strict=True, reason="the month follow-up escalates despite approved date guidance")
@@ -656,7 +658,8 @@ def test_p1_coordinator_d1_grounded_followup_through_bot_sqlite(monkeypatch, tmp
     assert first["route"] == second["route"] == "answer"
     assert first["final_reply"] != second["final_reply"]
     assert "ОФД получает фискальные документы" in first["final_reply"]
-    assert "договор и действующий тариф ОФД" in second["final_reply"]
+    assert "договор и действующий тариф ОФД" not in second["final_reply"]
+    assert "ОФД получает фискальные документы" in second["final_reply"]
     assert "approved" in first["reason"] or first["reason"] == "ai_coordinator_grounded_information"
     assert first["generation_stages"] == second["generation_stages"] == []
     assert first["selected_sources"][0]["source"] == "atol_online/ofd/what-is-ofd.md"

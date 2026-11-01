@@ -413,9 +413,31 @@ def test_general_knowledge_fallback_is_limited_to_safe_conceptual_explanations(t
         "current_subgoal": question}))
     assert answer.scenario == "answer"
     assert answer.scenario_reason == "general_knowledge_fallback"
-    assert "не по approved-документации" in answer.text
+    assert "Подтверждённого общего источника" in answer.text
     assert "Источник:" not in answer.text and "http" not in answer.text.lower()
     assert answer.retrieval_diagnostics["general_knowledge_fallback"]["source_basis"] == "model_general_knowledge"
+
+
+def test_general_knowledge_rejects_unsupported_legal_and_certificate_claims(tmp_path, monkeypatch):
+    question = "Зачем нужен ОФД?"
+    state = DialogueState(intent="general", operation="explain", object="ОФД",
+        task=Fact(question, 1, question, 0, len(question)))
+    async def unsupported(_messages, _settings, *, call_stage="generation"):
+        return Generation("ОФД выдаёт обязательные сертификаты от налоговой.",
+            "offline-general-fixture", prompt_tokens=20, completion_tokens=18, total_tokens=38)
+    monkeypatch.setattr("app.source_first_service.generate", unsupported)
+    service = SourceFirstService(OneResult(_retrieval("atol_online/fn/fn-basics.md",
+        "atol-online-11253-fn-basics", "Вопрос пользователя",
+        {"task_category": "fiscal_drive", "manufacturer": "АТОЛ"},
+        "Что такое фискальный накопитель?")), settings(tmp_path), ROOT)
+    answer = asyncio.run(service._general_knowledge_fallback(question, state, 0, {}))
+    assert answer.scenario_reason == "general_knowledge_output_rejected"
+
+
+def test_grounded_concept_subject_ignores_beneficiary():
+    question = "Объясни простыми словами, зачем нужен ОФД владельцу магазина?"
+    sentence = "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате."
+    assert _conceptually_answering_sentence(sentence, question, "ОФД")
 
 
 def test_conceptual_evidence_gate_rejects_action_and_requires_both_comparison_sides():

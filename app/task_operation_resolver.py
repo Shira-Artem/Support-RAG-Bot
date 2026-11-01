@@ -81,6 +81,18 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
         return result("error_diagnosis", "diagnose", "unknown", "diagnostic", "clock_discrepancy")
     if error:
         return result("error_diagnosis", "diagnose", "unknown", "diagnostic", "reported_error")
+    # A receipt problem at the OFD boundary is a transmission diagnostic even
+    # when the provider labels the intent as a fiscal drive or device. Use the
+    # subject, destination, and diagnostic context; never infer a vendor/model.
+    receipt_at_ofd = (_has(s, r"\b(?:чек\w*|фискальн\w*\s+документ\w*)\b")
+                      and _has(s, r"\b(?:офд|оператор\w*\s+фискальн\w*\s+данн\w*)\b"))
+    reported_problem = _has(s, r"\b(?:не|нет|сбой\w*|пропал\w*|очеред\w*)\b")
+    printing_failure = _has(s, r"\bне\s+печат\w*|\bпроблем\w*\s+с\s+печать\w*")
+    if (receipt_at_ofd and not printing_failure
+            and (operation == "diagnose" or
+                 (operation in {"check", "status", "unknown"} and reported_problem))):
+        return result("receipt_transmission", "transmit" if operation == "transmit" else "diagnose",
+                      "receipt", "diagnostic", "receipt_at_ofd_diagnostic")
     if _has(s, r"\b(?:не\s+поступ\w*|не\s+переда\w*|не\s+отправ\w*|перестал\w*\s+переда\w*)") and _has(s, r"\bчек\w*|\bдокумент\w*"):
         return result("receipt_transmission", "transmit" if operation == "transmit" else "diagnose",
                       "receipt", "diagnostic", "receipt_transmission_failure")
