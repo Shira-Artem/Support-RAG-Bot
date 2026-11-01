@@ -47,7 +47,7 @@
   "pytest": "556 passed, 4 xfailed, 13 warnings; full suite on Python 3.14",
   "report": "telegram_manual_pilot_defect_20261101.md",
   "final_live": "telegram_pilot_gate_20261101_final_live.json",
-  "worker_pid": 25984,
+  "worker_pid": 9052,
   "latest_live_run": "telegram_pilot_defect_final_smoke_20261101_live.json",
   "latest_schema_probe": "telegram_pilot_gate_20261101.json#schema_probe",
   "targeted_pytest": "90 passed across resolver, retrieval routing, source-first dialogue, scope and Stage3",
@@ -56,7 +56,7 @@
   "env_sha256": "9c25f4442fc4424b5409ac85a407208ff83e442d0fcdd12df59809f9236c9f92",
   "model": "openai/gpt-oss-20b",
   "reasoning_effort": "medium",
-  "rollback": "Current SQLite snapshots quick_check ok and pending=0; 33 old worker runtime files hash-match previous receipt; 33 candidate runtime files, 269 unchanged KB files, prior receipt and logs saved. .env unchanged.",
+  "rollback": "Cold-start backup before current worker: both SQLite snapshots quick_check ok/pending 0; 33 runtime source files and 269 unchanged KB markdown files; stale receipt and prior log preserved. Existing Qdrant volume reused.",
   "production_decision": "NO_GO",
   "runtime_receipt": ".local/bot-runtime.json",
   "runtime_source_hashes_match": "33/33",
@@ -66,8 +66,10 @@
     "atol_online_api_incident": "Understanding/coordinator routed to read-only Stage3 retrieval; no applicable approved evidence; honest no-evidence response.",
     "evotor_combined_payment": "Understanding/coordinator routed to approved-source search; no focused approved article; transparent model-general-knowledge fallback, not approved evidence."
   },
-  "backup": ".local/backups/limited-pilot-20261101T133947Z",
+  "backup": ".local/backups/limited-pilot-20261101T152110Z",
   "allowlist_count": 3,
   "allowlist_sha256": "a769696dc284d3ca09ef096a08f59a838bbe09f23f671ab794d1cb573910b7e7",
-  "pilot_worker_log": ".local/bot-worker.log"
+  "pilot_worker_log": ".local/pilot-worker-20261101-after-commit.log",
+  "worker_commit": "afc08787c33655111f92b21452c3d2109c065e8c",
+  "worker_started_at_utc": "2026-11-01T15:22:38.390168+00:00"
 }
