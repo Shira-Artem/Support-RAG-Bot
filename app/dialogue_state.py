@@ -737,7 +737,16 @@ OPERATIONS = (
     ("return", ("вернут", "возврат")),
 )
 REFERENCES = {"он", "она", "оно", "ему", "ей", "его", "ее", "им", "этот", "эти", "эту", "это", "там", "так", "дальше", "тоже", "также"}
-NEW_TOPIC = (("другой", "вопрос"), ("новый", "вопрос"), ("новая", "тема"), ("еще", "вопрос"), ("кстати",))
+NEW_TOPIC = (("другой", "вопрос"), ("новый", "вопрос"), ("новая", "тема"),
+             ("другая", "задача"), ("новая", "задача"), ("отдельный", "вопрос"),
+             ("отдельная", "задача"), ("еще", "вопрос"), ("кстати",))
+
+
+def _explicit_new_topic(text: str) -> bool:
+    tokens = words(text)
+    return any(tuple(tokens[index:index + len(prefix)]) == prefix
+               for prefix in NEW_TOPIC if prefix != ("кстати",)
+               for index in range(max(1, min(len(tokens), 8))))
 
 
 class LexicalAnalyzer:
@@ -1155,8 +1164,25 @@ class DialogueManager:
             raise ValueError("Analyser returned an unsupported message relation")
         known_task = obs.intent != "unknown" and obs.operation != "unknown"
         relation = obs.relation
+        explicit_new_topic = obs.new_topic or _explicit_new_topic(text)
         if not previous.task_id or (previous.task_context and previous.task_context.closed):
             relation = "new_task"
+        elif (relation == "new_task" and not explicit_new_topic
+              and previous.symptom is None
+              and previous.intent in {"unknown", "general", "device"}
+              and (previous.intent != "unknown" or not previous.task_entities)
+              and (previous.operation == "unknown" or obs.operation == previous.operation)
+              and obs.operation not in {"unknown", "explain"}
+              and (obs.symptom or obs.entities or obs.goals)
+              and not any(slot in obs.entities and previous.task_entities.get(slot)
+                          and {fact.value for fact in obs.entities[slot]}.isdisjoint(
+                              fact.value for fact in previous.task_entities[slot])
+                          for slot in obs.entities)):
+            # A concrete description can resolve an unfinished task even when
+            # the model calls the informative follow-up a new task. A changed
+            # operation, explicit boundary or conflicting confirmed route is
+            # independent evidence for a real task switch.
+            relation = "answer_to_clarification" if previous.expected else "continue"
         # A model may label any follow-up as an answer to the last question.
         # Keep a slot clarification active until the client supplies that
         # slot (or explicitly says they do not know it); this lets new symptoms
@@ -1174,12 +1200,12 @@ class DialogueManager:
             relation = "continue"
         elif (relation == "new_task" and previous.expected
               and previous.expected.slot in ENTITY_SLOTS
-              and obs.operation == "unknown" and not obs.new_topic
+              and obs.operation == "unknown" and not explicit_new_topic
               and not obs.symptom and not obs.error and not obs.question):
             # A short ambiguous reply to a route/model question supplies no
             # new task and cannot close the outstanding slot.
             relation = "continue"
-        elif (relation == "new_task" and previous.task_id and not obs.new_topic
+        elif (relation == "new_task" and previous.task_id and not explicit_new_topic
               and not obs.symptom and not obs.error and bool(obs.entities)
               and (obs.object in {None, previous.object}
                    or (obs.intent == "general" and obs.object == "ОФД" and not obs.question))
@@ -1215,12 +1241,7 @@ class DialogueManager:
             state.operation_confidence = obs.operation_confidence
             state.symptom = obs.symptom
             state.task_context.entities = deepcopy(obs.entities)
-            tokens = words(text)
-            explicit_reset = any(
-                tuple(tokens[index:index + len(prefix)]) == prefix
-                for prefix in NEW_TOPIC if prefix != ("кстати",)
-                for index in range(max(1, min(len(tokens), 8)))
-            )
+            explicit_reset = _explicit_new_topic(text)
             if observation is None and not explicit_reset and obs.operation != "explain" and not obs.entities:
                 inherited_route = state.reusable_session_route(obs.intent)
                 if inherited_route:
@@ -1344,7 +1365,7 @@ class DialogueManager:
             if len(values) != 1:
                 state.analysis_required = True
                 state.relation = "unknown"
-            elif route_changed and relation not in {"new_task", "answer_to_clarification"}:
+            elif route_changed and old_route and relation not in {"new_task", "answer_to_clarification"}:
                 state.relation = "parameter_update"
         if "manufacturer" in obs.entities and "equipment" not in obs.entities:
             before_manufacturer = previous.entity("manufacturer")
@@ -1374,6 +1395,13 @@ class DialogueManager:
         _append_unique(state.parameters, obs.parameters)
         _append_unique(state.goals, obs.goals)
         _append_unique(state.constraints, obs.constraints)
+        # The current structured Understanding schema classifies updates but
+        # has no dedicated parameter/constraint spans. Preserve the exact
+        # client turn in the existing TaskContext until a finer span exists.
+        if relation == "parameter_update" and not obs.parameters:
+            _append_unique(state.parameters, [obs.evidence])
+        if relation == "constraint_update" and not obs.constraints:
+            _append_unique(state.constraints, [obs.evidence])
         _append_unique(state.details, obs.details)
         if relation != "new_task" and (obs.goals or obs.symptom) and not obs.details:
             # A provider goal can cover only the question at the end of a

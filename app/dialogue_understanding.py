@@ -15,7 +15,8 @@ from typing import Any
 import httpx
 
 from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS, RELATIONS,
-                                DialogueState, Fact, Observation, is_resolution_turn)
+                                DialogueState, Fact, Observation, _explicit_new_topic,
+                                is_resolution_turn)
 from app.config import Settings
 from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_limiter,
                                  retry_after_seconds)
@@ -410,6 +411,11 @@ def _entity_value_supported(slot: str, value: Any, quote: str) -> bool:
     if not isinstance(value, str) or not value.strip():
         return False
     if slot == "equipment":
+        # A generic device noun says nothing about the manufacturer's model.
+        # Do not turn grammatical forms of "cash register/equipment" into a
+        # confirmed product identity merely because the quote is exact.
+        if re.fullmatch(r"(?:касс\w*|аппарат\w*|оборудовани\w*|терминал\w*)", value, re.I):
+            return False
         return value.casefold() in quote.casefold()
     return _canonical_entity_from_quote(slot, quote) == value
 
@@ -500,7 +506,7 @@ def _contextual_model_fact(text: str, message_id: int | str,
                            current_manufacturer: str | None = None) -> Fact | None:
     manufacturer = current_manufacturer
     if manufacturer is None:
-        if not state or not state.task_id or state.task_frame.closed or relation == "new_task":
+        if not state or not state.task_id or state.task_frame.closed or _explicit_new_topic(text):
             return None
         manufacturer = state.task_entity("manufacturer")
     match = re.search(r"\bмодел(?:ь|и|ью)\s*[:№]?\s*([0-9]+(?:[.,][0-9]+)*(?:\s*(?:lite|ф|f))?)\b",

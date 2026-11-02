@@ -89,7 +89,10 @@ def test_explicit_bare_model_uses_only_confirmed_active_manufacturer():
     assert reopened.entities["equipment"][0].value == "Эвотор 7.3"
     with pytest.raises(UnderstandingError):
         observation_from_dict(persisted, text, 5, DialogueState())
-    _, _, _, fresh = validate_response(_raw_model(text, "new_task"), text, 3, state)
+    # A bare provider label is not enough to discard the active task; an
+    # explicit new-topic marker is the negative control for scope borrowing.
+    _, _, _, fresh = validate_response(_raw_model(text, "new_task"),
+                                         "Новый вопрос: Модель 7.3.", 3, state)
     assert "equipment" not in fresh.entities
     _, _, _, unknown = validate_response(_raw_model(text), text, 4, DialogueState())
     assert "equipment" not in unknown.entities
