@@ -40,6 +40,37 @@ def test_understanding_429_is_bounded_and_provider_body_is_not_persisted(monkeyp
     assert "SENSITIVE_PROVIDER_ECHO" not in str(captured)
 
 
+@pytest.mark.parametrize("fault,code", [("timeout", "transport_error"), ("invalid_json", "invalid_json")])
+def test_understanding_fault_keeps_only_typed_diagnostics(monkeypatch, tmp_path, fault, code):
+    import app.dialogue_understanding as module
+    import httpx
+    from types import SimpleNamespace
+    from app.groq_rate_limit import GroqRateLimiter
+
+    class FakeClient:
+        async def __aenter__(self): return self
+        async def __aexit__(self, *_args): return False
+        def __init__(self, *_args, **_kwargs): pass
+        async def post(self, *_args, **_kwargs):
+            if fault == "timeout":
+                raise httpx.ReadTimeout("SENSITIVE_PROVIDER_ECHO")
+            return httpx.Response(200, json={"model": "openai/gpt-oss-20b",
+                "choices": [{"message": {"content": "SENSITIVE_PROVIDER_ECHO"}}]},
+                request=httpx.Request("POST", "https://api.groq.com"))
+
+    captured = []
+    monkeypatch.setattr(module.httpx, "AsyncClient", FakeClient)
+    monkeypatch.setattr(module, "groq_rate_limiter", GroqRateLimiter(minimum_interval=0, maximum_wait=0))
+    monkeypatch.setattr(module, "_append_local_trace", lambda **data: captured.append(data))
+    settings = SimpleNamespace(llm_provider="groq", groq_api_key="test-key",
+        groq_model="openai/gpt-oss-20b", groq_reasoning_effort="medium")
+    with pytest.raises(UnderstandingError) as raised:
+        asyncio.run(module.understand_message("Что такое ОФД?", "current", [], DialogueState(), settings))
+    assert raised.value.code == code
+    assert "SENSITIVE_PROVIDER_ECHO" not in str(captured)
+    assert "SENSITIVE_PROVIDER_ECHO" not in str(raised.value.structured_response)
+
+
 def payload(text, *, kind="diagnosis", relation="new_task", intent="receipt", operation="diagnose",
             obj="чек", entities=(), unknown=(), specialist=False, specialist_quote=None,
             intent_quote=None, operation_quote=None, object_quote=None, relation_quote=None,

@@ -210,7 +210,7 @@ class ConversationStore:
                     semantic = diagnostic.get('understanding')
                     if semantic:
                         try:
-                            observation, summary = observation_from_dict(semantic, row['content'], row['id'])
+                            observation, summary = observation_from_dict(semantic, row['content'], row['id'], state)
                         except (ValueError, TypeError, KeyError) as exc:
                             # Corrupt or stale semantic evidence is a no-op,
                             # never a reason to reinterpret the text lexically.

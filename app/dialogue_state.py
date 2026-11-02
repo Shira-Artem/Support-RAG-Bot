@@ -1099,6 +1099,16 @@ def _append_unique(target: list[Fact], additions: list[Fact]) -> None:
             target.append(fact)
 
 
+def _informative_detail(text: str) -> bool:
+    """Reject conversational residue with no content word, while retaining facts."""
+    discourse = {"я", "мы", "у", "меня", "мне", "нас", "это", "в", "на", "с", "а", "и",
+                 "но", "же", "тоже", "там", "так", "про", "по", "из", "за", "как",
+                 "что", "где", "когда", "теперь", "уже", "еще", "пока", "вот", "ну",
+                 "дальше", "тогда", "просто", "пожалуйста"}
+    return any(token not in discourse and (len(token) >= 4 or token.isdigit())
+               for token in words(text))
+
+
 class DialogueManager:
     def __init__(self, analyzer: MessageAnalyzer | None = None):
         self.analyzer = analyzer or LexicalAnalyzer()
@@ -1233,9 +1243,11 @@ class DialogueManager:
                 state.transition = "contradiction"
             elif relation in {"parameter_update", "constraint_update"}:
                 state.transition = "refine_requirements" if relation == "constraint_update" else "change_parameter"
-            promotes_unresolved = (state.intent in {"general", "unknown"}
-                                   and state.operation == "unknown"
-                                   and obs.intent not in {"general", "unknown"}
+            promotes_unresolved = (state.intent in {"general", "unknown", "device"}
+                                   and (state.operation == "unknown"
+                                        or (state.intent == "device" and state.symptom is None
+                                            and obs.operation == state.operation))
+                                   and obs.intent not in {"general", "unknown", "device"}
                                    and obs.operation != "unknown"
                                    and relation in {"answer_to_clarification", "continue"})
             if obs.request_type != "unknown":
@@ -1363,7 +1375,7 @@ class DialogueManager:
                 leading = len(raw) - len(raw.lstrip(" ,:;—–\t\n"))
                 trailing = len(raw.rstrip(" ,:;—–\t\n"))
                 start, end = match.start() + leading, match.start() + trailing
-                if end > start and len(words(text[start:end])) >= 2:
+                if end > start and _informative_detail(text[start:end]):
                     _append_unique(state.details, [Fact.span(text, message_id, start, end)])
         if obs.error:
             if previous.error and previous.error.value != obs.error.value:
@@ -1430,8 +1442,20 @@ class DialogueManager:
         if not task or not (task.eligible_units or task.shown_units):
             return False
         changed = False
-        normalized = text.casefold().replace("ё", "е")
-        for unit in (task.eligible_units or task.shown_units):
+        units = task.eligible_units or task.shown_units
+        action_roots = ("провер", "откр", "закр", "напеч", "распеч", "посмотр", "уточн", "выбер",
+                        "выполн", "сопостав", "свер", "переда", "следу", "подтверд")
+        def content_terms(label: str) -> list[str]:
+            return [token for token in re.findall(r"[а-яa-z0-9]+", label.casefold().replace("ё", "е"))
+                    if (len(token) >= 4 or (token.isascii() and len(token) >= 3))
+                    and not token.startswith(action_roots)
+                    and token not in {"наличие", "значения", "выбранного", "действующими"}]
+        def evidenced_terms(label: str, quote: str) -> set[str]:
+            normalized_quote = quote.casefold().replace("ё", "е")
+            return {term[:4] for term in content_terms(label)
+                    if not term.startswith(("оператор", "офд"))
+                    and re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*", normalized_quote)}
+        for unit in units:
             model_value = unit.get("model_value")
             if model_value:
                 equipment = " ".join(fact.value for fact in task.entities.get("equipment", []))
@@ -1443,10 +1467,8 @@ class DialogueManager:
             label = str(unit.get("label") or "")
             # Content terms are derived from the exact approved unit, with a
             # bounded prefix form to tolerate Russian inflection.
-            action_roots = ("провер", "откр", "закр", "напеч", "распеч", "посмотр", "уточн", "выбер",
-                            "выполн", "сопостав", "свер", "переда", "следу", "подтверд")
-            terms = [token for token in re.findall(r"[а-яa-z0-9]+", label.casefold().replace("ё", "е"))
-                     if len(token) >= 4 and not token.startswith(action_roots)]
+            terms = [term[:4] for term in content_terms(label)
+                     if not term.startswith(("оператор", "офд"))]
             # Match the actual client sentence to this check. Previously a
             # match anywhere in the reply attached its FIRST comma-clause to
             # every check, losing results and creating false successes.
@@ -1461,11 +1483,30 @@ class DialogueManager:
             quote = matched.group().strip()
             start = text.find(quote)
             quote_normalized = quote.casefold().replace("ё", "е")
+            matched_terms = evidenced_terms(label, quote)
+            if any((other.get("unit_id") != unit.get("unit_id")
+                    and len(str(other.get("label") or "")) < len(label)
+                    and matched_terms <= evidenced_terms(str(other.get("label") or ""), quote))
+                   for other in units):
+                # A broad procedure may repeat the wording of an atomic
+                # check. Keep the broad unit incomplete and remember the
+                # partial clause without duplicating its success/failure.
+                broad = next((item for item in task.checks
+                              if item.get("unit_id") == unit.get("unit_id")), None)
+                if broad is not None:
+                    if broad.get("status") == "asked":
+                        broad["status"] = "unknown"
+                    partial = {"message_id": message_id, "quote": quote,
+                               "start": start, "end": start + len(quote)}
+                    if partial not in broad.setdefault("partial_result_spans", []):
+                        broad["partial_result_spans"].append(partial)
+                    changed = True
+                continue
             if re.search(r"\b(?:не\s+(?:знаю|уверен\w*|понятно)|не\s+провер\w*|пока\s+не\s+провер\w*)\b", quote_normalized):
                 status = "unknown" if re.search(r"\bне\s+(?:знаю|уверен\w*|понятно)\b", quote_normalized) else "not_done"
-            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+отправля\w*|не\s+уменьш\w*|истек\w*|законч\w*)\b", quote_normalized):
+            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+отправля\w*|не\s+уменьш\w*|не\s+совпад\w*|нестабил\w*|пропад\w*|истек\w*|законч\w*)\b", quote_normalized):
                 status = "failed"
-            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", quote_normalized):
+            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|совпад\w*|стабил\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", quote_normalized):
                 status = "passed"
             elif re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", quote_normalized):
                 status = "unknown"
@@ -1476,28 +1517,33 @@ class DialogueManager:
             instruction_sentences = [sentence for sentence in re.split(r"[.!?]", label)
                 if re.search(r"\b(?:проверьте|откройте|напечатайте|выясните|сопоставьте|"
                              r"посмотрите|восстановите|передайте|уточните)\b", sentence, re.I)]
-            if status == "passed" and len(instruction_sentences) > 1:
+            components = [part for sentence in instruction_sentences
+                          for part in sentence.split(",")
+                          if content_terms(part)]
+            observed_status = status
+            if status == "passed" and (len(instruction_sentences) > 1 or
+                    len(components) > 1 and any(not any(re.search(
+                        r"(?<!\w)" + re.escape(term[:4]) + r"\w*", quote_normalized)
+                        for term in content_terms(part)) for part in components)):
                 status = "unknown"
+            result = {"message_id": message_id, "quote": quote,
+                      "start": start, "end": start + len(quote)}
             check = next((item for item in task.checks if item.get("unit_id") == unit.get("unit_id")), None)
             if check is None:
                 check = {"unit_id": unit.get("unit_id"), "status": status,
-                    "result_span": {"message_id": message_id, "quote": quote,
-                                    "start": start, "end": start + len(quote)}}
+                    "result_span": result, "observations": [{"status": observed_status, **result}]}
                 task.checks.append(check)
             else:
                 previous_status = check.get("status")
-                if {previous_status, status} == {"passed", "failed"}:
-                    check["contradictions"] = [check.get("result_span"),
-                        {"message_id": message_id, "quote": quote,
-                         "start": start, "end": start + len(quote)}]
-                    check["status"] = "unknown"
-                else:
+                check.setdefault("observations", []).append({"status": observed_status, **result})
+                prior_observed = check["observations"][-2].get("status") if len(check["observations"]) > 1 else None
+                if ({previous_status, status} == {"passed", "failed"}
+                        or {prior_observed, observed_status} == {"passed", "failed"}):
+                    check.setdefault("contradictions", []).append({
+                        "before": check.get("result_span"), "after": result})
+                if status != "unknown" or previous_status in {"asked", "unknown", "not_done"}:
                     check["status"] = status
-                    check["result_span"] = {"message_id": message_id, "quote": quote,
-                                            "start": start, "end": start + len(quote)}
-            if check.get("status") != "unknown" or "contradictions" not in check:
-                check["result_span"] = {"message_id": message_id, "quote": quote,
-                                        "start": start, "end": start + len(quote)}
+                    check["result_span"] = result
             changed = True
         return changed
 
@@ -1508,7 +1554,8 @@ class DialogueManager:
         state = deepcopy(previous)
         # Provider failure and an explicit request for a human must not erase
         # the customer's active task or unresolved clarification.
-        if reason in {"understanding_error", "client_requested_specialist"}:
+        if reason in {"understanding_error", "understanding_failed", "groq_quota_deferred",
+                      "client_requested_specialist", "unexpected_exception"}:
             return state
         if reason in NON_TASK_SCENARIO_REASONS and previous.task_id:
             return state

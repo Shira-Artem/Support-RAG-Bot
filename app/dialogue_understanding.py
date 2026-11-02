@@ -495,7 +495,25 @@ def _unique_search_target_from_goal(goal: Fact | None) -> tuple[str, int, int] |
     return value, goal.start + start, goal.start + end
 
 
-def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str, bool, tuple[str, ...], Observation]:
+def _contextual_model_fact(text: str, message_id: int | str,
+                           state: DialogueState | None, relation: str,
+                           current_manufacturer: str | None = None) -> Fact | None:
+    manufacturer = current_manufacturer
+    if manufacturer is None:
+        if not state or not state.task_id or state.task_frame.closed or relation == "new_task":
+            return None
+        manufacturer = state.task_entity("manufacturer")
+    match = re.search(r"\bмодел(?:ь|и|ью)\s*[:№]?\s*([0-9]+(?:[.,][0-9]+)*(?:\s*(?:lite|ф|f))?)\b",
+                      text, re.I)
+    if (not manufacturer or not match or
+            re.search(r"\b(?:не|вместо)\s+модел", text[:match.start()+6], re.I)):
+        return None
+    return Fact.span(text, message_id, *match.span(1),
+                     value=f"{manufacturer} {match.group(1).strip()}")
+
+
+def validate_response(data: Any, text: str, message_id: int | str,
+                      previous_state: DialogueState | None = None) -> tuple[str, bool, tuple[str, ...], Observation]:
     diagnostics: list[dict[str, Any]] = []
     schema_fields = set(response_schema()["schema"]["required"])
     if not isinstance(data, dict) or set(data) != schema_fields:
@@ -754,6 +772,26 @@ def validate_response(data: Any, text: str, message_id: int | str) -> tuple[str,
 
     _extract_known_entities(text, message_id, entities, diagnostics)
 
+    # A bare model number can be grounded against the one manufacturer already
+    # confirmed in the active task. The provider's claimed brand alone is not
+    # evidence, and a new task must never borrow the previous product scope.
+    current_manufacturer = (entities["manufacturer"][0].value
+                            if len(entities.get("manufacturer", [])) == 1 else None)
+    model_fact = _contextual_model_fact(text, message_id, previous_state, relation,
+                                        current_manufacturer)
+    current = entities.get("equipment", [])
+    if model_fact and (not current or (len(current) == 1 and current[0].quote == model_fact.quote
+                                         and current[0].value == model_fact.quote)):
+        entities["equipment"] = [model_fact]
+        _field_result(diagnostics, "equipment", "accepted",
+                      "explicit_model_number_with_confirmed_manufacturer",
+                      value=model_fact.value, start=model_fact.start, end=model_fact.end)
+    elif current and all(re.fullmatch(r"[0-9]+(?:[.,][0-9]+)*(?:lite|ф|f)?", fact.value, re.I)
+                         for fact in current):
+        entities.pop("equipment")
+        _field_result(diagnostics, "equipment", "rejected",
+                      "bare_model_number_without_confirmed_manufacturer")
+
     goal = _parse_optional_fact(text, data["goal"], message_id, diagnostics, "goal")
     symptom = _parse_optional_fact(text, data["symptom"], message_id, diagnostics, "symptom")
     if kind == "information" and operation == "unknown" and goal is not None and _EXPLICIT_LOOKUP_ACTION.search(text):
@@ -923,15 +961,15 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
         except (json.JSONDecodeError, TypeError) as exc:
             diagnostics = [{"field": "$", "status": "rejected", "reason": "invalid_json"}]
             _append_local_trace(model=result.get("model") or settings.groq_model,
-                status="invalid_json", structured_output=content, field_diagnostics=diagnostics,
+                status="invalid_json", structured_output=None, field_diagnostics=diagnostics,
                 tokens=tokens, duration_ms=round((perf_counter()-started)*1000), error=type(exc).__name__,
                 request_payload=request, phase="decode", error_code="invalid_json")
             raise UnderstandingError("Groq returned invalid structured JSON", tokens=tokens,
                 duration_ms=round((perf_counter()-started)*1000), model=result.get("model") or settings.groq_model,
-                structured_response={"raw_content": content}, field_diagnostics=diagnostics,
+                field_diagnostics=diagnostics,
                 phase="decode", code="invalid_json") from exc
         try:
-            kind, specialist, unknown, observation = validate_response(parsed, text, message_id)
+            kind, specialist, unknown, observation = validate_response(parsed, text, message_id, state)
         except UnderstandingError as exc:
             diagnostics = exc.field_diagnostics or [{"field": "$", "status": "rejected", "reason": str(exc)}]
             _append_local_trace(model=result.get("model") or settings.groq_model,
@@ -1005,7 +1043,8 @@ def understanding_to_dict(value: Understanding) -> dict[str, Any]:
             "entities": {slot: [fact(x) for x in values] for slot, values in obs.entities.items()}}}
 
 
-def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str) -> tuple[Observation, dict[str, Any]]:
+def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str,
+                          previous_state: DialogueState | None = None) -> tuple[Observation, dict[str, Any]]:
     """Revalidate persisted spans before the deterministic reducer applies them."""
     raw = data.get("observation") or {}
     def parse(raw_fact):
@@ -1049,8 +1088,13 @@ def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str
     if observation.object is not None and observation.object_evidence is None:
         raise UnderstandingError("persisted object is missing evidence", phase="persisted_validation",
                                  code="persisted_object_missing_evidence")
+    current_manufacturer = (entities["manufacturer"][0].value
+                            if len(entities.get("manufacturer", [])) == 1 else None)
+    contextual_model = _contextual_model_fact(text, message_id, previous_state,
+                                               observation.relation, current_manufacturer)
     for slot, values in entities.items():
-        if any(not _entity_value_supported(slot, fact.value, fact.quote)
+        if any(not (_entity_value_supported(slot, fact.value, fact.quote)
+                    or (slot == "equipment" and contextual_model == fact))
                or not _entity_mention_is_asserted(text, fact) for fact in values):
             raise UnderstandingError("persisted entity value is not grounded", phase="persisted_validation",
                                      code="persisted_entity_not_grounded")

@@ -83,6 +83,7 @@ def test_understanding_http_error_preserves_user_turn(monkeypatch, tmp_path, htt
         if http_status == 400:
             assert "Временно" in history[-1]["content"]
         assert saved.dialogue_state(cid).task_id is None
+        assert saved.dialogue_state(cid).task_context is None
         assert reply.await_count == 1
 
         generation_calls = []
@@ -911,7 +912,10 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
     assert {item["status"] for item in ledger[0]["state_after_sqlite_reopen"]["task_context"]["checks"]} == {"asked"}
     assert task["procedure_id"] == "evotor-ofd-error-not-connected-20261019"
     assert len(task["checks"]) == 2
-    assert {item["status"] for item in task["checks"]} == {"passed", "unknown"}
+    assert {item["status"] for item in task["checks"]} == {"unknown"}
+    internet_check = next(item for item in task["checks"]
+                          if any(row.get("quote") == "Интернет работает" for row in item.get("observations", [])))
+    assert internet_check["observations"][0]["status"] == "passed"
     payment_check = next(item for item in task["checks"]
                          if item["result_span"]["quote"] == "Оплату проверил")
     assert payment_check["status"] == "unknown"
@@ -952,13 +956,13 @@ def test_progress_ledger_accepts_explicit_positive_payment_result(monkeypatch, t
     ("Интернет не работает", "failed"),
     ("Интернет не знаю", "unknown"),
     ("Интернет пока не проверял", "not_done"),
-    ("Интернет не работает", "unknown"),
+    ("Интернет не работает", "failed_with_partial_pass"),
 ])
 def test_progress_ledger_outcomes_use_exact_client_quotes_and_keep_conflicts(
         monkeypatch, tmp_path, report, expected):
     cases = _progress_cases()[:2]
     cases[1] = {**cases[1], "text": report}
-    if expected == "unknown" and report == "Интернет не работает":
+    if expected == "failed_with_partial_pass":
         cases.append({"id": "PL3", "text": "Интернет работает", "request_type": "feedback",
             "relation": "continue", "intent": "unknown", "operation": "unknown"})
     else:
@@ -970,11 +974,10 @@ def test_progress_ledger_outcomes_use_exact_client_quotes_and_keep_conflicts(
     internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
                        if "интернет" in unit["label"].casefold())
     result = next(item for item in task["checks"] if item["unit_id"] == internet_id)
-    assert result["status"] == expected
-    if expected == "unknown" and "contradictions" in result:
-        assert len(result["contradictions"]) == 2
-        for span in result["contradictions"]:
-            assert span["quote"] in {case["text"] for case in cases}
+    assert result["status"] == expected.split("_with_")[0]
+    if expected == "failed_with_partial_pass":
+        assert [item["status"] for item in result["observations"]][-2:] == ["failed", "passed"]
+        assert result["contradictions"][-1]["after"]["quote"] == "Интернет работает"
     else:
         assert result["result_span"]["quote"] in {case["text"] for case in cases}
 
@@ -1076,7 +1079,7 @@ def test_handoff_combined_with_progress_ledger_through_real_bot_handler(monkeypa
         assert "Результаты проверок:" in payload
         assert "Интернет работает" in payload and "Оплата прошла" in payload
         assert '"status":"passed"' in payload
-        assert "unknown" not in payload
+        assert '"status":"unknown"' in payload  # the compound network unit is only partly verified
         assert bundle["conversation_id"] == cid
         assert bundle["task"]["task_id"] == trace[-1]["state_after_sqlite_reopen"]["task_id"]
         assert bundle["ticket_id"].startswith(f"SR-{bundle['request_id']:07d}-")
