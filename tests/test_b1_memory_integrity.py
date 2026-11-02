@@ -6,6 +6,7 @@ import pytest
 from app.dialogue_state import DialogueManager, DialogueState, Fact, Observation, TaskContext
 from app.dialogue_understanding import (Understanding, UnderstandingError,
     observation_from_dict, understanding_to_dict, validate_response)
+from app.task_operation_resolver import resolve_task_operation
 
 
 def observation(text, mid, *, intent="unknown", operation="unknown", relation="continue",
@@ -27,6 +28,30 @@ def test_vague_device_task_promotes_when_first_specific_symptom_arrives():
     assert (second.intent, second.operation) == ("receipt", "diagnose")
     assert second.task.value == detail
     assert second.symptom.quote == detail
+
+
+def test_receipt_delivery_to_operator_promotes_vague_device_even_with_coarse_llm_label():
+    manager = DialogueManager()
+    opening = "Нужна помощь с кассовым аппаратом, пока не могу описать сбой."
+    first = manager.advance(DialogueState(), opening, 1, observation=observation(
+        opening, 1, intent="device", operation="diagnose", relation="new_task"))
+    message = "Это Эвотор, фискальные чеки перестали доходить оператору."
+    raw = {"request_type": "information", "relation": "continue", "intent": "device",
+           "operation": "diagnose", "object": None, "object_evidence": None,
+           "goal": None, "symptom": {"quote": "фискальные чеки перестали доходить оператору."},
+           "entities": [{"slot": "manufacturer", "value": "Эвотор",
+                         "evidence": {"quote": "Эвотор"}}],
+           "unknown_facts": [], "specialist_requested": False,
+           "specialist_evidence": None, "confidence": 0.9}
+    _, _, _, obs = validate_response(raw, message, 2, first)
+    second = manager.advance(first, message, 2, observation=obs)
+    assert (second.task_id, second.intent, second.operation) == (first.task_id, "receipt", "diagnose")
+    assert second.symptom.quote == raw["symptom"]["quote"]
+    assert second.entity("manufacturer") == "Эвотор"
+    assert resolve_task_operation("Оператору не поступают чеки из кассы.",
+                                  intent="device", operation="diagnose").intent == "receipt"
+    assert resolve_task_operation("Оператору не поступает банковская выписка.",
+                                  intent="device", operation="diagnose").intent != "receipt"
 
 
 def test_specific_existing_device_symptom_does_not_get_silently_relabelled():
@@ -120,6 +145,36 @@ def test_explicit_matching_and_unstable_results_replace_current_status_with_hist
     assert check["contradictions"][-1]["after"]["quote"].startswith("Теперь связь")
 
 
+def test_new_symptom_preserves_original_failure_and_model_change_retires_old_units():
+    manager = DialogueManager()
+    old_model = Fact.span("Эвотор 7.3", 1)
+    original_symptom = Fact.span("Чеки не уходят в ОФД", 1)
+    old_unit = {"unit_id": "evotor73_report", "label": "Напечатайте диагностический отчёт.",
+                "model_scope": ["Эвотор 7.3"], "model_value": "Эвотор 7.3",
+                "source_verified": True}
+    state = DialogueState(task_context=TaskContext(task_id="task:1", intent="receipt",
+        operation="diagnose", symptom=original_symptom,
+        entities={"manufacturer": [Fact.span("Эвотор", 1)], "equipment": [old_model]},
+        shown_units=[old_unit], eligible_units=[old_unit],
+        checks=[{"unit_id": old_unit["unit_id"], "status": "asked"}]))
+    network = "Теперь интернет нестабилен."
+    state = manager.advance(state, network, 2, observation=observation(
+        network, 2, intent="receipt", operation="diagnose", symptom=True))
+    assert state.symptom == original_symptom
+    assert any(fact.quote == network for fact in state.task_frame.details)
+    correction = "Я перепутал модель: Эвотор 6."
+    mention = "Эвотор 6"
+    model_fact = Fact.span(correction, 3, correction.index(mention),
+                           correction.index(mention) + len(mention))
+    state = manager.advance(state, correction, 3, observation=Observation(
+        evidence=Fact.span(correction, 3), intent="receipt", operation="diagnose",
+        relation="parameter_update", entities={"equipment": [model_fact]}))
+    assert state.task_id == "task:1"
+    assert state.entity("equipment") == "Эвотор 6"
+    assert state.task_context.shown_units == state.task_context.eligible_units == []
+    assert state.task_frame.checks == ({"unit_id": "evotor73_report", "status": "asked"},)
+
+
 def test_one_result_does_not_complete_atomic_and_broad_procedure_units():
     manager = DialogueManager()
     state = DialogueState(task_context=TaskContext(task_id="task:1", intent="receipt",
@@ -140,6 +195,25 @@ def test_one_result_does_not_complete_atomic_and_broad_procedure_units():
     assert checks["whole_procedure"]["status"] == "unknown"
     assert checks["whole_procedure"]["partial_result_spans"][0]["quote"] == message.rstrip(".")
     assert "observations" not in checks["whole_procedure"]
+
+
+def test_natural_outcome_paraphrases_preserve_partial_and_failed_checks():
+    manager = DialogueManager()
+    state = DialogueState(task_context=TaskContext(task_id="task:1", intent="receipt",
+        operation="diagnose"))
+    unit = {"unit_id": "ofd_checks", "label":
+        "Сверьте адрес и порт ОФД, затем посмотрите очередь отправки документов.",
+        "source_verified": True}
+    state = manager.observe_answer(state, scenario="answer", reason="approved",
+        question="Проверьте", progress_update={"shown_units": [unit]})
+    for mid, message in [(2, "Адрес и порт проверил, они верные."),
+                         (3, "Очередь отправки осталась той же, документы не передались."),
+                         (4, "Очередь снова посмотрел.")]:
+        state = manager.advance(state, message, mid, observation=observation(message, mid))
+    check = state.task_frame.checks[0]
+    assert [item["status"] for item in check["observations"]] == ["passed", "failed", "unknown"]
+    assert check["status"] == "failed"
+    assert check["result_span"]["message_id"] == 3
 
 
 def test_residual_detail_requires_content_and_keeps_new_symptom():

@@ -1278,8 +1278,13 @@ class DialogueManager:
 
         # Symptoms are independently validated exact-span facts. A rejected or
         # task-mode intent label must not discard a confirmed symptom.
-        if obs.symptom and relation != "contradiction":
-            state.symptom = obs.symptom
+        if obs.symptom:
+            if state.symptom is None:
+                state.symptom = obs.symptom
+            elif obs.symptom.quote != state.symptom.quote:
+                # Later symptoms are observations within this task. Keep the
+                # client's original failure as the stable retrieval anchor.
+                _append_unique(state.details, [obs.symptom])
 
         state.revision = previous.revision + 1
         state.relation = relation
@@ -1348,6 +1353,18 @@ class DialogueManager:
                 _append_unique(state.superseded_facts, state.task_context.entities.get("equipment", []))
                 state.session.entities.pop("equipment", None)
                 state.task_context.entities.pop("equipment", None)
+        if "equipment" in obs.entities or "manufacturer" in obs.entities:
+            current_model = state.entity("equipment")
+            previous_model = previous.entity("equipment")
+            if current_model != previous_model:
+                # Old model-specific steps remain in check history, but can no
+                # longer be the active instruction or receive a new outcome.
+                for field_name in ("shown_units", "eligible_units"):
+                    active_units = getattr(state.task_context, field_name)
+                    setattr(state.task_context, field_name, [unit for unit in active_units
+                        if not unit.get("model_value") or (current_model and re.search(
+                            r"(?<!\w)" + re.escape(unit["model_value"].casefold().replace("ё", "е")) + r"(?!\w)",
+                            current_model.casefold().replace("ё", "е")))])
         if obs.binds_object:
             state.object_reference = obs.evidence
         if any(words(f.value)[:1] == ["за"] for f in obs.parameters):
@@ -1459,7 +1476,7 @@ class DialogueManager:
             model_value = unit.get("model_value")
             if model_value:
                 equipment = " ".join(fact.value for fact in task.entities.get("equipment", []))
-                if not re.search(r"(?<!\w)" + re.escape(model_value) + r"(?!\w)",
+                if not re.search(r"(?<!\w)" + re.escape(model_value.casefold().replace("ё", "е")) + r"(?!\w)",
                                  equipment.casefold().replace("ё", "е")):
                     # A result for a model-scoped step belongs only to the
                     # model value confirmed when this unit became eligible.
@@ -1504,9 +1521,9 @@ class DialogueManager:
                 continue
             if re.search(r"\b(?:не\s+(?:знаю|уверен\w*|понятно)|не\s+провер\w*|пока\s+не\s+провер\w*)\b", quote_normalized):
                 status = "unknown" if re.search(r"\bне\s+(?:знаю|уверен\w*|понятно)\b", quote_normalized) else "not_done"
-            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+отправля\w*|не\s+уменьш\w*|не\s+совпад\w*|нестабил\w*|пропад\w*|истек\w*|законч\w*)\b", quote_normalized):
+            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+(?:отправля|переда)\w*|не\s+уменьш\w*|не\s+совпад\w*|не\s+(?:верн\w*|корректн\w*|соответству\w*)|не\s+измен\w*|остал\w*\s+(?:той\s+же|прежн\w*|без\s+изменен\w*)|нестабил\w*|пропад\w*|истек\w*|законч\w*)\b", quote_normalized):
                 status = "failed"
-            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|совпад\w*|стабил\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", quote_normalized):
+            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|совпад\w*|верн\w*|корректн\w*|соответству\w*|стабил\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", quote_normalized):
                 status = "passed"
             elif re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", quote_normalized):
                 status = "unknown"

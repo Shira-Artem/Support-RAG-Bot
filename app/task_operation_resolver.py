@@ -86,6 +86,14 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
     # subject, destination, and diagnostic context; never infer a vendor/model.
     receipt_at_ofd = (_has(s, r"\b(?:чек\w*|фискальн\w*\s+документ\w*)\b")
                       and _has(s, r"\b(?:офд|оператор\w*\s+фискальн\w*\s+данн\w*)\b"))
+    receipt_to_operator_failed = (
+        _has(s, r"\b(?:чек\w*|фискальн\w*\s+документ\w*)\b")
+        and _has(s, r"\bоператор\w*\b")
+        and _has(s, r"\b(?:не\s+(?:доход|поступ)\w*|перестал\w*\s+(?:доход|поступ)\w*)\b")
+    )
+    if receipt_to_operator_failed and not _has(s, r"\b(?:печат\w*|распечат\w*|возврат\w*)\b"):
+        return result("receipt_transmission", "diagnose", "receipt", "diagnostic",
+                      "receipt_delivery_to_operator_failed")
     # The grounded subject can name the OFD while the symptom describes sales
     # at the till rather than spelling out "receipt". This is still a
     # transmission diagnostic, provided no distinct print/refund operation is

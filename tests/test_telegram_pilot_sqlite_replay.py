@@ -728,6 +728,7 @@ def test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves(
     assert first["state"]["confirmed_equipment"] == "Эвотор 7.3"
     assert first["retrieval_called"] and first["selected_sources"]
     assert "Настройки → Обслуживание кассы → Диагностика" in first["final_reply"]
+    assert first["state_after_sqlite_reopen"]["task_context"]["shown_units"][0]["model_value"] == "Эвотор 7.3"
     assert followup["state"]["relation"] == "continue"
     assert followup["state"]["confirmed_equipment"] == "Эвотор 7.3"
     assert followup["retrieval_called"] and followup["selected_sources"]

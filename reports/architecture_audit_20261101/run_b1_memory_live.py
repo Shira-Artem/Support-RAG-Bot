@@ -57,6 +57,19 @@ CASES = {
     "b1_repeat_switch": [
         "В Saby не вижу входящий документ от поставщика.",
         "Теперь другой вопрос: DirectBank перестал загружать выписки в 1С."],
+    "b1_fresh_evotor": [
+        "На Эвотор 7.3 пробитые чеки висят и не появляются у ОФД. Куда смотреть сначала?",
+        "Касса в сети, доступ в интернет есть. Модель именно 7.3.",
+        "Сведения о сервере ОФД и порт сверил: они верные.",
+        "После проверки очередь отправки осталась той же, чеки не передались.",
+        "Что логично проверить дальше, если это уже сделано?"],
+    "b1_fresh_clarification": [
+        "Нужна помощь с кассовым аппаратом, пока не могу описать сбой.",
+        "Это Эвотор, фискальные чеки перестали доходить оператору.",
+        "Нашёл шильдик: модель Эвотор 6. Как продолжить проверку?"],
+    "b1_fresh_switch": [
+        "Эвотор 7.3 перестал передавать чеки в ОФД.",
+        "Отдельный вопрос про Saby: поставщик прислал УПД, но я не вижу входящий документ."],
     "pilot_evotor73_exact": ["Эвотор 7.3 пробивает чеки, но они не уходят оператору ОФД. Что посмотреть первым делом?"],
     "pilot_evotor73_prior": ["На Эвотор 7.3 чеки пробиваются, но не передаются в ОФД. С чего начать проверку?"],
     "pilot_evotor73_free_a": ["На кассе Эвотор 7.3 продажи проходят, а у оператора фискальных данных чеков нет. С чего начать диагностику?"],
@@ -247,9 +260,11 @@ async def run(args):
                     effective_user=SimpleNamespace(id=42), effective_chat=SimpleNamespace(id=42))
                 started = perf_counter()
                 await bot.handle_message(update, None)
+                persisted = bot.conversations.dialogue_state(cid)
                 reopened = ConversationStore(store_path)
                 cid = reopened.state(42, 42)["conversation_id"]
                 after = reopened.dialogue_state(cid)
+                roundtrip_equal = persisted.to_dict() == after.to_dict()
                 history = reopened.history(cid)
                 with reopened.connect() as db:
                     row = db.execute("select diagnostics_json from messages where conversation_id=? and role='assistant' order by id desc limit 1", (cid,)).fetchone()
@@ -258,8 +273,9 @@ async def run(args):
                     "answer": "\n".join(call.args[0] for call in reply.await_args_list),
                     "latency_ms": round((perf_counter()-started)*1000),
                     "state_before": before.to_dict(), "state_after": after.to_dict(),
+                    "state_before_reopen": persisted.to_dict(),
                     "frame_before": asdict(before.task_frame), "frame_after": asdict(after.task_frame),
-                    "sqlite_reopened": True,
+                    "sqlite_reopened": True, "sqlite_roundtrip_equal": roundtrip_equal,
                     "http_attempts": http_attempts[start_http:],
                     "same_task": before.task_id == after.task_id,
                     "understanding": [h.get("understanding") for h in history[-2:] if h.get("role") == "user"],

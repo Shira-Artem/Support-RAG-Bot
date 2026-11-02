@@ -1689,6 +1689,13 @@ class SourceFirstService:
                     "Не нашёл подтверждения, что этот approved-раздел подходит для указанной модели оборудования. "
                     "Не буду выдавать этот порядок; запросите проверку специалиста.",
                     "source_model_scope_not_applicable", "selected_document_model_scope_mismatch", started, **base)
+            if hardware_scope and selected_model and confirmed_model:
+                # A model-specific document scopes every step in that document,
+                # even when an individual sentence does not repeat the model.
+                for unit in source_units:
+                    if not unit["model_scope"]:
+                        unit["model_scope"] = [selected_model]
+                        unit["model_value"] = state.task_entity("equipment")
             if (not informational and hardware_scope and first_model_scoped and confirmed_model
                     and not first_model_scoped["model_value"]):
                 return self._escalate(
@@ -2113,6 +2120,11 @@ class SourceFirstService:
                 # whether the client performed it.
                 visible_units = _approved_check_units(exact_render, selected["source"], selected["section"],
                     equipment=state.task_entity("equipment"), manufacturer=state.task_entity("manufacturer"))
+                if hardware_scope and selected_model and confirmed_model:
+                    for unit in visible_units:
+                        if not unit["model_scope"]:
+                            unit["model_scope"] = [selected_model]
+                            unit["model_value"] = state.task_entity("equipment")
                 if order_receipt:
                     for unit in visible_units:
                         unit["source_order"] = order_receipt
