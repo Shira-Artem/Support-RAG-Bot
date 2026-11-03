@@ -6,10 +6,65 @@ import json
 
 import pytest
 
+from app.dialogue_state import ActiveRoute, DialogueState, Fact, SessionContext, TaskContext
+from app.source_first_service import _planner_task_snapshot
 from test_telegram_pilot_sqlite_replay import ROOT, _run_replay
 
 
 COMPOUND_SOURCE = "evotor/ofd/evotor-7-3-ofd-connection.md"
+
+
+def test_planner_snapshot_preserves_scope_and_check_outcomes_without_full_state_history():
+    source = "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md"
+    model = Fact.span("Эвотор 7.3", 1)
+    session = SessionContext(
+        entities={"manufacturer": [Fact.span("Эвотор", 1)]},
+        active_route=ActiveRoute("manufacturer", Fact.span("Эвотор", 1)))
+    long_label = ("В диагностическом отчёте проверьте состояние приложения EoU, "
+                  "доступ в интернет, адрес и порт ОФД. " * 20)
+    task = TaskContext(
+        task_id="task:1", intent="receipt", request_type="information",
+        operation="diagnose", object="ФН 235",
+        entities={"equipment": [model], "component": [Fact.span("EoU", 4)]},
+        symptom=Fact.span("Чеки не передаются оператору", 1),
+        goals=[Fact.span("Что делать дальше?", 6)],
+        procedure_id="verified-procedure-1", relation="continue",
+        shown_units=[{"unit_id": "unit-a", "label": long_label, "source": source,
+            "section": "Что проверить сначала", "source_verified": True,
+            "model_value": "Эвотор 7.3", "source_order": {"sha256": "x" * 64,
+            "context": "y" * 64}}],
+        eligible_units=[{"unit_id": "unit-b", "label": long_label, "source": source,
+            "section": "Что проверить сначала", "source_verified": True,
+            "model_value": "Эвотор 7.3", "components": [{"component_id": "component-a",
+            "label": "проверьте состояние приложения EoU"}]}],
+        checks=[{"unit_id": "unit-a", "label": long_label, "status": "failed",
+            "observations": [{"status": "failed", "quote": "Очередь не уменьшается",
+                "message_id": 5, "start": 0, "end": 23}],
+            "component_results": [{"component_id": "component-a", "status": "unknown",
+                "observations": [{"status": "unknown", "quote": "EoU ещё не проверял",
+                    "message_id": 5, "start": 0, "end": 20}]}]},
+            {"unit_id": "legacy-unit", "label": "Проверка завершена.",
+             "status": "passed", "result_span": {"quote": "Проверка завершена"},
+             "observations": []}])
+    state = DialogueState(session=session, task_context=task)
+
+    compact = _planner_task_snapshot(state)
+
+    assert compact["entities"]["equipment"] == ["Эвотор 7.3"]
+    assert compact["symptom"] == "Чеки не передаются оператору"
+    assert compact["shown_units"][0]["unit_id"] == "unit-a"
+    assert compact["eligible_units"][0]["components"][0]["component_id"] == "component-a"
+    assert compact["checks"][0]["status"] == "failed"
+    assert compact["checks"][0]["observations"] == [
+        {"status": "failed", "quote": "Очередь не уменьшается"}]
+    assert compact["checks"][0]["component_results"][0]["observations"] == [
+        {"status": "unknown", "quote": "EoU ещё не проверял"}]
+    assert compact["checks"][1]["observations"] == [
+        {"status": "passed", "quote": "Проверка завершена"}]
+    assert "source_order" not in compact["shown_units"][0]
+    assert "message_id" not in compact["checks"][0]["observations"][0]
+    assert len(json.dumps(compact, ensure_ascii=False)) < len(
+        json.dumps(state.to_dict()["task_context"], ensure_ascii=False)) * 0.6
 
 
 def _continuation_raw(text: str, *, intent: str = "receipt") -> dict:
@@ -119,8 +174,8 @@ REAL_ACTION_SOURCES = [
         "Проверенная информация", "сравните", 2, id="aqsi-fn7-сравните"),
     pytest.param(
         "fn235", "evotor/fn/fn-235.md",
-        "На Эвотор ошибка ФН 235, документы ждут отправки в ОФД. Что проверить?",
-        "ФН 235", "Эвотор", "Эвотор",
+        "На Эвотор 7.3 ошибка ФН 235, документы ждут отправки в ОФД. Что проверить?",
+        "ФН 235", "Эвотор", "Эвотор 7.3",
         "Смысл и безопасная проверка", "убедитесь", 1, id="evotor-fn235-убедитесь"),
 ]
 
@@ -264,6 +319,72 @@ def test_failed_composite_asks_only_unreported_source_components_and_keeps_quote
     assert trace[4]["reason"] == "progress_ledger_conditional_source_boundary"
     assert "поддержку Эвотора" in trace[4]["final_reply"]
     assert "Настройки → Обслуживание кассы → Диагностика" not in trace[4]["final_reply"]
+
+
+def test_unknown_shown_check_blocks_later_instruction_until_its_result_is_known(
+        monkeypatch, tmp_path):
+    next_question = "Что делать дальше?"
+    cases = _compound_dialogue()[:3] + [{
+        "id": "what_next_with_unknown_check", "text": next_question,
+        "provider_raw": _continuation_raw(next_question)}]
+
+    def resume_before_unreached_conditional(index, store, conversation_id):
+        if index != 4:
+            return
+        state = store.dialogue_state(conversation_id)
+        task = state.task_context
+        unknown_check = next((check for check in reversed(task.checks)
+            if check.get("status") == "unknown" and any(
+                "Интернет работает" in item.get("quote", "")
+                for item in check.get("observations", []))), None)
+        assert unknown_check is not None
+        shown_ids = {str(unknown_check["unit_id"])}
+        index_of_check = next(i for i, unit in enumerate(task.shown_units)
+                              if str(unit.get("unit_id")) == str(unknown_check["unit_id"]))
+        task.shown_units = task.shown_units[:index_of_check + 1]
+        shown_ids.update(str(unit.get("unit_id")) for unit in task.shown_units)
+        task.checks = [check for check in task.checks
+                       if str(check.get("unit_id")) in shown_ids]
+        with store.connect() as db:
+            db.execute("UPDATE dialogue_states_v2 SET state_json=? WHERE conversation_id=?",
+                       (json.dumps(state.to_dict(), ensure_ascii=False), conversation_id))
+
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True, validate_with_state=True,
+        before_turn=resume_before_unreached_conditional)
+
+    final = trace[-1]
+    assert final["reason"] == "progress_ledger_waiting_for_check_result"
+    assert "не хватает результата" in final["final_reply"].casefold()
+    assert "сопоставьте адрес, порт и инн" not in final["final_reply"].casefold()
+    assert "уменьшается ли очередь" not in final["final_reply"].casefold()
+    assert final["state_after_sqlite_reopen"]["task_context"]["task_id"] == "task:1"
+
+
+@pytest.mark.parametrize("classified_operation", ["request_specialist", "explain"])
+def test_continuation_keeps_model_when_provider_mistypes_eou_and_asks_what_next(
+        monkeypatch, tmp_path, classified_operation):
+    cases = _compound_dialogue()
+    followup = ("EoU работает. Адрес, порт и ИНН ОФД совпадают с настройками оператора. "
+                "Очередь всё ещё не уменьшается. Что делать дальше?")
+    raw = _continuation_raw(followup)
+    raw["operation"] = classified_operation
+    raw["entities"] = [{"slot": "equipment", "value": "EoU",
+                        "evidence": {"quote": "EoU"}}]
+    cases[-1] = {**cases[-1], "id": "eou_typed_as_equipment_and_what_next",
+                 "text": followup, "provider_raw": raw}
+
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True, validate_with_state=True)
+
+    final = trace[-1]
+    task = final["state_after_sqlite_reopen"]["task_context"]
+    assert final["reason"] == "progress_ledger_conditional_source_boundary"
+    assert task["task_id"] == "task:1"
+    assert task["entities"]["equipment"][0]["value"] == "Эвотор 7.3"
+    assert task["entities"]["component"][0]["value"] == "EoU"
+    assert "поддержку Эвотора" in final["final_reply"]
+    assert "не нашёл подтверждения, что этот approved-раздел подходит" not in final["final_reply"]
 
 
 def test_legacy_sqlite_backfills_only_exact_shown_components_and_keeps_results_separate(

@@ -60,6 +60,29 @@ def test_success_reports_latency_and_actual_provider_usage(monkeypatch):
     assert _Client.requests == 1
 
 
+def test_planner_uses_a_bounded_completion_budget_for_its_short_json_schema(monkeypatch):
+    calls = []
+
+    class CaptureClient(_Client):
+        async def post(self, *args, **kwargs):
+            calls.append(kwargs["json"])
+            return await super().post(*args, **kwargs)
+
+    CaptureClient.requests = 0
+    CaptureClient.response = _response(200, {"choices": [{"message": {
+        "content": '{"mode":"clarify","section_id":"","applicability_confirmed":false,'
+                   '"source_order_complete":false,"reason":"Need one fact."}'}}],
+        "usage": {"prompt_tokens": 12, "completion_tokens": 28, "total_tokens": 40}})
+    monkeypatch.setattr(client.httpx, "AsyncClient", CaptureClient)
+
+    asyncio.run(client.generate([{"role": "user", "content": "Choose a source section."}],
+                                _settings(), call_stage="planner"))
+
+    assert calls[0]["max_completion_tokens"] == 512
+    assert calls[0]["response_format"]["type"] == "json_schema"
+    assert CaptureClient.requests == 1
+
+
 def test_missing_headers_allow_one_bounded_generation_and_next_call(monkeypatch):
     _Client.requests = 0
     _Client.response = _response(200, {"choices": [{"message": {"content": "ok"}}],

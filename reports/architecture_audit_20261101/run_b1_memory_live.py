@@ -53,6 +53,7 @@ CASES = {
         "Очередь неотправленных документов не уменьшается.",
         "EoU работает, интернет работает, адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора.",
         "Что делать дальше?"],
+    "b1_3b_s1_what_next": ["Что делать дальше?"],
     "b1_3b_s2": [
         "Проверил.",
         "Диагностический отчёт напечатал.",
@@ -196,6 +197,12 @@ class ReadOnlyQdrant:
 async def run(args):
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env", override=False)
+    selected_key = os.getenv(args.api_key_env, "").strip()
+    if not selected_key:
+        raise ValueError(f"Selected API key variable is empty: {args.api_key_env}")
+    # The application reads one Groq key. This bounded test runner can choose
+    # either explicitly configured organization without logging its value.
+    os.environ["GROQ_API_KEY"] = selected_key
     os.environ.update({"RAG_BACKEND": "qdrant", "QDRANT_COLLECTION": "knowledge_stage3_retrieval_20261022",
         "RAG_DEMO_MODE": "0", "RAG_ENGINE": "source_first", "AI_COORDINATOR_ENABLED": "1",
         "SEMANTIC_EVIDENCE_SELECTOR_ENABLED": "0", "HANDOFF_ENABLED": "0", "HF_HUB_OFFLINE": "1"})
@@ -245,14 +252,34 @@ async def run(args):
     original_post = httpx.AsyncClient.post
     http_errors = []
     http_attempts = []
+    rate_limit_pacing = []
+    last_rate_limit_headers = {}
     stopped_on_429 = False
 
     async def capture_post(client, url, *post_args, **kwargs):
-        nonlocal stopped_on_429
+        nonlocal stopped_on_429, last_rate_limit_headers
         if not str(url).startswith("https://api.groq.com/"):
             return await original_post(client, url, *post_args, **kwargs)
         if len(http_attempts) >= args.max_http or stopped_on_429:
             raise RuntimeError("B1 live HTTP budget exhausted or provider 429")
+        request_json = kwargs.get("json") or {}
+        raw_remaining = last_rate_limit_headers.get("x-ratelimit-remaining-tokens")
+        remaining = int(raw_remaining) if raw_remaining is not None else None
+        token_limit = int(last_rate_limit_headers.get("x-ratelimit-limit-tokens") or 0)
+        estimated = quota_module.estimate_tokens(request_json)
+        if token_limit and remaining is not None and estimated > remaining:
+            reset = quota_module._seconds(
+                last_rate_limit_headers.get("x-ratelimit-reset-tokens"))
+            wait_seconds = (reset if reset is not None else 60.0) + 1.0
+            rate_limit_pacing.append({"before_http_attempt": len(http_attempts) + 1,
+                "estimated_tokens": estimated, "remaining_tokens": remaining,
+                "token_limit": token_limit,
+                "estimate_exceeds_full_window": estimated > token_limit,
+                "reset_seconds": reset,
+                "wait_seconds": round(wait_seconds, 2), "reason": "observed_tpm_headroom"})
+            print(json.dumps({"rate_limit_wait_seconds": round(wait_seconds, 2),
+                "reason": "observed_tpm_headroom"}), flush=True)
+            await asyncio.sleep(wait_seconds)
         attempt = {"number": len(http_attempts) + 1, "status": None}
         http_attempts.append(attempt)
         try:
@@ -261,6 +288,7 @@ async def run(args):
             attempt["error_type"] = type(exc).__name__
             raise
         attempt["status"] = response.status_code
+        last_rate_limit_headers = quota_module.public_headers(response.headers)
         if response.status_code == 429:
             stopped_on_429 = True
         if response.status_code >= 400:
@@ -295,6 +323,7 @@ async def run(args):
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),
         "head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "api_key_env": args.api_key_env,
         "source_hashes": {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
                           for p in [ROOT / "bot.py", *sorted((ROOT / "app").glob("*.py"))]},
         "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
@@ -305,6 +334,7 @@ async def run(args):
         result["understanding_calls"] = raw_understanding
         result["provider_errors"] = http_errors
         result["http_attempts"] = http_attempts
+        result["rate_limit_pacing"] = list(rate_limit_pacing)
         result["stopped_on_429"] = stopped_on_429
         if quota_module._TRACE.exists():
             result["http_trace"] = [json.loads(line) for line in quota_module._TRACE.read_text(encoding="utf-8").splitlines()]
@@ -383,6 +413,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cases", default="saby,diadoc,ofd,evotor6,bifit")
     parser.add_argument("--output", required=True)
+    parser.add_argument("--api-key-env", choices=("GROQ_API_KEY", "GROQ_API_KEY_2"),
+                        default="GROQ_API_KEY")
     parser.add_argument("--pause", type=float, default=12)
     parser.add_argument("--max-http", type=int, default=58)
     parser.add_argument("--resume-sqlite")

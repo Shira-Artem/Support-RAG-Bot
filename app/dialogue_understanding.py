@@ -595,6 +595,20 @@ def validate_response(data: Any, text: str, message_id: int | str,
                   "normalized_semantic_alias" if aliases.get(normalized_input) == value else
                   "unsupported_value_defaulted_to_unknown")
         _field_result(diagnostics, field_name, status, reason, value=value)
+    active_context = previous_state.active_task if previous_state else None
+    if (operation == "explain" and relation == "continue"
+            and not _is_conceptual_information_request(text)
+            and previous_state and previous_state.task_id
+            and previous_state.operation not in {"unknown", "explain"}
+            and active_context and not active_context.closed
+            and (active_context.shown_units or active_context.checks)):
+        # A terse follow-up such as "Что делать дальше?" is about the
+        # unfinished source-backed task. It is not a new explanation task;
+        # leave the operation unset so the reducer retains its prior action.
+        operation = "unknown"
+        _field_result(diagnostics, "operation_resolution", "accepted",
+                      "followup_question_preserves_active_check_task",
+                      raw_value="explain", value=operation)
     if kind == "information" and _is_conceptual_information_request(text):
         previous_operation = operation
         previous_intent = intent
@@ -695,6 +709,16 @@ def validate_response(data: Any, text: str, message_id: int | str,
         _field_result(diagnostics, "specialist_requested", "accepted", "direct_positive_user_evidence")
     else:
         _field_result(diagnostics, "specialist_requested", "accepted", "not_requested")
+    if operation == "request_specialist":
+        # Handoff intent is represented by the separately validated flag and
+        # request_type, not by a task operation. Models sometimes label an
+        # ordinary follow-up (for example, "Что делать дальше?") this way;
+        # keeping the value would replace the active task and is outside the
+        # reducer's task-operation vocabulary.
+        operation = "unknown"
+        _field_result(diagnostics, "operation_resolution", "accepted",
+                      "specialist_request_uses_explicit_flag_not_task_operation",
+                      raw_value="request_specialist", value=operation)
 
     entities: dict[str, list[Fact]] = {}
     entity_claims = data["entities"]
@@ -729,8 +753,12 @@ def validate_response(data: Any, text: str, message_id: int | str,
             or (normalized_slot == value.strip().casefold().replace(" ", "_")
                 and re.search(r"\d", value)))
         typed = _typed_entity_from_quote(evidence.quote)
-        effective_slot = "equipment" if equipment_claim else _ENTITY_SLOT_ALIASES.get(normalized_slot, slot)
-        retyped = False
+        known_other_type = (typed is not None and typed[0] != "equipment"
+                            and _entity_value_matches(value, typed[0], typed[1], evidence.quote))
+        effective_slot = (typed[0] if equipment_claim and known_other_type else
+                          "equipment" if equipment_claim else
+                          _ENTITY_SLOT_ALIASES.get(normalized_slot, slot))
+        retyped = bool(equipment_claim and known_other_type)
         if effective_slot not in ENTITY_SLOTS:
             if (typed and _entity_value_matches(value, typed[0], typed[1], evidence.quote)):
                 effective_slot, _typed_value = typed
@@ -785,6 +813,11 @@ def validate_response(data: Any, text: str, message_id: int | str,
         if effective_slot == "equipment" and _generic_equipment_value(canonical):
             _field_result(diagnostics, field, "rejected", "generic_device_noun_is_not_model",
                           slot=slot, claimed=value, start=evidence.start, end=evidence.end)
+            continue
+        if any(existing.value == canonical for existing in entities.get(effective_slot, [])):
+            _field_result(diagnostics, field, "omitted", "duplicate_typed_entity_claim",
+                          slot=effective_slot, value=canonical,
+                          start=evidence.start, end=evidence.end)
             continue
         reason = "exact_source_value" if canonical == value else "normalized_to_known_alias_from_source"
         if retyped:

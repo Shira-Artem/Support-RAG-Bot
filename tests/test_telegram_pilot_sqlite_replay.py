@@ -220,7 +220,7 @@ def _safe_state(state, prior_task_id):
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
                 injected_candidate=None, coordinator_enabled=False, after_dialogue=None,
                 planner_overrides=None, before_turn=None, source_root=ROOT,
-                planner_section_contains=None):
+                planner_section_contains=None, validate_with_state=False):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)
     rag = LocalRag(sources, injected_candidate, root=source_root)
@@ -260,11 +260,13 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
         generation_calls = []
         planner_choices = []
 
-        async def fake_understanding(text, message_id, _history, _state, _settings):
+        async def fake_understanding(text, message_id, _history, current_state, _settings):
             case = cases[len(provider_calls)]
             assert text == case["text"]
             raw = _provider_payload(case)
-            kind, specialist, unknown, observation = validate_response(raw, text, message_id)
+            state_for_validation = current_state if validate_with_state else None
+            kind, specialist, unknown, observation = validate_response(
+                raw, text, message_id, state_for_validation)
             provider_calls.append(raw)
             return Understanding(kind, specialist, unknown, observation, {}, "offline-fixture", 0,
                                  raw, observation.validation_diagnostics)

@@ -713,6 +713,76 @@ def test_explicit_manufacturer_model_pair_survives_wrong_object_and_entity_slots
                for d in obs.validation_diagnostics)
 
 
+def test_known_software_misclassified_as_equipment_keeps_confirmed_model_and_task():
+    opening = "На Эвотор 7.3 чеки не передаются в ОФД."
+    opening_raw = payload(opening, kind="diagnosis", relation="new_task", intent="receipt",
+        operation="diagnose", obj="чек", object_quote="чеки",
+        entities=[("manufacturer", "Эвотор", "Эвотор"),
+                  ("equipment", "Эвотор 7.3", "Эвотор 7.3")])
+    kind, specialist, unknown, observation = validate_response(opening_raw, opening, "opening")
+    state = DialogueManager().advance(DialogueState(), opening, "opening",
+        observation=observation, unknown_facts=list(unknown))
+
+    followup = "EoU работает. Интернет работает. Адрес, порт и ИНН ОФД совпадают."
+    raw = payload(followup, kind="instruction", relation="continue", intent="receipt",
+        operation="request_specialist", obj=None,
+        entities=[("equipment", "EoU", "EoU")])
+    _, specialist, unknown, observation = validate_response(raw, followup, "followup", state)
+
+    assert not specialist
+    assert observation.operation == "unknown"
+    assert "equipment" not in observation.entities
+    assert observation.entities["component"][0].value == "EoU"
+    assert any(item["field"] == "entities[0]"
+               and item["reason"] == "retyped_from_exact_source_alias"
+               for item in observation.validation_diagnostics)
+    assert any(item["field"] == "operation_resolution"
+               and item["reason"] == "specialist_request_uses_explicit_flag_not_task_operation"
+               for item in observation.validation_diagnostics)
+
+    updated = DialogueManager().advance(state, followup, "followup",
+        observation=observation, unknown_facts=list(unknown))
+    assert updated.task_id == state.task_id
+    assert updated.task_entity("equipment") == "Эвотор 7.3"
+    assert updated.task_entity("component") == "EoU"
+    assert updated.operation == "diagnose"
+
+
+def test_explicit_specialist_request_does_not_enter_task_operation_vocabulary():
+    text = "Позови специалиста, пожалуйста."
+    raw = payload(text, kind="escalation", relation="new_task", intent="unknown",
+        operation="request_specialist", obj=None, specialist=True, specialist_quote=text)
+    kind, specialist, unknown, observation = validate_response(raw, text, "handoff")
+
+    assert kind == "escalation" and specialist
+    assert observation.operation == "unknown"
+    updated = DialogueManager().advance(DialogueState(), text, "handoff",
+        observation=observation, unknown_facts=list(unknown))
+    assert updated.operation == "unknown"
+
+
+def test_explain_label_on_terse_followup_preserves_active_source_check_task():
+    text = "Что делать дальше?"
+    state = DialogueState(task_id="task:1", intent="receipt", operation="diagnose")
+    state.task_context.procedure_id = "approved-procedure"
+    state.task_context.shown_units = [{"unit_id": "check-1", "label": "Проверьте очередь."}]
+    state.task_context.checks = [{"unit_id": "check-1", "status": "asked"}]
+    raw = payload(text, kind="instruction", relation="continue", intent="receipt",
+        operation="explain", obj=None, goal=text)
+
+    _, _, unknown, observation = validate_response(raw, text, "followup", state)
+
+    assert observation.operation == "unknown"
+    assert any(item["field"] == "operation_resolution"
+               and item["reason"] == "followup_question_preserves_active_check_task"
+               for item in observation.validation_diagnostics)
+    updated = DialogueManager().advance(state, text, "followup",
+        observation=observation, unknown_facts=list(unknown))
+    assert updated.task_id == "task:1"
+    assert updated.operation == "diagnose"
+    assert updated.task_context.shown_units == state.task_context.shown_units
+
+
 @pytest.mark.parametrize("prefix", ["Мы не используем", "Возможно, это"])
 def test_model_pair_extraction_rejects_negated_or_uncertain_mentions(prefix):
     text = f"{prefix} Эвотор 7.3."

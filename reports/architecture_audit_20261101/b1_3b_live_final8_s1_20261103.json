@@ -1,0 +1,1688 @@
+{
+  "created_at": "2026-11-03T14:16:38.989389+00:00",
+  "head": "cb5facaf6ad3f7f1bd4504c80079ed650797be28",
+  "api_key_env": "GROQ_API_KEY_2",
+  "source_hashes": {
+    "bot.py": "e533b202572bf9cfd25af05d9cd7171b5814a1fc92f9b80d4af8565dc2e988cc",
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/ai_coordinator.py": "2a485358eabf4c1183771d45e6f3c75ced015beb18e14de54ac39c79a043a546",
+    "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+    "app/api.py": "f6b5ebd9d394ead610dc6a0160566cba3a0ae428c8f0bcd08d6d3737e076ed8b",
+    "app/bot_runtime.py": "7a93c28e090390501db083b8c7a0e480ef8d4d303037bd0d2953f319de121b91",
+    "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+    "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
+    "app/conversation_store.py": "2a9abe68c977c6132486a18adf8d40a4343658a436ec5e2b8ffdb630ea181be5",
+    "app/dialogue_state.py": "4a1be634ee4627d77d5be66fc7f46f80d33357d442a21e3a287a1d517361ff1a",
+    "app/dialogue_understanding.py": "8f3dea19e69e6e46daefd258538a839618dce3ae97f9e74a1f8a34a96a32aece",
+    "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
+    "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
+    "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+    "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+    "app/groq_rate_limit.py": "58203fd4dd88bd3809adbd019b23dfa5bf715b3a075b051fef1ddd64274f3744",
+    "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
+    "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
+    "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+    "app/llm_client.py": "db56191a38735336745bcc5b5e89ca1d09b302a26786b78ac3086abd6557288e",
+    "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+    "app/procedure_policy.py": "3b03a70a1ab30a229230db53b7c178d20fa70f9f4905672a3fa22e8aa69673e6",
+    "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+    "app/rag_query.py": "2d75b44831200c3324b7be6e9d66b85d1422098a9e9784c05e9fef083204c2ef",
+    "app/response_grounding.py": "e83efa31023d5a95830ba593e466be13561b1a92839c82fbc71655394c3cef27",
+    "app/retrieval.py": "9499dd9e665d1eedbc1672aa7d66f4f161beba83ed17312469b029c9335d0b27",
+    "app/retrieval_pipeline.py": "85890b22e6e527d604a98156c010464c5fc950eff7341817510bc75df447b45c",
+    "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
+    "app/scope_policy.py": "71b01f6884b06f7a60e0366c3849273538d520fa08671973ac1eb90cb10a712f",
+    "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
+    "app/source_actions.py": "a725728f7330f36cc3bb10e2db25d25704d5ec081b548b21ebf9e6ecf9b7f6ea",
+    "app/source_first_service.py": "8f38417d94b40680266388777a251ecd5c60ad20aaf72c3b9ae1ae53cf4e3e9c",
+    "app/task_operation_resolver.py": "7af463d9ff6066349fd17d1f4a739b6c36d3d867d61f341454dfb20eea7564e2",
+    "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
+  },
+  "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "points": 934,
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "turns": [
+    {
+      "case": "b1_3b_s1_continuation",
+      "turn": 1,
+      "conversation_id": "366decc07f8a4d6996d3f98560ab2854",
+      "question": "Очередь неотправленных документов не уменьшается.",
+      "answer": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+      "latency_ms": 913,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "request_type": "information",
+          "operation": "diagnose",
+          "object": null,
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "start": 0,
+            "end": 88
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": {
+            "value": "чеки остаются на кассе и не доходят до ОФД",
+            "message_id": 1,
+            "quote": "чеки остаются на кассе и не доходят до ОФД",
+            "start": 14,
+            "end": 56
+          },
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Какую проверку сделать первой?",
+              "message_id": 1,
+              "quote": "Какую проверку сделать первой?",
+              "start": 58,
+              "end": 88
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "evotor-7-3-ofd-connection-360014099534",
+          "shown_units": [
+            {
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            },
+            {
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            },
+            {
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "passed",
+              "observations": [
+                {
+                  "status": "passed",
+                  "message_id": 3,
+                  "quote": "Диагностический отчёт напечатал",
+                  "start": 0,
+                  "end": 31
+                }
+              ],
+              "result_span": {
+                "message_id": 3,
+                "quote": "Диагностический отчёт напечатал",
+                "start": 0,
+                "end": 31
+              }
+            },
+            {
+              "task_id": "task:1",
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "asked_message_id": 4,
+              "status": "asked"
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "request_type": "information",
+        "operation": "diagnose",
+        "object": null,
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "start": 0,
+          "end": 88
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 3,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "request_type": "information",
+          "operation": "diagnose",
+          "object": null,
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "start": 0,
+            "end": 88
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": {
+            "value": "чеки остаются на кассе и не доходят до ОФД",
+            "message_id": 1,
+            "quote": "чеки остаются на кассе и не доходят до ОФД",
+            "start": 14,
+            "end": 56
+          },
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Какую проверку сделать первой?",
+              "message_id": 1,
+              "quote": "Какую проверку сделать первой?",
+              "start": 58,
+              "end": 88
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "evotor-7-3-ofd-connection-360014099534",
+          "shown_units": [
+            {
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            },
+            {
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            },
+            {
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "passed",
+              "observations": [
+                {
+                  "status": "passed",
+                  "message_id": 3,
+                  "quote": "Диагностический отчёт напечатал",
+                  "start": 0,
+                  "end": 31
+                }
+              ],
+              "result_span": {
+                "message_id": 3,
+                "quote": "Диагностический отчёт напечатал",
+                "start": 0,
+                "end": 31
+              }
+            },
+            {
+              "task_id": "task:1",
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "asked_message_id": 4,
+              "status": "asked"
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "request_type": "information",
+        "operation": "diagnose",
+        "object": null,
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "start": 0,
+          "end": 88
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_before_reopen": {
+        "schema_version": 2,
+        "revision": 3,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "request_type": "information",
+          "operation": "diagnose",
+          "object": null,
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "start": 0,
+            "end": 88
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": {
+            "value": "чеки остаются на кассе и не доходят до ОФД",
+            "message_id": 1,
+            "quote": "чеки остаются на кассе и не доходят до ОФД",
+            "start": 14,
+            "end": 56
+          },
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Какую проверку сделать первой?",
+              "message_id": 1,
+              "quote": "Какую проверку сделать первой?",
+              "start": 58,
+              "end": 88
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "evotor-7-3-ofd-connection-360014099534",
+          "shown_units": [
+            {
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            },
+            {
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            },
+            {
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "model_scope": [
+                "7.3"
+              ],
+              "model_value": "Эвотор 7.3",
+              "source_order": {
+                "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+              }
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "f09c43177d5a42267fe0",
+              "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "passed",
+              "observations": [
+                {
+                  "status": "passed",
+                  "message_id": 3,
+                  "quote": "Диагностический отчёт напечатал",
+                  "start": 0,
+                  "end": 31
+                }
+              ],
+              "result_span": {
+                "message_id": 3,
+                "quote": "Диагностический отчёт напечатал",
+                "start": 0,
+                "end": 31
+              }
+            },
+            {
+              "task_id": "task:1",
+              "unit_id": "7ecc73b5ecb8e7125d80",
+              "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+              "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+              "section": "Что проверить сначала",
+              "source_verified": true,
+              "asked_message_id": 4,
+              "status": "asked"
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "receipt",
+        "request_type": "information",
+        "operation": "diagnose",
+        "object": null,
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "start": 0,
+          "end": 88
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "frame_before": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "information",
+        "intent": "receipt",
+        "subject": null,
+        "operation": "diagnose",
+        "symptom": {
+          "value": "чеки остаются на кассе и не доходят до ОФД",
+          "message_id": 1,
+          "quote": "чеки остаются на кассе и не доходят до ОФД",
+          "start": 14,
+          "end": 56
+        },
+        "task_fact": {
+          "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "start": 0,
+          "end": 88
+        },
+        "goals": [
+          {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [],
+        "superseded_facts": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [
+          {
+            "task_id": "task:1",
+            "unit_id": "f09c43177d5a42267fe0",
+            "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+            "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала",
+            "source_verified": true,
+            "asked_message_id": 2,
+            "status": "passed",
+            "observations": [
+              {
+                "status": "passed",
+                "message_id": 3,
+                "quote": "Диагностический отчёт напечатал",
+                "start": 0,
+                "end": 31
+              }
+            ],
+            "result_span": {
+              "message_id": 3,
+              "quote": "Диагностический отчёт напечатал",
+              "start": 0,
+              "end": 31
+            }
+          },
+          {
+            "task_id": "task:1",
+            "unit_id": "7ecc73b5ecb8e7125d80",
+            "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+            "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала",
+            "source_verified": true,
+            "asked_message_id": 4,
+            "status": "asked"
+          }
+        ],
+        "relation": "continue",
+        "transition": "continue_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 2
+      },
+      "frame_after": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "information",
+        "intent": "receipt",
+        "subject": null,
+        "operation": "diagnose",
+        "symptom": {
+          "value": "чеки остаются на кассе и не доходят до ОФД",
+          "message_id": 1,
+          "quote": "чеки остаются на кассе и не доходят до ОФД",
+          "start": 14,
+          "end": 56
+        },
+        "task_fact": {
+          "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+          "start": 0,
+          "end": 88
+        },
+        "goals": [
+          {
+            "value": "Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "Какую проверку сделать первой?",
+            "start": 58,
+            "end": 88
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [],
+        "superseded_facts": [],
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [
+          {
+            "task_id": "task:1",
+            "unit_id": "f09c43177d5a42267fe0",
+            "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+            "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала",
+            "source_verified": true,
+            "asked_message_id": 2,
+            "status": "passed",
+            "observations": [
+              {
+                "status": "passed",
+                "message_id": 3,
+                "quote": "Диагностический отчёт напечатал",
+                "start": 0,
+                "end": 31
+              }
+            ],
+            "result_span": {
+              "message_id": 3,
+              "quote": "Диагностический отчёт напечатал",
+              "start": 0,
+              "end": 31
+            }
+          },
+          {
+            "task_id": "task:1",
+            "unit_id": "7ecc73b5ecb8e7125d80",
+            "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+            "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+            "section": "Что проверить сначала",
+            "source_verified": true,
+            "asked_message_id": 4,
+            "status": "asked"
+          }
+        ],
+        "relation": "continue",
+        "transition": "continue_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 3
+      },
+      "sqlite_reopened": true,
+      "sqlite_roundtrip_equal": true,
+      "http_attempts": [
+        {
+          "number": 1,
+          "status": 429
+        }
+      ],
+      "same_task": true,
+      "understanding": [
+        null
+      ],
+      "diagnostics": {
+        "text": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "error",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": null,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "clarify",
+        "scenario_reason": "groq_quota_deferred",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": "groq_quota_deferred",
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": null,
+        "active_request": null,
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 3,
+          "session": {
+            "entities": {
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ],
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            }
+          },
+          "task_context": {
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "receipt",
+            "request_type": "information",
+            "operation": "diagnose",
+            "object": null,
+            "entities": {
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ],
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            },
+            "parameters": [],
+            "object_reference": null,
+            "task_fact": {
+              "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+              "start": 0,
+              "end": 88
+            },
+            "operation_evidence": null,
+            "operation_confidence": 0.9,
+            "symptom": {
+              "value": "чеки остаются на кассе и не доходят до ОФД",
+              "message_id": 1,
+              "quote": "чеки остаются на кассе и не доходят до ОФД",
+              "start": 14,
+              "end": 56
+            },
+            "superseded_facts": [],
+            "goals": [
+              {
+                "value": "Какую проверку сделать первой?",
+                "message_id": 1,
+                "quote": "Какую проверку сделать первой?",
+                "start": 58,
+                "end": 88
+              }
+            ],
+            "constraints": [],
+            "details": [],
+            "error": null,
+            "expected": null,
+            "relation": "continue",
+            "confidence": 0.9,
+            "transition": "continue_task",
+            "analysis_required": false,
+            "unresolved": null,
+            "unknown_facts": [],
+            "unknown_evidence": {},
+            "procedure_id": "evotor-7-3-ofd-connection-360014099534",
+            "shown_units": [
+              {
+                "unit_id": "f09c43177d5a42267fe0",
+                "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+                "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+                "section": "Что проверить сначала",
+                "source_verified": true,
+                "model_scope": [
+                  "7.3"
+                ],
+                "model_value": "Эвотор 7.3",
+                "source_order": {
+                  "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                  "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+                }
+              },
+              {
+                "unit_id": "7ecc73b5ecb8e7125d80",
+                "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+                "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+                "section": "Что проверить сначала",
+                "source_verified": true,
+                "model_scope": [
+                  "7.3"
+                ],
+                "model_value": "Эвотор 7.3",
+                "source_order": {
+                  "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                  "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+                }
+              }
+            ],
+            "eligible_units": [
+              {
+                "unit_id": "f09c43177d5a42267fe0",
+                "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+                "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+                "section": "Что проверить сначала",
+                "source_verified": true,
+                "model_scope": [
+                  "7.3"
+                ],
+                "model_value": "Эвотор 7.3",
+                "source_order": {
+                  "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                  "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+                }
+              },
+              {
+                "unit_id": "7ecc73b5ecb8e7125d80",
+                "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+                "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+                "section": "Что проверить сначала",
+                "source_verified": true,
+                "model_scope": [
+                  "7.3"
+                ],
+                "model_value": "Эвотор 7.3",
+                "source_order": {
+                  "source_sha256": "c92a96206e30ea50c6477c4013d1bd7d15072fa581910cdc5db135722a164a27",
+                  "context": "8803a745ea871a98b5d8f9ede6b8f13c590abd4993388c9960ffda1ce66a78d3"
+                }
+              }
+            ],
+            "checks": [
+              {
+                "task_id": "task:1",
+                "unit_id": "f09c43177d5a42267fe0",
+                "label": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.",
+                "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+                "section": "Что проверить сначала",
+                "source_verified": true,
+                "asked_message_id": 2,
+                "status": "passed",
+                "observations": [
+                  {
+                    "status": "passed",
+                    "message_id": 3,
+                    "quote": "Диагностический отчёт напечатал",
+                    "start": 0,
+                    "end": 31
+                  }
+                ],
+                "result_span": {
+                  "message_id": 3,
+                  "quote": "Диагностический отчёт напечатал",
+                  "start": 0,
+                  "end": 31
+                }
+              },
+              {
+                "task_id": "task:1",
+                "unit_id": "7ecc73b5ecb8e7125d80",
+                "label": "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.",
+                "source": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+                "section": "Что проверить сначала",
+                "source_verified": true,
+                "asked_message_id": 4,
+                "status": "asked"
+              }
+            ],
+            "open_question": null,
+            "current_subgoal": {
+              "value": "Какую проверку сделать первой?",
+              "message_id": 1,
+              "quote": "Какую проверку сделать первой?",
+              "start": 58,
+              "end": 88
+            },
+            "clarification_repeats": {},
+            "closed": false
+          },
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "receipt",
+          "request_type": "information",
+          "operation": "diagnose",
+          "object": null,
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ]
+          },
+          "routing_slot": "manufacturer",
+          "parameters": [],
+          "object_reference": null,
+          "task": {
+            "value": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?",
+            "start": 0,
+            "end": 88
+          },
+          "operation_evidence": null,
+          "goals": [
+            {
+              "value": "Какую проверку сделать первой?",
+              "message_id": 1,
+              "quote": "Какую проверку сделать первой?",
+              "start": 58,
+              "end": 88
+            }
+          ],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": null,
+        "retrieval_diagnostics": null,
+        "retrieval_collection": null,
+        "reasoning_effort": null,
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": {
+          "stage": "understanding",
+          "http_status": 429,
+          "retry_after_seconds": 139.0,
+          "rate_limit_headers": {
+            "retry-after": "139",
+            "x-ratelimit-limit-requests": "1000",
+            "x-ratelimit-remaining-requests": "1000",
+            "x-ratelimit-reset-requests": "1ms",
+            "x-ratelimit-limit-tokens": "8000",
+            "x-ratelimit-remaining-tokens": "8000",
+            "x-ratelimit-reset-tokens": "1ms"
+          }
+        },
+        "dialogue_understanding": null,
+        "coordinator_decision": null,
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        0
+      ]
+    }
+  ],
+  "generation_calls": [],
+  "understanding_calls": [
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "provider_http_error",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "groq_http_429"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 888,
+      "error": "Groq HTTP 429",
+      "provider_error": "HTTP 429",
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [{\"role\": \"user\", \"content\": \"На Эвотор 7.3 чеки остаются на кассе и не доходят до ОФД. Какую проверку сделать первой?\"}, {\"role\": \"assistant\", \"content\": \"Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\\n\\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала\"}, {\"role\": \"user\", \"content\": \"Диагностический отчёт напечатал.\"}, {\"role\": \"assistant\", \"content\": \"В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.\\n\\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала\"}], \"active_task_state\": {\"active_task\": {\"task_id\": \"task:1\", \"intent\": \"receipt\", \"operation\": \"diagnose\", \"object\": null, \"entities\": {\"manufacturer\": [{\"value\": \"Эвотор\", \"source_message_id\": 1}], \"equipment\": [{\"value\": \"Эвотор 7.3\", \"source_message_id\": 1}]}, \"unknown_facts\": [], \"prior_symptom_facts\": [{\"value\": \"чеки остаются на кассе и не доходят до ОФД\", \"source_message_id\": 1}], \"goals\": [{\"value\": \"Какую проверку сделать первой?\", \"source_message_id\": 1}], \"constraints\": [], \"details\": [], \"active_route\": {\"slot\": \"manufacturer\", \"value\": \"Эвотор\"}, \"progress\": {\"shown_checks\": [{\"id\": \"f09c43177d5a42267fe0\", \"label\": \"Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\"}, {\"id\": \"7ecc73b5ecb8e7125d80\", \"label\": \"В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.\"}], \"client_results\": [{\"task_id\": \"task:1\", \"unit_id\": \"f09c43177d5a42267fe0\", \"label\": \"Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\", \"source\": \"data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md\", \"section\": \"Что проверить сначала\", \"source_verified\": true, \"asked_message_id\": 2, \"status\": \"passed\", \"observations\": [{\"status\": \"passed\", \"message_id\": 3, \"quote\": \"Диагностический отчёт напечатал\", \"start\": 0, \"end\": 31}], \"result_span\": {\"message_id\": 3, \"quote\": \"Диагностический отчёт напечатал\", \"start\": 0, \"end\": 31}}, {\"task_id\": \"task:1\", \"unit_id\": \"7ecc73b5ecb8e7125d80\", \"label\": \"В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. Если интернет отсутствует, восстановите сетевое подключение. Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. Если базовые проверки не выявили причину, передайте диагностический отчёт в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление в этот краткий конспект не включены.\", \"source\": \"data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md\", \"section\": \"Что проверить сначала\", \"source_verified\": true, \"asked_message_id\": 4, \"status\": \"asked\"}]}}, \"expected_clarification\": null}, \"current_message\": \"Очередь неотправленных документов не уменьшается.\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "provider",
+      "error_code": "groq_http_429"
+    }
+  ],
+  "provider_errors": [
+    {
+      "status": 429,
+      "code": "rate_limit_exceeded",
+      "type": "tokens",
+      "param": null,
+      "failed_generation_present": false
+    }
+  ],
+  "http_attempts": [
+    {
+      "number": 1,
+      "status": 429
+    }
+  ],
+  "rate_limit_pacing": [],
+  "stopped_on_429": true,
+  "http_trace": [
+    {
+      "at_utc": "2026-11-03T14:16:40.348639+00:00",
+      "stage": "understanding",
+      "http_status": 429,
+      "duration_ms": 887,
+      "rate_limit_headers": {
+        "retry-after": "139",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "1000",
+        "x-ratelimit-reset-requests": "1ms",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "8000",
+        "x-ratelimit-reset-tokens": "1ms"
+      },
+      "usage": {
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "total_tokens": null
+      },
+      "llm_http_attempt": 1
+    }
+  ]
+}

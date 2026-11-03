@@ -72,7 +72,8 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         # Routine support answers and planner decisions are short. Reserving
         # 2048 output tokens per request unnecessarily trips provider TPM when
         # less than that reserve remains, even when the actual answer is small.
-        token_limit = {"max_completion_tokens": 1024,
+        completion_budget = 512 if call_stage == "planner" else 1024
+        token_limit = {"max_completion_tokens": completion_budget,
                        "reasoning_effort": settings.groq_reasoning_effort or "low"}
     elif settings.llm_provider == "openrouter":
         key, model = settings.openrouter_api_key, settings.openrouter_model
