@@ -1332,3 +1332,8 @@
 ### 2026-11-03 — Публикация offline B1.3b audit
 
 - Код, тесты, отчёт и обновлённые план/журнал опубликованы в `origin/main` коммитом [`8cbe56a`](https://github.com/Shira-Artem/Support-RAG-Bot/commit/8cbe56a3d8e5351400227a01cec2c51e30148377). Публикация выполнена обычным fast-forward push из существующей `main`; после push локальный `HEAD` и `origin/main` совпали. Финальный NO-GO / LIVE INCOMPLETE сохранён.
+
+### 2026-11-03 — Публикация текущей локальной ревизии B1.3b
+
+- Коммит [`c822e3e`](https://github.com/Shira-Artem/Support-RAG-Bot/commit/c822e3e72afb0770027780a48b93298eb8e9eeaa) (`Complete B1.3b continuation safeguards`) опубликован обычным push в `origin/main`; force push и новые ветки не использовались. После push локальный `HEAD` и `origin/main` совпали на `c822e3e72afb0770027780a48b93298eb8e9eeaa`.
+- Публикация включает текущие локальные изменения, B1.3b code/tests, roadmap/project-state/report updates и 9 synthetic live attempt traces. API key values отсутствуют в артефактах; `.env` не менялся. Gate остаётся **B1.3b NO-GO / LIVE INCOMPLETE**.
