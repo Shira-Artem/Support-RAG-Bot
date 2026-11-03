@@ -94,6 +94,7 @@ class TaskContext:
     analysis_required: bool = False
     unresolved: Fact | None = None
     unknown_facts: list[str] = field(default_factory=list)
+    unknown_evidence: dict[str, Fact] = field(default_factory=dict)
     # Additive ProgressLedger. Units are copied only from a verified approved
     # answer; outcomes are written only by DialogueManager from client spans.
     procedure_id: str | None = None
@@ -119,9 +120,12 @@ class TaskFrame:
     task_fact: Fact | None
     goals: tuple[Fact, ...]
     constraints: tuple[Fact, ...]
+    parameters: tuple[Fact, ...]
     details: tuple[Fact, ...]
+    superseded_facts: tuple[Fact, ...]
     entities: dict[str, tuple[Fact, ...]]
     unknown_facts: tuple[str, ...]
+    unknown_evidence: dict[str, Fact]
     checks: tuple[dict, ...]
     relation: str
     transition: str
@@ -154,6 +158,8 @@ def _task_from(value: TaskContext | dict) -> TaskContext:
         return value
     raw = deepcopy(value)
     raw["entities"] = _facts_by_slot(raw.get("entities", {}))
+    raw["unknown_evidence"] = {slot: _fact(fact) for slot, fact in
+                               raw.get("unknown_evidence", {}).items()}
     for key in ("parameters", "goals", "constraints", "details", "superseded_facts"):
         raw[key] = [_fact(f) for f in raw.get(key, [])]
     for key in ("object_reference", "task_fact", "operation_evidence", "symptom", "error", "unresolved", "current_subgoal"):
@@ -243,9 +249,11 @@ class DialogueState:
             request_type=self.request_type, intent=self.intent, subject=self.object,
             operation=self.operation, symptom=self.symptom, task_fact=self.task,
             goals=tuple(self.goals), constraints=tuple(self.constraints),
-            details=tuple(self.details),
+            parameters=tuple(self.parameters), details=tuple(self.details),
+            superseded_facts=tuple(self.superseded_facts),
             entities={slot: tuple(facts) for slot, facts in (task.entities if task else {}).items()},
             unknown_facts=tuple(task.unknown_facts if task else ()),
+            unknown_evidence=dict(task.unknown_evidence) if task else {},
             checks=tuple(deepcopy(task.checks)) if task else (),
             relation=self.relation, transition=self.transition,
             expected_slot=self.expected.slot if self.expected else None,
@@ -438,6 +446,7 @@ class DialogueState:
                 "confidence": t.confidence, "transition": t.transition,
                 "analysis_required": t.analysis_required, "unresolved": asdict(t.unresolved) if t.unresolved else None,
                 "unknown_facts": list(t.unknown_facts),
+                "unknown_evidence": {slot: asdict(fact) for slot, fact in t.unknown_evidence.items()},
                 "procedure_id": t.procedure_id, "shown_units": deepcopy(t.shown_units),
                 "eligible_units": deepcopy(t.eligible_units),
                 "checks": deepcopy(t.checks), "open_question": t.open_question,
@@ -1195,7 +1204,10 @@ class DialogueManager:
                               and obs.intent not in {"unknown", "general", "network"}
                               and obs.intent != previous.intent
                               and previous.symptom is not None and obs.symptom is not None
-                              and obs.request_type != "feedback")
+                              and obs.request_type != "feedback"
+                              and any(domain == obs.intent and any(
+                                  token.startswith(root) for token in words(text) for root in roots)
+                                  for domain, _, roots in OBJECTS))
         if not previous.task_id or (previous.task_context and previous.task_context.closed):
             relation = "new_task"
         elif (observation is not None and relation in {"continue", "unknown"}
@@ -1444,6 +1456,14 @@ class DialogueManager:
         if relation == "constraint_update" and not obs.constraints:
             _append_unique(state.constraints, [obs.evidence])
         _append_unique(state.details, obs.details)
+        if (obs.request_type == "diagnosis" and obs.operation == "diagnose"
+                and obs.symptom is None and not obs.details and not obs.unknown_facts
+                and _informative_detail(text)):
+            # A structured provider can omit the symptom even when it labels
+            # this client turn diagnostic. Keep the exact utterance as an
+            # unclassified detail; never promote it into a symptom or invent
+            # a narrower span from an unverified semantic interpretation.
+            _append_unique(state.details, [obs.evidence])
         if relation != "new_task" and (obs.goals or obs.symptom) and not obs.details:
             # A provider goal can cover only the question at the end of a
             # message. Retain any separate client statement as an exact span.
@@ -1501,7 +1521,7 @@ class DialogueManager:
             state.transition = "change_parameter"
         if not state.analysis_required:
             state.unresolved = None
-        valid_unknown = ENTITY_SLOTS | {"goal", "details", "task"}
+        valid_unknown = ENTITY_SLOTS | {"goal", "details", "task", "parameter"}
         if unknown_facts is not None:
             if any(slot not in valid_unknown for slot in unknown_facts):
                 raise ValueError("Unsupported unknown-fact slot")
@@ -1512,6 +1532,10 @@ class DialogueManager:
                     [*state.task_context.unknown_facts, *unknown_facts]))
         for slot in obs.entities:
             state.task_context.unknown_facts = [item for item in state.task_context.unknown_facts if item != slot]
+            state.task_context.unknown_evidence.pop(slot, None)
+        for slot, evidence in obs.unknown_facts.items():
+            if slot not in obs.entities:
+                state.task_context.unknown_evidence[slot] = evidence
         state.task_context.closed = False
         progress_changed = self._reduce_progress(state, text, message_id)
         if progress_changed and state.expected and state.expected.slot in {"details", "goal"}:

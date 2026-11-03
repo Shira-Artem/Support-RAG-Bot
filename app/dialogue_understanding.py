@@ -25,7 +25,7 @@ from app.task_operation_resolver import resolve_task_operation
 
 
 TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
-UNKNOWN_SLOTS = ENTITY_SLOTS | {"goal", "details", "task"}
+UNKNOWN_SLOTS = ENTITY_SLOTS | {"goal", "details", "task", "parameter"}
 INTENTS = {name for name, _, _ in OBJECTS} | {"general", "unknown"}
 OBJECT_VALUES = {obj for _, obj, _ in OBJECTS} | {"понятие"}
 OPERATIONS_ALLOWED = ({name for name, _ in OPERATIONS} |
@@ -646,7 +646,10 @@ def validate_response(data: Any, text: str, message_id: int | str,
         if not isinstance(item, dict) or set(item) != {"slot", "evidence"}:
             _field_result(diagnostics, field, "rejected", "invalid_unknown_fact_shape")
             continue
-        slot = item["slot"]
+        raw_slot = item["slot"]
+        slot = ("equipment" if raw_slot == "model" else
+                "parameter" if isinstance(raw_slot, str) and raw_slot.endswith("_number") else
+                raw_slot)
         if not isinstance(slot, str) or slot not in UNKNOWN_SLOTS or slot in unknown_evidence:
             _field_result(diagnostics, field, "rejected", "invalid_or_duplicate_unknown_fact_slot")
             continue
