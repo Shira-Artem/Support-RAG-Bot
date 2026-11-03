@@ -16,6 +16,7 @@ import httpx
 
 from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS, RELATIONS,
                                 DialogueState, Fact, Observation, _explicit_new_topic,
+                                _operation_is_independent, _scope_conflicts,
                                 is_resolution_turn)
 from app.config import Settings
 from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_limiter,
@@ -407,6 +408,11 @@ def _entity_mention_is_asserted(text: str, fact: Fact) -> bool:
     return True
 
 
+def _generic_equipment_value(value: str) -> bool:
+    return bool(re.fullmatch(r"(?:касс\w*|аппарат\w*|оборудовани\w*|терминал\w*)",
+                             value, re.I))
+
+
 def _entity_value_supported(slot: str, value: Any, quote: str) -> bool:
     if not isinstance(value, str) or not value.strip():
         return False
@@ -414,7 +420,7 @@ def _entity_value_supported(slot: str, value: Any, quote: str) -> bool:
         # A generic device noun says nothing about the manufacturer's model.
         # Do not turn grammatical forms of "cash register/equipment" into a
         # confirmed product identity merely because the quote is exact.
-        if re.fullmatch(r"(?:касс\w*|аппарат\w*|оборудовани\w*|терминал\w*)", value, re.I):
+        if _generic_equipment_value(value):
             return False
         return value.casefold() in quote.casefold()
     return _canonical_entity_from_quote(slot, quote) == value
@@ -503,10 +509,15 @@ def _unique_search_target_from_goal(goal: Fact | None) -> tuple[str, int, int] |
 
 def _contextual_model_fact(text: str, message_id: int | str,
                            state: DialogueState | None, relation: str,
-                           current_manufacturer: str | None = None) -> Fact | None:
+                           current_manufacturer: str | None = None,
+                           operation: str = "unknown",
+                           entities: dict[str, list[Fact]] | None = None) -> Fact | None:
     manufacturer = current_manufacturer
     if manufacturer is None:
-        if not state or not state.task_id or state.task_frame.closed or _explicit_new_topic(text):
+        if (not state or not state.task_id or state.task_frame.closed
+                or _explicit_new_topic(text)
+                or _operation_is_independent(state.operation, operation)
+                or _scope_conflicts(state, entities or {})):
             return None
         manufacturer = state.task_entity("manufacturer")
     match = re.search(r"\bмодел(?:ь|и|ью)\s*[:№]?\s*([0-9]+(?:[.,][0-9]+)*(?:\s*(?:lite|ф|f))?)\b",
@@ -768,6 +779,10 @@ def validate_response(data: Any, text: str, message_id: int | str,
             _field_result(diagnostics, field, "rejected", "entity_not_supported_by_source_alias",
                           slot=slot, claimed=value, start=evidence.start, end=evidence.end)
             continue
+        if effective_slot == "equipment" and _generic_equipment_value(canonical):
+            _field_result(diagnostics, field, "rejected", "generic_device_noun_is_not_model",
+                          slot=slot, claimed=value, start=evidence.start, end=evidence.end)
+            continue
         reason = "exact_source_value" if canonical == value else "normalized_to_known_alias_from_source"
         if retyped:
             reason = "retyped_from_exact_source_alias"
@@ -784,7 +799,7 @@ def validate_response(data: Any, text: str, message_id: int | str,
     current_manufacturer = (entities["manufacturer"][0].value
                             if len(entities.get("manufacturer", [])) == 1 else None)
     model_fact = _contextual_model_fact(text, message_id, previous_state, relation,
-                                        current_manufacturer)
+                                        current_manufacturer, operation, entities)
     current = entities.get("equipment", [])
     if model_fact and (not current or (len(current) == 1 and current[0].quote == model_fact.quote
                                          and current[0].value == model_fact.quote)):
@@ -1097,7 +1112,8 @@ def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str
     current_manufacturer = (entities["manufacturer"][0].value
                             if len(entities.get("manufacturer", [])) == 1 else None)
     contextual_model = _contextual_model_fact(text, message_id, previous_state,
-                                               observation.relation, current_manufacturer)
+                                               observation.relation, current_manufacturer,
+                                               observation.operation, entities)
     for slot, values in entities.items():
         if any(not (_entity_value_supported(slot, fact.value, fact.quote)
                     or (slot == "equipment" and contextual_model == fact))

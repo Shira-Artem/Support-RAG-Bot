@@ -17,6 +17,7 @@ import logging
 import os
 from pathlib import Path
 import re
+import sqlite3
 import subprocess
 import sys
 from time import perf_counter
@@ -27,6 +28,14 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 CASES = {
+    "b1_1_final_switch_followup": ["В Saby не вижу входящий УПД"],
+    "b1_1_final_a": [
+        "Помогите разобраться с кассой, пока не знаю, что именно сломалось",
+        "Это Эвотор, чеки перестали доходить до ОФД",
+        "Модель Эвотор 6, чеки по-прежнему не видны у оператора"],
+    "b1_1_final_implicit": [
+        "Эвотор 7.3 не отправляет чеки в ОФД",
+        "В Saby не вижу входящий УПД"],
     "b1_1_a": [
         "Помогите разобраться с кассой, пока не знаю, что именно сломалось.",
         "Это Эвотор, чеки перестали доходить до ОФД.",
@@ -175,6 +184,13 @@ async def run(args):
     private.mkdir(parents=True, exist_ok=False)
     output.parent.mkdir(parents=True, exist_ok=True)
     store_path = private / "conversations.sqlite3"
+    if args.resume_sqlite:
+        source = Path(args.resume_sqlite).resolve()
+        local_root = (ROOT / ".local").resolve()
+        if not source.is_file() or local_root not in source.parents or source.name != "conversations.sqlite3":
+            raise ValueError("Resume source must be an existing isolated .local conversations.sqlite3")
+        with sqlite3.connect(source) as source_db, sqlite3.connect(store_path) as target_db:
+            source_db.backup(target_db)
     store = ConversationStore(store_path)
     expert = ExpertStore(private / "expert.sqlite3")
     os.environ["HANDOFF_OUTBOX_PATH"] = str(private / "handoff.json")
@@ -259,8 +275,11 @@ async def run(args):
          patch.object(understanding_module, "_append_local_trace", capture_understanding):
         bot = importlib.import_module("bot")
         logging.getLogger().setLevel(logging.WARNING)
-        for case_id in args.cases.split(","):
-            cid = store.new(42, 42)
+        for case_index, case_id in enumerate(args.cases.split(",")):
+            cid = (store.state(42, 42)["conversation_id"]
+                   if args.resume_sqlite and case_index == 0 else store.new(42, 42))
+            if not cid:
+                raise ValueError("Isolated resume SQLite has no active conversation")
             for index, question in enumerate(CASES[case_id], 1):
                 bot.conversations = ConversationStore(store_path)
                 before = bot.conversations.dialogue_state(cid)
@@ -281,7 +300,8 @@ async def run(args):
                 with reopened.connect() as db:
                     row = db.execute("select diagnostics_json from messages where conversation_id=? and role='assistant' order by id desc limit 1", (cid,)).fetchone()
                 diagnostics = json.loads(row[0]) if row else None
-                item = {"case": case_id, "turn": index, "question": question,
+                item = {"case": case_id, "turn": index, "conversation_id": cid,
+                    "question": question,
                     "answer": "\n".join(call.args[0] for call in reply.await_args_list),
                     "latency_ms": round((perf_counter()-started)*1000),
                     "state_before": before.to_dict(), "state_after": after.to_dict(),
@@ -321,4 +341,5 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True)
     parser.add_argument("--pause", type=float, default=12)
     parser.add_argument("--max-http", type=int, default=58)
+    parser.add_argument("--resume-sqlite")
     asyncio.run(run(parser.parse_args()))

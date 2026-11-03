@@ -1,0 +1,78 @@
+{
+  "captured": [
+    {
+      "turn": 1,
+      "injected_relation": "new_task",
+      "reducer_relation": "new_task",
+      "task_id": "task:1",
+      "intent": "device",
+      "operation": "diagnose",
+      "equipment": null,
+      "manufacturer": null,
+      "symptom": null,
+      "sqlite_equal": true
+    },
+    {
+      "turn": 2,
+      "injected_relation": "continue",
+      "reducer_relation": "continue",
+      "task_id": "task:1",
+      "intent": "receipt",
+      "operation": "diagnose",
+      "equipment": null,
+      "manufacturer": "Эвотор",
+      "symptom": "чеки перестали доходить до ОФД",
+      "sqlite_equal": true
+    },
+    {
+      "turn": 3,
+      "injected_relation": "continue",
+      "reducer_relation": "continue",
+      "task_id": "task:1",
+      "intent": "receipt",
+      "operation": "diagnose",
+      "equipment": "Эвотор 6",
+      "manufacturer": "Эвотор",
+      "symptom": "чеки перестали доходить до ОФД",
+      "sqlite_equal": true
+    }
+  ],
+  "forced_new_task_on_A2": [
+    {
+      "turn": 1,
+      "injected_relation": "new_task",
+      "reducer_relation": "new_task",
+      "task_id": "task:1",
+      "intent": "device",
+      "operation": "diagnose",
+      "equipment": null,
+      "manufacturer": null,
+      "symptom": null,
+      "sqlite_equal": true
+    },
+    {
+      "turn": 2,
+      "injected_relation": "new_task",
+      "reducer_relation": "continue",
+      "task_id": "task:1",
+      "intent": "receipt",
+      "operation": "diagnose",
+      "equipment": null,
+      "manufacturer": "Эвотор",
+      "symptom": "чеки перестали доходить до ОФД",
+      "sqlite_equal": true
+    },
+    {
+      "turn": 3,
+      "injected_relation": "continue",
+      "reducer_relation": "continue",
+      "task_id": "task:1",
+      "intent": "receipt",
+      "operation": "diagnose",
+      "equipment": "Эвотор 6",
+      "manufacturer": "Эвотор",
+      "symptom": "чеки перестали доходить до ОФД",
+      "sqlite_equal": true
+    }
+  ]
+}

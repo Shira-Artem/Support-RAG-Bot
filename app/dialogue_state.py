@@ -749,6 +749,28 @@ def _explicit_new_topic(text: str) -> bool:
                for index in range(max(1, min(len(tokens), 8))))
 
 
+_DIAGNOSTIC_OPERATIONS = {"diagnose", "check", "status"}
+_SCOPE_SLOTS = {"service", "ofd", "software", "integration", "manufacturer", "equipment"}
+
+
+def _operation_is_independent(previous_operation: str, incoming_operation: str) -> bool:
+    return (previous_operation != "unknown" and incoming_operation != "unknown"
+            and previous_operation != incoming_operation
+            and not {previous_operation, incoming_operation} <= _DIAGNOSTIC_OPERATIONS)
+
+
+def _scope_conflicts(previous: DialogueState, incoming_entities: dict[str, list[Fact]]) -> bool:
+    def values(entities):
+        return {fact.value.casefold().replace("ё", "е")
+                for slot, facts in entities.items() if slot in _SCOPE_SLOTS
+                for fact in facts if not re.fullmatch(
+                    r"(?:касс\w*|аппарат\w*|оборудовани\w*|терминал\w*|"
+                    r"[0-9]+(?:[.,][0-9]+)*(?:lite|ф|f)?)", fact.value, re.I)}
+    old, new = values(previous.task_entities), values(incoming_entities)
+    return bool(old and new and not any(a == b or a in b or b in a
+                                         for a in old for b in new))
+
+
 class LexicalAnalyzer:
     def analyze(self, text: str, message_id: int | str, state: DialogueState) -> Observation:
         tokens = words(text)
@@ -1165,7 +1187,25 @@ class DialogueManager:
         known_task = obs.intent != "unknown" and obs.operation != "unknown"
         relation = obs.relation
         explicit_new_topic = obs.new_topic or _explicit_new_topic(text)
+        scope_conflict = _scope_conflicts(previous, obs.entities) if previous.task_id else False
+        independent_operation = _operation_is_independent(previous.operation, obs.operation)
+        independent_subject = (previous.object is not None and obs.object is not None
+                               and previous.object != obs.object)
+        independent_domain = (previous.intent not in {"unknown", "general", "device"}
+                              and obs.intent not in {"unknown", "general", "network"}
+                              and obs.intent != previous.intent
+                              and previous.symptom is not None and obs.symptom is not None
+                              and obs.request_type != "feedback")
         if not previous.task_id or (previous.task_context and previous.task_context.closed):
+            relation = "new_task"
+        elif (observation is not None and relation in {"continue", "unknown"}
+              and ((independent_operation and obs.request_type != "feedback")
+                   or (scope_conflict and obs.symptom)
+                   or (independent_subject and obs.symptom)
+                   or independent_domain)):
+            # A standalone operation or a new confirmed subject/scope can
+            # contradict the provider's generic continuation label. Parameter
+            # corrections and clarification answers remain on their task.
             relation = "new_task"
         elif (relation == "new_task" and not explicit_new_topic
               and previous.symptom is None
@@ -1174,6 +1214,7 @@ class DialogueManager:
               and (previous.operation == "unknown" or obs.operation == previous.operation)
               and obs.operation not in {"unknown", "explain"}
               and (obs.symptom or obs.entities or obs.goals)
+              and not scope_conflict
               and not any(slot in obs.entities and previous.task_entities.get(slot)
                           and {fact.value for fact in obs.entities[slot]}.isdisjoint(
                               fact.value for fact in previous.task_entities[slot])
