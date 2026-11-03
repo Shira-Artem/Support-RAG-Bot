@@ -1337,3 +1337,41 @@
 
 - Коммит [`c822e3e`](https://github.com/Shira-Artem/Support-RAG-Bot/commit/c822e3e72afb0770027780a48b93298eb8e9eeaa) (`Complete B1.3b continuation safeguards`) опубликован обычным push в `origin/main`; force push и новые ветки не использовались. После push локальный `HEAD` и `origin/main` совпали на `c822e3e72afb0770027780a48b93298eb8e9eeaa`.
 - Публикация включает текущие локальные изменения, B1.3b code/tests, roadmap/project-state/report updates и 9 synthetic live attempt traces. API key values отсутствуют в артефактах; `.env` не менялся. Gate остаётся **B1.3b NO-GO / LIVE INCOMPLETE**.
+
+### 2026-11-03 — повтор финального live S1 после cooldown
+
+- По инструкции владельца запуск не ограничивал локальным малым бюджетом HTTP-попыток и поставил межходовую паузу в 0; run всё равно корректно остановился на первом provider 429. Использовался только `GROQ_API_KEY`; переключения между организациями не было.
+- После полного ожидания предыдущего `Retry-After: 1046` S1 был начат с чистого B1.3a checkpoint. На первом ходе Understanding прошёл HTTP 200 (2,245 prompt / 677 completion; 2,922 всего), Planner получил HTTP 429 `rate_limit_exceeded`, `type=tokens`, `Retry-After: 1033`. В ответе были видны 5,437 TPM remaining / reset 19.222 s и 999 requests remaining; конкретная квотная размерность, вызвавшая 429, по этим headers не установлена.
+- Harness остановился сразу на 429, без повторного HTTP. Fail-safe ответ сообщил о лимите; `same_task=true` и SQLite round-trip совпал. Trace: [final10 S1](../reports/architecture_audit_20261101/b1_3b_live_final10_s1_20261103.json). Continuation attempts в серии: **20**. Секретные значения ключей в trace не записываются.
+- Cooldown primary профиля истекает не ранее **2026-11-03 14:54:31 UTC** (расчёт от времени trace 14:37:17 UTC плюс Retry-After 1,033 s). До истечения не отправлять новые запросы этому профилю; другой профиль не использовать для обхода ограничений.
+- **Gate остаётся B1.3b NO-GO / LIVE INCOMPLETE.** S1 не завершён, S2 на финальном коде не запускался. Следующий шаг: после cooldown повторить S1 от чистого checkpoint, затем выполнить полный S2; не переходить к B1.4/B1.5/B2. Commit/push отложены по указанию владельца до полного завершения обоих live сценариев.
+
+### 2026-11-03 — продолжение S2 в live harness
+
+- При проверке сохранённого S2 checkpoint обнаружено, что runner не имел отдельного case для следующего хода «Что дальше?». Добавлен `b1_3b_s2_what_next`, чтобы после успешной фиксации явного положительного результата продолжить тот же диалог из SQLite runner-а; это изменение только synthetic harness, runtime приложения не затрагивает.
+- Оба S2 хода будут запускаться последовательно отдельными invocation на том же изолированном SQLite, чтобы при 429 на втором ходе можно было возобновить только его. Проверка по-прежнему ожидает реальный путь `bot.handle_message`/Understanding/Planner и SQLite round-trip. До завершения S1 и S2 ничего не коммитить и не пушить.
+
+### 2026-11-03 — повтор S1 после Retry-After 1033
+
+- После ожидания до 14:54:31 UTC новый запуск primary профиля был начат с чистого checkpoint, `--pause 0`, `--max-http 1000`. Первый ход снова завершился Understanding HTTP 200 (2,245 prompt / 668 completion), затем Planner HTTP 429 `rate_limit_exceeded`, `type=tokens`, `Retry-After: 693`; runner остановился без повтора. Fail-safe ответ сохранён, `same_task=true`, SQLite round-trip совпадает. [Trace final11](../reports/architecture_audit_20261101/b1_3b_live_final11_s1_20261103.json).
+- Видимый TPM remaining был 5,581 перед Planner и 6,685 в ответе 429, token-window reset соответственно 18.142 s и 9.862 s; requests remaining 999. Локальный runner не вставлял ожидание (`rate_limit_pacing=[]`). Эти наблюдения не показывают точную дополнительную квоту, вызвавшую 429. Общий счётчик continuation HTTP attempts: **22**.
+- Новый cooldown primary истекает не ранее **2026-11-03 15:06:25 UTC** (trace сохранён в 14:54:51.090 UTC, Retry-After 693 s). До этого профиль не вызывать; другой профиль не использовать для обхода лимита. S1 и S2 остаются незавершёнными; commit/push отложены до обоих полных live сценариев по прямому указанию владельца.
+
+### 2026-11-03 — третий повтор S1 после provider cooldown
+
+- После соблюдения `Retry-After: 693` S1 снова был начат с чистого checkpoint. Understanding вернул HTTP 200 (2,245 prompt / 660 completion), Planner вернул HTTP 429 `rate_limit_exceeded`, `type=tokens`, `Retry-After: 342`; runner немедленно остановился, retry не было. Fail-safe ответ сохранён, task тот же, SQLite round-trip совпадает. [Trace final12](../reports/architecture_audit_20261101/b1_3b_live_final12_s1_20261103.json).
+- Headers: visible TPM remaining 5,567 перед Planner и 7,551 в 429 response, `reset-tokens` 18.247 s / 3.367 s; request remaining 999. `Retry-After` последовательно уменьшился **1033 → 693 → 342 s**, но эта динамика не определяет отдельный лимит. Общий счётчик continuation attempts: **24**.
+- По save time 15:06:49.545 UTC следующий запрос к primary возможен не раньше **15:12:32 UTC**. B1.3b остаётся **NO-GO / LIVE INCOMPLETE**; оба S1/S2 полных сценария ещё не пройдены. Не менять профиль после 429, не коммитить/пушить до полного прохождения live gate.
+- Для следующего retry добавлено диагностическое поле: harness сохраняет до 500 символов `error.message` от Groq, заменяя `gsk_...` и `org_...` строки на `[REDACTED_KEY]` / `[REDACTED_ORG]`; это может указать квотную размерность, которую public headers не выявили. `py_compile` и `git diff --check` прошли; product runtime не менялся.
+
+### 2026-11-03 — подтверждён дневной TPD лимит Groq
+
+- Trace с redacted provider message подтвердил причину серии 429: организация достигла **200,000 tokens/day (TPD)** на `openai/gpt-oss-20b`. После короткого 1-секундного `Retry-After` Understanding прошёл (HTTP 200), затем Planner получил 429: `Used 199,997`, `Requested 2,410`; сообщение Groq указало ожидание **17m19.824s**, заголовок — `Retry-After: 1040`. Visible TPM remaining было 5,424; это дневной TPD, не TPM/RPM.
+- [Trace final14](../reports/architecture_audit_20261101/b1_3b_live_final14_s1_20261103.json); organization identifier и возможные key-подобные строки замаскированы. Task и SQLite round-trip сохранены; retry не выполнялся. Continuation series: **27 HTTP attempts**.
+- Следующий primary вызов не раньше **2026-11-03 15:31:11 UTC**. До этого не вызывать профиль; не использовать другую организацию для распределения запросов в обход опубликованного TPD лимита. S1/S2 остаются не завершены; commit/push всё ещё отложены до полных live прогонов по указанию владельца.
+
+### 2026-11-03 — публикация текущего неполного live результата по новому указанию
+
+- Владелец изменил предыдущее указание о публикации и попросил запушить уже собранный результат, явно сообщив точку остановки. Публикуются только локальные B1.3b traces/docs и synthetic harness; production runtime, production SQLite, Qdrant, KB, `.env` и Telegram не менялись.
+- Gate остаётся **B1.3b NO-GO / LIVE INCOMPLETE**: primary S1 дошёл до Understanding HTTP 200, Planner остановлен на дневном TPD 200,000 (199,997 used + 2,410 requested), `Retry-After: 1040`; S2 не выполнен. Continuation series насчитывает **27 HTTP attempts**. Следующий безопасный запрос — после 15:31:11 UTC на том же primary профиле; не распределять вызовы по другой организации.
+- После публикации проверить, что локальный `HEAD` совпадает с `origin/main`; при любом расхождении прекратить push.

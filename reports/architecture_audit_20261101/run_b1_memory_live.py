@@ -60,6 +60,7 @@ CASES = {
         "Что дальше?"],
     "b1_3b_s2_after_ambiguous": [
         "Диагностический отчёт напечатал."],
+    "b1_3b_s2_what_next": ["Что дальше?"],
     "b1_2_saby_final": [
         "Уточнил у поставщика: он отправил УПД, но у меня во входящих его всё ещё нет."],
     "b1_2_evotor": [
@@ -300,6 +301,9 @@ async def run(args):
                 "code": error.get("code") if isinstance(error.get("code"), str) else None,
                 "type": error.get("type") if isinstance(error.get("type"), str) else None,
                 "param": error.get("param") if isinstance(error.get("param"), str) else None,
+                "message": (re.sub(r"org_[A-Za-z0-9_-]+", "[REDACTED_ORG]",
+                            re.sub(r"gsk_[A-Za-z0-9_-]+", "[REDACTED_KEY]", error["message"]))[:500]
+                            if isinstance(error.get("message"), str) else None),
                 "failed_generation_present": error.get("failed_generation") is not None})
         return response
 
