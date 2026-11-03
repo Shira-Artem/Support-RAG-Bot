@@ -219,7 +219,8 @@ def _safe_state(state, prior_task_id):
 
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
                 injected_candidate=None, coordinator_enabled=False, after_dialogue=None,
-                planner_overrides=None, before_turn=None, source_root=ROOT):
+                planner_overrides=None, before_turn=None, source_root=ROOT,
+                planner_section_contains=None):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)
     rag = LocalRag(sources, injected_candidate, root=source_root)
@@ -273,10 +274,14 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
             if "candidate_sections" in payload:
                 generation_calls.append("planner")
                 sections = payload["candidate_sections"]
-                preferred = next((item for item in sections if
-                                  "Что проверено" in item["section"] or
-                                  "Безопасные проверки" in item["section"] or
-                                  "Ограничения" in item["section"]), sections[0])
+                preferred = next((item for item in sections
+                                  if planner_section_contains
+                                  and planner_section_contains.casefold() in
+                                  item["section"].casefold()), None)
+                preferred = preferred or next((item for item in sections if
+                    "Что проверено" in item["section"] or
+                    "Безопасные проверки" in item["section"] or
+                    "Ограничения" in item["section"]), sections[0])
                 planner_choices.append({"id": preferred["id"], "section": preferred["section"],
                                         "source": preferred["source"]})
                 value = {"mode": "select", "section_id": preferred["id"],
@@ -757,18 +762,32 @@ def test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves(
                           encoding="utf-8")
 
 
-def test_reported_compound_results_keep_component_outcomes_and_show_approved_boundary(monkeypatch, tmp_path):
-    cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
+def test_reported_internet_condition_selects_only_matching_approved_branch(monkeypatch, tmp_path):
+    opening = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json")
+                         .read_text(encoding="utf-8"))[0]
+    continuation = {"request_type": "information", "relation": "continue",
+        "intent": "receipt", "operation": "diagnose", "object": None,
+        "object_evidence": None, "goal": None, "symptom": None, "entities": [],
+        "unknown_facts": [], "specialist_requested": False,
+        "specialist_evidence": None, "confidence": 0.9}
+    cases = [opening,
+        {"id": "report_printed", "text": "Диагностический отчёт напечатал.",
+         "provider_raw": continuation},
+        {"id": "internet_works", "text": "Интернет работает.",
+         "provider_raw": continuation}]
     trace = _run_replay(monkeypatch, tmp_path, cases,
         sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
     assert trace[1]["reason"] == "progress_ledger_next_approved_check"
-    assert trace[2]["reason"] == "progress_ledger_conditional_source_boundary"
-    assert "Если базовые проверки не выявили причину" in trace[2]["final_reply"]
-    assert "передайте диагностический отчёт в поддержку Эвотора" in trace[2]["final_reply"]
+    assert trace[2]["reason"] == "progress_ledger_next_approved_check"
+    assert "Если интернет есть, сопоставьте адрес, порт и ИНН ОФД" in trace[2]["final_reply"]
+    assert "восстановите сетевое подключение" not in trace[2]["final_reply"]
+    assert "передайте диагностический отчёт в поддержку Эвотора" not in trace[2]["final_reply"]
     checks = trace[2]["state_after_sqlite_reopen"]["task_context"]["checks"]
-    assert checks[-1]["status"] == "failed"
-    assert {item["status"] for item in checks[-1]["component_results"]} == {"passed", "failed"}
-    assert "каков её результат" not in trace[2]["final_reply"]
+    diagnostic = next(item for item in checks if "проверьте состояние" in item.get("label", ""))
+    assert any(item["status"] == "passed" and item["quote"] == "Интернет работает"
+               for item in diagnostic["observations"])
+    assert trace[2]["stage_call_counts"]["planner"] == 1
+    assert trace[2]["coordinator_decision"]["route"] == "technical_action"
 
 
 def test_source_order_survives_sqlite_reopen_without_overriding_current_applicability(monkeypatch, tmp_path):

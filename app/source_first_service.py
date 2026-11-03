@@ -24,6 +24,8 @@ from app.llm_client import GenerationError, generate
 from app.semantic_evidence_selector import evidence_role
 from app.rag_query import QueryNeedsClarification, build_rag_query
 from app.retrieval_pipeline import normalize_metadata
+from app.source_actions import (CHECK_ACTION_PATTERN, CHECK_ACTION_ROOTS,
+                                SOURCE_ACTION_PATTERN)
 from app.scope_policy import (HARDWARE_TASK_CATEGORIES, assess_source_scope,
                               matches_scope_value)
 from app.response_grounding import (claim_supported, content_terms, evidence_kind,
@@ -432,12 +434,13 @@ def _approved_check_units(text: str, source: str, section: str, *,
         # sentence-level ledger unit from stripping its source preconditions.
         pending_context = []
         for sentence in statements(text):
-            actionable = (evidence_kind(sentence, section) in {"procedure", "interface"}
-                and re.search(
-                    r"\b(?:откройте|перейдите|зайдите|нажмите|выберите|проверьте|сверьте|"
-                    r"посмотрите|напечатайте|введите|установите|восстановите|передайте|"
-                    r"открой|перейди|зайди|нажми|выбери|проверь|сверь|посмотри)\b",
-                    sentence, re.I))
+            # A check phrased as a precondition before the next procedure is
+            # context for that action, not a standalone published unit.
+            precondition_only = (re.match(r"^\s*(?:перед|прежде\s+чем)\b", sentence, re.I)
+                and CHECK_ACTION_PATTERN.search(sentence))
+            actionable = (not precondition_only
+                and evidence_kind(sentence, section) in {"procedure", "interface"}
+                and SOURCE_ACTION_PATTERN.search(sentence))
             if not actionable:
                 pending_context.append(sentence)
                 continue
@@ -466,19 +469,22 @@ def _approved_check_units(text: str, source: str, section: str, *,
     # be distinguished from a failed multi-check block. These are boundaries
     # from explicit verification/compare/observe actions in the approved
     # instruction text; customer wording never decides whether a check is composite.
-    check_action = re.compile(
-        r"\b(?:проверьте|сверьте|сопоставьте|посмотрите|"
-        r"проверь|сверь|сопоставь|посмотри)\b", re.I)
     for unit in units:
         components = []
         for sentence in statements(unit["label"]):
-            actions = list(check_action.finditer(sentence))
+            actions = list(CHECK_ACTION_PATTERN.finditer(sentence))
+            source_actions = list(SOURCE_ACTION_PATTERN.finditer(sentence))
             if not actions:
                 continue
-            for index, action in enumerate(actions):
-                start = 0 if index == 0 else action.start()
-                end = actions[index + 1].start() if index + 1 < len(actions) else len(sentence)
-                label = sentence[start:end].strip()
+            for action in actions:
+                # Conditions remain on the source unit for branch selection;
+                # components contain only the diagnostic action being tracked.
+                start = action.start()
+                next_action = next((item for item in source_actions
+                                    if item.start() > action.start()), None)
+                end = next_action.start() if next_action else len(sentence)
+                label = sentence[start:end].strip(" \t,;:")
+                label = re.sub(r"\b(?:и|а|но|затем)\s*$", "", label, flags=re.I).rstrip(" ,;:")
                 if not label:
                     continue
                 component_id = sha256((unit["unit_id"] + "\0" + label).encode("utf-8")).hexdigest()[:20]
@@ -490,10 +496,9 @@ def _approved_check_units(text: str, source: str, section: str, *,
 def _merge_source_components(state: DialogueState, source_units: list[dict],
                              source: str, section: str) -> list[dict]:
     """Backfill component metadata only onto exact units from the checked source."""
-    action_roots = ("провер", "свер", "сопостав", "посмотр", "уточн", "выясн")
     def terms(label: str) -> set[str]:
         roots = {term[:4] for term in content_terms(label)
-                 if not term.startswith(action_roots + ("оператор", "офд"))}
+                 if not term.startswith(CHECK_ACTION_ROOTS + ("оператор", "офд"))}
         return {term for term in roots if len(term) >= 4 or term.isascii() and len(term) >= 3}
     def aggregate_status(label: str, observations: list[dict]) -> str | None:
         if not observations:
@@ -579,6 +584,235 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                 and stored.get("source") == source and stored.get("section") == section):
             stored["components"] = unit["components"]
     return shown
+
+
+def _source_unit_condition(unit: dict) -> str | None:
+    for sentence in statements(str(unit.get("label") or unit.get("line") or "")):
+        match = re.match(r"^\s*Если\s+(.+?)(?:,\s+|—\s*)", sentence, re.I)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
+def _source_result_observations(state: DialogueState, source: str, section: str,
+                                current_message: str | None = None) -> list[dict]:
+    task = state.task_context
+    if not task:
+        return []
+    shown_ids = {str(item.get("unit_id") or "") for item in task.shown_units}
+    observations = []
+    seen = set()
+    for check in task.checks:
+        if (check.get("task_id") != task.task_id or check.get("source") != source
+                or check.get("section") != section or check.get("source_verified") is not True
+                or str(check.get("unit_id") or "") not in shown_ids):
+            continue
+        groups = [check.get("observations") or []]
+        groups.extend(item.get("observations") or []
+                      for item in check.get("component_results") or [])
+        if not any(groups) and check.get("result_span"):
+            groups = [[{"status": check.get("status"), **check["result_span"]}]]
+        for group in groups:
+            for item in group:
+                quote = str(item.get("quote") or "").strip()
+                if not quote:
+                    continue
+                key = (str(item.get("message_id") or ""), quote,
+                       str(item.get("status") or ""))
+                if key in seen:
+                    continue
+                seen.add(key)
+                observations.append({"message_id": item.get("message_id"),
+                                    "quote": quote, "status": item.get("status")})
+    # The reducer intentionally keeps one best result span per shown unit.
+    # If that span came from this exact current user message, retain the full
+    # message so each explicitly mentioned source condition can be evaluated.
+    if current_message:
+        normalized_message = current_message.casefold().replace("ё", "е")
+        matching = [item for item in observations
+                    if item.get("quote") and
+                    str(item["quote"]).casefold().replace("ё", "е") in normalized_message]
+        if matching:
+            order = max(_message_order(item.get("message_id"), index)
+                        for index, item in enumerate(matching))
+            latest = [item for index, item in enumerate(matching)
+                      if _message_order(item.get("message_id"), index) == order]
+            item = latest[-1]
+            observations.append({"message_id": item.get("message_id"),
+                                "quote": current_message,
+                                "status": "unknown"})
+    return observations
+
+
+def _message_order(message_id, index: int) -> tuple[int, int | str]:
+    try:
+        return (1, int(message_id))
+    except (TypeError, ValueError):
+        return (0, index)
+
+
+def _internet_availability(observations: list[dict]) -> bool | None:
+    relevant = [(index, item) for index, item in enumerate(observations)
+                if re.search(r"\bинтернет\w*\b", str(item.get("quote") or ""), re.I)]
+    if not relevant:
+        return None
+    latest_order = max(_message_order(item.get("message_id"), index)
+                       for index, item in relevant)
+    latest = [item for index, item in relevant
+              if _message_order(item.get("message_id"), index) == latest_order]
+    values = set()
+    for item in latest:
+        quote = str(item.get("quote") or "").casefold().replace("ё", "е")
+        for clause in re.split(r"[,;.!?]|\b(?:но|однако)\b", quote):
+            if not re.search(r"\bинтернет\w*\b", clause):
+                continue
+            if re.search(r"\b(?:не\s+знаю|не\s+уверен\w*|вроде|возможно|кажется|"
+                         r"нестабил\w*|иногда|непонятно)\b", clause):
+                values.add(None)
+            elif re.search(r"(?:\bнет\b.{0,24}\bинтернет\w*|"
+                            r"\bинтернет\w*.{0,24}(?:\bнет\b|отсутств\w*|недоступ\w*|"
+                            r"не\s+(?:работ|доступ|подключ)\w*))", clause):
+                values.add(False)
+            elif re.search(r"\bинтернет\w*.{0,24}(?:работа\w*|есть|доступ\w*|"
+                            r"подключ\w*|восстановлен\w*)\b", clause):
+                values.add(True)
+    return next(iter(values)) if len(values) == 1 and None not in values else None
+
+
+def _evotor_component_status(component: str, quote: str) -> str | None:
+    """Read explicit outcomes for the narrow conditional checks in the Evotor article."""
+    normalized = quote.casefold().replace("ё", "е")
+    if component == "eou":
+        if re.search(r"\beou\b.{0,35}(?:отсутств\w*|не\s+(?:работ|запуска|подключ)\w*)|"
+                     r"(?:отсутств\w*|не\s+(?:работ|запуска|подключ)\w*).{0,35}\beou\b",
+                     normalized):
+            return "failed"
+        if re.search(r"\beou\b.{0,35}(?:работа\w*|есть|запущен\w*|действу\w*)", normalized):
+            return "passed"
+    elif component == "internet":
+        availability = _internet_availability([{"quote": quote}])
+        if availability is not None:
+            return "passed" if availability else "failed"
+    elif component == "settings":
+        mentions = r"(?:адрес\w*|порт\w*|инн)"
+        if (re.search(rf"\b{mentions}\b.{{0,70}}(?:не\s+(?:совпад|соответств|верн|правильн)\w*|"
+                      r"(?:ошибочн|неверн)\w*)|"
+                      rf"(?:не\s+(?:совпад|соответств|верн|правильн)\w*|(?:ошибочн|неверн)\w*).{{0,70}}\b{mentions}\b",
+                      normalized)):
+            return "failed"
+        if (re.search(rf"\b{mentions}\b.{{0,70}}(?:совпад\w*|соответств\w*|верн\w*|правильн\w*)",
+                      normalized)):
+            return "passed"
+    elif component == "queue":
+        if re.search(r"\bочеред\w*.{0,45}\bне\s+уменьш\w*", normalized):
+            return "failed"
+        if re.search(r"\bочеред\w*.{0,45}\bуменьш\w*", normalized):
+            return "passed"
+    return None
+
+
+def _base_checks_found_cause(observations: list[dict]) -> bool | None:
+    categories = {"eou": [], "internet": [], "settings": [], "queue": []}
+    for index, item in enumerate(observations):
+        quote = str(item.get("quote") or "").casefold().replace("ё", "е")
+        status = item.get("status")
+        if status not in {"passed", "failed", "unknown", "not_done"}:
+            continue
+        relevant = []
+        if re.search(r"\beou\b", quote):
+            relevant.append("eou")
+        if re.search(r"\bинтернет\w*\b", quote):
+            relevant.append("internet")
+        if re.search(r"\b(?:адрес\w*|порт\w*|инн)\b", quote):
+            relevant.append("settings")
+        if re.search(r"\bочеред\w*\b", quote):
+            relevant.append("queue")
+        for category in relevant:
+            explicit_status = _evotor_component_status(category, quote)
+            categories[category].append((index, {**item,
+                "status": explicit_status or status}))
+
+    latest = {}
+    for category, items in categories.items():
+        if not items:
+            latest[category] = None
+            continue
+        order = max(_message_order(item.get("message_id"), index) for index, item in items)
+        same_turn = [item.get("status") for index, item in items
+                     if _message_order(item.get("message_id"), index) == order]
+        values = set(same_turn)
+        latest[category] = next(iter(values)) if len(values) == 1 else None
+
+    direct_summary = any(
+        re.search(r"\bвсе\s+(?:базов\w*\s+)?провер\w*\s+(?:пройд\w*|выполн\w*)\b", item["quote"], re.I)
+        and re.search(r"\bочеред\w*.{0,30}\bне\s+уменьш\w*\b", item["quote"], re.I)
+        for item in observations)
+    primary = [latest[key] for key in ("eou", "internet", "settings")]
+    if any(value == "failed" for value in primary):
+        return True
+    if direct_summary and not any(value == "failed" for value in primary):
+        return False
+    if any(value in {None, "unknown", "not_done"} for value in primary + [latest["queue"]]):
+        return None
+    if all(value == "passed" for value in primary) and latest["queue"] == "failed":
+        return False
+    return True
+
+
+def _condition_holds(condition: str, state: DialogueState, source: str,
+                     section: str, current_message: str | None = None) -> bool | None:
+    observations = _source_result_observations(state, source, section, current_message)
+    normalized = condition.casefold().replace("ё", "е")
+    if "интернет" in normalized:
+        availability = _internet_availability(observations)
+        if availability is None:
+            return None
+        expects_absent = bool(re.search(r"(?:отсутств\w*|\bнет\b|\bне\s+(?:работ|доступ)\w*)", normalized))
+        return not availability if expects_absent else availability
+    if ("базов" in normalized and "провер" in normalized
+            and re.search(r"не\s+выяв\w*", normalized)
+            and re.search(r"причин\w*", normalized)):
+        return not _base_checks_found_cause(observations) \
+            if _base_checks_found_cause(observations) is not None else None
+    return None
+
+
+def _condition_question(condition: str) -> str:
+    normalized = condition.casefold().replace("ё", "е")
+    if "интернет" in normalized:
+        return "Уточните по диагностическому отчёту: доступ в интернет на кассе есть или отсутствует?"
+    if "базов" in normalized and "причин" in normalized:
+        return ("Уточните результаты базовых проверок: работает ли EoU, есть ли доступ в интернет, "
+                "совпадают ли адрес, порт и ИНН, и уменьшается ли очередь?")
+    return f"Уточните, подтверждено ли условие из источника: «Если {condition}»."
+
+
+def _terminal_source_boundary(unit: dict) -> str | None:
+    for sentence in statements(str(unit.get("label") or unit.get("line") or "")):
+        if (re.match(r"^\s*Если\b", sentence, re.I)
+                and re.search(r"\b(?:поддержк\w*|специалист\w*)\b", sentence, re.I)
+                and re.search(r"\b(?:передайте|обратитесь|запросите)\b", sentence, re.I)
+                and not unsafe_operation_issue(sentence)):
+            return sentence
+    return None
+
+
+def _next_applicable_source_unit(source_units: list[dict], shown_ids: set[str],
+                                 state: DialogueState, source: str,
+                                 section: str,
+                                 current_message: str | None = None) -> tuple[dict | None, str | None]:
+    for unit in source_units:
+        if str(unit.get("unit_id") or "") in shown_ids:
+            continue
+        condition = _source_unit_condition(unit)
+        if condition is None:
+            return unit, None
+        applies = _condition_holds(condition, state, source, section, current_message)
+        if applies is True:
+            return unit, None
+        if applies is None:
+            return None, condition
+    return None, None
 
 
 def _validate_information_composition(candidate: str, evidence: str,
@@ -1878,19 +2112,20 @@ class SourceFirstService:
                         state, source_units, selected["source"], selected["section"])
                     verified_eligible_units = [unit for unit in source_units
                         if not unit["model_scope"] or unit["model_value"]]
+                    verified_check_updates = [
+                        {key: check[key] for key in ("task_id", "unit_id", "label", "source",
+                            "section", "source_verified", "status", "result_span", "observations",
+                            "components", "component_results") if key in check}
+                        for check in state.task_context.checks
+                        if check.get("unit_id") in {unit.get("unit_id") for unit in verified_shown_units}
+                    ]
                     # Re-persist metadata for older SQLite snapshots only after
                     # the selected section has just passed exact SHA/content checks.
                     base["progress_update"] = {
                         "procedure_id": selected["document_id"],
                         "shown_units": verified_shown_units,
                         "eligible_units": verified_eligible_units,
-                        "check_updates": [
-                            {key: check[key] for key in ("task_id", "unit_id", "label", "source",
-                                "section", "source_verified", "status", "result_span", "observations",
-                                "components", "component_results") if key in check}
-                            for check in state.task_context.checks
-                            if check.get("unit_id") in {unit.get("unit_id") for unit in verified_shown_units}
-                        ],
+                        "check_updates": verified_check_updates,
                         "metadata_only": True,
                     }
                     last_shown = matching_shown[-1]
@@ -1901,7 +2136,9 @@ class SourceFirstService:
                         components = (last_result or {}).get("components") or last_shown.get("components") or []
                         component_results = {item.get("component_id"): item
                             for item in (last_result or {}).get("component_results", [])}
-                        if result_status == "failed" and len(components) > 1:
+                        has_failed_component = any(
+                            item.get("status") == "failed" for item in component_results.values())
+                        if len(components) > 1 and (result_status == "failed" or has_failed_component):
                             remaining_components = [component for component in components
                                 if component_results.get(component.get("component_id"), {}).get("status")
                                 not in {"passed", "failed"}]
@@ -1924,9 +2161,25 @@ class SourceFirstService:
                                     scenario_reason="progress_ledger_failed_composite_needs_remaining_results",
                                     clarification_slot="details", generation_status="clarification",
                                     duration_ms=round((perf_counter()-started)*1000), **base)
-                        shown_ids = {unit.get("unit_id") for unit in matching_shown}
-                        next_unit = next((unit for unit in source_units
-                            if unit["unit_id"] not in shown_ids), None)
+                        shown_ids = {str(unit.get("unit_id") or "") for unit in matching_shown}
+                        next_unit, unresolved_condition = _next_applicable_source_unit(
+                            source_units, shown_ids, state, selected["source"], selected["section"],
+                            user_message)
+                        if unresolved_condition:
+                            return Answer(_condition_question(unresolved_condition),
+                                scenario="clarify",
+                                scenario_reason="progress_ledger_conditional_context_unknown",
+                                clarification_slot="details", generation_status="clarification",
+                                duration_ms=round((perf_counter()-started)*1000), **base)
+                        boundary_sentence = _terminal_source_boundary(next_unit) if next_unit else None
+                        if boundary_sentence:
+                            return Answer(
+                                "Результаты сохранены. В подтверждённой инструкции указана такая граница:\n"
+                                + boundary_sentence
+                                + f"\n\nИсточник: {selected['source']} — {selected['section']}",
+                                scenario="answer", scenario_reason="progress_ledger_conditional_source_boundary",
+                                generation_status="generated", validation_status="exact_approved_conditional_boundary",
+                                duration_ms=round((perf_counter()-started)*1000), **base)
                         if next_unit and next_unit["model_scope"] and not confirmed_model:
                             already_asked_model = any(item.get("role") == "assistant"
                                 and item.get("scenario_reason") == "progress_ledger_waiting_for_model"
@@ -1953,6 +2206,7 @@ class SourceFirstService:
                                 "procedure_id": selected["document_id"],
                                 "shown_units": [*verified_shown_units, next_unit],
                                 "eligible_units": verified_eligible_units,
+                                "check_updates": verified_check_updates,
                             }
                             next_text = (f"{next_unit['line']}\n\n"
                                          f"Источник: {selected['source']} — {selected['section']}")
@@ -1962,15 +2216,23 @@ class SourceFirstService:
                                 generation_status="generated",
                                 duration_ms=round((perf_counter()-started)*1000), **base)
                         if result_status == "failed":
-                            terminal_conditions = [sentence for sentence in statements(last_shown.get("label", ""))
-                                if re.match(r"^\s*Если\b", sentence, re.I)
-                                and re.search(r"\b(?:поддержк\w*|специалист\w*)\b", sentence, re.I)
-                                and evidence_kind(sentence, "") in {"fact", "limitation"}
-                                and not unsafe_operation_issue(sentence)]
-                            if terminal_conditions:
+                            terminal_condition = _terminal_source_boundary(last_shown)
+                            applies = (_condition_holds(
+                                _source_unit_condition({"label": terminal_condition}) or "",
+                                state, selected["source"], selected["section"], user_message)
+                                if terminal_condition else False)
+                            if applies is None and terminal_condition:
+                                return Answer(
+                                    _condition_question(_source_unit_condition(
+                                        {"label": terminal_condition}) or terminal_condition),
+                                    scenario="clarify",
+                                    scenario_reason="progress_ledger_conditional_context_unknown",
+                                    clarification_slot="details", generation_status="clarification",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
+                            if terminal_condition and applies is True:
                                 return Answer(
                                     "Результаты сохранены. В подтверждённой инструкции указана такая граница:\n"
-                                    + " ".join(terminal_conditions)
+                                    + terminal_condition
                                     + f"\n\nИсточник: {selected['source']} — {selected['section']}",
                                     scenario="answer", scenario_reason="progress_ledger_conditional_source_boundary",
                                     generation_status="generated", validation_status="exact_approved_conditional_boundary",
@@ -1980,33 +2242,60 @@ class SourceFirstService:
                                 "progress_ledger_failed_atomic_no_next_check",
                                 "no_next_approved_check_after_single_check_failure", started, **base)
                     if not last_result or last_result.get("status") in {"asked", "unknown", "not_done"}:
-                        shown_ids = {unit.get("unit_id") for unit in matching_shown}
-                        has_next_unit = any(unit["unit_id"] not in shown_ids for unit in source_units)
-                        current_result = (last_result or {}).get("result_span") or {}
-                        current_observation = (understanding or {}).get("observation") or {}
-                        current_message_id = (current_observation.get("evidence") or {}).get("message_id")
-                        reported_now = (current_result.get("message_id") == current_message_id
-                            and bool(current_result.get("quote"))
-                            and current_result["quote"] in user_message)
-                        # A compound check can remain unknown even after a
-                        # useful client report. Do not force it to passed or
-                        # ask the same broad result question when this exact
-                        # approved block already supplies a conditional end.
-                        # Preserve the condition; do not assert it was met.
-                        terminal_conditions = [sentence for sentence in statements(last_shown.get("label", ""))
-                            if re.match(r"^\s*Если\b", sentence, re.I)
-                            and re.search(r"\b(?:поддержк\w*|специалист\w*)\b", sentence, re.I)
-                            and evidence_kind(sentence, "") in {"fact", "limitation"}
-                            and not unsafe_operation_issue(sentence)]
-                        if (reported_now and not has_next_unit and terminal_conditions
-                                and (last_result or {}).get("status") == "unknown"):
-                            return Answer(
-                                "Сообщённые результаты сохранены. В инструкции предусмотрена такая следующая ветка:\n"
-                                + " ".join(terminal_conditions)
-                                + f"\n\nИсточник: {selected['source']} — {selected['section']}",
-                                scenario="answer", scenario_reason="progress_ledger_conditional_source_boundary",
-                                generation_status="generated", validation_status="exact_approved_conditional_boundary",
+                        shown_ids = {str(unit.get("unit_id") or "") for unit in matching_shown}
+                        conditional_unit, unresolved_condition = _next_applicable_source_unit(
+                            source_units, shown_ids, state, selected["source"], selected["section"],
+                            user_message)
+                        if unresolved_condition:
+                            return Answer(_condition_question(unresolved_condition),
+                                scenario="clarify",
+                                scenario_reason="progress_ledger_conditional_context_unknown",
+                                clarification_slot="details", generation_status="clarification",
                                 duration_ms=round((perf_counter()-started)*1000), **base)
+                        if conditional_unit and _source_unit_condition(conditional_unit):
+                            boundary_sentence = _terminal_source_boundary(conditional_unit)
+                            if boundary_sentence:
+                                return Answer(
+                                    "Результаты сохранены. В подтверждённой инструкции указана такая граница:\n"
+                                    + boundary_sentence
+                                    + f"\n\nИсточник: {selected['source']} — {selected['section']}",
+                                    scenario="answer", scenario_reason="progress_ledger_conditional_source_boundary",
+                                    generation_status="generated", validation_status="exact_approved_conditional_boundary",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
+                            if conditional_unit.get("model_scope") and not confirmed_model:
+                                return Answer(
+                                    "Укажите точную модель оборудования, чтобы проверить применимость следующего шага.",
+                                    scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
+                                    clarification_slot="equipment", generation_status="clarification",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
+                            if conditional_unit.get("model_scope") and not conditional_unit.get("model_value"):
+                                return self._escalate(
+                                    "Не нашёл подтверждения, что условный шаг подходит для указанной модели оборудования. "
+                                    "Не буду рекомендовать его; запросите проверку специалиста.",
+                                    "source_model_scope_not_applicable", "conditional_check_model_scope_mismatch",
+                                    started, **base)
+                            if not unsafe_operation_issue(conditional_unit.get("line", "")):
+                                base["progress_update"] = {
+                                    "procedure_id": selected["document_id"],
+                                    "shown_units": [*verified_shown_units, conditional_unit],
+                                    "eligible_units": verified_eligible_units,
+                                    "check_updates": verified_check_updates,
+                                }
+                                next_text = (f"{conditional_unit['line']}\n\n"
+                                             f"Источник: {selected['source']} — {selected['section']}")
+                                return Answer(next_text, scenario="answer",
+                                    scenario_reason="progress_ledger_next_approved_check",
+                                    validation_status="exact_approved_next_check",
+                                    generation_status="generated",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
+                        if (conditional_unit is None and _base_checks_found_cause(
+                                _source_result_observations(state, selected["source"],
+                                                            selected["section"], user_message)) is True):
+                            return self._escalate(
+                                "В подтверждённой инструкции нет следующего действия для исправления найденного несовпадения. "
+                                "Дальнейший безопасный шаг в ней не указан; запросите специалиста.",
+                                "progress_ledger_known_issue_without_approved_next_step",
+                                "source_has_no_remediation_for_confirmed_base_check_failure", started, **base)
                         return self._check_result_clarification(state, last_shown, history, started, **base)
             attribution = ""
             if informational and any(selected["scope"].get(field) for field in ("service", "manufacturer", "model")):

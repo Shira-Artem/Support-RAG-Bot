@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from test_telegram_pilot_sqlite_replay import ROOT, _run_replay
 
 
@@ -38,10 +40,189 @@ def _compound_dialogue():
         return {"id": case_id, "text": text, "provider_raw": raw}
     return [first,
         result_case("report_printed", "Диагностический отчёт напечатал."),
+        result_case("internet_passed", "Интернет работает."),
         result_case("queue_failed", "Очередь неотправленных документов не уменьшается."),
-        result_case("remaining_results",
-                    "EoU работает, интернет работает, адрес, порт и ИНН ОФД совпадают с настройками оператора."),
-        result_case("what_next", "Что делать дальше?")]
+        result_case("remaining_settings_passed",
+                    "EoU работает. Адрес, порт и ИНН ОФД совпадают с настройками оператора.")]
+
+
+def _evotor_prefix_and_result(text: str) -> list[dict]:
+    opening = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json")
+                         .read_text(encoding="utf-8"))[0]
+    report = {"id": "report_printed", "text": "Диагностический отчёт напечатал.",
+              "provider_raw": _continuation_raw("Диагностический отчёт напечатал.")}
+    result = {"id": "condition_result", "text": text,
+              "provider_raw": _continuation_raw(text)}
+    return [opening, report, result]
+
+
+@pytest.mark.parametrize(("case_id", "message", "required", "forbidden", "reason"), [
+    ("internet_absent", "Интернет отсутствует.", "восстановите сетевое подключение",
+     "сопоставьте адрес, порт", "progress_ledger_next_approved_check"),
+    ("internet_works", "Интернет работает.", "сопоставьте адрес, порт и ИНН ОФД",
+     "восстановите сетевое подключение", "progress_ledger_next_approved_check"),
+    ("eou_failed_internet_works", "EoU не работает. Интернет работает.",
+     "сопоставьте адрес, порт и ИНН ОФД", "восстановите сетевое подключение",
+     "progress_ledger_next_approved_check"),
+    ("internet_unknown", "Не знаю, есть ли интернет.", "есть или отсутствует",
+     "восстановите сетевое подключение", "progress_ledger_conditional_context_unknown"),
+    ("internet_contradictory", "Интернет работает. Интернет отсутствует.",
+     "есть или отсутствует", "восстановите сетевое подключение",
+     "progress_ledger_conditional_context_unknown"),
+])
+def test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch(
+        monkeypatch, tmp_path, case_id, message, required, forbidden, reason):
+    trace = _run_replay(monkeypatch, tmp_path, _evotor_prefix_and_result(message),
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True)
+    answer = trace[2]
+    assert answer["reason"] == reason, case_id
+    assert required.casefold() in answer["final_reply"].casefold(), case_id
+    assert forbidden not in answer["final_reply"].casefold(), case_id
+    assert answer["stage_call_counts"]["planner"] == 1
+    assert answer["coordinator_decision"]["route"] == "technical_action"
+    assert answer["state_after_sqlite_reopen"]["task_context"]["task_id"] == "task:1"
+
+
+def test_evotor_address_mismatch_does_not_claim_support_boundary_or_network_failure(
+        monkeypatch, tmp_path):
+    mismatch = "EoU работает. Адрес, порт и ИНН ОФД не совпадают."
+    cases = _evotor_prefix_and_result("Интернет работает.") + [
+        {"id": "settings_mismatch", "text": mismatch,
+         "provider_raw": _continuation_raw(mismatch)},
+    ]
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True)
+    answer = trace[3]
+    assert answer["reason"] == "progress_ledger_known_issue_without_approved_next_step"
+    assert "не совпадают" not in answer["final_reply"].casefold()
+    assert "в подтверждённой инструкции нет следующего действия" in answer["final_reply"].casefold()
+    assert "запросите специалиста" in answer["final_reply"].casefold()
+    assert "поддержку эвотора" not in answer["final_reply"].casefold()
+    assert "восстановите сетевое подключение" not in answer["final_reply"].casefold()
+    saved = answer["state_after_sqlite_reopen"]["task_context"]
+    mismatch_quote = "Адрес, порт и ИНН ОФД не совпадают"
+    assert not any(mismatch_quote in (check.get("result_span") or {}).get("quote", "")
+                   for check in saved["checks"]
+                   if "сопоставьте адрес" not in check.get("label", ""))
+
+
+REAL_ACTION_SOURCES = [
+    pytest.param(
+        "goods", "aqsi_devices/errors/goods-not-on-device.md",
+        "На aQsi (физическая ККТ) товары из кабинета не видны на кассе. Что проверить?",
+        "товары", "aQsi", "aQsi (физическая ККТ)",
+        "Проверенная информация", "убедитесь", 1, id="aqsi-goods-убедитесь"),
+    pytest.param(
+        "fn7", "aqsi_devices/errors/fn7-date.md",
+        "На aQsi (физическая ККТ) ошибка ФН 7: неверные дата и время. Что проверить?",
+        "ФН 7", "aQsi", "aQsi (физическая ККТ)",
+        "Проверенная информация", "сравните", 2, id="aqsi-fn7-сравните"),
+    pytest.param(
+        "fn235", "evotor/fn/fn-235.md",
+        "На Эвотор ошибка ФН 235, документы ждут отправки в ОФД. Что проверить?",
+        "ФН 235", "Эвотор", "Эвотор",
+        "Смысл и безопасная проверка", "убедитесь", 1, id="evotor-fn235-убедитесь"),
+]
+
+
+def _real_source_case(case_id, text, obj, manufacturer, equipment):
+    equipment_quote = equipment if equipment in text else manufacturer
+    raw = {"request_type": "diagnosis", "relation": "new_task", "intent": "device",
+        "operation": "diagnose", "object": obj, "object_evidence": {"quote": obj},
+        "goal": {"quote": "Что проверить?"},
+        "symptom": {"quote": text.split(" Что проверить?")[0]},
+        "entities": [
+            {"slot": "manufacturer", "value": manufacturer,
+             "evidence": {"quote": manufacturer}},
+            {"slot": "equipment", "value": equipment,
+             "evidence": {"quote": equipment_quote}},
+        ], "unknown_facts": [], "specialist_requested": False,
+        "specialist_evidence": None, "confidence": 0.95}
+    return {"id": case_id, "text": text, "provider_raw": raw}
+
+
+@pytest.mark.parametrize(
+    ("case_id", "source", "text", "obj", "manufacturer", "equipment",
+     "section", "verb", "component_count"), REAL_ACTION_SOURCES)
+def test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable(
+        monkeypatch, tmp_path, case_id, source, text, obj, manufacturer,
+        equipment, section, verb, component_count):
+    case = _real_source_case(case_id, text, obj, manufacturer, equipment)
+    first_root = tmp_path / "first"
+    second_root = tmp_path / "second"
+    first_root.mkdir()
+    second_root.mkdir()
+
+    first_mp = pytest.MonkeyPatch()
+    first = _run_replay(first_mp, first_root, [case], sources=(source,),
+        coordinator_enabled=True, planner_section_contains=section)[0]
+    first_mp.undo()
+    second_mp = pytest.MonkeyPatch()
+    second = _run_replay(second_mp, second_root, [case], sources=(source,),
+        coordinator_enabled=True, planner_section_contains=section)[0]
+    second_mp.undo()
+
+    first_task = first["state_after_sqlite_reopen"]["task_context"]
+    second_task = second["state_after_sqlite_reopen"]["task_context"]
+    assert source in first["final_reply"]
+    assert first_task["procedure_id"] is not None
+    eligible = [item for item in first_task["eligible_units"]
+                if item.get("source", "").endswith(source)]
+    assert eligible
+    components = [component for unit in eligible for component in unit.get("components", [])]
+    assert any(verb in item["label"].casefold() for item in components)
+    assert all(len(unit["components"]) == component_count
+               for unit in eligible if verb in unit["label"].casefold())
+
+    first_ids = [(unit["unit_id"], [(item["component_id"], item["label"])
+                                    for item in unit.get("components", [])])
+                 for unit in eligible]
+    second_ids = [(unit["unit_id"], [(item["component_id"], item["label"])
+                                     for item in unit.get("components", [])])
+                  for unit in second_task["eligible_units"]
+                  if unit.get("source", "").endswith(source)]
+    assert first_ids == second_ids
+
+    if case_id == "goods":
+        first_check = next(item for item in eligible if "убедитесь" in item["label"].casefold())
+        assert len(first_check["components"]) == 1
+        assert "проверьте привязку категорий" not in first_check["components"][0]["label"].casefold()
+    elif case_id == "fn7":
+        compare = next(item for item in eligible if "сравните" in item["label"].casefold())
+        labels = [item["label"].casefold() for item in compare["components"]]
+        assert any("сравните" in label for label in labels)
+        assert any("проверьте синхронизацию" in label for label in labels)
+        assert not any("откройте настройки" in label for label in labels)
+    else:
+        check_index = next(index for index, item in enumerate(eligible)
+                           if "проверьте количество" in item["label"].casefold())
+        after_restore = next(item for item in eligible[check_index + 1:]
+                             if "убедитесь" in item["label"].casefold())
+        assert len(after_restore["components"]) == 1
+        assert "восстановите связь" not in after_restore["components"][0]["label"].casefold()
+
+
+def test_real_aqsi_result_is_saved_only_on_shown_check_after_sqlite_reopen(
+        monkeypatch, tmp_path):
+    source = "aqsi_devices/errors/goods-not-on-device.md"
+    opening = _real_source_case("goods", "На aQsi (физическая ККТ) товары из кабинета не видны на кассе. Что проверить?",
+        "товары", "aQsi", "aQsi (физическая ККТ)")
+    result_text = "Интернет работает, касса привязана к правильному магазину."
+    trace = _run_replay(monkeypatch, tmp_path, [opening,
+        {"id": "first_check_passed", "text": result_text,
+         "provider_raw": _continuation_raw(result_text, intent="device")}],
+        sources=(source,), coordinator_enabled=True,
+        planner_section_contains="Проверенная информация")
+    saved = trace[1]["state_after_sqlite_reopen"]["task_context"]
+    shown_ids = {item["unit_id"] for item in saved["shown_units"]}
+    result_checks = [item for item in saved["checks"]
+                     if item.get("result_span", {}).get("quote")]
+    assert saved["procedure_id"] is not None
+    assert result_checks
+    assert all(item["unit_id"] in shown_ids for item in result_checks)
+    assert all(item["result_span"]["quote"] in result_text for item in result_checks)
+    assert not any("категорий" in item.get("label", "").casefold()
+                   and item["unit_id"] not in shown_ids for item in result_checks)
 
 
 def test_failed_composite_asks_only_unreported_source_components_and_keeps_quotes(
@@ -49,28 +230,33 @@ def test_failed_composite_asks_only_unreported_source_components_and_keeps_quote
     trace = _run_replay(monkeypatch, tmp_path, _compound_dialogue(),
         sources=(COMPOUND_SOURCE,), coordinator_enabled=True)
 
-    failed_turn = trace[2]
+    failed_turn = trace[3]
     task = failed_turn["state_after_sqlite_reopen"]["task_context"]
     check = next(item for item in task["checks"] if item["status"] == "failed")
     failed_quote = "Очередь неотправленных документов не уменьшается"
     assert check["result_span"]["quote"] == failed_quote
     assert check["result_span"]["quote"] in failed_turn["user_text"]
-    assert len(check["components"]) > 1
+    assert len(check["components"]) == 2
     assert any(item["status"] == "failed" and item["result_span"]["quote"] == failed_quote
                for item in check["component_results"])
     assert failed_turn["reason"] == "progress_ledger_failed_composite_needs_remaining_results"
     assert "Осталось сообщить результаты пунктов инструкции" in failed_turn["final_reply"]
-    assert "проверьте состояние приложения EoU" in failed_turn["final_reply"]
     assert "сопоставьте адрес, порт и ИНН ОФД" in failed_turn["final_reply"]
+    assert "восстановите сетевое подключение" not in failed_turn["final_reply"]
     assert "уменьшается ли очередь" not in failed_turn["final_reply"]
     assert "Настройки → Обслуживание кассы → Диагностика" not in failed_turn["final_reply"]
 
-    completed = trace[3]["state_after_sqlite_reopen"]["task_context"]
+    completed = trace[4]["state_after_sqlite_reopen"]["task_context"]
     completed_check = next(item for item in completed["checks"] if item["status"] == "failed")
-    outcomes = {item["status"] for item in completed_check["component_results"]}
-    assert outcomes == {"passed", "failed"}
+    queue_result = next(item for item in completed_check["component_results"]
+                        if item["status"] == "failed")
+    compare_result = next(item for item in completed_check["component_results"]
+                          if "сопоставьте адрес" in item.get("label", ""))
+    assert queue_result["result_span"]["quote"] == failed_quote
+    assert any(item["status"] == "passed" and "Адрес, порт и ИНН" in item["quote"]
+               for item in compare_result["observations"])
     for result in completed_check["component_results"]:
-        message = failed_turn["user_text"] if result["status"] == "failed" else trace[3]["user_text"]
+        message = failed_turn["user_text"] if result["status"] == "failed" else trace[4]["user_text"]
         assert result["result_span"]["quote"] in message
     final_check = next(item for item in trace[4]["state_after_sqlite_reopen"]["task_context"]["checks"]
                        if item["status"] == "failed")
@@ -82,7 +268,15 @@ def test_failed_composite_asks_only_unreported_source_components_and_keeps_quote
 
 def test_legacy_sqlite_backfills_only_exact_shown_components_and_keeps_results_separate(
         monkeypatch, tmp_path):
-    cases = _compound_dialogue()
+    cases = _compound_dialogue()[:2] + [
+        {"id": "internet_passed", "text": "Интернет работает.",
+         "provider_raw": _continuation_raw("Интернет работает.")},
+        {"id": "eou_and_settings_passed", "text":
+         "EoU работает. Адрес, порт и ИНН ОФД совпадают.",
+         "provider_raw": _continuation_raw("EoU работает. Адрес, порт и ИНН ОФД совпадают.")},
+        {"id": "queue_not_decreasing", "text": "Очередь не уменьшается.",
+         "provider_raw": _continuation_raw("Очередь не уменьшается.")},
+    ]
 
     def strip_new_metadata_from_legacy_checkpoint(turn, store, conversation_id):
         if turn != 3:
@@ -103,28 +297,28 @@ def test_legacy_sqlite_backfills_only_exact_shown_components_and_keeps_results_s
         sources=(COMPOUND_SOURCE,), coordinator_enabled=True,
         before_turn=strip_new_metadata_from_legacy_checkpoint)
 
-    failed_turn = trace[2]
-    reopened = failed_turn["state_after_sqlite_reopen"]["task_context"]
-    check = next(item for item in reopened["checks"] if item["status"] == "failed")
-    assert len(check["components"]) == 3
-    assert len(check["component_results"]) == 3
-    assert check["component_results"][-1]["result_span"]["quote"] == \
-        "Очередь неотправленных документов не уменьшается"
-    assert "проверьте состояние приложения EoU" in failed_turn["final_reply"]
-    assert "сопоставьте адрес, порт и ИНН ОФД" in failed_turn["final_reply"]
+    backfilled = trace[2]["state_after_sqlite_reopen"]["task_context"]
+    diagnostic_check = next(item for item in backfilled["checks"]
+                            if "EoU" in item.get("label", ""))
+    assert len(diagnostic_check["components"]) == 1
+    assert len(diagnostic_check["component_results"]) == 1
+    assert any(item["quote"] == "Интернет работает" and item["status"] == "passed"
+               for item in diagnostic_check["component_results"][0]["observations"])
+    assert "сопоставьте адрес, порт и ИНН ОФД" in trace[2]["final_reply"]
 
     reported = trace[3]["state_after_sqlite_reopen"]["task_context"]
     printed_check = next(item for item in reported["checks"]
                          if item["unit_id"] == "f09c43177d5a42267fe0")
     assert printed_check["result_span"]["quote"] == "Диагностический отчёт напечатал"
-    failed_check = next(item for item in reported["checks"]
-                        if item["unit_id"] != printed_check["unit_id"])
-    results = {item["component_id"]: item for item in failed_check["component_results"]}
-    assert len(results) == 3
-    assert {item["status"] for item in results.values()} == {"passed", "failed"}
-    assert any("ИНН" in (item.get("result_span") or {}).get("quote", "")
-               for item in results.values())
-    assert trace[4]["reason"] == "progress_ledger_conditional_source_boundary"
+    final = trace[4]
+    assert final["reason"] == "progress_ledger_failed_composite_needs_remaining_results"
+    assert "сопоставьте адрес, порт и инн офд" in final["final_reply"].casefold()
+    assert "поддержку эвотора" not in final["final_reply"].casefold()
+    final_compare = next(item for item in final["state_after_sqlite_reopen"]["task_context"]["checks"]
+                         if "сопоставьте адрес" in item.get("label", ""))
+    assert any("Очередь" in observation["quote"] and observation["status"] == "failed"
+               for item in final_compare["component_results"]
+               for observation in item.get("observations", []))
 
 
 def test_failed_single_check_uses_next_ordered_approved_step(monkeypatch, tmp_path):
@@ -213,9 +407,12 @@ status: approved
 
 def test_composite_failure_without_saved_quote_does_not_invent_one(
         monkeypatch, tmp_path):
-    cases = [*_compound_dialogue()[:3], _compound_dialogue()[4]]
+    cases = _compound_dialogue()[:4] + [
+        {"id": "what_next", "text": "Что делать дальше?",
+         "provider_raw": _continuation_raw("Что делать дальше?")}
+    ]
     def clear_failed_result_quote(turn, store, conversation_id):
-        if turn != 4:
+        if turn != 5:
             return
         with store.connect() as db:
             row = db.execute("SELECT state_json FROM dialogue_states_v2 WHERE conversation_id=?",
@@ -236,9 +433,9 @@ def test_composite_failure_without_saved_quote_does_not_invent_one(
         sources=(COMPOUND_SOURCE,), coordinator_enabled=True,
         before_turn=clear_failed_result_quote)
 
-    question = trace[3]["final_reply"]
-    check = next(item for item in trace[3]["state_after_sqlite_reopen"]["task_context"]["checks"]
-                 if item.get("unit_id") != "f09c43177d5a42267fe0")
+    question = trace[4]["final_reply"]
+    check = next(item for item in trace[4]["state_after_sqlite_reopen"]["task_context"]["checks"]
+                 if "сопоставьте адрес" in item.get("label", ""))
     assert check.get("status") == "failed"
     assert check.get("result_span") is None
     assert not any((item.get("result_span") or {}).get("quote") ==
@@ -247,8 +444,8 @@ def test_composite_failure_without_saved_quote_does_not_invent_one(
     assert "Зафиксировал отрицательный результат («" not in question
     assert "Очередь неотправленных документов не уменьшается" not in question
     assert "Осталось сообщить результаты пунктов инструкции" in question
-    assert "проверьте состояние приложения EoU" in question
     assert "сопоставьте адрес, порт и ИНН ОФД" in question
+    assert "уменьшается ли очередь" in question
     assert "После этого выберу следующую подтверждённую инструкцией ветку." in question
 
 

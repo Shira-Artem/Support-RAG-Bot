@@ -70,6 +70,13 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
         route: Route = "conversation"
         action = "respond_or_handoff"
         rationale = "social_or_handoff_turn"
+    elif reports_check:
+        # A verified result for an already-shown check must return to the
+        # technical path so Planner and SourceFirst can evaluate source
+        # conditions. An outstanding details slot must not swallow it.
+        route, action, rationale = (
+            "technical_action", "continue_verified_check_and_evaluate_source_conditions",
+            "reported_result_for_shown_verified_check")
     elif frame.expected_slot in {"task", "goal", "details"}:
         route, action, rationale = "conversation", "ask_for_missing_task_detail", "task_not_ready"
     elif operation == "explain" and frame.intent == "general":
