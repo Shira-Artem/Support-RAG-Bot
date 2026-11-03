@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-03",
+  "time_utc_approx": "15:52",
+  "purpose": "Single minimal direct Groq API connectivity and quota probe after prior Retry-After elapsed; not a B1.3b scenario",
+  "profile_variable": "GROQ_API_KEY",
+  "model": "openai/gpt-oss-20b",
+  "request_count": 1,
+  "automatic_retries": false,
+  "http_status": 200,
+  "usage": {
+    "prompt_tokens": 77,
+    "completion_tokens": 8,
+    "total_tokens": 85,
+    "reasoning_tokens": 6
+  },
+  "response_content": "",
+  "response_content_note": "The 8-token completion cap was consumed by reasoning; response text was empty. The successful HTTP status and usage confirm the API request completed.",
+  "rate_limit_headers": {
+    "x-ratelimit-limit-requests": "1000",
+    "x-ratelimit-remaining-requests": "999",
+    "x-ratelimit-reset-requests": "1m26.4s",
+    "x-ratelimit-limit-tokens": "8000",
+    "x-ratelimit-remaining-tokens": "7915",
+    "x-ratelimit-reset-tokens": "637ms"
+  },
+  "secrets_recorded": false,
+  "organization_identifier_recorded": false,
+  "interpretation": "This success followed the previous provider-specified TPD Retry-After. It does not reveal remaining TPD and a single request does not test RPM. Groq documentation defines x-ratelimit request headers as RPD and token headers as TPM."
+}
