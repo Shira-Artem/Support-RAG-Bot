@@ -1912,6 +1912,12 @@ class DialogueManager:
                         and isinstance(update.get("components"), list)):
                     stored["components"] = deepcopy(update["components"])
                     stored["component_results"] = deepcopy(update.get("component_results", []))
+                    if update.get("status") in {"asked", "passed", "failed", "unknown", "not_done"}:
+                        stored["status"] = update["status"]
+                    if isinstance(update.get("observations"), list):
+                        stored["observations"] = deepcopy(update["observations"])
+                    if isinstance(update.get("result_span"), dict):
+                        stored["result_span"] = deepcopy(update["result_span"])
         # A read-only source recheck may add component structure to already
         # shown units on an older SQLite snapshot. Apply only to exact existing
         # source/check identities; this path must never publish a new check.
@@ -1940,6 +1946,12 @@ class DialogueManager:
                         and isinstance(update.get("components"), list)):
                     stored["components"] = deepcopy(update["components"])
                     stored["component_results"] = deepcopy(update.get("component_results", []))
+                    if update.get("status") in {"asked", "passed", "failed", "unknown", "not_done"}:
+                        stored["status"] = update["status"]
+                    if isinstance(update.get("observations"), list):
+                        stored["observations"] = deepcopy(update["observations"])
+                    if isinstance(update.get("result_span"), dict):
+                        stored["result_span"] = deepcopy(update["result_span"])
             for unit in progress_update.get("eligible_units", []):
                 stored = next((item for item in state.task_context.eligible_units
                                if item.get("unit_id") == unit.get("unit_id")), None)

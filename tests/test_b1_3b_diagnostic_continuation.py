@@ -321,6 +321,64 @@ def test_failed_composite_asks_only_unreported_source_components_and_keeps_quote
     assert "Настройки → Обслуживание кассы → Диагностика" not in trace[4]["final_reply"]
 
 
+def test_b1_3a_legacy_composite_checkpoint_backfills_split_source_components(
+        monkeypatch, tmp_path):
+    cases = _compound_dialogue()[:2] + [
+        {"id": "queue_failed", "text": "Очередь неотправленных документов не уменьшается.",
+         "provider_raw": _continuation_raw("Очередь неотправленных документов не уменьшается.")},
+    ]
+    legacy_label = (
+        "В нём проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. "
+        "Если интернет отсутствует, восстановите сетевое подключение. "
+        "Если интернет есть, сопоставьте адрес, порт и ИНН ОФД с актуальными настройками "
+        "своего оператора, затем посмотрите, уменьшается ли очередь неотправленных документов. "
+        "Если базовые проверки не выявили причину, передайте диагностический отчёт "
+        "в поддержку Эвотора. Низкоуровневые команды и технологическое обнуление "
+        "в этот краткий конспект не включены.")
+    legacy_source = f"data/knowledge/{COMPOUND_SOURCE}"
+
+    def restore_legacy_checkpoint(turn, store, conversation_id):
+        if turn != 3:
+            return
+        state = store.dialogue_state(conversation_id)
+        task = state.task_context
+        old_check = next(item for item in task.checks if item.get("status") == "asked")
+        old_unit = next(item for item in task.shown_units
+                        if item.get("unit_id") == old_check.get("unit_id"))
+        old_check.update({"unit_id": "7ecc73b5ecb8e7125d80", "label": legacy_label,
+                          "source": legacy_source, "section": "Что проверить сначала",
+                          "source_verified": True})
+        old_check.pop("components", None)
+        old_check.pop("component_results", None)
+        old_unit.update({"unit_id": old_check["unit_id"], "label": legacy_label,
+                         "source": legacy_source, "section": "Что проверить сначала",
+                         "source_verified": True})
+        old_unit.pop("components", None)
+        for unit in task.eligible_units:
+            if unit.get("unit_id") == old_check["unit_id"]:
+                unit.update({"label": legacy_label, "source": legacy_source,
+                             "section": "Что проверить сначала", "source_verified": True})
+                unit.pop("components", None)
+        with store.connect() as db:
+            db.execute("UPDATE dialogue_states_v2 SET state_json=? WHERE conversation_id=?",
+                       (json.dumps(state.to_dict(), ensure_ascii=False), conversation_id))
+
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True,
+        before_turn=restore_legacy_checkpoint)
+
+    negative = trace[2]
+    assert negative["reason"] == "progress_ledger_failed_composite_needs_remaining_results"
+    assert "сопоставьте адрес, порт и ИНН ОФД" in negative["final_reply"]
+    assert "Настройки → Обслуживание кассы → Диагностика" not in negative["final_reply"]
+    saved_negative = negative["state_after_sqlite_reopen"]["task_context"]
+    legacy_check = next(item for item in saved_negative["checks"]
+                        if item.get("unit_id") == "7ecc73b5ecb8e7125d80")
+    assert len(legacy_check["components"]) >= 2
+    assert any(item.get("status") == "failed" and "Очередь" in item.get("result_span", {}).get("quote", "")
+               for item in legacy_check["component_results"])
+
+
 def test_unknown_shown_check_blocks_later_instruction_until_its_result_is_known(
         monkeypatch, tmp_path):
     next_question = "Что делать дальше?"

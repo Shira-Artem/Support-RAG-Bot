@@ -6,6 +6,7 @@ instructions are copied from that approved source verbatim.
 """
 from __future__ import annotations
 
+from copy import deepcopy
 from hashlib import sha256
 from datetime import datetime, timezone
 import json
@@ -637,24 +638,43 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
         return []
     current = {unit["unit_id"]: unit for unit in source_units
                if unit.get("source") == source and unit.get("section") == section}
+    def matching_units(stored: dict) -> list[dict]:
+        exact = current.get(stored.get("unit_id"))
+        if (exact and stored.get("label") == exact.get("label")
+                and stored.get("source") == source and stored.get("section") == section):
+            return [exact]
+        # B1.3a persisted some approved multi-sentence checks as one unit.
+        # Current extraction may split that same exact text into ordered units.
+        # Reattach only source units whose full extracted text is contained in
+        # the already-shown, verified label; never infer coverage from keywords.
+        label = str(stored.get("label") or "")
+        if (stored.get("source_verified") is not True or stored.get("source") != source
+                or stored.get("section") != section or not label):
+            return []
+        contained = [unit for unit in current.values()
+                     if unit.get("label") and unit["label"] in label]
+        return contained if len(contained) > 1 else []
+
     shown = []
     for stored in task.shown_units:
-        unit = current.get(stored.get("unit_id"))
-        if (unit and stored.get("label") == unit.get("label")
-                and stored.get("source") == source and stored.get("section") == section):
-            stored["components"] = unit["components"]
-            shown.append(unit)
+        matched_units = matching_units(stored)
+        if matched_units:
+            components = [component for unit in matched_units
+                          for component in unit.get("components", [])]
+            stored["components"] = deepcopy(components)
+            shown_unit = deepcopy(stored)
+            shown.append(shown_unit)
             check = next((item for item in task.checks
-                          if item.get("unit_id") == unit["unit_id"]), None)
+                          if item.get("unit_id") == stored.get("unit_id")), None)
             if check is None:
                 continue
-            check["components"] = unit["components"]
+            check["components"] = deepcopy(components)
             results = {item.get("component_id"): item
                        for item in check.setdefault("component_results", [])}
             observations = list(check.get("observations") or [])
             if not observations and check.get("result_span"):
                 observations = [{"status": check.get("status"), **check["result_span"]}]
-            for component in unit["components"]:
+            for component in components:
                 component_id = component["component_id"]
                 stored_result = results.get(component_id)
                 if stored_result is None:
@@ -681,11 +701,79 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                     latest = stored_result["observations"][-1]
                     stored_result["result_span"] = {key: latest[key]
                         for key in ("message_id", "quote", "start", "end") if key in latest}
+            # Before component metadata existed, the reducer could record a
+            # client's result against a narrower eligible source unit. Once
+            # the exact approved section proves that unit is inside this
+            # already-shown legacy composite, attribute that exact observation
+            # to its unique source component as well.
+            for source_unit in matched_units:
+                if source_unit.get("unit_id") == stored.get("unit_id"):
+                    continue
+                child_check = next((item for item in task.checks
+                    if item.get("unit_id") == source_unit.get("unit_id")
+                    and item.get("task_id") == task.task_id
+                    and item.get("source_verified") is True
+                    and item.get("source") == source
+                    and item.get("section") == section), None)
+                if not child_check:
+                    continue
+                child_observations = list(child_check.get("observations") or [])
+                if not child_observations and child_check.get("result_span"):
+                    child_observations = [{"status": child_check.get("status"),
+                                           **child_check["result_span"]}]
+                for observation in child_observations:
+                    try:
+                        if int(observation.get("message_id")) <= int(check.get("asked_message_id")):
+                            continue
+                    except (TypeError, ValueError):
+                        continue
+                    quote = str(observation.get("quote") or "")
+                    if not quote or observation.get("status") not in {
+                            "passed", "failed", "unknown", "not_done"}:
+                        continue
+                    normalized_quote = quote.casefold().replace("ё", "е")
+                    component_matches = []
+                    for candidate_unit in matched_units:
+                        for candidate_component in candidate_unit.get("components", []):
+                            matched_terms = {term for term in terms(
+                                str(candidate_component.get("label") or ""))
+                                if re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
+                                    normalized_quote)}
+                            if matched_terms:
+                                component_matches.append((candidate_component, matched_terms))
+                    if len(component_matches) == 1:
+                        matched_components = [component_matches[0][0]]
+                    else:
+                        # One exact client fact can resolve overlapping
+                        # source-derived components inside this same legacy
+                        # composite (for example, address values and their
+                        # comparison with the operator settings). Ignore
+                        # generic one-word overlap when several components
+                        # compete for the observation.
+                        matched_components = [component for component, matched_terms
+                            in component_matches if len(matched_terms) >= 2]
+                    if not matched_components:
+                        continue
+                    span = {key: observation[key] for key in
+                            ("message_id", "quote", "start", "end") if key in observation}
+                    for component in matched_components:
+                        stored_result = results.get(component.get("component_id"))
+                        if (not stored_result or any(item.get("message_id") == span.get("message_id")
+                                and item.get("quote") == quote
+                                for item in stored_result["observations"])):
+                            continue
+                        stored_result["observations"].append(
+                            {"status": observation["status"], **span})
+                        stored_result["status"] = aggregate_status(
+                            component["label"], stored_result["observations"])
+                        latest = stored_result["observations"][-1]
+                        stored_result["result_span"] = {key: latest[key] for key in
+                            ("message_id", "quote", "start", "end") if key in latest}
             component_statuses = {item.get("component_id"): item.get("status")
                                   for item in check["component_results"]}
             statuses = [component_statuses.get(item.get("component_id"))
-                        for item in unit["components"]]
-            if len(unit["components"]) > 1:
+                        for item in components]
+            if len(components) > 1:
                 if "failed" in statuses:
                     check["status"] = "failed"
                 elif statuses and all(item == "passed" for item in statuses):
@@ -693,10 +781,10 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                 elif any(item is not None for item in statuses):
                     check["status"] = "unknown"
     for stored in task.eligible_units:
-        unit = current.get(stored.get("unit_id"))
-        if (unit and stored.get("label") == unit.get("label")
-                and stored.get("source") == source and stored.get("section") == section):
-            stored["components"] = unit["components"]
+        matched_units = matching_units(stored)
+        if matched_units:
+            stored["components"] = deepcopy([
+                component for unit in matched_units for component in unit.get("components", [])])
     return shown
 
 
@@ -2226,6 +2314,15 @@ class SourceFirstService:
                         state, source_units, selected["source"], selected["section"])
                     verified_eligible_units = [unit for unit in source_units
                         if not unit["model_scope"] or unit["model_value"]]
+                    current_unit_ids = {unit.get("unit_id") for unit in verified_eligible_units}
+                    verified_eligible_units.extend(deepcopy(unit)
+                        for unit in state.task_context.eligible_units
+                        if unit.get("unit_id") not in current_unit_ids
+                        and unit.get("source_verified") is True
+                        and unit.get("source") == selected["source"]
+                        and unit.get("section") == selected["section"]
+                        and isinstance(unit.get("components"), list)
+                        and unit.get("components"))
                     verified_check_updates = [
                         {key: check[key] for key in ("task_id", "unit_id", "label", "source",
                             "section", "source_verified", "status", "result_span", "observations",
