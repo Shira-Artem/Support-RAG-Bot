@@ -361,13 +361,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                        'для этой задачи пока не нашёл. Напишите новую важную деталь или '
                        'запросите специалиста кнопкой ниже.')
         answer.scenario_reason = 'repeated_unresolved_request'
-    conversations.complete(message_id, answer)
-
     # Telegram limit is 4096 symbols.
     parts = split_for_telegram(answer.text)
-    for index, part in enumerate(parts):
-        await update.message.reply_text(part,
-            reply_markup=answer_buttons(message_id) if index == len(parts) - 1 else None)
+    try:
+        for index, part in enumerate(parts):
+            await update.message.reply_text(part,
+                reply_markup=answer_buttons(message_id) if index == len(parts) - 1 else None)
+    except Exception:
+        # A generated answer is not a shown check until Telegram accepts it.
+        # Preserve the user turn and let the next message proceed normally.
+        conversations.fail_delivery(message_id)
+        raise
+    conversations.complete(message_id, answer)
 
 
 def split_for_telegram(text: str, max_len: int = 3900) -> list[str]:

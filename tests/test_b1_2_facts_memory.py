@@ -122,3 +122,22 @@ def test_domain_drift_replay_survives_sqlite_reopen(tmp_path):
     assert state.task_id == "task:1"
     assert state.symptom.quote == rows[0][3]
     assert any(f.quote == rows[1][3] for f in state.details)
+
+
+def test_explicit_manufacturer_and_model_correction_retires_old_scope():
+    manager = DialogueManager()
+    first = "На Эвотор 7.3 не уходят чеки"
+    brand = Fact.span(first, 1, first.index("Эвотор"), first.index("Эвотор") + len("Эвотор"))
+    model = Fact.span(first, 1, first.index("Эвотор"), first.index("Эвотор") + len("Эвотор 7.3"))
+    state = turn(manager, DialogueState(), first, 1, relation="new_task",
+                 symptom="не уходят чеки", entities={"manufacturer": [brand], "equipment": [model]})
+    corrected = "Я перепутал производителя и модель: это АТОЛ 30Ф"
+    new_brand = Fact.span(corrected, 2, corrected.index("АТОЛ"), corrected.index("АТОЛ") + len("АТОЛ"))
+    new_model = Fact.span(corrected, 2, corrected.index("АТОЛ"))
+    after = turn(manager, state, corrected, 2, relation="contradiction",
+                 entities={"manufacturer": [new_brand], "equipment": [new_model]})
+    assert after.task_id == state.task_id
+    assert [f.value for f in after.task_frame.entities["manufacturer"]] == ["АТОЛ"]
+    assert [f.value for f in after.task_frame.entities["equipment"]] == ["АТОЛ 30Ф"]
+    assert {f.value for f in after.task_frame.superseded_facts} >= {"Эвотор", "Эвотор 7.3"}
+    assert DialogueState.from_dict(after.to_dict()).task_frame == after.task_frame

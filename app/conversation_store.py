@@ -202,6 +202,9 @@ class ConversationStore:
         manager = self.manager
         for row in db.execute('SELECT * FROM messages WHERE conversation_id=? AND id>? ORDER BY id',
                               (conversation_id, cursor)).fetchall():
+            if row['role'] == 'assistant' and row['status'] == 'failed':
+                cursor = row['id']
+                continue
             if row['status'] != 'complete':
                 break
             if row['role'] == 'user':
@@ -241,10 +244,15 @@ class ConversationStore:
                             json.dumps(state.to_dict(), ensure_ascii=False)))
             else:
                 diagnostic = json.loads(row['diagnostics_json'] or '{}')
+                # A failed generation cannot advertise an approved check,
+                # even if a stale progress_update was attached to the answer.
+                published_progress = (diagnostic.get('progress_update')
+                    if diagnostic.get('scenario') == 'answer'
+                    and diagnostic.get('generation_status') == 'generated' else None)
                 state = manager.observe_answer(state, scenario=diagnostic.get('scenario'),
                                                reason=diagnostic.get('scenario_reason'), question=row['content'],
                                                message_id=row['id'], slot=diagnostic.get('clarification_slot'),
-                                               progress_update=diagnostic.get('progress_update'))
+                                               progress_update=published_progress)
             cursor = row['id']
         if snapshot is None or cursor != snapshot['processed_message_id']:
             db.execute('INSERT INTO dialogue_states_v2 VALUES(?,?,?) ON CONFLICT(conversation_id) '
@@ -383,6 +391,19 @@ class ConversationStore:
             db.execute("""UPDATE messages SET content=?, status='complete', diagnostics_json=?
                 WHERE id=? AND status='pending'""",
                        (answer.text, json.dumps(asdict(answer), ensure_ascii=False), message_id))
+            self._sync_state(db, row['conversation_id'])
+
+    def fail_delivery(self, message_id: int) -> None:
+        """Close an undelivered assistant event without creating shown checks."""
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row = db.execute("SELECT conversation_id FROM messages WHERE id=? AND role='assistant' AND status='pending'",
+                             (message_id,)).fetchone()
+            if row is None:
+                return
+            db.execute("UPDATE messages SET status='failed', diagnostics_json=? WHERE id=?",
+                       (json.dumps({'generation_status': 'error', 'generation_reason': 'telegram_delivery_failed'},
+                                   ensure_ascii=False), message_id))
             self._sync_state(db, row['conversation_id'])
 
     def recover_pending(self) -> None:

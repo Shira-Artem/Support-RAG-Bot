@@ -1565,6 +1565,37 @@ class DialogueManager:
             return {term[:4] for term in content_terms(label)
                     if not term.startswith(("оператор", "офд"))
                     and re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*", normalized_quote)}
+        def reported_status(quote: str) -> str | None:
+            normalized = quote.casefold().replace("ё", "е")
+            if re.search(r"\b(?:не\s+(?:знаю|уверен\w*|понятно)|не\s+провер\w*|пока\s+не\s+провер\w*)\b", normalized):
+                return "unknown" if re.search(r"\bне\s+(?:знаю|уверен\w*|понятно)\b", normalized) else "not_done"
+            if re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+(?:напечат|распечат)\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+(?:отправля|переда)\w*|не\s+уменьш\w*|не\s+совпад\w*|не\s+(?:верн\w*|корректн\w*|соответству\w*)|не\s+измен\w*|остал\w*\s+(?:той\s+же|прежн\w*|без\s+изменен\w*)|нестабил\w*|пропад\w*|истек\w*|законч\w*)\b", normalized):
+                return "failed"
+            if re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|совпад\w*|верн\w*|корректн\w*|соответству\w*|стабил\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", normalized):
+                return "passed"
+            if re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", normalized):
+                return "unknown"
+            return None
+        def mentioned_terms(quote: str) -> set[str]:
+            return set().union(*(evidenced_terms(str(unit.get("label") or ""), quote)
+                                 for unit in units))
+        clauses = []
+        for sentence in re.finditer(r"[^;.!?]+", text):
+            parts = list(re.finditer(r"[^,]+", sentence.group()))
+            if not parts:
+                continue
+            start = sentence.start() + parts[0].start()
+            end = sentence.start() + parts[0].end()
+            for part in parts[1:]:
+                next_start, next_end = sentence.start() + part.start(), sentence.start() + part.end()
+                left, right = text[start:end], text[next_start:next_end]
+                left_terms, right_terms = mentioned_terms(left), mentioned_terms(right)
+                if (reported_status(left) and reported_status(right)
+                        and left_terms and right_terms and left_terms.isdisjoint(right_terms)):
+                    clauses.append((start, end))
+                    start = next_start
+                end = next_end
+            clauses.append((start, end))
         for unit in units:
             model_value = unit.get("model_value")
             if model_value:
@@ -1582,16 +1613,26 @@ class DialogueManager:
             # Match the actual client sentence to this check. Previously a
             # match anywhere in the reply attached its FIRST comma-clause to
             # every check, losing results and creating false successes.
-            matches = [m for m in re.finditer(r"[^;.!?]+", text)
+            matches = [(start, end) for start, end in clauses
                        if any(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*",
-                                        m.group().casefold().replace("ё", "е")) for term in terms)]
+                                        text[start:end].casefold().replace("ё", "е")) for term in terms)]
+            short_tokens = words(text)
+            if (not matches and len(task.shown_units) == 1
+                    and task.shown_units[0].get("unit_id") == unit.get("unit_id")
+                    and (len(short_tokens) == 1 or
+                         len(short_tokens) == 2 and short_tokens[0] == "не")
+                    and reported_status(text) in {"passed", "failed"}):
+                # A short concrete outcome can refer to the only check the
+                # assistant showed. Bare yes/no and action-only replies have
+                # no outcome predicate and remain unconfirmed.
+                matches = [(0, len(text))]
             if not matches:
                 continue
-            matched = max(matches, key=lambda m: sum(
+            matched_start, matched_end = max(matches, key=lambda span: sum(
                 bool(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*",
-                               m.group().casefold().replace("ё", "е"))) for term in terms))
-            quote = matched.group().strip()
-            start = text.find(quote)
+                               text[span[0]:span[1]].casefold().replace("ё", "е"))) for term in terms))
+            quote = text[matched_start:matched_end].strip()
+            start = matched_start + len(text[matched_start:matched_end]) - len(text[matched_start:matched_end].lstrip())
             quote_normalized = quote.casefold().replace("ё", "е")
             matched_terms = evidenced_terms(label, quote)
             if any((other.get("unit_id") != unit.get("unit_id")
@@ -1612,15 +1653,8 @@ class DialogueManager:
                         broad["partial_result_spans"].append(partial)
                     changed = True
                 continue
-            if re.search(r"\b(?:не\s+(?:знаю|уверен\w*|понятно)|не\s+провер\w*|пока\s+не\s+провер\w*)\b", quote_normalized):
-                status = "unknown" if re.search(r"\bне\s+(?:знаю|уверен\w*|понятно)\b", quote_normalized) else "not_done"
-            elif re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+(?:отправля|переда)\w*|не\s+уменьш\w*|не\s+совпад\w*|не\s+(?:верн\w*|корректн\w*|соответству\w*)|не\s+измен\w*|остал\w*\s+(?:той\s+же|прежн\w*|без\s+изменен\w*)|нестабил\w*|пропад\w*|истек\w*|законч\w*)\b", quote_normalized):
-                status = "failed"
-            elif re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|совпад\w*|верн\w*|корректн\w*|соответству\w*|стабил\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", quote_normalized):
-                status = "passed"
-            elif re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", quote_normalized):
-                status = "unknown"
-            else:
+            status = reported_status(quote)
+            if status is None:
                 continue
             # A single positive result cannot complete a whole conditional
             # procedure block (e.g. internet + settings + queue checks).
@@ -1640,11 +1674,18 @@ class DialogueManager:
                       "start": start, "end": start + len(quote)}
             check = next((item for item in task.checks if item.get("unit_id") == unit.get("unit_id")), None)
             if check is None:
-                check = {"unit_id": unit.get("unit_id"), "status": status,
+                check = {"task_id": task.task_id, "unit_id": unit.get("unit_id"),
+                    "label": label, "source": unit.get("source"), "section": unit.get("section"),
+                    "source_verified": unit.get("source_verified") is True,
+                    "status": status,
                     "result_span": result, "observations": [{"status": observed_status, **result}]}
                 task.checks.append(check)
             else:
                 previous_status = check.get("status")
+                if any(item.get("message_id") == message_id and item.get("quote") == quote
+                       and item.get("start") == start and item.get("end") == start + len(quote)
+                       for item in check.get("observations", [])):
+                    continue
                 check.setdefault("observations", []).append({"status": observed_status, **result})
                 prior_observed = check["observations"][-2].get("status") if len(check["observations"]) > 1 else None
                 if ({previous_status, status} == {"passed", "failed"}
@@ -1678,16 +1719,20 @@ class DialogueManager:
                         and unit.get("source_verified") is True):
                     if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.shown_units}:
                         state.task_context.shown_units.append({k: unit[k] for k in
-                            ("unit_id", "label", "source", "section", "model_scope", "model_value", "source_order")
+                            ("unit_id", "label", "source", "section", "source_verified", "model_scope", "model_value", "source_order")
                             if k in unit})
                     if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.checks}:
-                        state.task_context.checks.append({"unit_id": unit["unit_id"], "status": "asked"})
+                        state.task_context.checks.append({
+                            "task_id": state.task_id, "unit_id": unit["unit_id"],
+                            "label": unit["label"], "source": unit.get("source"),
+                            "section": unit.get("section"), "source_verified": True,
+                            "asked_message_id": message_id, "status": "asked"})
             for unit in progress_update.get("eligible_units", []):
                 if (isinstance(unit, dict) and isinstance(unit.get("unit_id"), str)
                         and isinstance(unit.get("label"), str) and unit.get("source_verified") is True
                         and unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.eligible_units}):
                     state.task_context.eligible_units.append({k: unit[k] for k in
-                        ("unit_id", "label", "source", "section", "model_scope", "model_value", "source_order")
+                        ("unit_id", "label", "source", "section", "source_verified", "model_scope", "model_value", "source_order")
                         if k in unit})
             if isinstance(progress_update.get("open_question"), str):
                 key = progress_update["open_question"]
