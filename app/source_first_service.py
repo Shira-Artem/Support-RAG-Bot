@@ -461,7 +461,124 @@ def _approved_check_units(text: str, source: str, section: str, *,
             if units[-1]["model_value"]:
                 unit_seed += "\0model:" + units[-1]["model_value"]
             units[-1]["unit_id"] = sha256(unit_seed.encode("utf-8")).hexdigest()[:20]
+    # Progress is stored at the check-unit level. Preserve source-derived
+    # diagnostic action clauses inside each unit so a later failed result can
+    # be distinguished from a failed multi-check block. These are boundaries
+    # from explicit verification/compare/observe actions in the approved
+    # instruction text; customer wording never decides whether a check is composite.
+    check_action = re.compile(
+        r"\b(?:проверьте|сверьте|сопоставьте|посмотрите|"
+        r"проверь|сверь|сопоставь|посмотри)\b", re.I)
+    for unit in units:
+        components = []
+        for sentence in statements(unit["label"]):
+            actions = list(check_action.finditer(sentence))
+            if not actions:
+                continue
+            for index, action in enumerate(actions):
+                start = 0 if index == 0 else action.start()
+                end = actions[index + 1].start() if index + 1 < len(actions) else len(sentence)
+                label = sentence[start:end].strip()
+                if not label:
+                    continue
+                component_id = sha256((unit["unit_id"] + "\0" + label).encode("utf-8")).hexdigest()[:20]
+                components.append({"component_id": component_id, "label": label})
+        unit["components"] = components
     return units
+
+
+def _merge_source_components(state: DialogueState, source_units: list[dict],
+                             source: str, section: str) -> list[dict]:
+    """Backfill component metadata only onto exact units from the checked source."""
+    action_roots = ("провер", "свер", "сопостав", "посмотр", "уточн", "выясн")
+    def terms(label: str) -> set[str]:
+        roots = {term[:4] for term in content_terms(label)
+                 if not term.startswith(action_roots + ("оператор", "офд"))}
+        return {term for term in roots if len(term) >= 4 or term.isascii() and len(term) >= 3}
+    def aggregate_status(label: str, observations: list[dict]) -> str | None:
+        if not observations:
+            return None
+        latest = observations[-1].get("status")
+        if latest == "failed":
+            return "failed"
+        if latest != "passed":
+            return latest if latest in {"unknown", "not_done"} else None
+        required_parts = [part for part in re.split(r",", label) if terms(part)] or [label]
+        for part in required_parts:
+            part_terms = terms(part)
+            if not part_terms or not any(item.get("status") == "passed"
+                    and any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
+                        str(item.get("quote") or "").casefold().replace("ё", "е"))
+                        for term in part_terms) for item in observations):
+                return "unknown"
+        return "passed"
+
+    task = state.task_context
+    if not task:
+        return []
+    current = {unit["unit_id"]: unit for unit in source_units
+               if unit.get("source") == source and unit.get("section") == section}
+    shown = []
+    for stored in task.shown_units:
+        unit = current.get(stored.get("unit_id"))
+        if (unit and stored.get("label") == unit.get("label")
+                and stored.get("source") == source and stored.get("section") == section):
+            stored["components"] = unit["components"]
+            shown.append(unit)
+            check = next((item for item in task.checks
+                          if item.get("unit_id") == unit["unit_id"]), None)
+            if check is None:
+                continue
+            check["components"] = unit["components"]
+            results = {item.get("component_id"): item
+                       for item in check.setdefault("component_results", [])}
+            observations = list(check.get("observations") or [])
+            if not observations and check.get("result_span"):
+                observations = [{"status": check.get("status"), **check["result_span"]}]
+            for component in unit["components"]:
+                component_id = component["component_id"]
+                stored_result = results.get(component_id)
+                if stored_result is None:
+                    stored_result = {"component_id": component_id,
+                        "label": component["label"], "status": None,
+                        "result_span": None, "observations": []}
+                    check["component_results"].append(stored_result)
+                    results[component_id] = stored_result
+                component_terms = terms(component["label"])
+                for observation in observations:
+                    quote = observation.get("quote")
+                    if not quote or not any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
+                            quote.casefold().replace("ё", "е")) for term in component_terms):
+                        continue
+                    span = {key: observation[key] for key in ("message_id", "quote", "start", "end")
+                            if key in observation}
+                    if not any(item.get("message_id") == span.get("message_id")
+                               and item.get("quote") == quote
+                               for item in stored_result["observations"]):
+                        stored_result["observations"].append({"status": observation.get("status"), **span})
+                stored_result["status"] = aggregate_status(
+                    component["label"], stored_result["observations"])
+                if stored_result["observations"]:
+                    latest = stored_result["observations"][-1]
+                    stored_result["result_span"] = {key: latest[key]
+                        for key in ("message_id", "quote", "start", "end") if key in latest}
+            component_statuses = {item.get("component_id"): item.get("status")
+                                  for item in check["component_results"]}
+            statuses = [component_statuses.get(item.get("component_id"))
+                        for item in unit["components"]]
+            if len(unit["components"]) > 1:
+                if "failed" in statuses:
+                    check["status"] = "failed"
+                elif statuses and all(item == "passed" for item in statuses):
+                    check["status"] = "passed"
+                elif any(item is not None for item in statuses):
+                    check["status"] = "unknown"
+    for stored in task.eligible_units:
+        unit = current.get(stored.get("unit_id"))
+        if (unit and stored.get("label") == unit.get("label")
+                and stored.get("source") == source and stored.get("section") == section):
+            stored["components"] = unit["components"]
+    return shown
 
 
 def _validate_information_composition(candidate: str, evidence: str,
@@ -1757,10 +1874,56 @@ class SourceFirstService:
                 matching_shown = [unit for unit in state.task_context.shown_units
                     if unit.get("source") == selected["source"] and unit.get("section") == selected["section"]]
                 if matching_shown:
+                    verified_shown_units = _merge_source_components(
+                        state, source_units, selected["source"], selected["section"])
+                    verified_eligible_units = [unit for unit in source_units
+                        if not unit["model_scope"] or unit["model_value"]]
+                    # Re-persist metadata for older SQLite snapshots only after
+                    # the selected section has just passed exact SHA/content checks.
+                    base["progress_update"] = {
+                        "procedure_id": selected["document_id"],
+                        "shown_units": verified_shown_units,
+                        "eligible_units": verified_eligible_units,
+                        "check_updates": [
+                            {key: check[key] for key in ("task_id", "unit_id", "label", "source",
+                                "section", "source_verified", "status", "result_span", "observations",
+                                "components", "component_results") if key in check}
+                            for check in state.task_context.checks
+                            if check.get("unit_id") in {unit.get("unit_id") for unit in verified_shown_units}
+                        ],
+                        "metadata_only": True,
+                    }
                     last_shown = matching_shown[-1]
                     last_result = next((item for item in state.task_context.checks
                         if item.get("unit_id") == last_shown.get("unit_id")), None)
-                    if last_result and last_result.get("status") == "passed":
+                    result_status = (last_result or {}).get("status")
+                    if result_status in {"passed", "failed"}:
+                        components = (last_result or {}).get("components") or last_shown.get("components") or []
+                        component_results = {item.get("component_id"): item
+                            for item in (last_result or {}).get("component_results", [])}
+                        if result_status == "failed" and len(components) > 1:
+                            remaining_components = [component for component in components
+                                if component_results.get(component.get("component_id"), {}).get("status")
+                                not in {"passed", "failed"}]
+                            if remaining_components:
+                                failed_span = next((item.get("result_span") for item in reversed(
+                                    (last_result or {}).get("component_results", []))
+                                    if item.get("status") == "failed" and item.get("result_span")), None)
+                                failed_span = failed_span or (last_result or {}).get("result_span") or {}
+                                question = "Зафиксировал отрицательный результат"
+                                if failed_span.get("quote"):
+                                    question += f" («{failed_span['quote']}»)"
+                                labels = "; ".join(f"«{component['label']}»"
+                                    for component in remaining_components if component.get("label"))
+                                if labels:
+                                    question += f". Осталось сообщить результаты пунктов инструкции: {labels}."
+                                else:
+                                    question += ". Какие результаты получены по остальным пунктам этой проверки?"
+                                question += " После этого выберу следующую подтверждённую инструкцией ветку."
+                                return Answer(question, scenario="clarify",
+                                    scenario_reason="progress_ledger_failed_composite_needs_remaining_results",
+                                    clarification_slot="details", generation_status="clarification",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
                         shown_ids = {unit.get("unit_id") for unit in matching_shown}
                         next_unit = next((unit for unit in source_units
                             if unit["unit_id"] not in shown_ids), None)
@@ -1788,9 +1951,8 @@ class SourceFirstService:
                         if next_unit and not unsafe_operation_issue(next_unit["line"]):
                             base["progress_update"] = {
                                 "procedure_id": selected["document_id"],
-                                "shown_units": [next_unit],
-                                "eligible_units": [unit for unit in source_units
-                                    if not unit["model_scope"] or unit["model_value"]],
+                                "shown_units": [*verified_shown_units, next_unit],
+                                "eligible_units": verified_eligible_units,
                             }
                             next_text = (f"{next_unit['line']}\n\n"
                                          f"Источник: {selected['source']} — {selected['section']}")
@@ -1799,21 +1961,24 @@ class SourceFirstService:
                                 validation_status="exact_approved_next_check",
                                 generation_status="generated",
                                 duration_ms=round((perf_counter()-started)*1000), **base)
-                    if last_result and last_result.get("status") == "failed":
-                        # A failed composite check is diagnostic evidence, not
-                        # permission to replay its full source section. Ask for
-                        # the remaining component outcomes so the source's
-                        # conditional branch can be selected safely.
-                        quote = (last_result.get("result_span") or {}).get("quote")
-                        question = "Зафиксировал отрицательный результат"
-                        if quote:
-                            question += f" («{quote}»)"
-                        question += (". Какие результаты показал отчёт по остальным пунктам этой проверки? "
-                                     "После этого выберу следующую применимую ветку инструкции.")
-                        return Answer(question, scenario="clarify",
-                            scenario_reason="progress_ledger_failed_composite_needs_remaining_results",
-                            clarification_slot="details", generation_status="clarification",
-                            duration_ms=round((perf_counter()-started)*1000), **base)
+                        if result_status == "failed":
+                            terminal_conditions = [sentence for sentence in statements(last_shown.get("label", ""))
+                                if re.match(r"^\s*Если\b", sentence, re.I)
+                                and re.search(r"\b(?:поддержк\w*|специалист\w*)\b", sentence, re.I)
+                                and evidence_kind(sentence, "") in {"fact", "limitation"}
+                                and not unsafe_operation_issue(sentence)]
+                            if terminal_conditions:
+                                return Answer(
+                                    "Результаты сохранены. В подтверждённой инструкции указана такая граница:\n"
+                                    + " ".join(terminal_conditions)
+                                    + f"\n\nИсточник: {selected['source']} — {selected['section']}",
+                                    scenario="answer", scenario_reason="progress_ledger_conditional_source_boundary",
+                                    generation_status="generated", validation_status="exact_approved_conditional_boundary",
+                                    duration_ms=round((perf_counter()-started)*1000), **base)
+                            return self._escalate(
+                                "Отрицательный результат сохранён. В подтверждённой инструкции нет следующего шага после этой проверки; запросите специалиста.",
+                                "progress_ledger_failed_atomic_no_next_check",
+                                "no_next_approved_check_after_single_check_failure", started, **base)
                     if not last_result or last_result.get("status") in {"asked", "unknown", "not_done"}:
                         shown_ids = {unit.get("unit_id") for unit in matching_shown}
                         has_next_unit = any(unit["unit_id"] not in shown_ids for unit in source_units)

@@ -1596,6 +1596,61 @@ class DialogueManager:
                     start = next_start
                 end = next_end
             clauses.append((start, end))
+        component_action_roots = ("провер", "свер", "сопостав", "посмотр", "уточн", "выясн")
+        def component_terms(label: str) -> set[str]:
+            return {term[:4] for term in content_terms(label)
+                    if not term.startswith(component_action_roots + ("оператор", "офд"))}
+        # Resolve an outcome to a compound source unit before the broad unit
+        # matcher runs. Otherwise a shared word such as "настройки" can mark
+        # an earlier check that merely contains it in a menu path.
+        component_target_by_span: dict[tuple[int, int], str] = {}
+        ambiguous_component_spans: set[tuple[int, int]] = set()
+        shown_check_ids = ({str(item.get("unit_id")) for item in task.shown_units}
+                           & {str(item.get("unit_id")) for item in task.checks
+                              if item.get("task_id") == task.task_id})
+        for span in clauses:
+            quote = text[span[0]:span[1]]
+            if reported_status(quote) is None:
+                continue
+            matched_units = []
+            for candidate in units:
+                if str(candidate.get("unit_id") or "") not in shown_check_ids:
+                    continue
+                components = candidate.get("components") or []
+                if len(components) <= 1:
+                    continue
+                if any(any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
+                                     quote.casefold().replace("ё", "е"))
+                               for term in component_terms(str(component.get("label") or "")))
+                       for component in components):
+                    matched_units.append(str(candidate.get("unit_id") or ""))
+            matched_units = list(dict.fromkeys(item for item in matched_units if item))
+            if len(matched_units) == 1:
+                component_target_by_span[span] = matched_units[0]
+            elif len(matched_units) > 1:
+                ambiguous_component_spans.add(span)
+
+        def aggregate_component_status(label: str, observations: list[dict]) -> str | None:
+            if not observations:
+                return None
+            latest = observations[-1].get("status")
+            if latest == "failed":
+                return "failed"
+            if latest != "passed":
+                return latest if latest in {"unknown", "not_done"} else None
+            required_parts = [part for part in re.split(r",", label)
+                              if component_terms(part)] or [label]
+            for part in required_parts:
+                terms = component_terms(part)
+                if not terms or not any(
+                        item.get("status") == "passed"
+                        and any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
+                                          str(item.get("quote") or "").casefold().replace("ё", "е"))
+                                for term in terms)
+                        for item in observations):
+                    return "unknown"
+            return "passed"
+
         for unit in units:
             model_value = unit.get("model_value")
             if model_value:
@@ -1613,7 +1668,11 @@ class DialogueManager:
             # Match the actual client sentence to this check. Previously a
             # match anywhere in the reply attached its FIRST comma-clause to
             # every check, losing results and creating false successes.
+            unit_id = str(unit.get("unit_id") or "")
             matches = [(start, end) for start, end in clauses
+                       if (((start, end) not in ambiguous_component_spans
+                            and (start, end) not in component_target_by_span)
+                           or component_target_by_span.get((start, end)) == unit_id)
                        if any(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*",
                                         text[start:end].casefold().replace("ё", "е")) for term in terms)]
             short_tokens = words(text)
@@ -1678,9 +1737,14 @@ class DialogueManager:
                     "label": label, "source": unit.get("source"), "section": unit.get("section"),
                     "source_verified": unit.get("source_verified") is True,
                     "status": status,
-                    "result_span": result, "observations": [{"status": observed_status, **result}]}
+                    "result_span": result, "observations": [{"status": observed_status, **result}],
+                    "components": deepcopy(unit.get("components", [])),
+                    "component_results": []}
                 task.checks.append(check)
             else:
+                if isinstance(unit.get("components"), list):
+                    check["components"] = deepcopy(unit["components"])
+                check.setdefault("component_results", [])
                 previous_status = check.get("status")
                 if any(item.get("message_id") == message_id and item.get("quote") == quote
                        and item.get("start") == start and item.get("end") == start + len(quote)
@@ -1695,6 +1759,60 @@ class DialogueManager:
                 if status != "unknown" or previous_status in {"asked", "unknown", "not_done"}:
                     check["status"] = status
                     check["result_span"] = result
+            # Outcomes for a compound approved check are kept under that same
+            # ProgressLedger check. Each component is a source-derived clause;
+            # client quotes remain exact spans with their original message IDs.
+            for component in unit.get("components", []):
+                component_id = component.get("component_id")
+                component_label = str(component.get("label") or "")
+                terms_for_component = component_terms(component_label)
+                if not component_id or not terms_for_component:
+                    continue
+                for component_start, component_end in clauses:
+                    if component_target_by_span.get((component_start, component_end)) != unit_id:
+                        continue
+                    raw_quote = text[component_start:component_end]
+                    reported_component_status = reported_status(raw_quote)
+                    if reported_component_status is None or not any(re.search(
+                            r"(?<!\w)" + re.escape(term) + r"\w*",
+                            raw_quote.casefold().replace("ё", "е")) for term in terms_for_component):
+                        continue
+                    leading = len(raw_quote) - len(raw_quote.lstrip())
+                    component_quote = raw_quote.strip()
+                    component_result = {"message_id": message_id, "quote": component_quote,
+                        "start": component_start + leading,
+                        "end": component_start + leading + len(component_quote)}
+                    observation = {"status": reported_component_status, **component_result}
+                    stored_result = next((item for item in check["component_results"]
+                                          if item.get("component_id") == component_id), None)
+                    if stored_result is None:
+                        stored_result = {"component_id": component_id,
+                            "label": component_label, "status": reported_component_status,
+                            "result_span": component_result, "observations": [observation]}
+                        check["component_results"].append(stored_result)
+                    elif not any(item.get("message_id") == message_id
+                                 and item.get("quote") == component_quote
+                                 and item.get("start") == component_result["start"]
+                                 and item.get("end") == component_result["end"]
+                                 for item in stored_result.get("observations", [])):
+                        stored_result.setdefault("observations", []).append(observation)
+                    stored_result["status"] = aggregate_component_status(
+                        component_label, stored_result.get("observations", []))
+                    latest = stored_result["observations"][-1]
+                    stored_result["result_span"] = {key: latest[key]
+                        for key in ("message_id", "quote", "start", "end") if key in latest}
+                    changed = True
+            if len(check.get("components") or []) > 1:
+                component_statuses = {item.get("component_id"): item.get("status")
+                                      for item in check.get("component_results", [])}
+                statuses = [component_statuses.get(item.get("component_id"))
+                            for item in check["components"]]
+                if "failed" in statuses:
+                    check["status"] = "failed"
+                elif statuses and all(item == "passed" for item in statuses):
+                    check["status"] = "passed"
+                elif any(item is not None for item in statuses):
+                    check["status"] = "unknown"
             changed = True
         return changed
 
@@ -1708,6 +1826,45 @@ class DialogueManager:
         if reason in {"understanding_error", "understanding_failed", "groq_quota_deferred",
                       "client_requested_specialist", "unexpected_exception"}:
             return state
+        # A read-only source recheck may add component structure to already
+        # shown units on an older SQLite snapshot. Apply only to exact existing
+        # source/check identities; this path must never publish a new check.
+        if (progress_update and progress_update.get("metadata_only") is True
+                and state.task_context):
+            for unit in progress_update.get("shown_units", []):
+                stored = next((item for item in state.task_context.shown_units
+                               if item.get("unit_id") == unit.get("unit_id")), None)
+                if (stored and unit.get("source_verified") is True
+                        and stored.get("source_verified") is True
+                        and stored.get("label") == unit.get("label")
+                        and stored.get("source") == unit.get("source")
+                        and stored.get("section") == unit.get("section")
+                        and isinstance(unit.get("components"), list)):
+                    stored["components"] = deepcopy(unit["components"])
+            for update in progress_update.get("check_updates", []):
+                stored = next((item for item in state.task_context.checks
+                               if item.get("unit_id") == update.get("unit_id")), None)
+                if (stored and update.get("task_id") == state.task_id
+                        and stored.get("task_id") == state.task_id
+                        and stored.get("source_verified") is True
+                        and update.get("source_verified") is True
+                        and stored.get("label") == update.get("label")
+                        and stored.get("source") == update.get("source")
+                        and stored.get("section") == update.get("section")
+                        and isinstance(update.get("components"), list)):
+                    stored["components"] = deepcopy(update["components"])
+                    stored["component_results"] = deepcopy(update.get("component_results", []))
+            for unit in progress_update.get("eligible_units", []):
+                stored = next((item for item in state.task_context.eligible_units
+                               if item.get("unit_id") == unit.get("unit_id")), None)
+                if (stored and unit.get("source_verified") is True
+                        and stored.get("source_verified") is True
+                        and stored.get("label") == unit.get("label")
+                        and stored.get("source") == unit.get("source")
+                        and stored.get("section") == unit.get("section")
+                        and isinstance(unit.get("components"), list)):
+                    stored["components"] = deepcopy(unit["components"])
+            progress_update = None
         if reason in NON_TASK_SCENARIO_REASONS and previous.task_id:
             return state
         if progress_update and state.task_context:
@@ -1717,23 +1874,43 @@ class DialogueManager:
                 if (isinstance(unit, dict) and isinstance(unit.get("unit_id"), str)
                         and isinstance(unit.get("label"), str) and unit.get("unit_id")
                         and unit.get("source_verified") is True):
-                    if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.shown_units}:
-                        state.task_context.shown_units.append({k: unit[k] for k in
-                            ("unit_id", "label", "source", "section", "source_verified", "model_scope", "model_value", "source_order")
-                            if k in unit})
-                    if unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.checks}:
+                    stored = next((item for item in state.task_context.shown_units
+                                   if item.get("unit_id") == unit["unit_id"]), None)
+                    if stored is None:
+                        stored = {k: deepcopy(unit[k]) for k in
+                            ("unit_id", "label", "source", "section", "source_verified", "model_scope", "model_value", "source_order", "components")
+                            if k in unit}
+                        state.task_context.shown_units.append(stored)
+                    elif isinstance(unit.get("components"), list):
+                        # A source verified against its current hash may add
+                        # structural metadata to an older persisted unit.
+                        stored["components"] = deepcopy(unit["components"])
+                    check = next((item for item in state.task_context.checks
+                                  if item.get("unit_id") == unit["unit_id"]), None)
+                    if check is None:
                         state.task_context.checks.append({
                             "task_id": state.task_id, "unit_id": unit["unit_id"],
                             "label": unit["label"], "source": unit.get("source"),
                             "section": unit.get("section"), "source_verified": True,
-                            "asked_message_id": message_id, "status": "asked"})
+                            "asked_message_id": message_id, "status": "asked",
+                            "components": deepcopy(unit.get("components", [])),
+                            "component_results": []})
+                    elif isinstance(unit.get("components"), list):
+                        check["components"] = deepcopy(unit["components"])
+                        check.setdefault("component_results", [])
             for unit in progress_update.get("eligible_units", []):
                 if (isinstance(unit, dict) and isinstance(unit.get("unit_id"), str)
                         and isinstance(unit.get("label"), str) and unit.get("source_verified") is True
-                        and unit["unit_id"] not in {item.get("unit_id") for item in state.task_context.eligible_units}):
-                    state.task_context.eligible_units.append({k: unit[k] for k in
-                        ("unit_id", "label", "source", "section", "source_verified", "model_scope", "model_value", "source_order")
-                        if k in unit})
+                        and unit.get("unit_id")):
+                    stored = next((item for item in state.task_context.eligible_units
+                                   if item.get("unit_id") == unit["unit_id"]), None)
+                    if stored is None:
+                        stored = {k: deepcopy(unit[k]) for k in
+                            ("unit_id", "label", "source", "section", "source_verified", "model_scope", "model_value", "source_order", "components")
+                            if k in unit}
+                        state.task_context.eligible_units.append(stored)
+                    elif isinstance(unit.get("components"), list):
+                        stored["components"] = deepcopy(unit["components"])
             if isinstance(progress_update.get("open_question"), str):
                 key = progress_update["open_question"]
                 if key == state.task_context.open_question:

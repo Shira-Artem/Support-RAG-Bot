@@ -147,11 +147,12 @@ def _provider_payload(case):
 class LocalApprovedCandidates:
     """Only the external Qdrant candidate boundary is replaced."""
 
-    def __init__(self, sources=SOURCES, injected_candidate=None):
-        loader = DocumentLoader(ROOT / "data/knowledge")
+    def __init__(self, sources=SOURCES, injected_candidate=None, root=ROOT):
+        self.root = Path(root)
+        loader = DocumentLoader(self.root / "data/knowledge")
         chunker = Chunker()
         chunks = [chunk for source in sources
-                  for chunk in chunker.split(loader.load(ROOT / "data/knowledge" / source))]
+                  for chunk in chunker.split(loader.load(self.root / "data/knowledge" / source))]
         self.hits = [SearchResult(chunk.metadata["source"],
                                   chunk.text + injected_candidate if injected_candidate and
                                   chunk.metadata["source"].endswith("evotor/ofd/ofd-unable-to-connect.md")
@@ -174,8 +175,8 @@ class LocalApprovedCandidates:
 class LocalRag:
     retriever = None
 
-    def __init__(self, sources=SOURCES, injected_candidate=None):
-        self.source = LocalApprovedCandidates(sources, injected_candidate)
+    def __init__(self, sources=SOURCES, injected_candidate=None, root=ROOT):
+        self.source = LocalApprovedCandidates(sources, injected_candidate, root=root)
         self.pipeline = RetrievalPipeline(self.source)
 
     def search_for_state(self, state, query):
@@ -218,10 +219,10 @@ def _safe_state(state, prior_task_id):
 
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
                 injected_candidate=None, coordinator_enabled=False, after_dialogue=None,
-                planner_overrides=None):
+                planner_overrides=None, before_turn=None, source_root=ROOT):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)
-    rag = LocalRag(sources, injected_candidate)
+    rag = LocalRag(sources, injected_candidate, root=source_root)
     if injected_candidate:
         assert any(injected_candidate in hit.text for hit in rag.source.hits)
     settings = Settings(telegram_bot_token="offline-token", openrouter_api_key="",
@@ -249,6 +250,10 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
     monkeypatch.setattr("app.source_first_service._append_composer_rejection", lambda *_args: None)
     sys.modules.pop("bot", None)
     bot = importlib.import_module("bot")
+    if source_root != ROOT:
+        from app.source_first_service import SourceFirstService
+        monkeypatch.setattr(bot, "source_first_service",
+                            SourceFirstService(rag, settings, Path(source_root)))
     try:
         provider_calls = []
         generation_calls = []
@@ -313,6 +318,8 @@ def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURC
                 before = store.dialogue_state(cid)
                 search_start, generation_start = len(rag.source.searches), len(generation_calls)
                 planner_start = len(planner_choices)
+                if before_turn is not None:
+                    before_turn(index, store, cid)
                 message.text = case["text"]
                 reply.reset_mock()
                 await bot.handle_message(update, None)
@@ -750,7 +757,7 @@ def test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves(
                           encoding="utf-8")
 
 
-def test_reported_compound_results_keep_unknown_but_show_the_approved_conditional_boundary(monkeypatch, tmp_path):
+def test_reported_compound_results_keep_component_outcomes_and_show_approved_boundary(monkeypatch, tmp_path):
     cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
     trace = _run_replay(monkeypatch, tmp_path, cases,
         sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
@@ -759,7 +766,8 @@ def test_reported_compound_results_keep_unknown_but_show_the_approved_conditiona
     assert "Если базовые проверки не выявили причину" in trace[2]["final_reply"]
     assert "передайте диагностический отчёт в поддержку Эвотора" in trace[2]["final_reply"]
     checks = trace[2]["state_after_sqlite_reopen"]["task_context"]["checks"]
-    assert checks[-1]["status"] == "unknown"
+    assert checks[-1]["status"] == "failed"
+    assert {item["status"] for item in checks[-1]["component_results"]} == {"passed", "failed"}
     assert "каков её результат" not in trace[2]["final_reply"]
 
 

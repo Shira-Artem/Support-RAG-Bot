@@ -246,9 +246,15 @@ class ConversationStore:
                 diagnostic = json.loads(row['diagnostics_json'] or '{}')
                 # A failed generation cannot advertise an approved check,
                 # even if a stale progress_update was attached to the answer.
-                published_progress = (diagnostic.get('progress_update')
-                    if diagnostic.get('scenario') == 'answer'
-                    and diagnostic.get('generation_status') == 'generated' else None)
+                progress_update = diagnostic.get('progress_update')
+                published_answer = (diagnostic.get('scenario') == 'answer'
+                    and diagnostic.get('generation_status') == 'generated')
+                verified_metadata_backfill = (diagnostic.get('scenario') == 'clarify'
+                    and diagnostic.get('generation_status') == 'clarification'
+                    and isinstance(progress_update, dict)
+                    and progress_update.get('metadata_only') is True)
+                published_progress = (progress_update
+                    if published_answer or verified_metadata_backfill else None)
                 state = manager.observe_answer(state, scenario=diagnostic.get('scenario'),
                                                reason=diagnostic.get('scenario_reason'), question=row['content'],
                                                message_id=row['id'], slot=diagnostic.get('clarification_slot'),

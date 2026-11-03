@@ -45,3 +45,33 @@ Total live budget consumed: **4/24 HTTP attempts: 3×200, 1×429**. Stop-on-429 
 ## Decision
 
 **B1.3b NO-GO / LIVE INCOMPLETE.** A real regression is fixed and live-confirmed: a failed composite check now prompts for missing outcomes rather than replaying the full section. The full continuation contract is not proven: provider quota stopped the first scenario at the “what next” planner decision, and the second scenario was not run. The source itself also has no later action after its conditional support boundary; that remains a B2 coverage limitation and is not bypassed. Full `python -m pytest -q`: **628 passed, 4 xfailed, 14 warnings, 0 failed**; targeted ProgressLedger/source-order replay: **12 passed, 30 deselected**. B1.4/B1.5/B2 were not started. No commit/push/pull/reset was run.
+
+## Follow-up on the final local B1.3b code — 2026-11-03
+
+This section supersedes the earlier live summary above for the current local snapshot. The initial follow-up Groq trace below was run before the last local corrections; it remains evidence about the quota stop and the bug it exposed, not a live verification of the final local code.
+
+### Local diagnosis and correction
+
+The initial failed-result branch used a broad status check and could ask about “other points” even for a single check. The final implementation gates that question on source-derived `components` from exact, hash-verified approved instructions. The structural metadata is persisted with the existing shown/eligible/check records in `TaskContext`; no new memory store or schema was added. Atomic checks continue to the next ordered approved step, or escalate honestly when the verified source has no next step.
+
+Reviewing the follow-up trace exposed two more defects in the legacy SQLite path. First, a component backfill attached to a clarifying answer was discarded because `ConversationStore` persisted progress only for generated answers. Second, a short token in “в нём” falsely matched the component about EoU/internet/address/port, which hid that unresolved component. A later settings result could also be attributed to an earlier check because that earlier unit contained the word “Настройки” in its menu path.
+
+The correction persists only metadata and component observations for exact, already-shown checks from the same task and verified source; it does not add new shown checks. Component matching considers only published checks, filters out short accidental tokens, retains source clause coverage as `unknown` when the client has reported only part of that clause, and does not assign the same client result to an unrelated earlier unit. This was exercised by removing the new fields from an isolated SQLite snapshot before the negative-result turn, then checking the clarification, result attribution and SQLite reopen.
+
+### Automatic verification on the final local snapshot
+
+- `tests/test_b1_3b_diagnostic_continuation.py`: **6 passed**. Coverage includes failed composite and atomic checks, missing quote, exact quotes across SQLite reopen, legacy-checkpoint metadata backfill, approved conditional boundary, and task/model isolation.
+- Focused regression command covering the B1.3b cases and existing source-order, saved-live replay, payment, handoff and model-switch cases: **11 passed, 37 deselected**.
+- Final `python -m pytest -q`: **634 passed, 4 xfailed, 14 warnings, 0 failed**. This includes B1.1, B1.2 and B1.3a regression coverage. Warnings remain the existing Qdrant client/server version warning and LangSmith deprecations.
+
+### Bounded Groq follow-up and stop
+
+Used the real `bot.handle_message`, Groq `openai/gpt-oss-20b` / medium, read-only Stage3 (`knowledge_stage3_retrieval_20261022`, 934 points), and an isolated SQLite backup from the saved B1.3a checkpoint (`P=passed`, `C=asked`). No production worker or production SQLite was used. [Raw follow-up trace](b1_3b_live_s2_20261103.json) records the actual user inputs, responses, checks, provider status and SQLite round trips.
+
+The follow-up run was capped at 8 HTTP attempts. It used **4 actual HTTP attempts: 3×200 and 1×429**. On the first negative result, Groq kept the same `task:1`; the queue failure and exact user quote survived SQLite reopen, and the answer did not repeat the whole section. That intermediate response asked only about the address/port/INN clause. The saved state did not yet contain component metadata. The next input reported the address/port/INN result; Understanding returned 200, then the Planner returned HTTP **429** (`rate_limit_exceeded`, `tokens`). The request guard stopped the SDK retry before another network request. There were no further HTTP calls and no key switching.
+
+Inspection of that trace found the legacy-backfill and attribution defects described above. They were corrected locally and covered by the final offline suite, but the 429 stop rule prevented any further live request in this run. Therefore the trace does **not** verify the final component question or attribution. Scenario A did not reach the “Что делать дальше?” answer, and scenario B (“Проверил.” → explicit positive outcome → next approved action) was not run. The initial trace [b1_3b_live_s1](b1_3b_live_s1_20261103.json) is also historical; it cannot substitute for either scenario on the final code.
+
+### Current decision and next step
+
+**B1.3b remains NO-GO / LIVE INCOMPLETE.** The final local behavior and regression coverage pass, but neither required full Groq scenario is complete on the final local code. The approved Evotor source still ends at a support boundary and adds no later diagnostic action; the bot must retain that boundary rather than invent a step. After quota is available under a separate budget, resume only B1.3b from the clean B1.3a checkpoint after P passed/C asked and the separate “Проверил” checkpoint; do not resume the intermediate follow-up SQLite state that exposed the old false attribution. Keep the combined cap at 12–16 actual HTTP attempts and stop at the first 429. Do not start B1.4, B1.5 or B2.
