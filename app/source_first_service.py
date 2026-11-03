@@ -1799,6 +1799,21 @@ class SourceFirstService:
                                 validation_status="exact_approved_next_check",
                                 generation_status="generated",
                                 duration_ms=round((perf_counter()-started)*1000), **base)
+                    if last_result and last_result.get("status") == "failed":
+                        # A failed composite check is diagnostic evidence, not
+                        # permission to replay its full source section. Ask for
+                        # the remaining component outcomes so the source's
+                        # conditional branch can be selected safely.
+                        quote = (last_result.get("result_span") or {}).get("quote")
+                        question = "Зафиксировал отрицательный результат"
+                        if quote:
+                            question += f" («{quote}»)"
+                        question += (". Какие результаты показал отчёт по остальным пунктам этой проверки? "
+                                     "После этого выберу следующую применимую ветку инструкции.")
+                        return Answer(question, scenario="clarify",
+                            scenario_reason="progress_ledger_failed_composite_needs_remaining_results",
+                            clarification_slot="details", generation_status="clarification",
+                            duration_ms=round((perf_counter()-started)*1000), **base)
                     if not last_result or last_result.get("status") in {"asked", "unknown", "not_done"}:
                         shown_ids = {unit.get("unit_id") for unit in matching_shown}
                         has_next_unit = any(unit["unit_id"] not in shown_ids for unit in source_units)
