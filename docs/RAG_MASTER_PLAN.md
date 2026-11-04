@@ -662,3 +662,18 @@ Planner 400 классифицируется как JSON generation failure, а 
 ### B1.3b — real S1/S2 continuation, 2026-11-04
 
 **Предложение: scoped GO для проверенных B1.3b сценариев; production и общий B1 остаются NO-GO.** Реальные Groq/SQLite S1/S2 дали подтверждённые ответы и round-trip; устранены доказанные повтор legacy split units и неспецифичное уточнение feedback. S1 первый ход предшествовал исправлению и продолжен с проверенного checkpoint; финальный S2 классифицировал неоднозначный ответ иначе, чем исправленную feedback-ветку, покрытую offline. Полный финальный pytest **663 passed / 4 xfailed**. Один 429 соблюдён; в текущей серии 25 HTTP, 78,860 подтверждённых tokens. [Отчёт и trace](../reports/architecture_audit_20261101/b1_3b_diagnostic_continuation.md). Изменения локальные, публикация только после согласования; B2 не начинать без отдельного решения.
+
+
+### B1.3b — опубликованный runtime, непрерывный S1, 2026-11-04
+
+**Актуальный опубликованный SHA:** `49c7f568733a028c3df4ac70b961aa211b857de6` (`HEAD == origin/main` по локальной ссылке на preflight). **Статус: NO-GO / LIVE INCOMPLETE** для строгого S1, заменяет предыдущее предложение scoped GO. На одной версии кода первые два хода дали 4×200 и правильные ответы; третий — Understanding 200 / Planner 429 `Retry-After: 2`. Harness заблокировал запланированный retry, поэтому ответил внутренней ошибкой; все три `task:1` и SQLite reopen совпали, результаты проверок сохранены. Финальный опубликованный S2 имеет совпадающие хеши runtime-файлов с текущим SHA, 6×200 и reopen PASS; отдельная feedback-классификация подтверждена только offline. [Трасса S1](../reports/architecture_audit_20261101/b1_3b_s1_published_49c7f56_20261104.json), [отчёт](../reports/architecture_audit_20261101/b1_3b_diagnostic_continuation.md), [журнал](PROJECT_STATE.md). Следующий шаг: определить минимальную коррекцию harness для разрешённого retry после Retry-After и затем заново доказать непрерывный S1; код не менять без показа причины. B1.4/B1.5/B2 не начинать; production NO-GO.
+
+
+### B1.3b — checkpoint-продолжение и harness retry, 2026-11-04
+
+**Scoped GO для проверенных B1.3b S1/S2**, общий B1 и production остаются NO-GO. Опубликованный runtime SHA `49c7f568733a028c3df4ac70b961aa211b857de6`. Первые два хода S1 — 4×200; восстановленный из точного SQLite checkpoint третий ход — 2×200, поддержка Эвотора без повтора проверок, `task:1` и SQLite reopen PASS. Runtime-хеши обеих трасс совпадают; процессы разные, поэтому это не непрерывный запуск в одном процессе. Harness исправлен для одного штатного runtime retry после Retry-After, regression 11 passed; live retry в этом продолжении не понадобился. S2 ранее подтверждён на совпадающих runtime-хешах; feedback-классификация отдельно только offline. [Трасса третьего хода](../reports/architecture_audit_20261101/b1_3b_s1_turn3_checkpoint_retry_49c7f56_20261104.json), [отчёт](../reports/architecture_audit_20261101/b1_3b_diagnostic_continuation.md), [журнал](PROJECT_STATE.md). Следующий шаг — решение владельца; не начинать B1.4/B1.5/B2 и не публиковать без согласования.
+
+
+### B1.3b — окончательное решение и pre-publication verification
+
+**SCOPED GO по S1/S2** подтверждён владельцем: S1 завершён через SQLite checkpoint в отдельном процессе; live retry 429 не наблюдался, feedback-ветка S2 подтверждена offline. Полный suite Python 3.14.3: **665 passed, 4 xfailed, 14 warnings**; Python 3.12 имеет ранее зафиксированную несовместимость игнорируемого `ormsgpack` (664 passed, 4 xfailed, 1 environment failure). Diff и синтетические traces проверены; runtime RAG не изменён. B1.4 и B1.5 не начаты; конкретных определений и критериев для них данная дорожная карта пока не содержит. Общий B1 и production — NO-GO. Дальнейшие этапы не начинать до решения владельца.

@@ -20,7 +20,7 @@ import re
 import sqlite3
 import subprocess
 import sys
-from time import perf_counter
+from time import monotonic, perf_counter
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -198,6 +198,43 @@ class ReadOnlyQdrant:
         return self._client.query_points(*args, **kwargs)
 
 
+class RetryCaptureGuard:
+    """Permit only the runtime's single, identical, timely retry in one generation call."""
+    def __init__(self):
+        self.pending = None
+        self.seen_429 = False
+        self.stopped_on_429 = False
+        self.stop_reason = None
+
+    def before_request(self, scope, stage, request, now):
+        if not self.stopped_on_429:
+            if self.seen_429:
+                raise RuntimeError("Harness stopped after the permitted provider 429 retry")
+            return False
+        pending = self.pending
+        allowed = (pending is not None and scope is not None
+                   and scope is pending["scope"] and stage == pending["stage"]
+                   and request == pending["request"] and now >= pending["deadline"])
+        if not allowed:
+            raise RuntimeError("Harness blocked an unauthorized request after provider HTTP 429")
+        self.pending = None  # Consume before the network request, including transport failures.
+        return True
+
+    def observe(self, scope, stage, request, status, retry_after, now, was_retry):
+        if status == 429:
+            self.seen_429 = True
+            self.stopped_on_429 = True
+            self.stop_reason = "provider_429_after_retry" if was_retry else "provider_429_no_retry"
+            self.pending = None
+            if not was_retry and scope is not None and retry_after is not None and 0 < retry_after <= 15:
+                self.pending = {"scope": scope, "stage": stage, "request": request,
+                                "deadline": now + retry_after}
+                self.stop_reason = "provider_429_retry_pending"
+        elif was_retry:
+            self.stopped_on_429 = status != 200
+            self.stop_reason = None if status == 200 else f"provider_retry_http_{status}"
+
+
 async def run(args):
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env", override=False)
@@ -258,7 +295,8 @@ async def run(args):
     http_attempts = []
     rate_limit_pacing = []
     last_rate_limit_headers = {}
-    stopped_on_429 = False
+    retry_guard = RetryCaptureGuard()
+    generation_scope = None
     stopped_on_400 = False
     active_stage = "understanding"
 
@@ -290,12 +328,13 @@ async def run(args):
         return result
 
     async def capture_post(client, url, *post_args, **kwargs):
-        nonlocal stopped_on_429, stopped_on_400, last_rate_limit_headers
+        nonlocal stopped_on_400, last_rate_limit_headers
         if not str(url).startswith("https://api.groq.com/"):
             return await original_post(client, url, *post_args, **kwargs)
-        if len(http_attempts) >= args.max_http or stopped_on_429 or stopped_on_400:
-            raise RuntimeError("B1 live HTTP budget exhausted or provider 429")
+        if len(http_attempts) >= args.max_http or stopped_on_400:
+            raise RuntimeError("Harness HTTP budget exhausted or provider HTTP 400")
         request_json = kwargs.get("json") or {}
+        was_retry = retry_guard.before_request(generation_scope, active_stage, request_json, monotonic())
         # Capture the conservative estimate for diagnosis only. Provider
         # headers and Retry-After govern rate-limit handling, not this estimate.
         estimated = quota_module.estimate_tokens(request_json)
@@ -317,8 +356,8 @@ async def run(args):
         if response.status_code == 400:
             stopped_on_400 = True
         last_rate_limit_headers = quota_module.public_headers(response.headers)
-        if response.status_code == 429:
-            stopped_on_429 = True
+        retry_guard.observe(generation_scope, active_stage, request_json, response.status_code,
+            quota_module.retry_after_seconds(response.headers), monotonic(), was_retry)
         if response.status_code >= 400:
             try:
                 error = response.json().get("error") or {}
@@ -345,8 +384,9 @@ async def run(args):
             stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
 
     async def capture_generation(messages, config, *, call_stage="generation"):
-        nonlocal active_stage
+        nonlocal active_stage, generation_scope
         active_stage = call_stage
+        generation_scope = object()
         record = {"stage": call_stage, "input": messages}
         calls.append(record)
         try:
@@ -363,6 +403,9 @@ async def run(args):
                 "provider_usage": getattr(exc, "provider_usage", None)}
             raise
         finally:
+            if retry_guard.stopped_on_429 and retry_guard.stop_reason == "provider_429_retry_pending":
+                retry_guard.stop_reason = "provider_429_runtime_retry_not_completed"
+            generation_scope = None
             active_stage = "understanding"
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),
@@ -379,7 +422,9 @@ async def run(args):
         result["provider_errors"] = http_errors
         result["http_attempts"] = http_attempts
         result["rate_limit_pacing"] = list(rate_limit_pacing)
-        result["stopped_on_429"] = stopped_on_429
+        result["seen_429"] = retry_guard.seen_429
+        result["stopped_on_429"] = retry_guard.stopped_on_429
+        result["harness_stop_reason"] = retry_guard.stop_reason
         result["stopped_on_400"] = stopped_on_400
         if quota_module._TRACE.exists():
             result["http_trace"] = [json.loads(line) for line in quota_module._TRACE.read_text(encoding="utf-8").splitlines()]
@@ -439,7 +484,7 @@ async def run(args):
                 result["turns"].append(item)
                 save()
                 print(json.dumps({k: item[k] for k in ("case", "turn", "answer", "latency_ms", "same_task")}, ensure_ascii=True), flush=True)
-                if stopped_on_429 or stopped_on_400 or len(http_attempts) >= args.max_http:
+                if retry_guard.seen_429 or stopped_on_400 or len(http_attempts) >= args.max_http:
                     print("Provider 400/429 or hard HTTP budget reached; stopping live batch", flush=True)
                     return
                 if diagnostics and diagnostics.get("generation_status") == "error":
