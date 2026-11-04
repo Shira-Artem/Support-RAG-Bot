@@ -1,0 +1,71 @@
+{
+  "status": "green",
+  "points": 934,
+  "sources": {
+    "evotor/fn/fn-235.md": {
+      "document_id": "evotor-fn-235-360004715213",
+      "local_status": "approved",
+      "chunks": 2,
+      "indexed_status": [
+        "approved"
+      ],
+      "local_body_hash": "e3971b6fd8411d5c8db4e16abf56db275941dd68ca7e2fa22d098fa4d99cd7a9",
+      "indexed_hashes": [
+        "e3971b6fd8411d5c8db4e16abf56db275941dd68ca7e2fa22d098fa4d99cd7a9"
+      ],
+      "match": true
+    },
+    "aqsi/aqsi-error-115.md": {
+      "document_id": "aqsi-kkt-error-115",
+      "local_status": "approved",
+      "chunks": 4,
+      "indexed_status": [
+        "approved"
+      ],
+      "local_body_hash": "cf0657707ca62da4ba39c00444e15d4edecc33b95b6d6882782bd8c43211e33b",
+      "indexed_hashes": [
+        "cf0657707ca62da4ba39c00444e15d4edecc33b95b6d6882782bd8c43211e33b"
+      ],
+      "match": true
+    },
+    "evotor/cash/evotor-6-receipt-copy.md": {
+      "document_id": "evotor-6-receipt-copy-360005002514",
+      "local_status": "approved",
+      "chunks": 2,
+      "indexed_status": [
+        "approved"
+      ],
+      "local_body_hash": "57d7f663e539c940cf53f84aa5ce402448c112d007e98855864ed3f49bc13cc9",
+      "indexed_hashes": [
+        "57d7f663e539c940cf53f84aa5ce402448c112d007e98855864ed3f49bc13cc9"
+      ],
+      "match": true
+    },
+    "evotor/settings/time-mismatch-first-checks.md": {
+      "document_id": "evotor-time-mismatch-check-20261019",
+      "local_status": "approved",
+      "chunks": 3,
+      "indexed_status": [
+        "approved"
+      ],
+      "local_body_hash": "19c929c6378b7ee108ad993f91026c466be3576a6f697f9b1ca13c7f945aac39",
+      "indexed_hashes": [
+        "19c929c6378b7ee108ad993f91026c466be3576a6f697f9b1ca13c7f945aac39"
+      ],
+      "match": true
+    },
+    "1c/edo/epd-vs-edo.md": {
+      "document_id": "batch-20261013-edo-epd-vs-edo",
+      "local_status": "approved",
+      "chunks": 4,
+      "indexed_status": [
+        "approved"
+      ],
+      "local_body_hash": "d01f337277200f8b73bc9f10231ce4932c5962cb8f59c4b9de33b4ec1258dc09",
+      "indexed_hashes": [
+        "d01f337277200f8b73bc9f10231ce4932c5962cb8f59c4b9de33b4ec1258dc09"
+      ],
+      "match": true
+    }
+  }
+}

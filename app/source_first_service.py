@@ -2339,10 +2339,20 @@ class SourceFirstService:
                     "source_model_scope_not_applicable", "selected_check_model_scope_mismatch", started, **base)
             missing_manufacturer_model = (hardware_scope and selected["scope"].get("manufacturer")
                 and state.task_entity("manufacturer") and not state.task_entity("equipment"))
+            # A manufacturer-wide source can begin with an independent check
+            # before any model-specific unit. Only expose the first verified
+            # unit; later units remain subject to the existing progress gates.
+            independent_first_check = bool(
+                missing_manufacturer_model and not selected_model and source_units
+                and not source_units[0]["model_scope"]
+                and not _source_unit_condition(source_units[0])
+                and CHECK_ACTION_PATTERN.search(source_units[0]["line"])
+                and not unsafe_operation_issue(source_units[0]["line"])
+                and decision and decision.get("route") == "technical_action")
             missing_model_scope = (not informational
                 and hardware_scope
                 and (first_model_scoped is not None or selected_model or missing_manufacturer_model)
-                and confirmed_model is None)
+                and confirmed_model is None and not independent_first_check)
             if (missing_model_scope and not preflight
                     and evidence_kind(body, "") in {"procedure", "interface"}):
                 return self._model_clarification(state, started, **base)
@@ -2932,6 +2942,8 @@ class SourceFirstService:
                 scenario_reason = "source_first_grounded_information_summary"
             else:
                 text = f"{exact_render}\n\nИсточник: {selected['source']} — {selected['section']}"
+                if independent_first_check and len(source_units) > 1:
+                    text += "\n\nЭто первый шаг; дальнейшие действия зависят от результата проверки и применимости инструкции."
                 if read_only_status_fact:
                     text += "\n\nДля разбора конкретного документа уточните точную надпись статуса или код ошибки."
                 validation_status = ("exact_source_status_fact" if read_only_status_fact else

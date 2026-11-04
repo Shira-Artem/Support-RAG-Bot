@@ -109,6 +109,75 @@ class OneResult:
         return self.retrieval
 
 
+def test_manufacturer_wide_first_check_does_not_require_model(monkeypatch, tmp_path):
+    import json
+    source = "evotor/fn/fn-235.md"
+    heading = "Смысл и безопасная проверка"
+    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    text = dict(_sections(body))[heading]
+    scope = {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
+             "task_category": "error_diagnosis", "operations": ["diagnose_error"]}
+    retrieval = _retrieval(source, "evotor-fn-235-360004715213", heading, scope, text)
+    question = "На терминале Эвотор при продаже возникла ошибка ФН 235. С чего безопасно начать?"
+    fact = Fact.span("Эвотор", 1)
+    task = TaskContext(task_id="task:test", intent="unknown", operation="diagnose",
+        entities={"manufacturer": [fact]}, active_route=ActiveRoute("manufacturer", fact),
+        task_fact=Fact.span(question, 1))
+
+    async def select(messages, _settings, *, call_stage="generation"):
+        payload = json.loads(messages[-1]["content"])
+        chosen = next(x for x in payload["candidate_sections"] if x["section"] == heading)
+        return Generation(json.dumps({"mode": "select", "section_id": chosen["id"],
+            "applicability_confirmed": True, "source_order_complete": True,
+            "reason": "first check"}), "offline")
+
+    monkeypatch.setattr("app.source_first_service.generate", select)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=DialogueState(task_context=task),
+        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert "проверьте количество неотправленных документов" in answer.text
+    assert "уточните модель" not in answer.text.casefold()
+    assert "Это первый шаг" in answer.text
+    assert answer.progress_update["shown_units"]
+
+
+def test_generic_first_check_does_not_expose_later_model_specific_unit(monkeypatch, tmp_path):
+    import json
+    source = "evotor/example.md"
+    path = tmp_path / "data/knowledge" / source
+    path.parent.mkdir(parents=True)
+    path.write_text("---\ndocument_id: mixed-check\ntitle: Проверки\nstatus: approved\n"
+        "verified_at: '2026-10-22'\nservice: Эвотор\nmanufacturer: Эвотор\n"
+        "task_category: error_diagnosis\noperations: [diagnose_error]\n---\n\n"
+        "# Проверки\n\n## Диагностика\n\n"
+        "1. Проверьте подключение питания.\n2. На модели 7.3 откройте настройки.\n", encoding="utf-8")
+    scope = {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
+             "task_category": "error_diagnosis", "operations": ["diagnose_error"]}
+    body = "1. Проверьте подключение питания.\n2. На модели 7.3 откройте настройки."
+    retrieval = _retrieval(source, "mixed-check", "Диагностика", scope, body)
+    question = "На Эвотор не запускается оборудование. Что проверить?"
+    fact = Fact.span("Эвотор", 1)
+    task = TaskContext(task_id="task:mixed", intent="device", operation="diagnose",
+        entities={"manufacturer": [fact]}, active_route=ActiveRoute("manufacturer", fact),
+        task_fact=Fact.span(question, 1))
+
+    async def select(messages, _settings, *, call_stage="generation"):
+        candidate = json.loads(messages[-1]["content"])["candidate_sections"][0]
+        return Generation(json.dumps({"mode": "select", "section_id": candidate["id"],
+            "applicability_confirmed": True, "source_order_complete": True,
+            "reason": "first check"}), "offline")
+
+    monkeypatch.setattr("app.source_first_service.generate", select)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), tmp_path).answer(
+        question, state=DialogueState(task_context=task),
+        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert "Проверьте подключение питания" in answer.text
+    assert "откройте настройки" not in answer.text
+    assert len(answer.progress_update["eligible_units"]) == 1
+
+
 def test_incomplete_topic_with_domain_word_is_clarified_without_escalation(tmp_path):
     message = "Привет! Помоги с ОФД"
     state = DialogueManager().advance(DialogueState(), message, 1)

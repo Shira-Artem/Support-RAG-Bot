@@ -1,0 +1,142 @@
+diff --git a/app/source_first_service.py b/app/source_first_service.py
+index 0a0bb00..5293f08 100644
+--- a/app/source_first_service.py
++++ b/app/source_first_service.py
+@@ -2339,10 +2339,20 @@ class SourceFirstService:
+                     "source_model_scope_not_applicable", "selected_check_model_scope_mismatch", started, **base)
+             missing_manufacturer_model = (hardware_scope and selected["scope"].get("manufacturer")
+                 and state.task_entity("manufacturer") and not state.task_entity("equipment"))
++            # A manufacturer-wide source can begin with an independent check
++            # before any model-specific unit. Only expose the first verified
++            # unit; later units remain subject to the existing progress gates.
++            independent_first_check = bool(
++                missing_manufacturer_model and not selected_model and source_units
++                and not source_units[0]["model_scope"]
++                and not _source_unit_condition(source_units[0])
++                and CHECK_ACTION_PATTERN.search(source_units[0]["line"])
++                and not unsafe_operation_issue(source_units[0]["line"])
++                and decision and decision.get("route") == "technical_action")
+             missing_model_scope = (not informational
+                 and hardware_scope
+                 and (first_model_scoped is not None or selected_model or missing_manufacturer_model)
+-                and confirmed_model is None)
++                and confirmed_model is None and not independent_first_check)
+             if (missing_model_scope and not preflight
+                     and evidence_kind(body, "") in {"procedure", "interface"}):
+                 return self._model_clarification(state, started, **base)
+@@ -2932,6 +2942,8 @@ class SourceFirstService:
+                 scenario_reason = "source_first_grounded_information_summary"
+             else:
+                 text = f"{exact_render}\n\nИсточник: {selected['source']} — {selected['section']}"
++                if independent_first_check and len(source_units) > 1:
++                    text += "\n\nЭто первый шаг; дальнейшие действия зависят от результата проверки и применимости инструкции."
+                 if read_only_status_fact:
+                     text += "\n\nДля разбора конкретного документа уточните точную надпись статуса или код ошибки."
+                 validation_status = ("exact_source_status_fact" if read_only_status_fact else
+diff --git a/docs/PROJECT_STATE.md b/docs/PROJECT_STATE.md
+index 3ff1c85..a5d6700 100644
+--- a/docs/PROJECT_STATE.md
++++ b/docs/PROJECT_STATE.md
+@@ -1494,3 +1494,7 @@
+ ### 2026-11-04 — B2.2b.1 применимость hardware scope
+ 
+ На том же HEAD и с сохранёнными локальными B2.2a.1/B2.2b доказана первая потеря: cabinet `task_entities` проецирует только active OFD route, хотя TaskContext/TaskFrame содержат manufacturer и equipment; scope gate ошибочно использовал эту проекцию. `scope_policy.py` для hardware и не-explain берёт эти два слота из активной задачи, не из session, не меняя route facade. Исходный live АТОЛ: missing manufacturer/отказ → eligible 1/полезная сверка ФН из той же approved статьи. Смена задачи не перенесла АТОЛ. Новый Эвотор и раздельная модель не дали полезных шагов; модель 6 не извлечена. Несовместимый контроль безопасно отказал до scope gate; прямая проверка конфликта offline. Одна попытка Groq 400, повторённый независимый процесс 200. [Отчёт, сценарии, coverage и трассы](../reports/architecture_audit_20261101/b2_2b1_report_20261104.md). Профильные 99 passed; pytest 686 passed / 4 xfailed / 14 warnings. **SCOPED GO только для исходной регрессии и offline контрактов; общий B2/production NO-GO.** aQsi peripheral issue остаётся. Следующий один шаг — решение владельца о диагностике извлечения раздельной модели и лишнего уточнения; B2.2b.2/B2.2c не начаты. Production worker/SQLite, KB, Qdrant contents и `.env` не менялись; commit/push нет.
++
++### 2026-11-04 — B2.2b.2 необходимость модели
++
++На опубликованном HEAD `ea4bd03ae17e380037c554374b09ff250d2e7172` дерево было чистым. По saved trace Planner выбрал общий approved раздел ФН 235, scope разрешил его, но SourceFirst после Planner затребовал модель из-за самого наличия manufacturer в hardware scope. Локальный кандидат позволяет первый безопасный, независимый от модели проверочный unit manufacturer-wide статьи, оставляя следующие шаги за progress/scope gates; факт ошибки извлечения раздельной модели не исправлялся. LIVE с заранее заданными случаями, Groq и Stage3 read-only: 10×200 / 22 448 tokens, 6 диалогов / 7 ходов. Исходная регрессия и 1С-ЭПД дали полезный факт/шаг; aQsi safety отказал до retrieval, модельный конфликт не дошёл до релевантного gate, два необоснованных уточнения модели, код 3922 не решил на обоих ходах, хотя модель после reopen сохранена. **2/6 полезных, B2.2b.2 NO-GO; общий B2 и production NO-GO.** Локальная KB не содержит отдельной статьи по повторной печати Эвотор 7.3; официальное руководство найдено, не добавлено в KB. [Отчёт, рубрика, coverage, trace](../reports/architecture_audit_20261101/b2_2b2_report_20261104.md). Профильные **120 passed / 4 xfailed**, полный pytest **688 passed / 4 xfailed / 14 warnings**. Следующий один шаг — решение владельца о диагностике оставшихся отказов и приоритете KB gap; B2.2c не начат. Production worker/SQLite, approved KB, Qdrant contents и `.env` не менялись; commit/push нет.
+diff --git a/docs/RAG_MASTER_PLAN.md b/docs/RAG_MASTER_PLAN.md
+index 05e555a..d905712 100644
+--- a/docs/RAG_MASTER_PLAN.md
++++ b/docs/RAG_MASTER_PLAN.md
+@@ -3,6 +3,10 @@
+ Дата актуализации: 2026-11-03. Это **единственная актуальная дорожная карта**. [PROJECT_STATE.md](PROJECT_STATE.md) хранит хронологию фактов и решений. [RAG_RECOVERY_PLAN.md](RAG_RECOVERY_PLAN.md), [RAG_VNEXT_PLAN.md](RAG_VNEXT_PLAN.md), [RAG_ROOT_CAUSE_AUDIT.md](RAG_ROOT_CAUSE_AUDIT.md) и отчёты экспериментов остаются профильными и историческими материалами. Статусы: `PLANNED`, `IN_PROGRESS`, `BLOCKED`, `DONE`, `REJECTED`. `DONE` означает выполненную задачу в указанной области, а не автоматическое разрешение на production.
+ 
+ 
++## Актуальный статус B2.2b.2 — 04.11.2026
++
++**B2.2b.2 и общий B2 quality gate NO-GO; production NO-GO.** Доказанная причина исходного запроса модели — SourceFirst после успешного Planner требовал equipment для любой manufacturer-scoped hardware статьи. Локальный кандидат выдаёт независимый первый проверочный шаг из общего approved раздела, сохраняя модельные ограничения. LIVE: 2/6 полезных сценариев, в том числе исходная регрессия и независимый 1С-ЭПД; два излишних запроса модели, другой производитель остановлен safety gate, модельный mismatch live не достиг нужной проверки. 10×200. Обнаружен конкретный локальный KB gap для повторной печати чека на Эвотор 7.3; официальный источник найден, KB не менялась. [Отчёт и evidence](../reports/architecture_audit_20261101/b2_2b2_report_20261104.md). Следующий шаг — решение владельца о диагностике оставшихся отказов и приоритете KB gap; B2.2c не начинать автоматически.
++
+ ## Актуальный статус B2.2b.1 — 04.11.2026
+ 
+ **SCOPED GO только для исходного АТОЛ и offline scope-контролей; общий B2 и production NO-GO.** Hardware scope теперь использует подтверждённые manufacturer/equipment активного TaskContext, не меняя ограниченную cabinet route-проекцию. Исходный live вместо отказа выдал approved проверку; смена задачи не перенесла АТОЛ. Два вопроса Эвотор дали запрос модели, раздельная модель не извлечена, конфликт в live не дошёл до scope gate, один Groq 400. Профильные 99 passed; полный pytest 686 passed / 4 xfailed. [Отчёт и evidence](../reports/architecture_audit_20261101/b2_2b1_report_20261104.md). Следующий шаг — решение владельца о диагностике извлечения модели и запроса модели; B2.2b.2/B2.2c не начинать автоматически.
+diff --git a/tests/test_source_first_dialogue_contract.py b/tests/test_source_first_dialogue_contract.py
+index b92c709..8adf199 100644
+--- a/tests/test_source_first_dialogue_contract.py
++++ b/tests/test_source_first_dialogue_contract.py
+@@ -109,6 +109,75 @@ class OneResult:
+         return self.retrieval
+ 
+ 
++def test_manufacturer_wide_first_check_does_not_require_model(monkeypatch, tmp_path):
++    import json
++    source = "evotor/fn/fn-235.md"
++    heading = "Смысл и безопасная проверка"
++    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
++    text = dict(_sections(body))[heading]
++    scope = {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
++             "task_category": "error_diagnosis", "operations": ["diagnose_error"]}
++    retrieval = _retrieval(source, "evotor-fn-235-360004715213", heading, scope, text)
++    question = "На терминале Эвотор при продаже возникла ошибка ФН 235. С чего безопасно начать?"
++    fact = Fact.span("Эвотор", 1)
++    task = TaskContext(task_id="task:test", intent="unknown", operation="diagnose",
++        entities={"manufacturer": [fact]}, active_route=ActiveRoute("manufacturer", fact),
++        task_fact=Fact.span(question, 1))
++
++    async def select(messages, _settings, *, call_stage="generation"):
++        payload = json.loads(messages[-1]["content"])
++        chosen = next(x for x in payload["candidate_sections"] if x["section"] == heading)
++        return Generation(json.dumps({"mode": "select", "section_id": chosen["id"],
++            "applicability_confirmed": True, "source_order_complete": True,
++            "reason": "first check"}), "offline")
++
++    monkeypatch.setattr("app.source_first_service.generate", select)
++    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
++        question, state=DialogueState(task_context=task),
++        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
++    assert answer.scenario == "answer"
++    assert "проверьте количество неотправленных документов" in answer.text
++    assert "уточните модель" not in answer.text.casefold()
++    assert "Это первый шаг" in answer.text
++    assert answer.progress_update["shown_units"]
++
++
++def test_generic_first_check_does_not_expose_later_model_specific_unit(monkeypatch, tmp_path):
++    import json
++    source = "evotor/example.md"
++    path = tmp_path / "data/knowledge" / source
++    path.parent.mkdir(parents=True)
++    path.write_text("---\ndocument_id: mixed-check\ntitle: Проверки\nstatus: approved\n"
++        "verified_at: '2026-10-22'\nservice: Эвотор\nmanufacturer: Эвотор\n"
++        "task_category: error_diagnosis\noperations: [diagnose_error]\n---\n\n"
++        "# Проверки\n\n## Диагностика\n\n"
++        "1. Проверьте подключение питания.\n2. На модели 7.3 откройте настройки.\n", encoding="utf-8")
++    scope = {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
++             "task_category": "error_diagnosis", "operations": ["diagnose_error"]}
++    body = "1. Проверьте подключение питания.\n2. На модели 7.3 откройте настройки."
++    retrieval = _retrieval(source, "mixed-check", "Диагностика", scope, body)
++    question = "На Эвотор не запускается оборудование. Что проверить?"
++    fact = Fact.span("Эвотор", 1)
++    task = TaskContext(task_id="task:mixed", intent="device", operation="diagnose",
++        entities={"manufacturer": [fact]}, active_route=ActiveRoute("manufacturer", fact),
++        task_fact=Fact.span(question, 1))
++
++    async def select(messages, _settings, *, call_stage="generation"):
++        candidate = json.loads(messages[-1]["content"])["candidate_sections"][0]
++        return Generation(json.dumps({"mode": "select", "section_id": candidate["id"],
++            "applicability_confirmed": True, "source_order_complete": True,
++            "reason": "first check"}), "offline")
++
++    monkeypatch.setattr("app.source_first_service.generate", select)
++    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), tmp_path).answer(
++        question, state=DialogueState(task_context=task),
++        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
++    assert answer.scenario == "answer"
++    assert "Проверьте подключение питания" in answer.text
++    assert "откройте настройки" not in answer.text
++    assert len(answer.progress_update["eligible_units"]) == 1
++
++
+ def test_incomplete_topic_with_domain_word_is_clarified_without_escalation(tmp_path):
+     message = "Привет! Помоги с ОФД"
+     state = DialogueManager().advance(DialogueState(), message, 1)
