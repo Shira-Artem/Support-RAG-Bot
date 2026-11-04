@@ -424,7 +424,33 @@ def _safe_general_knowledge_question(user_message: str, state: DialogueState) ->
     return bool(state.intent == "general" and state.operation == "explain"
         and _GENERAL_CONCEPTUAL_FORM.search(user_message)
         and not _GENERAL_KNOWLEDGE_BLOCK.search(user_message)
+        and not _has_named_product_context(state)
+        and not re.search(r"\b(?:сервис\w*|продукт\w*|платформ\w*|приложени\w*)\s+[«\"A-ZА-ЯЁ]", user_message)
+        and not re.search(r"[«\"][^»\"]+[»\"]", user_message)
+        and not re.search(r"\b[A-Za-zА-Яа-яЁё]*[a-zа-яё]+[A-ZА-ЯЁ][A-Za-zА-Яа-яЁё]*\b", user_message)
         and not unsafe_operation_issue(user_message))
+
+
+def _has_named_product_context(state: DialogueState) -> bool:
+    """Use reducer-owned product scope, not metadata inferred from retrieved hits."""
+    task = state.task_context
+    return bool(task and any(task.entities.get(slot) for slot in
+        ("service", "software", "integration", "manufacturer", "equipment")))
+
+
+def _general_concept_overlap(question_terms: set[str], response_terms: set[str]) -> bool:
+    """Recognize matching concept words across common Cyrillic/Latin spellings."""
+    if question_terms & response_terms:
+        return True
+    transliteration = dict(zip("абвгдезийклмнопрстуфхц", "abvgdeziyklmnoprstufhc"))
+    transliteration.update({"ж": "zh", "ш": "sh", "ч": "ch", "щ": "shch",
+                            "ю": "yu", "я": "ya", "ё": "e", "ы": "y"})
+    def key(word: str) -> str:
+        value = "".join(transliteration.get(char, char) for char in word.casefold())
+        return value.replace("w", "v").replace("oo", "u")
+    return any(len(left) >= 5 and len(right) >= 5 and
+        bool(re.search("[а-яё]", left, re.I)) != bool(re.search("[а-яё]", right, re.I)) and
+        key(left) == key(right) for left in question_terms for right in response_terms)
 
 
 _LIMITATION_CLAIM = re.compile(
@@ -1460,7 +1486,7 @@ class SourceFirstService:
                    or bool(_GENERAL_UNSOURCED_RULE.search(text))
                    or bool(unsafe_operation_issue(text))
                    or bool(instruction_issue(text, ""))
-                   or not question_terms.intersection(response_terms))
+                   or not _general_concept_overlap(question_terms, response_terms))
         diagnostics = base.get("retrieval_diagnostics") or {}
         diagnostics["general_knowledge_fallback"] = {
             "eligible": True, "used": not invalid,

@@ -1083,3 +1083,36 @@ def test_fully_fabricated_repair_has_no_partial_answer_or_semantic_judge(monkeyp
     partial = answer.retrieval_diagnostics["answer_composer"]["repair"]["partial_acceptance"]
     assert partial["validation"] == "rejected"
     assert partial["reason"] == "partial_answer_requires_supported_and_unsupported_claims"
+
+
+def test_named_service_never_uses_unsourced_general_generation(tmp_path, monkeypatch):
+    from app.dialogue_state import Observation
+    question = "Что такое ДиректБанк и для чего он нужен?"
+    fact = Fact.span(question, 1, question.index("ДиректБанк"), question.index("ДиректБанк") + len("ДиректБанк"), value="DirectBank")
+    obs = Observation(intent="general", operation="explain", relation="new_task",
+                      request_type="information", evidence=Fact.span(question, 1),
+                      entities={"integration": [fact]})
+    state = DialogueManager().advance(DialogueState(), question, 1, observation=obs)
+    assert not _safe_general_knowledge_question(question, state)
+    async def forbidden(*_args, **_kwargs):
+        raise AssertionError("named product must not reach unsourced generation")
+    monkeypatch.setattr("app.source_first_service.generate", forbidden)
+    answer = asyncio.run(SourceFirstService(None, settings(tmp_path), ROOT)._general_knowledge_fallback(question, state, 0, {}))
+    assert answer is None
+
+
+
+
+def test_unknown_named_service_is_not_treated_as_generic_concept():
+    state = DialogueState(intent="general", operation="explain")
+    assert not _safe_general_knowledge_question('Что такое сервис «Ромашка»?', state)
+    assert not _safe_general_knowledge_question('Что такое MegaProduct?', state)
+    assert _safe_general_knowledge_question('Что такое API?', state)
+    assert _safe_general_knowledge_question('Что такое вебхук?', state)
+
+
+def test_general_concept_overlap_accepts_transliteration_not_unrelated_words():
+    from app.source_first_service import _general_concept_overlap
+    assert _general_concept_overlap({"вебхук"}, {"webhook"})
+    assert _general_concept_overlap({"api"}, {"api"})
+    assert not _general_concept_overlap({"вебхук"}, {"программа"})

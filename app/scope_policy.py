@@ -79,6 +79,14 @@ def assess_source_scope(state, scope: dict) -> ScopeAssessment:
     service = str(scope.get("service") or "")
     manufacturer = str(scope.get("manufacturer") or "")
     entities = state.task_entities
+    # The legacy route facade deliberately hides non-route facts for cabinet
+    # tasks. Hardware applicability still needs facts owned by the active
+    # task, never the session's potentially stale equipment history.
+    if hardware and state.operation != "explain" and state.task_context:
+        entities = dict(entities)
+        for slot in ("manufacturer", "equipment"):
+            if slot in state.task_context.entities:
+                entities[slot] = state.task_context.entities[slot]
     confirmed_manufacturers = [fact.value for fact in entities.get("manufacturer", [])]
     # Equipment is a separate slot. It can establish only the manufacturer
     # explicitly encoded by an unambiguous known brand or brand/model mention.

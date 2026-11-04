@@ -1,7 +1,7 @@
 from hashlib import sha256
 import json
 
-from app.dialogue_state import DialogueState, Fact
+from app.dialogue_state import ActiveRoute, DialogueState, Fact
 from app.semantic_evidence_selector import EvidenceDecision, EvidenceUnit, validate_selected_units
 from app.scope_policy import (assess_source_scope, manufacturer_from_equipment,
                               matches_scope_value)
@@ -106,3 +106,26 @@ def test_registered_equipment_brand_satisfies_manufacturer_without_inventing_mod
     assert manufacturer_from_equipment("АТОЛ Онлайн") is None
     assert "manufacturer" in assess_source_scope(
         _state(manufacturer="aQsi", equipment="Эвотор 7.3"), scope).mismatches
+
+
+def test_hardware_scope_uses_current_task_facts_behind_cabinet_route():
+    state = _state(ofd="Платформа ОФД", manufacturer="АТОЛ", equipment="АТОЛ 30Ф")
+    state.intent = "receipt"
+    state.task_context.active_route = ActiveRoute("ofd", state.task_context.entities["ofd"][0])
+    assert set(state.task_entities) == {"ofd"}
+    scope = {"service": "Платформа ОФД", "manufacturer": "АТОЛ",
+             "model": "АТОЛ 30Ф", "task_category": "receipt_transmission"}
+    assert assess_source_scope(state, scope).missing == ()
+    assert assess_source_scope(state, scope).mismatches == ()
+    assert "manufacturer" in assess_source_scope(state, {**scope, "manufacturer": "Эвотор"}).mismatches
+    assert "model" in assess_source_scope(state, {**scope, "model": "АТОЛ 55Ф"}).mismatches
+    assert "service" in assess_source_scope(state, {**scope, "service": "Другой ОФД"}).mismatches
+
+
+def test_hardware_scope_does_not_reuse_session_hardware():
+    state = _state(ofd="Платформа ОФД")
+    state.intent = "receipt"
+    state.task_context.active_route = ActiveRoute("ofd", state.task_context.entities["ofd"][0])
+    state.session.entities["manufacturer"] = [Fact.span("АТОЛ", "previous-task")]
+    result = assess_source_scope(state, {"manufacturer": "АТОЛ", "task_category": "receipt_transmission"})
+    assert result.missing == ("manufacturer",)

@@ -1,0 +1,51 @@
+{
+  "status": "green",
+  "points": 934,
+  "sources": {
+    "platformaofd-atol-transmission-checks": {
+      "chunks": 1,
+      "status": [
+        "approved"
+      ],
+      "hashes": [
+        "bccab21ccbf54b3c3b2d05f70ace30b4ca6c48eb802ac344a3482916702bd6b2"
+      ],
+      "source": [
+        "platformaofd/atol/ofd-transmission-checks.md"
+      ],
+      "local_body_hash": "bccab21ccbf54b3c3b2d05f70ace30b4ca6c48eb802ac344a3482916702bd6b2",
+      "local_status": "approved",
+      "body_hash_matches": true
+    },
+    "evotor-fn-235-360004715213": {
+      "chunks": 2,
+      "status": [
+        "approved"
+      ],
+      "hashes": [
+        "e3971b6fd8411d5c8db4e16abf56db275941dd68ca7e2fa22d098fa4d99cd7a9"
+      ],
+      "source": [
+        "evotor/fn/fn-235.md"
+      ],
+      "local_body_hash": "e3971b6fd8411d5c8db4e16abf56db275941dd68ca7e2fa22d098fa4d99cd7a9",
+      "local_status": "approved",
+      "body_hash_matches": true
+    },
+    "evotor-6-ofd-connection-360014099534": {
+      "chunks": 2,
+      "status": [
+        "approved"
+      ],
+      "hashes": [
+        "5005e69717a155e1a38b49424cd5f56ac60dfe67a579f1503009b3030dd5ef08"
+      ],
+      "source": [
+        "evotor/ofd/evotor-6-ofd-connection.md"
+      ],
+      "local_body_hash": "5005e69717a155e1a38b49424cd5f56ac60dfe67a579f1503009b3030dd5ef08",
+      "local_status": "approved",
+      "body_hash_matches": true
+    }
+  }
+}

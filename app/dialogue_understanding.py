@@ -327,6 +327,39 @@ def _entity_value_matches(value: str, slot: str, canonical: str, quote: str) -> 
                if candidate_slot == slot for alias in aliases)
 
 
+def _equipment_identity(value: str) -> tuple[str, str] | None:
+    """Identify only an explicit known manufacturer plus a complete model code."""
+    value = re.sub(r"^\s*(?:(?:касса|ккт|терминал|аппарат)\s+)", "", value, flags=re.I).strip()
+    matches = set()
+    for slot, manufacturer, aliases in ENTITY_NAMES:
+        if slot != "manufacturer":
+            continue
+        for alias in aliases:
+            match = re.fullmatch(re.escape(alias) + r"\s+([0-9]+(?:[.,][0-9]+)*[a-zа-яё]?)", value, re.I)
+            if match:
+                matches.add((_fold(manufacturer), _fold(match.group(1))))
+    return next(iter(matches)) if len(matches) == 1 else None
+
+
+def _deduplicate_equipment(entities: dict[str, list[Fact]], diagnostics: list[dict[str, Any]]) -> None:
+    """Collapse proven equal model identities without merging distinct models."""
+    facts = entities.get("equipment", [])
+    by_identity: dict[tuple[str, str], list[Fact]] = {}
+    for fact in facts:
+        identity = _equipment_identity(fact.value)
+        if identity:
+            by_identity.setdefault(identity, []).append(fact)
+    duplicates = {identity: group for identity, group in by_identity.items() if len(group) > 1}
+    if not duplicates:
+        return
+    keep = {identity: min(group, key=lambda fact: (len(fact.value), fact.start))
+            for identity, group in duplicates.items()}
+    entities["equipment"] = [fact for fact in facts
+        if _equipment_identity(fact.value) not in keep or keep[_equipment_identity(fact.value)] is fact]
+    _field_result(diagnostics, "entities.equipment", "accepted",
+                  "equivalent_grounded_model_mentions_collapsed", count=len(facts) - len(entities["equipment"]))
+
+
 def _extract_known_entities(text: str, message_id: int | str,
                             entities: dict[str, list[Fact]],
                             diagnostics: list[dict[str, Any]]) -> None:
@@ -779,7 +812,11 @@ def validate_response(data: Any, text: str, message_id: int | str,
             value_match = re.search(re.escape(value.strip()), evidence.quote, re.I)
             if value_match:
                 canonical = value_match.group(0)
-                equipment_span = _find_span(text, canonical, message_id)
+                # The enclosing evidence quote is already uniquely grounded.
+                # Resolve inside it: the same model may be named twice in the
+                # message, making a fresh whole-message search ambiguous.
+                equipment_span = Fact.span(text, message_id,
+                    evidence.start + value_match.start(), evidence.start + value_match.end())
             else:
                 # Preserve a localized exact model mention when the provider
                 # transliterated its value. Resolve the manufacturer through
@@ -832,6 +869,7 @@ def validate_response(data: Any, text: str, message_id: int | str,
                       value=canonical, start=equipment_span.start, end=equipment_span.end)
 
     _extract_known_entities(text, message_id, entities, diagnostics)
+    _deduplicate_equipment(entities, diagnostics)
 
     # A bare model number can be grounded against the one manufacturer already
     # confirmed in the active task. The provider's claimed brand alone is not
