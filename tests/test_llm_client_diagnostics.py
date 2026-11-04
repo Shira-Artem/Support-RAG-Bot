@@ -78,8 +78,16 @@ def test_planner_uses_a_bounded_completion_budget_for_its_short_json_schema(monk
     asyncio.run(client.generate([{"role": "user", "content": "Choose a source section."}],
                                 _settings(), call_stage="planner"))
 
-    assert calls[0]["max_completion_tokens"] == 512
-    assert calls[0]["response_format"]["type"] == "json_schema"
+    assert calls[0]["max_completion_tokens"] == 1024
+    response_format = calls[0]["response_format"]
+    assert response_format["type"] == "json_schema"
+    assert response_format["json_schema"]["strict"] is True
+    schema = response_format["json_schema"]["schema"]
+    assert schema["additionalProperties"] is False
+    assert set(schema["required"]) == set(schema["properties"])
+    from app.groq_rate_limit import estimate_tokens
+    reduced = {**calls[0], "max_completion_tokens": 512}
+    assert estimate_tokens(calls[0]) - estimate_tokens(reduced) >= 512
     assert CaptureClient.requests == 1
 
 

@@ -8,7 +8,8 @@ import pytest
 
 from app.dialogue_state import (ActiveRoute, DialogueManager, DialogueState, Fact,
                                 SessionContext, TaskContext)
-from app.source_first_service import _merge_source_components, _planner_task_snapshot
+from app.source_first_service import (_matching_verified_source_units, _merge_source_components,
+                                      _planner_task_snapshot)
 from test_telegram_pilot_sqlite_replay import ROOT, _run_replay
 
 
@@ -830,3 +831,29 @@ def test_new_task_does_not_inherit_old_model_or_diagnostic_checks(monkeypatch, t
     assert [fact["value"] for fact in task["entities"]["manufacturer"]] == ["АТОЛ"]
     assert "Эвотор 7.3" not in json.dumps(task, ensure_ascii=False)
     assert task["symptom"]["quote"] == "чеки тоже не доходят до ОФД"
+
+
+def test_verified_legacy_composite_marks_exact_split_source_units_as_shown():
+    source, section = "data/knowledge/example.md", "Approved"
+    units = [
+        {"unit_id": "first", "label": "Проверьте связь.", "source": source, "section": section},
+        {"unit_id": "second", "label": "Сопоставьте настройки.", "source": source, "section": section},
+        {"unit_id": "third", "label": "Передайте отчёт.", "source": source, "section": section},
+    ]
+    shown = {"unit_id": "old-composite", "label": "Проверьте связь. Сопоставьте настройки.",
+             "source": source, "section": section, "source_verified": True}
+    assert [u["unit_id"] for u in _matching_verified_source_units(shown, units, source, section)] == ["first", "second"]
+    assert not _matching_verified_source_units({**shown, "source_verified": False}, units, source, section)
+    assert not _matching_verified_source_units({**shown, "section": "Other"}, units, source, section)
+    assert not _matching_verified_source_units({**shown, "label": "Проверьте связь."}, units, source, section)
+
+
+def test_ambiguous_feedback_asks_result_of_current_shown_check(monkeypatch, tmp_path):
+    opening = _compound_dialogue()[0]
+    raw = {**_continuation_raw("Проверил."), "request_type": "feedback"}
+    trace = _run_replay(monkeypatch, tmp_path,
+        [opening, {"id": "ambiguous_feedback", "text": "Проверил.", "provider_raw": raw}],
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True)
+    final = trace[-1]
+    assert final["final_reply"] == "Удалось выполнить показанную проверку и каков её результат?"
+    assert final["state_after_sqlite_reopen"]["task_context"]["checks"][-1]["status"] in {"asked", "unknown"}

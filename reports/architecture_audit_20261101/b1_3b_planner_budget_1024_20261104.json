@@ -1,0 +1,50 @@
+{
+  "created_at": "2026-11-04T09:11:52.179381+00:00",
+  "baseline_trace": "reports\\architecture_audit_20261101\\b1_3b_live_20261104_s1_turn1.json",
+  "head": "ad7c78664aaebb1c8403fe62a553b5029eb759b5",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "max_completion_tokens": 1024,
+  "estimate_tokens_with_completion": 5012,
+  "prompt_chars": 7296,
+  "same_messages_and_schema_as_baseline": true,
+  "last_observed_tpm_limit": 8000,
+  "last_observed_tpm_remaining": 3122,
+  "last_observed_tpm_reset": "36.585s",
+  "last_observed_at": "2026-11-04T09:04:42.738560+00:00",
+  "current_tpm_remaining": "unknown",
+  "attempts": 1,
+  "http_status": 200,
+  "request_id": "req_01m6jx8evye6dt87jz3jw8nkcf",
+  "rate_limit_headers": {
+    "x-ratelimit-limit-requests": "1000",
+    "x-ratelimit-remaining-requests": "999",
+    "x-ratelimit-reset-requests": "1m26.4s",
+    "x-ratelimit-limit-tokens": "8000",
+    "x-ratelimit-remaining-tokens": "5605",
+    "x-ratelimit-reset-tokens": "17.962s"
+  },
+  "usage": {
+    "prompt_tokens": 2238,
+    "completion_tokens": 656,
+    "total_tokens": 2894,
+    "completion_tokens_details": {
+      "reasoning_tokens": 536
+    }
+  },
+  "finish_reason": "stop",
+  "generation_classification": {
+    "type": "str",
+    "length_chars": 417,
+    "json_parse": "success",
+    "parsed_type": "dict",
+    "missing_required": [],
+    "extra_field_count": 0,
+    "wrong_type_fields": [],
+    "enum_violation_fields": [],
+    "schema_valid": true,
+    "section_id_matches_candidate": true,
+    "section_id": "evotor-7-3-ofd-connection-360014099534::Что проверить сначала",
+    "mode": "select"
+  }
+}

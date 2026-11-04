@@ -53,6 +53,9 @@ CASES = {
         "Очередь неотправленных документов не уменьшается.",
         "EoU работает, интернет работает, адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора.",
         "Что делать дальше?"],
+    "b1_3b_s1_remaining": [
+        "EoU работает, интернет работает, адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора.",
+        "Что делать дальше?"],
     "b1_3b_s1_what_next": ["Что делать дальше?"],
     "b1_3b_s2": [
         "Проверил.",
@@ -256,32 +259,49 @@ async def run(args):
     rate_limit_pacing = []
     last_rate_limit_headers = {}
     stopped_on_429 = False
+    stopped_on_400 = False
+    active_stage = "understanding"
+
+    def classify_failed_generation(value, response_format):
+        result = {"type": type(value).__name__,
+                  "length_chars": len(value) if isinstance(value, (str, list, dict)) else None}
+        if isinstance(value, str):
+            try:
+                parsed = json.loads(value)
+                result["json_parse"] = "success"
+            except json.JSONDecodeError as exc:
+                result.update({"json_parse": "failure", "parse_error_kind": exc.msg,
+                    "error_at_or_near_end": exc.pos >= max(0, len(value.rstrip()) - 2),
+                    "ends_with_object_close": value.rstrip().endswith("}")})
+                return result
+        else:
+            result["json_parse"] = "not_applicable"
+            parsed = value
+        result["parsed_type"] = type(parsed).__name__
+        schema = ((response_format or {}).get("json_schema") or {}).get("schema") or {}
+        if isinstance(parsed, dict) and isinstance(schema.get("properties"), dict):
+            properties = schema["properties"]
+            result["missing_required"] = [k for k in schema.get("required", []) if k not in parsed]
+            result["extra_field_count"] = len(set(parsed) - set(properties))
+            expected = {"string": str, "boolean": bool, "object": dict, "array": list}
+            result["wrong_type_fields"] = [k for k, v in parsed.items()
+                if k in properties and properties[k].get("type") in expected
+                and not isinstance(v, expected[properties[k]["type"]])]
+        return result
 
     async def capture_post(client, url, *post_args, **kwargs):
-        nonlocal stopped_on_429, last_rate_limit_headers
+        nonlocal stopped_on_429, stopped_on_400, last_rate_limit_headers
         if not str(url).startswith("https://api.groq.com/"):
             return await original_post(client, url, *post_args, **kwargs)
-        if len(http_attempts) >= args.max_http or stopped_on_429:
+        if len(http_attempts) >= args.max_http or stopped_on_429 or stopped_on_400:
             raise RuntimeError("B1 live HTTP budget exhausted or provider 429")
         request_json = kwargs.get("json") or {}
-        raw_remaining = last_rate_limit_headers.get("x-ratelimit-remaining-tokens")
-        remaining = int(raw_remaining) if raw_remaining is not None else None
-        token_limit = int(last_rate_limit_headers.get("x-ratelimit-limit-tokens") or 0)
+        # Capture the conservative estimate for diagnosis only. Provider
+        # headers and Retry-After govern rate-limit handling, not this estimate.
         estimated = quota_module.estimate_tokens(request_json)
-        if token_limit and remaining is not None and estimated > remaining:
-            reset = quota_module._seconds(
-                last_rate_limit_headers.get("x-ratelimit-reset-tokens"))
-            wait_seconds = (reset if reset is not None else 60.0) + 1.0
-            rate_limit_pacing.append({"before_http_attempt": len(http_attempts) + 1,
-                "estimated_tokens": estimated, "remaining_tokens": remaining,
-                "token_limit": token_limit,
-                "estimate_exceeds_full_window": estimated > token_limit,
-                "reset_seconds": reset,
-                "wait_seconds": round(wait_seconds, 2), "reason": "observed_tpm_headroom"})
-            print(json.dumps({"rate_limit_wait_seconds": round(wait_seconds, 2),
-                "reason": "observed_tpm_headroom"}), flush=True)
-            await asyncio.sleep(wait_seconds)
-        attempt = {"number": len(http_attempts) + 1, "status": None}
+        attempt = {"number": len(http_attempts) + 1, "status": None, "stage": active_stage,
+            "prompt_chars": sum(len(m.get("content", "")) for m in request_json.get("messages", []) if isinstance(m.get("content"), str)),
+            "estimated_tokens_with_completion": estimated, "response_format": request_json.get("response_format")}
         http_attempts.append(attempt)
         try:
             response = await original_post(client, url, *post_args, **kwargs)
@@ -289,6 +309,13 @@ async def run(args):
             attempt["error_type"] = type(exc).__name__
             raise
         attempt["status"] = response.status_code
+        attempt["request_id"] = response.headers.get("x-request-id") or response.headers.get("request-id")
+        if response.status_code == 200:
+            payload = response.json()
+            attempt["usage"] = payload.get("usage")
+            attempt["finish_reason"] = (payload.get("choices") or [{}])[0].get("finish_reason")
+        if response.status_code == 400:
+            stopped_on_400 = True
         last_rate_limit_headers = quota_module.public_headers(response.headers)
         if response.status_code == 429:
             stopped_on_429 = True
@@ -305,10 +332,10 @@ async def run(args):
                     if error.get("code") == "json_validate_failed" else
                     "provider_rejected_request_schema"
                     if error.get("param") in {"response_format", "messages"} else None),
-                "message": (re.sub(r"org_[A-Za-z0-9_-]+", "[REDACTED_ORG]",
-                            re.sub(r"gsk_[A-Za-z0-9_-]+", "[REDACTED_KEY]", error["message"]))[:500]
-                            if isinstance(error.get("message"), str) else None),
-                "failed_generation_present": error.get("failed_generation") is not None})
+                "failed_generation_present": error.get("failed_generation") is not None,
+                "failed_generation_classification": classify_failed_generation(
+                    error["failed_generation"], request_json.get("response_format"))
+                    if error.get("failed_generation") is not None else None})
         return response
 
     def capture_understanding(**record):
@@ -318,6 +345,8 @@ async def run(args):
             stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
 
     async def capture_generation(messages, config, *, call_stage="generation"):
+        nonlocal active_stage
+        active_stage = call_stage
         record = {"stage": call_stage, "input": messages}
         calls.append(record)
         try:
@@ -333,6 +362,8 @@ async def run(args):
                 "provider_error_param": getattr(exc, "provider_error_param", None),
                 "provider_usage": getattr(exc, "provider_usage", None)}
             raise
+        finally:
+            active_stage = "understanding"
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),
         "head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
@@ -349,6 +380,7 @@ async def run(args):
         result["http_attempts"] = http_attempts
         result["rate_limit_pacing"] = list(rate_limit_pacing)
         result["stopped_on_429"] = stopped_on_429
+        result["stopped_on_400"] = stopped_on_400
         if quota_module._TRACE.exists():
             result["http_trace"] = [json.loads(line) for line in quota_module._TRACE.read_text(encoding="utf-8").splitlines()]
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
@@ -370,6 +402,10 @@ async def run(args):
             for index, question in enumerate(CASES[case_id], 1):
                 bot.conversations = ConversationStore(store_path)
                 before = bot.conversations.dialogue_state(cid)
+                checkpoint = private / "checkpoints" / f"{case_id}-{index}" / "conversations.sqlite3"
+                checkpoint.parent.mkdir(parents=True, exist_ok=True)
+                with sqlite3.connect(store_path) as original, sqlite3.connect(checkpoint) as copy:
+                    original.backup(copy)
                 start_calls, start_understanding, start_http = len(calls), len(raw_understanding), len(http_attempts)
                 reply = AsyncMock()
                 message = SimpleNamespace(text=question, reply_text=reply,
@@ -403,8 +439,8 @@ async def run(args):
                 result["turns"].append(item)
                 save()
                 print(json.dumps({k: item[k] for k in ("case", "turn", "answer", "latency_ms", "same_task")}, ensure_ascii=True), flush=True)
-                if stopped_on_429 or len(http_attempts) >= args.max_http:
-                    print("Provider 429 or hard HTTP budget reached; stopping live batch", flush=True)
+                if stopped_on_429 or stopped_on_400 or len(http_attempts) >= args.max_http:
+                    print("Provider 400/429 or hard HTTP budget reached; stopping live batch", flush=True)
                     return
                 if diagnostics and diagnostics.get("generation_status") == "error":
                     print("Provider/runtime error recorded; stopping bounded batch", flush=True)

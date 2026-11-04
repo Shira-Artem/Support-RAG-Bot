@@ -608,6 +608,23 @@ def _approved_check_units(text: str, source: str, section: str, *,
     return units
 
 
+def _matching_verified_source_units(stored: dict, source_units: list[dict],
+                                    source: str, section: str) -> list[dict]:
+    """Match a shown unit to exact current source units, including legacy composites."""
+    if (stored.get("source_verified") is not True or stored.get("source") != source
+            or stored.get("section") != section or not stored.get("label")):
+        return []
+    current = [unit for unit in source_units
+               if unit.get("source") == source and unit.get("section") == section]
+    exact = [unit for unit in current if unit.get("unit_id") == stored.get("unit_id")
+             and unit.get("label") == stored.get("label")]
+    if exact:
+        return exact
+    contained = [unit for unit in current
+                 if unit.get("label") and unit["label"] in stored["label"]]
+    return contained if len(contained) > 1 else []
+
+
 def _merge_source_components(state: DialogueState, source_units: list[dict],
                              source: str, section: str) -> list[dict]:
     """Backfill component metadata only onto exact units from the checked source."""
@@ -669,24 +686,8 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
     task = state.task_context
     if not task:
         return []
-    current = {unit["unit_id"]: unit for unit in source_units
-               if unit.get("source") == source and unit.get("section") == section}
     def matching_units(stored: dict) -> list[dict]:
-        exact = current.get(stored.get("unit_id"))
-        if (exact and stored.get("label") == exact.get("label")
-                and stored.get("source") == source and stored.get("section") == section):
-            return [exact]
-        # B1.3a persisted some approved multi-sentence checks as one unit.
-        # Current extraction may split that same exact text into ordered units.
-        # Reattach only source units whose full extracted text is contained in
-        # the already-shown, verified label; never infer coverage from keywords.
-        label = str(stored.get("label") or "")
-        if (stored.get("source_verified") is not True or stored.get("source") != source
-                or stored.get("section") != section or not label):
-            return []
-        contained = [unit for unit in current.values()
-                     if unit.get("label") and unit["label"] in label]
-        return contained if len(contained) > 1 else []
+        return _matching_verified_source_units(stored, source_units, source, section)
 
     shown = []
     for stored in task.shown_units:
@@ -1818,7 +1819,17 @@ class SourceFirstService:
             has_new_evidence = bool(reported_check or observed.get("symptom") or
                                     observed.get("goals") or observed.get("entities"))
             if not has_new_evidence:
-                return Answer("Понял. Что именно осталось нерешённым или изменилось?", scenario="clarify",
+                task = state.active_task
+                shown_ids = {unit.get("unit_id") for unit in (task.shown_units if task else [])
+                             if unit.get("source_verified") is True}
+                pending_check = next((check for check in reversed(task.checks if task else [])
+                    if check.get("unit_id") in shown_ids
+                    and check.get("task_id") == task.task_id
+                    and check.get("status") in {"asked", "unknown", "not_done"}), None)
+                question = ("Удалось выполнить показанную проверку и каков её результат?"
+                            if pending_check else
+                            "Понял. Что именно осталось нерешённым или изменилось?")
+                return Answer(question, scenario="clarify",
                     scenario_reason="client_feedback_needs_progress_detail", clarification_slot="details",
                     generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
         if not understanding and turn_kind != "task":
@@ -2432,6 +2443,14 @@ class SourceFirstService:
                                     "source_has_no_remediation_for_confirmed_base_check_failure",
                                     started, **base)
                         shown_ids = {str(unit.get("unit_id") or "") for unit in matching_shown}
+                        # A verified legacy composite may have been split into
+                        # several exact current units. They were already shown;
+                        # do not present those source steps a second time.
+                        shown_ids.update(str(unit.get("unit_id") or "")
+                            for stored in matching_shown
+                            for unit in _matching_verified_source_units(
+                                stored, source_units, selected["source"], selected["section"])
+                            if not _terminal_source_boundary(unit))
                         next_unit, unresolved_condition = _next_applicable_source_unit(
                             source_units, shown_ids, state, selected["source"], selected["section"],
                             user_message)

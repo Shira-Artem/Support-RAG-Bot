@@ -69,12 +69,10 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         key, model = settings.groq_api_key, settings.groq_model
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {}
-        # GPT-OSS reasoning tokens use the same completion budget as visible output.
-        # 2048 leaves room for reasoning while comfortably exceeding short support answers.
-        # Routine support answers and planner decisions are short. Reserving
-        # 2048 output tokens per request unnecessarily trips provider TPM when
-        # less than that reserve remains, even when the actual answer is small.
-        completion_budget = 512 if call_stage == "planner" else 1024
+        # GPT-OSS reasoning and visible JSON share the completion budget.
+        # Keep the existing bounded 1024-token allowance for Planner as well;
+        # the quota estimator includes the full allowance before each request.
+        completion_budget = 1024
         token_limit = {"max_completion_tokens": completion_budget,
                        "reasoning_effort": settings.groq_reasoning_effort or "low"}
     elif settings.llm_provider == "openrouter":

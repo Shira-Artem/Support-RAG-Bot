@@ -643,3 +643,22 @@ Backup до запуска: `.local/backups/limited-pilot-20261101T125226Z/` (д
 Planner 400 классифицируется как JSON generation failure, а не как schema rejection. Сравнение двух trace показывает одинаковые system prompt (2,077 chars), schema output и completion budget 512; user prompt вырос с 5,219 chars у успешного вызова до 7,671 в первом failing trace и 6,189 в retest. Provider error `json_validate_failed`, `param=null`, `failed_generation_present=true`; содержимое не сохранено. Доказательств неправильной schema или точной причины генерации нет. Новый live Groq не вызывался и budget не повышался.
 
 **B1.3b остаётся NO-GO / LIVE INCOMPLETE:** S1 не дошёл до двух финальных сообщений после Planner 400, S2 не завершён на текущем runtime. Offline fixes/regressions (`eba1495`) и итоговая chronology (`8eaba67`) опубликованы в GitHub `main`; remote HEAD `8eaba676d9b4a15c6c0ab6e83e6adff017de0d19`. Следующий шаг — свежий изолированный S1; S2 запускать только после полного PASS S1. B1.4/B1.5/B2 не начинать. Production worker/SQLite, Qdrant и база знаний не менялись.
+
+
+### B1.3b status update — 2026-11-04, published SHA live check
+
+На `ad7c78664aaebb1c8403fe62a553b5029eb759b5` полный pytest **661 passed / 4 xfailed** после запуска существующего Qdrant с прежним volume; Stage3 green/934. Изолированный S1 остановился на первом ходе: Understanding 200, Planner 400 `json_validate_failed`, failed_generation присутствует; SQLite reopen и сохранение task/отрицательной очереди подтверждены. Два HTTP, без retry; S2 не запускался. [Trace](../reports/architecture_audit_20261101/b1_3b_live_20261104_s1_turn1.json).
+
+**B1.3b NO-GO / LIVE INCOMPLETE; B1 и production NO-GO.** Provider JSON generation failure доказан, конкретный дефект генерации не установлен: содержимое failed_generation не сохранялось. Следующий шаг — безопасно классифицировать структуру ошибки без пользовательских значений и применить минимальное исправление по evidence; не увеличивать budget наугад, не запускать S2 до полного S1, не начинать B1.4/B1.5/B2. Подробности и ограничения — последняя запись [журнала](PROJECT_STATE.md).
+
+
+### B1.3b — controlled Planner budget experiment, 2026-11-04
+
+Один вызов Planner на сохранённом входе: 512 ранее дал HTTP 400 `json_validate_failed`; 1024 дал HTTP 200, валидный strict JSON и candidate section, 2,894 tokens (656 completion, включая 536 reasoning). Это поддерживает, но не доказывает budget-гипотезу. Локальный кандидат увеличивает только Planner allowance до 1024, учитываемый TPM estimator; [отчёт](../reports/architecture_audit_20261101/b1_3b_diagnostic_continuation.md). **NO-GO / LIVE INCOMPLETE:** полный S1/S2 не запускались. Согласовать полный S1 на локальном кандидате; S2 только после S1 PASS. Другие этапы не начинать.
+
+Проверка локального кандидата: `python -m pytest -q tests/test_llm_client_diagnostics.py tests/test_b1_3b_diagnostic_continuation.py` — **37 passed**; `git diff --check` пройден.
+
+
+### B1.3b — real S1/S2 continuation, 2026-11-04
+
+**Предложение: scoped GO для проверенных B1.3b сценариев; production и общий B1 остаются NO-GO.** Реальные Groq/SQLite S1/S2 дали подтверждённые ответы и round-trip; устранены доказанные повтор legacy split units и неспецифичное уточнение feedback. S1 первый ход предшествовал исправлению и продолжен с проверенного checkpoint; финальный S2 классифицировал неоднозначный ответ иначе, чем исправленную feedback-ветку, покрытую offline. Полный финальный pytest **663 passed / 4 xfailed**. Один 429 соблюдён; в текущей серии 25 HTTP, 78,860 подтверждённых tokens. [Отчёт и trace](../reports/architecture_audit_20261101/b1_3b_diagnostic_continuation.md). Изменения локальные, публикация только после согласования; B2 не начинать без отдельного решения.
