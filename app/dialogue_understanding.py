@@ -76,6 +76,10 @@ _CONCEPTUAL_INFORMATION_REQUEST = re.compile(
 _EXPLICIT_LOOKUP_ACTION = re.compile(
     r"\b(?:найти|найдите|находить|ищу|ищем|ищут|искать|поищи|поищите|"
     r"поискать|разыскать|отыскать|найден|поиск|find|search\s+for|look\s+up)\b", re.I)
+_PROCEDURE_GOAL = re.compile(
+    r"^\s*как\s+(?:(?:мне|нам|можно|правильно)\s+)*"
+    r"(?!понять\b|узнать\b|объяснить\b|работать\b|отличить\b)"
+    r"[а-яё]+(?:ть|ти|чь)(?:ся)?\b", re.I)
 _ERROR_CONTEXT = re.compile(
     r"\b(?:ошиб\w*|сбо\w*|error\w*|fault\w*|код\s+(?:ошибки|фн)|фн\s*[-№#]?\s*\d{2,})\b", re.I)
 
@@ -851,6 +855,14 @@ def validate_response(data: Any, text: str, message_id: int | str,
 
     goal = _parse_optional_fact(text, data["goal"], message_id, diagnostics, "goal")
     symptom = _parse_optional_fact(text, data["symptom"], message_id, diagnostics, "symptom")
+    if (kind == "information" and operation == "explain" and goal is not None
+            and _PROCEDURE_GOAL.search(goal.quote)):
+        # An exact action goal contradicts a generic explanation label. Do not
+        # invent a specific operation: the coordinator may search for evidence,
+        # while source applicability and operation checks remain independent.
+        operation = "unknown"
+        _field_result(diagnostics, "operation_resolution", "accepted",
+                      "grounded_procedure_goal_not_concept_explanation", value=operation)
     if kind == "information" and operation == "unknown" and goal is not None and _EXPLICIT_LOOKUP_ACTION.search(text):
         # This is a read-only lookup route, grounded in an exact user goal.
         # It permits retrieval to establish whether a safe approved answer
