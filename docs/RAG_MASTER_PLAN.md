@@ -677,3 +677,8 @@ Planner 400 классифицируется как JSON generation failure, а 
 ### B1.3b — окончательное решение и pre-publication verification
 
 **SCOPED GO по S1/S2** подтверждён владельцем: S1 завершён через SQLite checkpoint в отдельном процессе; live retry 429 не наблюдался, feedback-ветка S2 подтверждена offline. Полный suite Python 3.14.3: **665 passed, 4 xfailed, 14 warnings**; Python 3.12 имеет ранее зафиксированную несовместимость игнорируемого `ormsgpack` (664 passed, 4 xfailed, 1 environment failure). Diff и синтетические traces проверены; runtime RAG не изменён. B1.4 и B1.5 не начаты; конкретных определений и критериев для них данная дорожная карта пока не содержит. Общий B1 и production — NO-GO. Дальнейшие этапы не начинать до решения владельца.
+
+
+### 2026-11-04 — публикация B1.3b
+
+Проверенный результат B1.3b опубликован в `origin/main` как `111d3647fb2bdb36c18e005e61c05b6f00e02efd`; удалённый SHA проверен через `git ls-remote`. Коммит содержит harness, регрессию, синтетические трассы и документы; `app/` и `bot.py` не менялись относительно проверенного runtime `49c7f568733a028c3df4ac70b961aa211b857de6`. Следующий documentation-only commit фиксирует этот факт; актуальный HEAD определяется Git. **SCOPED GO S1/S2** с checkpoint S1, offline retry и offline feedback-классификацией S2; общий B1/production NO-GO. Следующий этап без отдельного задания не начинать.
