@@ -1555,17 +1555,74 @@ class DialogueManager:
         if not task or not (task.eligible_units or task.shown_units):
             return False
         changed = False
-        units = task.eligible_units or task.shown_units
+        def unit_identity(unit: dict):
+            unit_id, label = unit.get("unit_id"), unit.get("label")
+            if not unit_id or not label:
+                return None
+            if unit.get("source") is not None or unit.get("section") is not None:
+                if (unit.get("source_verified") is not True or not unit.get("source")
+                        or not unit.get("section")):
+                    return None
+                return ("source", str(unit_id), unit["source"], unit["section"], label, True)
+            return ("plain", str(unit_id), label)
+
+        def check_matches_unit(check: dict, unit: dict) -> bool:
+            if check.get("unit_id") != unit.get("unit_id"):
+                return False
+            if check.get("task_id") not in {None, task.task_id}:
+                return False
+            unit_key = unit_identity(unit)
+            if unit_key is None:
+                return False
+            if unit_key[0] == "source":
+                return (check.get("task_id") == task.task_id
+                        and unit_identity(check) == unit_key)
+            return check.get("label") == unit.get("label")
+
+        shown_by_identity = {}
+        for shown_unit in task.shown_units:
+            key = unit_identity(shown_unit)
+            if key is None:
+                continue
+            if any(check_matches_unit(check, shown_unit) for check in task.checks):
+                shown_by_identity.setdefault(key, shown_unit)
+
+        # Keep the eligible ordering for source progression, but enrich a stale
+        # eligible snapshot only from the exact same verified unit that was
+        # shown. The identity includes ID, source, section, label and trust bit.
+        units = []
+        seen_identities = set()
+        for eligible_unit in task.eligible_units:
+            key = unit_identity(eligible_unit)
+            merged = deepcopy(eligible_unit)
+            shown_unit = shown_by_identity.get(key)
+            if shown_unit and unit_identity(shown_unit) == key:
+                if isinstance(shown_unit.get("components"), list):
+                    merged["components"] = deepcopy(shown_unit["components"])
+                seen_identities.add(key)
+            units.append(merged)
+        for shown_unit in task.shown_units:
+            key = unit_identity(shown_unit)
+            if key is not None and key not in seen_identities:
+                units.append(deepcopy(shown_unit))
+                seen_identities.add(key)
         action_roots = ("откр", "закр", "напеч", "распеч", "уточн", "выбер",
                         "выполн", "переда", "следу", "подтверд", *CHECK_ACTION_ROOTS)
         def content_terms(label: str) -> list[str]:
             return [token for token in re.findall(r"[а-яa-z0-9]+", label.casefold().replace("ё", "е"))
-                    if (len(token) >= 4 or (token.isascii() and len(token) >= 3))
+                    if (len(token) >= 4 or (token.isascii() and len(token) >= 3)
+                        or token == "инн")
                     and not token.startswith(action_roots)
                     and token not in {"наличие", "значения", "выбранного", "действующими"}]
         def evidenced_terms(label: str, quote: str) -> set[str]:
             normalized_quote = quote.casefold().replace("ё", "е")
-            return {term[:4] for term in content_terms(label)
+            # Conditional clauses identify when a source action applies; they
+            # are not outcomes of that action. Match client results against
+            # the action text so "internet works" does not also target a
+            # later step whose precondition merely says "if internet works".
+            action = CHECK_ACTION_PATTERN.search(label)
+            action_label = label[action.start():] if action else label
+            return {term[:4] for term in content_terms(action_label)
                     if not term.startswith(("оператор", "офд"))
                     and re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*", normalized_quote)}
         def reported_status(quote: str) -> str | None:
@@ -1585,65 +1642,107 @@ class DialogueManager:
             if re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", normalized):
                 return "unknown"
             return None
-        def mentioned_terms(quote: str) -> set[str]:
-            return set().union(*(evidenced_terms(str(unit.get("label") or ""), quote)
-                                 for unit in units))
         clauses = []
         for sentence in re.finditer(r"[^;.!?]+", text):
             parts = list(re.finditer(r"[^,]+", sentence.group()))
             if not parts:
                 continue
-            start = sentence.start() + parts[0].start()
-            end = sentence.start() + parts[0].end()
-            for part in parts[1:]:
-                next_start, next_end = sentence.start() + part.start(), sentence.start() + part.end()
-                left, right = text[start:end], text[next_start:next_end]
-                left_terms, right_terms = mentioned_terms(left), mentioned_terms(right)
-                if (reported_status(left) and reported_status(right)
-                        and left_terms and right_terms and left_terms.isdisjoint(right_terms)):
-                    clauses.append((start, end))
-                    start = next_start
-                end = next_end
-            clauses.append((start, end))
+            sentence_clause_start = len(clauses)
+            pending_start = None
+            for part in parts:
+                part_start = sentence.start() + part.start()
+                part_end = sentence.start() + part.end()
+                if pending_start is None:
+                    pending_start = part_start
+                if reported_status(text[pending_start:part_end]):
+                    quote = text[pending_start:part_end]
+                    has_subject = any(evidenced_terms(str(unit.get("label") or ""), quote)
+                                      for unit in units)
+                    if not has_subject and len(clauses) > sentence_clause_start:
+                        # Comma continuations such as "то работает, то пропадает"
+                        # inherit the preceding subject and must be evaluated as
+                        # one contradictory outcome, not detached from its check.
+                        previous_start, _ = clauses[-1]
+                        clauses[-1] = (previous_start, part_end)
+                    else:
+                        clauses.append((pending_start, part_end))
+                    pending_start = None
         def component_terms(label: str) -> set[str]:
+            generic = {"состояние", "приложения", "доступ", "актуальными",
+                       "настройками", "своего", "значения", "действующими"}
             return {term[:4] for term in content_terms(label)
-                    if not term.startswith(CHECK_ACTION_ROOTS + ("оператор", "офд"))}
+                    if not term.startswith(CHECK_ACTION_ROOTS + ("оператор", "офд"))
+                    and term not in generic}
+
+        def component_evidence(label: str, quote: str) -> set[str]:
+            normalized = quote.casefold().replace("ё", "е")
+            return {term for term in component_terms(label)
+                    if re.search(r"(?<!\w)" + re.escape(term) + r"\w*", normalized)}
         # Resolve an outcome to a compound source unit before the broad unit
         # matcher runs. Otherwise a shared word such as "настройки" can mark
         # an earlier check that merely contains it in a menu path.
-        component_target_by_span: dict[tuple[int, int], str] = {}
+        component_target_by_span: dict[tuple[int, int], tuple] = {}
+        component_ids_by_span: dict[tuple[int, int], set[str]] = {}
         ambiguous_component_spans: set[tuple[int, int]] = set()
-        shown_check_ids = ({str(item.get("unit_id")) for item in task.shown_units}
-                           & {str(item.get("unit_id")) for item in task.checks
-                              if item.get("task_id") == task.task_id})
+        shown_check_keys = set(shown_by_identity)
         for span in clauses:
             quote = text[span[0]:span[1]]
             if reported_status(quote) is None:
                 continue
             matched_units = []
             for candidate in units:
-                if str(candidate.get("unit_id") or "") not in shown_check_ids:
+                candidate_key = unit_identity(candidate)
+                if candidate_key not in shown_check_keys:
                     continue
                 components = candidate.get("components") or []
-                if len(components) <= 1:
+                if not components:
                     continue
-                if any(any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
-                                     quote.casefold().replace("ё", "е"))
-                               for term in component_terms(str(component.get("label") or "")))
-                       for component in components):
-                    matched_units.append(str(candidate.get("unit_id") or ""))
-            matched_units = list(dict.fromkeys(item for item in matched_units if item))
+                evidence = [(component, component_evidence(
+                    str(component.get("label") or ""), quote)) for component in components]
+                matched = [(component, terms) for component, terms in evidence if terms]
+                if len(matched) == 1:
+                    selected = matched
+                elif len(matched) > 1 and all(len(terms) >= 2 for _, terms in matched):
+                    # Multiple attribution is permitted only when the quote
+                    # names at least two source-specific subjects for every
+                    # matching component; a shared generic word is insufficient.
+                    selected = matched
+                elif matched:
+                    best = max(len(terms) for _, terms in matched)
+                    selected = [(component, terms) for component, terms in matched
+                                if len(terms) == best]
+                    if len(selected) != 1:
+                        selected = []
+                else:
+                    selected = []
+                if selected:
+                    matched_units.append((candidate_key, selected))
+            matched_units = list({key: selected for key, selected in matched_units}.items())
             if len(matched_units) == 1:
-                component_target_by_span[span] = matched_units[0]
+                key, selected = matched_units[0]
+                component_target_by_span[span] = key
+                component_ids_by_span[span] = {
+                    str(component.get("component_id")) for component, _ in selected
+                    if component.get("component_id")}
             elif len(matched_units) > 1:
-                ambiguous_component_spans.add(span)
+                scores = [(key, selected, max(len(terms) for _, terms in selected))
+                          for key, selected in matched_units]
+                best_score = max(score for _, _, score in scores)
+                best = [(key, selected) for key, selected, score in scores
+                        if score == best_score]
+                if best_score >= 2 and len(best) == 1:
+                    key, selected = best[0]
+                    component_target_by_span[span] = key
+                    component_ids_by_span[span] = {
+                        str(component.get("component_id")) for component, _ in selected
+                        if component.get("component_id")}
+                else:
+                    ambiguous_component_spans.add(span)
 
-        # Prefer a matching check the assistant actually showed. A customer
-        # may also volunteer a result for a later eligible check, but only
-        # when no shown check matches and the quote uniquely identifies it.
-        # Shared generic words such as "касса" or "магазин" must not update
-        # several neighboring checks.
-        source_target_by_span: dict[tuple[int, int], str] = {}
+        # Results are accepted only for exact, source-verified shown checks.
+        # Eligible-only units may guide later source order, but must not
+        # receive a result before the matching instruction was shown.
+        source_target_by_span: dict[tuple[int, int], tuple] = {}
         ambiguous_source_spans: set[tuple[int, int]] = set()
         for span in clauses:
             if span in component_target_by_span or span in ambiguous_component_spans:
@@ -1655,6 +1754,9 @@ class DialogueManager:
             def matching_candidates(pool):
                 matches = []
                 for candidate in pool:
+                    candidate_key = unit_identity(candidate)
+                    if candidate_key not in shown_check_keys:
+                        continue
                     model_value = candidate.get("model_value")
                     if model_value:
                         equipment = " ".join(fact.value for fact in task.entities.get("equipment", []))
@@ -1663,17 +1765,11 @@ class DialogueManager:
                             continue
                     terms = evidenced_terms(str(candidate.get("label") or ""), quote)
                     if terms:
-                        matches.append((str(candidate.get("unit_id") or ""), terms,
+                        matches.append((candidate_key, terms,
                                         len(str(candidate.get("label") or ""))))
                 return matches
 
-            shown_units = [candidate for candidate in units
-                           if str(candidate.get("unit_id") or "") in shown_check_ids]
-            candidates = matching_candidates(shown_units)
-            if not candidates:
-                candidates = matching_candidates(
-                    candidate for candidate in units
-                    if str(candidate.get("unit_id") or "") not in shown_check_ids)
+            candidates = matching_candidates(units)
             if not candidates:
                 continue
             maximal = [(unit_id, terms, label_size) for unit_id, terms, label_size in candidates
@@ -1681,34 +1777,54 @@ class DialogueManager:
                                   (terms == other_terms and label_size > other_size)
                                   for other_id, other_terms, other_size in candidates
                                   if other_id != unit_id)]
-            maximal_ids = list(dict.fromkeys(unit_id for unit_id, _, _ in maximal if unit_id))
-            if len(maximal_ids) == 1:
-                source_target_by_span[span] = maximal_ids[0]
-            elif len(maximal_ids) > 1:
+            maximal_keys = list(dict.fromkeys(key for key, _, _ in maximal if key is not None))
+            if len(maximal_keys) == 1:
+                source_target_by_span[span] = maximal_keys[0]
+            elif len(maximal_keys) > 1:
                 ambiguous_source_spans.add(span)
 
         def aggregate_component_status(label: str, observations: list[dict]) -> str | None:
             if not observations:
                 return None
-            latest = observations[-1].get("status")
-            if latest == "failed":
-                return "failed"
-            if latest != "passed":
-                return latest if latest in {"unknown", "not_done"} else None
-            required_parts = [part for part in re.split(r",", label)
-                              if component_terms(part)] or [label]
-            for part in required_parts:
-                terms = component_terms(part)
-                if not terms or not any(
-                        item.get("status") == "passed"
-                        and any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
-                                          str(item.get("quote") or "").casefold().replace("ё", "е"))
-                                for term in terms)
-                        for item in observations):
+            required = component_terms(label)
+            if not required:
+                return "unknown"
+            statuses = []
+            for term in required:
+                related = []
+                for observation in observations:
+                    quote = str(observation.get("quote") or "")
+                    topics = set(observation.get("topics") or component_evidence(label, quote))
+                    if term in topics and observation.get("status") in {
+                            "passed", "failed", "unknown", "not_done"}:
+                        related.append(observation["status"])
+                if "passed" in related and "failed" in related:
                     return "unknown"
-            return "passed"
+                if "failed" in related:
+                    statuses.append("failed")
+                elif "unknown" in related:
+                    statuses.append("unknown")
+                elif "not_done" in related:
+                    statuses.append("not_done")
+                elif "passed" in related:
+                    statuses.append("passed")
+                else:
+                    statuses.append(None)
+            if "failed" in statuses:
+                return "failed"
+            if all(item == "passed" for item in statuses):
+                return "passed"
+            return "not_done" if "not_done" in statuses and not any(
+                item in {"passed", "failed", "unknown"} for item in statuses) else "unknown"
 
         for unit in units:
+            unit_key = unit_identity(unit)
+            if unit_key not in shown_check_keys:
+                continue
+            check = next((item for item in task.checks
+                          if check_matches_unit(item, unit)), None)
+            if check is None:
+                continue
             model_value = unit.get("model_value")
             if model_value:
                 equipment = " ".join(fact.value for fact in task.entities.get("equipment", []))
@@ -1727,23 +1843,26 @@ class DialogueManager:
             # every check, losing results and creating false successes.
             unit_id = str(unit.get("unit_id") or "")
             matches = [(start, end) for start, end in clauses
-                       if ((component_target_by_span.get((start, end)) == unit_id)
-                           if (start, end) in component_target_by_span else
-                           (start, end) not in ambiguous_component_spans
-                           and (start, end) not in ambiguous_source_spans
-                           and ((start, end) not in source_target_by_span
-                                or source_target_by_span.get((start, end)) == unit_id
-                                or any(other.get("unit_id") == source_target_by_span.get((start, end))
-                                    and str(other.get("unit_id") or "") in shown_check_ids
-                                    and len(str(other.get("label") or "")) < len(label)
-                                    and evidenced_terms(label, text[start:end]) <=
-                                        evidenced_terms(str(other.get("label") or ""), text[start:end])
-                                    for other in units)))
-                       if any(re.search(r"(?<!\w)" + re.escape(term[:4]) + r"\w*",
-                                        text[start:end].casefold().replace("ё", "е")) for term in terms)]
+                       if (component_target_by_span.get((start, end)) == unit_key
+                           or source_target_by_span.get((start, end)) == unit_key)]
+            # If a more specific shown check owns a result, preserve that exact
+            # span as partial evidence on a broader shown procedure. The broad
+            # procedure never receives the result status or a duplicate outcome.
+            for span, target_key in source_target_by_span.items():
+                if target_key == unit_key:
+                    continue
+                target = next((candidate for candidate in units
+                    if unit_identity(candidate) == target_key), None)
+                if (target and unit_identity(target) in shown_check_keys
+                        and len(str(target.get("label") or "")) < len(label)):
+                    quote = text[span[0]:span[1]]
+                    target_terms = evidenced_terms(str(target.get("label") or ""), quote)
+                    broad_terms = evidenced_terms(label, quote)
+                    if target_terms and target_terms <= broad_terms:
+                        matches.append(span)
             short_tokens = words(text)
-            if (not matches and len(task.shown_units) == 1
-                    and task.shown_units[0].get("unit_id") == unit.get("unit_id")
+            if (not matches and len(shown_by_identity) == 1
+                    and unit_key in shown_by_identity
                     and (len(short_tokens) == 1 or
                          len(short_tokens) == 2 and short_tokens[0] == "не")
                     and reported_status(text) in {"passed", "failed"}):
@@ -1760,24 +1879,21 @@ class DialogueManager:
             start = matched_start + len(text[matched_start:matched_end]) - len(text[matched_start:matched_end].lstrip())
             quote_normalized = quote.casefold().replace("ё", "е")
             matched_terms = evidenced_terms(label, quote)
-            if any((other.get("unit_id") != unit.get("unit_id")
-                    and str(other.get("unit_id") or "") in shown_check_ids
+            if any((unit_identity(other) != unit_key
+                    and unit_identity(other) in shown_check_keys
                     and len(str(other.get("label") or "")) < len(label)
                     and matched_terms <= evidenced_terms(str(other.get("label") or ""), quote))
                    for other in units):
                 # A broad procedure may repeat the wording of an atomic
                 # check. Keep the broad unit incomplete and remember the
                 # partial clause without duplicating its success/failure.
-                broad = next((item for item in task.checks
-                              if item.get("unit_id") == unit.get("unit_id")), None)
-                if broad is not None:
-                    if broad.get("status") == "asked":
-                        broad["status"] = "unknown"
-                    partial = {"message_id": message_id, "quote": quote,
-                               "start": start, "end": start + len(quote)}
-                    if partial not in broad.setdefault("partial_result_spans", []):
-                        broad["partial_result_spans"].append(partial)
-                    changed = True
+                if check.get("status") == "asked":
+                    check["status"] = "unknown"
+                partial = {"message_id": message_id, "quote": quote,
+                           "start": start, "end": start + len(quote)}
+                if partial not in check.setdefault("partial_result_spans", []):
+                    check["partial_result_spans"].append(partial)
+                changed = True
                 continue
             status = reported_status(quote)
             if status is None:
@@ -1799,16 +1915,12 @@ class DialogueManager:
                 status = "unknown"
             result = {"message_id": message_id, "quote": quote,
                       "start": start, "end": start + len(quote)}
-            check = next((item for item in task.checks if item.get("unit_id") == unit.get("unit_id")), None)
-            if check is None:
-                check = {"task_id": task.task_id, "unit_id": unit.get("unit_id"),
-                    "label": label, "source": unit.get("source"), "section": unit.get("section"),
-                    "source_verified": unit.get("source_verified") is True,
-                    "status": status,
-                    "result_span": result, "observations": [{"status": observed_status, **result}],
-                    "components": deepcopy(unit.get("components", [])),
-                    "component_results": []}
-                task.checks.append(check)
+            if len(unit.get("components") or []) > 1:
+                # Component quotes are stored independently below. Keeping
+                # them off the parent observation list prevents a passed EoU
+                # result from contradicting a failed queue result.
+                if not check.get("components"):
+                    check["components"] = deepcopy(unit["components"])
             else:
                 if isinstance(unit.get("components"), list):
                     check["components"] = deepcopy(unit["components"])
@@ -1837,20 +1949,22 @@ class DialogueManager:
                 if not component_id or not terms_for_component:
                     continue
                 for component_start, component_end in clauses:
-                    if component_target_by_span.get((component_start, component_end)) != unit_id:
+                    if (component_target_by_span.get((component_start, component_end)) != unit_key
+                            or component_id not in component_ids_by_span.get(
+                                (component_start, component_end), set())):
                         continue
                     raw_quote = text[component_start:component_end]
                     reported_component_status = reported_status(raw_quote)
-                    if reported_component_status is None or not any(re.search(
-                            r"(?<!\w)" + re.escape(term) + r"\w*",
-                            raw_quote.casefold().replace("ё", "е")) for term in terms_for_component):
+                    topics = component_evidence(component_label, raw_quote)
+                    if reported_component_status is None or not topics:
                         continue
                     leading = len(raw_quote) - len(raw_quote.lstrip())
                     component_quote = raw_quote.strip()
                     component_result = {"message_id": message_id, "quote": component_quote,
                         "start": component_start + leading,
                         "end": component_start + leading + len(component_quote)}
-                    observation = {"status": reported_component_status, **component_result}
+                    observation = {"status": reported_component_status,
+                                   "topics": sorted(topics), **component_result}
                     stored_result = next((item for item in check["component_results"]
                                           if item.get("component_id") == component_id), None)
                     if stored_result is None:
@@ -1864,6 +1978,19 @@ class DialogueManager:
                                  and item.get("end") == component_result["end"]
                                  for item in stored_result.get("observations", [])):
                         stored_result.setdefault("observations", []).append(observation)
+                    stored_result["contradictions"] = []
+                    for topic in sorted(terms_for_component):
+                        related = [item for item in stored_result.get("observations", [])
+                                   if topic in set(item.get("topics") or component_evidence(
+                                       component_label, str(item.get("quote") or "")))]
+                        passed = next((item for item in related if item.get("status") == "passed"), None)
+                        failed = next((item for item in related if item.get("status") == "failed"), None)
+                        if passed and failed:
+                            stored_result["contradictions"].append({"topic": topic,
+                                "before": {key: passed.get(key) for key in
+                                    ("message_id", "quote", "start", "end") if key in passed},
+                                "after": {key: failed.get(key) for key in
+                                    ("message_id", "quote", "start", "end") if key in failed}})
                     stored_result["status"] = aggregate_component_status(
                         component_label, stored_result.get("observations", []))
                     latest = stored_result["observations"][-1]
@@ -1877,8 +2004,17 @@ class DialogueManager:
                             for item in check["components"]]
                 if "failed" in statuses:
                     check["status"] = "failed"
+                    decisive = next((item.get("result_span") for item in reversed(
+                        check.get("component_results", []))
+                        if item.get("status") == "failed" and item.get("result_span")), None)
+                    if decisive:
+                        check["result_span"] = deepcopy(decisive)
                 elif statuses and all(item == "passed" for item in statuses):
                     check["status"] = "passed"
+                    decisive = next((item.get("result_span") for item in reversed(
+                        check.get("component_results", [])) if item.get("result_span")), None)
+                    if decisive:
+                        check["result_span"] = deepcopy(decisive)
                 elif any(item is not None for item in statuses):
                     check["status"] = "unknown"
             changed = True

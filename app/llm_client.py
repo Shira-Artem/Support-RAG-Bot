@@ -21,7 +21,8 @@ class GenerationError(RuntimeError):
                  provider_error_code: str | None = None,
                  provider_error_param: str | None = None,
                  provider_usage: dict | None = None, request_id: str | None = None,
-                 schema_error: str | None = None, rate_limit_headers: dict | None = None,
+                 schema_error: str | None = None, provider_error_category: str | None = None,
+                 rate_limit_headers: dict | None = None,
                  retry_count: int = 0, retry_wait_seconds: float = 0.0):
         super().__init__(message)
         self.http_status = http_status
@@ -36,6 +37,7 @@ class GenerationError(RuntimeError):
         self.provider_usage = provider_usage
         self.request_id = request_id
         self.schema_error = schema_error
+        self.provider_error_category = provider_error_category
         self.rate_limit_headers = rate_limit_headers
         self.retry_count = retry_count
         self.retry_wait_seconds = retry_wait_seconds
@@ -167,6 +169,7 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         provider_error_code = provider_error_param = provider_error_type = None
         provider_usage = None
         schema_error = None
+        provider_error_category = None
         if response is not None and callable(getattr(response, "json", None)):
             # Keep only bounded, typed diagnostics. Never retain the provider body,
             # which can echo prompts or other user supplied data.
@@ -189,8 +192,13 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
                 if isinstance(usage, dict):
                     provider_usage = {key: _optional_int(usage.get(key)) for key in
                                       ("prompt_tokens", "completion_tokens", "total_tokens")}
-            if status == 400 and (provider_error_code == "json_validate_failed"
-                                  or provider_error_param in {"response_format", "messages"}):
+            if status == 400 and provider_error_code == "json_validate_failed":
+                # Groq uses this code when generated content fails its JSON
+                # validation. It does not prove that the request schema was
+                # rejected; the error may include a failed_generation body.
+                provider_error_category = "provider_json_generation_failed"
+            elif status == 400 and provider_error_param in {"response_format", "messages"}:
+                provider_error_category = "provider_rejected_request_schema"
                 schema_error = "provider_rejected_request_schema"
         # Parsing/shape failures are distinguished from transport and HTTP failures.
         if not isinstance(exc, httpx.HTTPError):
@@ -211,6 +219,7 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
             provider_usage=provider_usage,
             request_id=(response_headers.get("x-request-id") or response_headers.get("request-id")) if response_headers else None,
             schema_error=schema_error,
+            provider_error_category=provider_error_category,
             rate_limit_headers=rate_headers,
         ) from exc
 

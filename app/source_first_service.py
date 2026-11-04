@@ -612,26 +612,59 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                              source: str, section: str) -> list[dict]:
     """Backfill component metadata only onto exact units from the checked source."""
     def terms(label: str) -> set[str]:
+        generic_prefixes = ("состояни", "приложени", "доступ", "актуальн",
+                            "настройк", "сво", "значени", "действующ", "офд", "ofd")
         roots = {term[:4] for term in content_terms(label)
-                 if not term.startswith(CHECK_ACTION_ROOTS + ("оператор", "офд"))}
-        return {term for term in roots if len(term) >= 4 or term.isascii() and len(term) >= 3}
+                 if not term.startswith(CHECK_ACTION_ROOTS + ("оператор", "офд", "ofd"))
+                 and not term.startswith(generic_prefixes)}
+        return {term for term in roots
+                if len(term) >= 4 or term.isascii() and len(term) >= 3 or term == "инн"}
+    def evidence(label: str, quote: str) -> set[str]:
+        normalized = quote.casefold().replace("ё", "е")
+        return {term for term in terms(label)
+                if re.search(r"(?<!\w)" + re.escape(term) + r"\w*", normalized)}
+    def matched_component_ids(components: list[dict], quote: str) -> set[str]:
+        matches = [(item, evidence(str(item.get("label") or ""), quote))
+                   for item in components]
+        matches = [(item, found) for item, found in matches if found]
+        if len(matches) == 1:
+            return {str(matches[0][0].get("component_id"))}
+        if len(matches) > 1 and all(len(found) >= 2 for _, found in matches):
+            return {str(item.get("component_id")) for item, _ in matches
+                    if item.get("component_id")}
+        if matches:
+            best = max(len(found) for _, found in matches)
+            winners = [(item, found) for item, found in matches if len(found) == best]
+            if len(winners) == 1 and winners[0][0].get("component_id"):
+                return {str(winners[0][0]["component_id"])}
+        return set()
     def aggregate_status(label: str, observations: list[dict]) -> str | None:
         if not observations:
             return None
-        latest = observations[-1].get("status")
-        if latest == "failed":
-            return "failed"
-        if latest != "passed":
-            return latest if latest in {"unknown", "not_done"} else None
-        required_parts = [part for part in re.split(r",", label) if terms(part)] or [label]
-        for part in required_parts:
-            part_terms = terms(part)
-            if not part_terms or not any(item.get("status") == "passed"
-                    and any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
-                        str(item.get("quote") or "").casefold().replace("ё", "е"))
-                        for term in part_terms) for item in observations):
+        required = terms(label)
+        statuses = []
+        for term in required:
+            related = []
+            for item in observations:
+                quote = str(item.get("quote") or "")
+                topics = set(item.get("topics") or evidence(label, quote))
+                if term in topics and item.get("status") in {"passed", "failed", "unknown", "not_done"}:
+                    related.append(item["status"])
+            if "passed" in related and "failed" in related:
                 return "unknown"
-        return "passed"
+            if "failed" in related:
+                statuses.append("failed")
+            elif "unknown" in related:
+                statuses.append("unknown")
+            elif "not_done" in related:
+                statuses.append("not_done")
+            elif "passed" in related:
+                statuses.append("passed")
+            else:
+                statuses.append(None)
+        if "failed" in statuses:
+            return "failed"
+        return "passed" if statuses and all(item == "passed" for item in statuses) else "unknown"
 
     task = state.task_context
     if not task:
@@ -684,17 +717,23 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                     check["component_results"].append(stored_result)
                     results[component_id] = stored_result
                 component_terms = terms(component["label"])
+                matched_observations = []
                 for observation in observations:
                     quote = observation.get("quote")
-                    if not quote or not any(re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
-                            quote.casefold().replace("ё", "е")) for term in component_terms):
+                    topics = evidence(component["label"], str(quote or ""))
+                    targets = matched_component_ids(components, str(quote or ""))
+                    if not quote or not topics or component_id not in targets:
                         continue
+                    matched_observations.append((observation, topics))
+                for observation, topics in matched_observations:
+                    quote = observation["quote"]
                     span = {key: observation[key] for key in ("message_id", "quote", "start", "end")
                             if key in observation}
                     if not any(item.get("message_id") == span.get("message_id")
                                and item.get("quote") == quote
                                for item in stored_result["observations"]):
-                        stored_result["observations"].append({"status": observation.get("status"), **span})
+                        stored_result["observations"].append({"status": observation.get("status"),
+                                                               "topics": sorted(topics), **span})
                 stored_result["status"] = aggregate_status(
                     component["label"], stored_result["observations"])
                 if stored_result["observations"]:
@@ -735,23 +774,17 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                     component_matches = []
                     for candidate_unit in matched_units:
                         for candidate_component in candidate_unit.get("components", []):
-                            matched_terms = {term for term in terms(
-                                str(candidate_component.get("label") or ""))
-                                if re.search(r"(?<!\w)" + re.escape(term) + r"\w*",
-                                    normalized_quote)}
+                            matched_terms = evidence(
+                                str(candidate_component.get("label") or ""), normalized_quote)
                             if matched_terms:
                                 component_matches.append((candidate_component, matched_terms))
                     if len(component_matches) == 1:
                         matched_components = [component_matches[0][0]]
-                    else:
-                        # One exact client fact can resolve overlapping
-                        # source-derived components inside this same legacy
-                        # composite (for example, address values and their
-                        # comparison with the operator settings). Ignore
-                        # generic one-word overlap when several components
-                        # compete for the observation.
-                        matched_components = [component for component, matched_terms
-                            in component_matches if len(matched_terms) >= 2]
+                    elif len(component_matches) > 1:
+                        best = max(len(matched_terms) for _, matched_terms in component_matches)
+                        winners = [(component, matched_terms) for component, matched_terms
+                                   in component_matches if len(matched_terms) == best]
+                        matched_components = [winners[0][0]] if len(winners) == 1 else []
                     if not matched_components:
                         continue
                     span = {key: observation[key] for key in
@@ -763,7 +796,8 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
                                 for item in stored_result["observations"])):
                             continue
                         stored_result["observations"].append(
-                            {"status": observation["status"], **span})
+                            {"status": observation["status"],
+                             "topics": sorted(evidence(str(component.get("label") or ""), quote)), **span})
                         stored_result["status"] = aggregate_status(
                             component["label"], stored_result["observations"])
                         latest = stored_result["observations"][-1]
@@ -776,8 +810,17 @@ def _merge_source_components(state: DialogueState, source_units: list[dict],
             if len(components) > 1:
                 if "failed" in statuses:
                     check["status"] = "failed"
+                    decisive = next((item.get("result_span") for item in reversed(
+                        check.get("component_results", []))
+                        if item.get("status") == "failed" and item.get("result_span")), None)
+                    if decisive:
+                        check["result_span"] = deepcopy(decisive)
                 elif statuses and all(item == "passed" for item in statuses):
                     check["status"] = "passed"
+                    decisive = next((item.get("result_span") for item in reversed(
+                        check.get("component_results", [])) if item.get("result_span")), None)
+                    if decisive:
+                        check["result_span"] = deepcopy(decisive)
                 elif any(item is not None for item in statuses):
                     check["status"] = "unknown"
     for stored in task.eligible_units:
@@ -1514,6 +1557,7 @@ class SourceFirstService:
                     "stage": getattr(exc, "stage", None),
                     "duration_ms": getattr(exc, "duration_ms", None),
                     "schema_error": getattr(exc, "schema_error", None),
+                    "provider_error_category": getattr(exc, "provider_error_category", None),
                     "provider_usage": getattr(exc, "provider_usage", None),
                     "request_id": getattr(exc, "request_id", None),
                     "raw_decision": failed_generation.text if failed_generation else None,
@@ -1540,6 +1584,7 @@ class SourceFirstService:
                         "provider_error_param": getattr(exc, "provider_error_param", None),
                         "duration_ms": getattr(exc, "duration_ms", None),
                         "schema_error": getattr(exc, "schema_error", None),
+                        "provider_error_category": getattr(exc, "provider_error_category", None),
                         "provider_usage": getattr(exc, "provider_usage", None),
                         "retry_after_seconds": getattr(exc, "retry_after_seconds", None)})
             base.update(model=generated.model, used_model=True, llm_call_attempted=True,
@@ -2350,9 +2395,14 @@ class SourceFirstService:
                         has_failed_component = any(
                             item.get("status") == "failed" for item in component_results.values())
                         if len(components) > 1 and (result_status == "failed" or has_failed_component):
-                            remaining_components = [component for component in components
+                            first_failed_index = next((index for index, component in enumerate(components)
                                 if component_results.get(component.get("component_id"), {}).get("status")
-                                not in {"passed", "failed"}]
+                                == "failed"), None)
+                            remaining_components = [component
+                                for index, component in enumerate(components)
+                                if (component_results.get(component.get("component_id"), {}).get("status")
+                                    not in {"passed", "failed"}
+                                    and (first_failed_index is None or index < first_failed_index))]
                             if remaining_components:
                                 failed_span = next((item.get("result_span") for item in reversed(
                                     (last_result or {}).get("component_results", []))
@@ -2372,6 +2422,15 @@ class SourceFirstService:
                                     scenario_reason="progress_ledger_failed_composite_needs_remaining_results",
                                     clarification_slot="details", generation_status="clarification",
                                     duration_ms=round((perf_counter()-started)*1000), **base)
+                            if has_failed_component and _base_checks_found_cause(
+                                    _source_result_observations(state, selected["source"],
+                                                                selected["section"], user_message)) is True:
+                                return self._escalate(
+                                    "В подтверждённой инструкции нет следующего действия для исправления найденного несовпадения. "
+                                    "Дальнейший безопасный шаг в ней не указан; запросите специалиста.",
+                                    "progress_ledger_known_issue_without_approved_next_step",
+                                    "source_has_no_remediation_for_confirmed_base_check_failure",
+                                    started, **base)
                         shown_ids = {str(unit.get("unit_id") or "") for unit in matching_shown}
                         next_unit, unresolved_condition = _next_applicable_source_unit(
                             source_units, shown_ids, state, selected["source"], selected["section"],
@@ -2426,7 +2485,7 @@ class SourceFirstService:
                                 validation_status="exact_approved_next_check",
                                 generation_status="generated",
                                 duration_ms=round((perf_counter()-started)*1000), **base)
-                        if result_status == "failed":
+                        if result_status == "failed" and len(components) <= 1:
                             terminal_condition = _terminal_source_boundary(last_shown)
                             applies = (_condition_holds(
                                 _source_unit_condition({"label": terminal_condition}) or "",

@@ -301,6 +301,10 @@ async def run(args):
                 "code": error.get("code") if isinstance(error.get("code"), str) else None,
                 "type": error.get("type") if isinstance(error.get("type"), str) else None,
                 "param": error.get("param") if isinstance(error.get("param"), str) else None,
+                "category": ("provider_json_generation_failed"
+                    if error.get("code") == "json_validate_failed" else
+                    "provider_rejected_request_schema"
+                    if error.get("param") in {"response_format", "messages"} else None),
                 "message": (re.sub(r"org_[A-Za-z0-9_-]+", "[REDACTED_ORG]",
                             re.sub(r"gsk_[A-Za-z0-9_-]+", "[REDACTED_KEY]", error["message"]))[:500]
                             if isinstance(error.get("message"), str) else None),
@@ -322,7 +326,12 @@ async def run(args):
             return result
         except Exception as exc:
             record["error"] = {"type": type(exc).__name__, "http_status": getattr(exc, "http_status", None),
-                "duration_ms": getattr(exc, "duration_ms", None), "message": str(exc)}
+                "duration_ms": getattr(exc, "duration_ms", None), "message": str(exc),
+                "provider_error_category": getattr(exc, "provider_error_category", None),
+                "schema_error": getattr(exc, "schema_error", None),
+                "provider_error_code": getattr(exc, "provider_error_code", None),
+                "provider_error_param": getattr(exc, "provider_error_param", None),
+                "provider_usage": getattr(exc, "provider_usage", None)}
             raise
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),

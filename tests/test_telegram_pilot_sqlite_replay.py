@@ -941,11 +941,13 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
     task = ledger[-1]["state_after_sqlite_reopen"]["task_context"]
     assert {item["status"] for item in ledger[0]["state_after_sqlite_reopen"]["task_context"]["checks"]} == {"asked"}
     assert task["procedure_id"] == "evotor-ofd-error-not-connected-20261019"
-    assert len(task["checks"]) == 2
+    assert len(task["checks"]) == 1
     assert {item["status"] for item in task["checks"]} == {"unknown"}
-    internet_check = next(item for item in task["checks"]
-                          if any(row.get("quote") == "Интернет работает" for row in item.get("observations", [])))
-    assert internet_check["observations"][0]["status"] == "passed"
+    shown_ids = {item["unit_id"] for item in task["shown_units"]}
+    assert all(item["unit_id"] in shown_ids for item in task["checks"])
+    assert not any(row.get("quote") == "Интернет работает"
+                   for item in task["checks"]
+                   for row in item.get("observations", []))
     payment_check = next(item for item in task["checks"]
                          if item["result_span"]["quote"] == "Оплату проверил")
     assert payment_check["status"] == "unknown"
@@ -957,12 +959,12 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
     final = ledger[-1]["final_reply"].casefold()
     assert "\u043c\u043e\u0434\u0435\u043b" in final
     assert "\u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" not in final
-    assert ledger[-1]["reason"] == "progress_ledger_waiting_for_model"
-    assert ledger[-1]["coordinator_decision"]["route"] == "technical_action"
-    assert ledger[-1]["coordinator_decision"]["required_action"] == "retrieve_then_apply_independent_scope_and_safety_gates"
+    assert ledger[-1]["reason"] == "dialogue_state_task_incomplete"
+    assert ledger[-1]["coordinator_decision"]["route"] == "conversation"
+    assert ledger[-1]["coordinator_decision"]["required_action"] == "ask_for_missing_task_detail"
     assert "настройки" not in ledger[3]["final_reply"].casefold()
-    assert ledger[-1]["route"] == "answer"
-    assert "когда модель станет известна" in final
+    assert ledger[-1]["route"] == "clarify"
+    assert "удалось выполнить показанную проверку" in final
     if output_dir := os.environ.get("P1_PROGRESS_OUTPUT_DIR"):
         target = Path(output_dir).resolve()
         assert target == (ROOT / "experiments/architecture_recovery_audit").resolve()
@@ -988,7 +990,7 @@ def test_progress_ledger_accepts_explicit_positive_payment_result(monkeypatch, t
     ("Интернет пока не проверял", "not_done"),
     ("Интернет не работает", "failed_with_partial_pass"),
 ])
-def test_progress_ledger_outcomes_use_exact_client_quotes_and_keep_conflicts(
+def test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks(
         monkeypatch, tmp_path, report, expected):
     cases = _progress_cases()[:2]
     cases[1] = {**cases[1], "text": report}
@@ -1003,13 +1005,11 @@ def test_progress_ledger_outcomes_use_exact_client_quotes_and_keep_conflicts(
     task = trace[-1]["state_after_sqlite_reopen"]["task_context"]
     internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
                        if "интернет" in unit["label"].casefold())
-    result = next(item for item in task["checks"] if item["unit_id"] == internet_id)
-    assert result["status"] == expected.split("_with_")[0]
-    if expected == "failed_with_partial_pass":
-        assert [item["status"] for item in result["observations"]][-2:] == ["failed", "passed"]
-        assert result["contradictions"][-1]["after"]["quote"] == "Интернет работает"
-    else:
-        assert result["result_span"]["quote"] in {case["text"] for case in cases}
+    shown_ids = {unit["unit_id"] for unit in task["shown_units"]}
+    assert internet_id not in shown_ids
+    assert all(item["unit_id"] != internet_id for item in task["checks"])
+    assert not any("интернет" in str(item.get("result_span", {}).get("quote", "")).casefold()
+                   for item in task["checks"])
 
 
 def test_progress_ledger_closes_task_and_new_topic_starts_cleanly(monkeypatch, tmp_path):
@@ -1109,7 +1109,12 @@ def test_handoff_combined_with_progress_ledger_through_real_bot_handler(monkeypa
         assert "Результаты проверок:" in payload
         assert "Интернет работает" in payload and "Оплата прошла" in payload
         assert '"status":"passed"' in payload
-        assert '"status":"unknown"' in payload  # the compound network unit is only partly verified
+        handoff_task = next_check["state_after_sqlite_reopen"]["task_context"]
+        shown_ids = {item["unit_id"] for item in handoff_task["shown_units"]}
+        assert all(item["unit_id"] in shown_ids for item in handoff_task["checks"])
+        assert not any(row.get("quote") == "Интернет работает"
+                       for item in handoff_task["checks"]
+                       for row in item.get("observations", []))
         assert bundle["conversation_id"] == cid
         assert bundle["task"]["task_id"] == trace[-1]["state_after_sqlite_reopen"]["task_id"]
         assert bundle["ticket_id"].startswith(f"SR-{bundle['request_id']:07d}-")
@@ -1266,7 +1271,12 @@ def test_progress_ledger_blocks_model_scoped_check_for_unlisted_model(monkeypatc
     assert "не буду выдавать этот порядок" in trace[-2]["final_reply"].casefold()
     assert "на модели 5, 5i" not in trace[-1]["final_reply"].casefold()
     assert "настройки" not in trace[-1]["final_reply"].casefold()
-    assert any(item.get("result_span", {}).get("quote") == "Интернет работает"
+    shown_ids = {item["unit_id"]
+                 for item in after_reopen["task_context"]["shown_units"]}
+    internet_id = next(unit["unit_id"] for unit in after_reopen["task_context"]["eligible_units"]
+                       if "интернет" in unit["label"].casefold())
+    assert internet_id not in shown_ids
+    assert all(item["unit_id"] != internet_id
                for item in after_reopen["task_context"]["checks"])
 
 

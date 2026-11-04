@@ -149,16 +149,37 @@ def test_429_without_short_retry_after_is_not_retried(monkeypatch):
 def test_provider_schema_rejection_is_classified_without_retaining_body(monkeypatch):
     _Client.requests = 0
     _Client.response = _response(400, {"error": {"message": "contains private request data",
-        "type": "invalid_request_error", "code": "json_validate_failed", "param": "response_format"}})
+        "type": "invalid_request_error", "code": "invalid_json_schema", "param": "response_format"}})
     monkeypatch.setattr(client.httpx, "AsyncClient", _Client)
     with pytest.raises(client.GenerationError) as raised:
         asyncio.run(client.generate([], _settings()))
     error = raised.value
     assert error.http_status == 400
     assert error.schema_error == "provider_rejected_request_schema"
+    assert error.provider_error_category == "provider_rejected_request_schema"
     assert error.provider_error_param == "response_format"
     assert error.provider_usage is None
     assert "private request data" not in (error.cause_message or "")
+
+
+def test_json_validate_failed_is_classified_as_generation_failure_not_schema_rejection(monkeypatch):
+    _Client.requests = 0
+    _Client.response = _response(400, {"error": {
+        "message": "Failed to generate JSON; private failed_generation text",
+        "type": "invalid_request_error", "code": "json_validate_failed",
+        "param": None, "failed_generation": "private malformed output"}})
+    monkeypatch.setattr(client.httpx, "AsyncClient", _Client)
+    with pytest.raises(client.GenerationError) as raised:
+        asyncio.run(client.generate([], _settings(), call_stage="planner"))
+    error = raised.value
+    assert error.http_status == 400
+    assert error.provider_error_category == "provider_json_generation_failed"
+    assert error.schema_error is None
+    assert error.provider_error_code == "json_validate_failed"
+    assert error.provider_error_param is None
+    assert error.provider_usage is None
+    assert "private" not in str(error)
+    assert "private" not in str(error.__dict__)
 
 
 def test_malformed_provider_payload_has_phase_specific_schema_error(monkeypatch):

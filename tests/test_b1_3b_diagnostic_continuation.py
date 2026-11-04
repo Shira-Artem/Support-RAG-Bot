@@ -6,8 +6,9 @@ import json
 
 import pytest
 
-from app.dialogue_state import ActiveRoute, DialogueState, Fact, SessionContext, TaskContext
-from app.source_first_service import _planner_task_snapshot
+from app.dialogue_state import (ActiveRoute, DialogueManager, DialogueState, Fact,
+                                SessionContext, TaskContext)
+from app.source_first_service import _merge_source_components, _planner_task_snapshot
 from test_telegram_pilot_sqlite_replay import ROOT, _run_replay
 
 
@@ -109,6 +110,172 @@ def _evotor_prefix_and_result(text: str) -> list[dict]:
     result = {"id": "condition_result", "text": text,
               "provider_raw": _continuation_raw(text)}
     return [opening, report, result]
+
+
+def _legacy_composite_progress_state():
+    source = f"data/knowledge/{COMPOUND_SOURCE}"
+    section = "Что проверить сначала"
+    unit_id = "legacy-composite"
+    label = ("Проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД. "
+             "Сопоставьте адрес, порт и ИНН ОФД с настройками оператора. "
+             "Посмотрите, уменьшается ли очередь неотправленных документов.")
+    components = [
+        {"component_id": "eou-network-ofd", "label":
+         "Проверьте состояние приложения EoU, доступ в интернет, адрес и порт ОФД."},
+        {"component_id": "compare-ofd", "label":
+         "Сопоставьте адрес, порт и ИНН ОФД с актуальными настройками своего оператора."},
+        {"component_id": "queue", "label":
+         "Посмотрите, уменьшается ли очередь неотправленных документов."},
+    ]
+    shown = {"unit_id": unit_id, "label": label, "source": source,
+             "section": section, "source_verified": True,
+             "components": components}
+    eligible = {key: value for key, value in shown.items() if key != "components"}
+    check = {"task_id": "task:1", "unit_id": unit_id, "label": label,
+             "source": source, "section": section, "source_verified": True,
+             "status": "asked", "asked_message_id": 1,
+             "components": [], "component_results": [], "observations": []}
+    task = TaskContext(task_id="task:1", intent="receipt", operation="diagnose",
+        entities={"equipment": [Fact.span("Эвотор 7.3", 1)]},
+        shown_units=[shown], eligible_units=[eligible], checks=[check])
+    return DialogueState(task_id="task:1", task_context=task), components
+
+
+def test_progress_reducer_uses_exact_shown_components_when_eligible_snapshot_is_stale():
+    state, _ = _legacy_composite_progress_state()
+    # Eligible snapshot is stale; its exact verified shown counterpart has the
+    # current source-derived component structure.
+    assert "components" not in state.task_context.eligible_units[0]
+    assert state.task_context.shown_units[0]["components"]
+
+    DialogueManager._reduce_progress(
+        state, "Очередь неотправленных документов не уменьшается.", 2)
+
+    check = state.task_context.checks[0]
+    assert check["status"] == "failed"
+    assert check["result_span"]["quote"] == "Очередь неотправленных документов не уменьшается"
+    results = {item["component_id"]: item for item in check["component_results"]}
+    assert results["queue"]["status"] == "failed"
+    assert "eou-network-ofd" not in results
+    assert "compare-ofd" not in results
+
+
+@pytest.mark.parametrize(("message", "expected_statuses", "expected_quotes"), [
+    ("EoU работает, интернет работает, адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора",
+     {"eou-network-ofd": "passed", "compare-ofd": "passed", "queue": None},
+     {"eou-network-ofd": {"EoU работает", "интернет работает",
+                          "адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора"},
+      "compare-ofd": {"адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора"}}),
+    ("EoU работает, интернет работает",
+     {"eou-network-ofd": "unknown", "compare-ofd": None, "queue": None},
+     {"eou-network-ofd": {"EoU работает", "интернет работает"}}),
+    ("Адрес и порт совпадают с настройками оператора",
+     {"eou-network-ofd": "unknown", "compare-ofd": "unknown", "queue": None},
+     {"eou-network-ofd": {"Адрес и порт совпадают с настройками оператора"},
+      "compare-ofd": {"Адрес и порт совпадают с настройками оператора"}}),
+])
+def test_progress_reducer_keeps_multiple_and_partial_component_results(
+        message, expected_statuses, expected_quotes):
+    state, _ = _legacy_composite_progress_state()
+
+    DialogueManager._reduce_progress(state, message, 2)
+
+    check = state.task_context.checks[0]
+    results = {item["component_id"]: item for item in check["component_results"]}
+    for component_id, expected in expected_statuses.items():
+        if expected is None:
+            assert component_id not in results
+        else:
+            assert results[component_id]["status"] == expected
+    for component_id, quotes in expected_quotes.items():
+        saved = {item["quote"] for item in results[component_id]["observations"]}
+        assert saved == quotes
+        for item in results[component_id]["observations"]:
+            assert item["quote"] in message
+    if message.startswith("Адрес"):
+        assert "инн" not in " ".join(item["quote"].casefold()
+                                      for item in results["compare-ofd"]["observations"])
+        assert results["compare-ofd"]["status"] != "passed"
+
+
+def test_conflicting_results_for_same_topic_remain_unknown_and_separate_checks_do_not_conflict():
+    state, _ = _legacy_composite_progress_state()
+    DialogueManager._reduce_progress(state, "EoU работает, EoU не работает.", 2)
+    check = state.task_context.checks[0]
+    eou_result = next(item for item in check["component_results"]
+                      if item["component_id"] == "eou-network-ofd")
+    assert [item["quote"] for item in eou_result["observations"]] == [
+        "EoU работает", "EoU не работает"]
+    assert eou_result["status"] == "unknown"
+    assert eou_result["contradictions"]
+
+    state, _ = _legacy_composite_progress_state()
+    DialogueManager._reduce_progress(
+        state, "Очередь неотправленных документов не уменьшается.", 2)
+    DialogueManager._reduce_progress(
+        state, "EoU работает, интернет работает, адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора.", 3)
+    check = state.task_context.checks[0]
+    assert check["status"] == "failed"
+    assert not check.get("contradictions")
+    assert next(item for item in check["component_results"]
+                if item["component_id"] == "queue")["status"] == "failed"
+    assert next(item for item in check["component_results"]
+                if item["component_id"] == "eou-network-ofd")["status"] == "passed"
+
+
+def test_source_component_backfill_does_not_attach_generic_shared_words_to_multiple_checks():
+    source = f"data/knowledge/{COMPOUND_SOURCE}"
+    section = "Что проверить сначала"
+    label = "Проверьте настройки оператора и настройки терминала."
+    components = [
+        {"component_id": "operator-settings", "label": "Проверьте настройки оператора."},
+        {"component_id": "terminal-settings", "label": "Проверьте настройки терминала."},
+    ]
+    unit = {"unit_id": "verified-unit", "label": label, "source": source,
+        "section": section, "source_verified": True, "components": components}
+    check = {"task_id": "task:1", "unit_id": "verified-unit", "label": label,
+        "source": source, "section": section, "source_verified": True,
+        "status": "passed", "observations": [{"status": "passed",
+            "message_id": 2, "quote": "Настройки совпадают", "start": 0, "end": 19}],
+        "component_results": []}
+    state = DialogueState(task_context=TaskContext(task_id="task:1",
+        shown_units=[unit], eligible_units=[unit], checks=[check]))
+
+    _merge_source_components(state, [unit], source, section)
+
+    assert all(not result["observations"] for result in check["component_results"])
+    assert all(result["status"] is None for result in check["component_results"])
+
+
+def test_multiple_component_results_survive_bot_sqlite_reopen(monkeypatch, tmp_path):
+    cases = _compound_dialogue()
+    cases[-1] = {**cases[-1], "id": "all_remaining_checks_passed",
+        "text": ("EoU работает, интернет работает, адрес, порт и ИНН ОФД "
+                 "совпадают с актуальными настройками оператора"),
+        "provider_raw": _continuation_raw(
+            "EoU работает, интернет работает, адрес, порт и ИНН ОФД "
+            "совпадают с актуальными настройками оператора")}
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+        sources=(COMPOUND_SOURCE,), coordinator_enabled=True)
+    final = trace[-1]
+    assert "state_after_sqlite_reopen" in final
+    task = final["state_after_sqlite_reopen"]["task_context"]
+    saved_quotes = {item.get("quote") for check in task["checks"]
+        for item in [*check.get("observations", []),
+                     *(obs for result in check.get("component_results", [])
+                       for obs in result.get("observations", []))]}
+    assert {"EoU работает", "интернет работает",
+            "адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора",
+            "Очередь неотправленных документов не уменьшается"} <= saved_quotes, json.dumps(
+                {"saved_quotes": sorted(saved_quotes), "checks": task["checks"],
+                 "shown": task["shown_units"]}, ensure_ascii=True)
+    compare_result = next((result for check in task["checks"]
+        for result in check.get("component_results", [])
+        if result.get("component_id") == "83e8d9224a8c1c77bc94"), None)
+    if compare_result:
+        assert compare_result["status"] == "passed"
+    assert all(not check.get("contradictions")
+               for check in task["checks"] if check.get("component_results"))
 
 
 @pytest.mark.parametrize(("case_id", "message", "required", "forbidden", "reason"), [
@@ -289,7 +456,9 @@ def test_failed_composite_asks_only_unreported_source_components_and_keeps_quote
     task = failed_turn["state_after_sqlite_reopen"]["task_context"]
     check = next(item for item in task["checks"] if item["status"] == "failed")
     failed_quote = "Очередь неотправленных документов не уменьшается"
-    assert check["result_span"]["quote"] == failed_quote
+    assert check.get("result_span", {}).get("quote") == failed_quote, json.dumps(
+        {"checks": task["checks"], "shown": task["shown_units"],
+         "eligible": task["eligible_units"]}, ensure_ascii=True)
     assert check["result_span"]["quote"] in failed_turn["user_text"]
     assert len(check["components"]) == 2
     assert any(item["status"] == "failed" and item["result_span"]["quote"] == failed_quote
@@ -490,9 +659,14 @@ def test_legacy_sqlite_backfills_only_exact_shown_components_and_keeps_results_s
                          if item["unit_id"] == "f09c43177d5a42267fe0")
     assert printed_check["result_span"]["quote"] == "Диагностический отчёт напечатал"
     final = trace[4]
-    assert final["reason"] == "progress_ledger_failed_composite_needs_remaining_results"
-    assert "сопоставьте адрес, порт и инн офд" in final["final_reply"].casefold()
-    assert "поддержку эвотора" not in final["final_reply"].casefold()
+    assert final["reason"] == "progress_ledger_conditional_source_boundary"
+    final_task = final["state_after_sqlite_reopen"]["task_context"]
+    composite = next(item for item in final_task["checks"]
+                     if len(item.get("component_results", [])) == 2)
+    outcomes = {item["component_id"]: item["status"]
+                for item in composite["component_results"]}
+    assert set(outcomes.values()) == {"passed", "failed"}
+    assert "поддержку эвотора" in final["final_reply"].casefold()
     final_compare = next(item for item in final["state_after_sqlite_reopen"]["task_context"]["checks"]
                          if "сопоставьте адрес" in item.get("label", ""))
     assert any("Очередь" in observation["quote"] and observation["status"] == "failed"
