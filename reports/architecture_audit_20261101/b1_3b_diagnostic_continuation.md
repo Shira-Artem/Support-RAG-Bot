@@ -197,4 +197,4 @@ The successful first Planner request and failing second request had the same 2,0
 
 ### Gate
 
-**B1.3b remains NO-GO / LIVE INCOMPLETE.** Existing S1 traces stop at the second Planner HTTP 400 before the final two approved messages; there is no completed S2 on this runtime. Offline success does not replace live acceptance. The offline repair and regressions are committed as `eba1495` on the existing `main`; push is pending. After publication, run a fresh isolated S1; run S2 only after full S1 passes. Do not move to B1.4/B1.5/B2. Production worker/SQLite, Qdrant and KB remain untouched.
+**B1.3b remains NO-GO / LIVE INCOMPLETE.** Existing S1 traces stop at the second Planner HTTP 400 before the final two approved messages; there is no completed S2 on this runtime. Offline success does not replace live acceptance. The offline repair/regressions (`eba1495`) and final chronology (`8eaba67`) are published to the existing GitHub `main`, remote HEAD `8eaba676d9b4a15c6c0ab6e83e6adff017de0d19`. Next, run a fresh isolated S1; run S2 only after full S1 passes. Do not move to B1.4/B1.5/B2. Production worker/SQLite, Qdrant and KB remain untouched.
