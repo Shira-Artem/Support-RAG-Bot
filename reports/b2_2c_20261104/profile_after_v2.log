@@ -1,0 +1,22 @@
+..............F......................................................... [ 88%]
+.........                                                                [100%]
+================================== FAILURES ===================================
+_________ test_atol_online_service_is_not_physical_atol_device_scope __________
+
+    def test_atol_online_service_is_not_physical_atol_device_scope():
+        physical = assess_source_scope(_state(manufacturer="АТОЛ"), {
+            "service": "АТОЛ Онлайн", "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн cloud KKT", "task_category": "receipt_transmission",
+        })
+        cloud = assess_source_scope(_state(service="АТОЛ Онлайн"), {
+            "service": "АТОЛ Онлайн", "manufacturer": "АТОЛ",
+            "model": "АТОЛ Онлайн cloud KKT", "task_category": "receipt_transmission",
+        })
+>       assert "service" in physical.mismatches
+E       AssertionError: assert 'service' in ()
+E        +  where () = ScopeAssessment(missing=('service',), mismatches=(), cloud_service_scope=False).mismatches
+
+tests\test_scope_policy.py:55: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_scope_policy.py::test_atol_online_service_is_not_physical_atol_device_scope
+1 failed, 80 passed in 10.36s

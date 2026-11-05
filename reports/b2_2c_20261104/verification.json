@@ -1,0 +1,21 @@
+{
+  "python": "3.14.3",
+  "full": {
+    "command": "py -3.14 -m pytest -q",
+    "passed": 688,
+    "xfailed": 4,
+    "warnings": 14,
+    "duration_seconds": 114.68,
+    "exit_code": 0
+  },
+  "profile": {
+    "command": "py -3.14 -m pytest tests/test_stage3_retrieval.py tests/test_scope_policy.py tests/test_source_first_dialogue_contract.py tests/test_b2_2b_equipment_identity.py tests/test_b2_2a_action_routing.py -q",
+    "passed": 75,
+    "duration_seconds": 5.78,
+    "exit_code": 0,
+    "log": "profile_pytest.log"
+  },
+  "drafts_validated": 5,
+  "runtime_changed": false,
+  "meaning": "Existing contracts regression; not LIVE quality or AFTER proof."
+}

@@ -1,0 +1,1554 @@
+{
+  "cases": [
+    [
+      "reference_first",
+      "Для АТОЛ 30Ф нашёл инструкцию. Подойдёт ли она для моей кассы АТОЛ 55Ф?"
+    ],
+    [
+      "client_first",
+      "Моя касса Штрих-М 01Ф не печатает. Можно ли использовать инструкцию для Штрих-М 02Ф?"
+    ],
+    [
+      "peripheral",
+      "На кассе aQsi 5 подключён внешний сканер штрихкодов, он перестал считывать этикетки. Что проверить?"
+    ],
+    [
+      "two_owned",
+      "У нас две кассы Эвотор 6 и Эвотор 7.3, обе не передают чеки в ОФД. С чего начать?"
+    ],
+    [
+      "unknown",
+      "В документе упомянута касса АТОЛ 30Ф, а модель нашего оборудования пока неизвестна. Как проверить связь?"
+    ],
+    [
+      "negation",
+      "У меня не Эвотор 6, а Эвотор 7.3. Как проверить связь с ОФД?"
+    ]
+  ],
+  "records": [
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "validated_with_field_rejections",
+      "structured_output": {
+        "request_type": "diagnosis",
+        "relation": "new_task",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "АТОЛ 55Ф",
+        "object_evidence": {
+          "quote": "АТОЛ 55Ф"
+        },
+        "goal": {
+          "quote": "Подойдёт ли она для моей кассы АТОЛ 55Ф?"
+        },
+        "symptom": null,
+        "entities": [
+          {
+            "slot": "equipment",
+            "value": "АТОЛ 30Ф",
+            "role": "referenced_equipment",
+            "evidence": {
+              "quote": "АТОЛ 30Ф"
+            }
+          },
+          {
+            "slot": "equipment",
+            "value": "АТОЛ 55Ф",
+            "role": "client_equipment",
+            "evidence": {
+              "quote": "АТОЛ 55Ф"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "field_diagnostics": [
+        {
+          "field": "relation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "new_task"
+        },
+        {
+          "field": "intent",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "device"
+        },
+        {
+          "field": "operation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "diagnose"
+        },
+        {
+          "field": "object",
+          "status": "rejected",
+          "reason": "unsupported_object_value",
+          "claimed": "АТОЛ 55Ф"
+        },
+        {
+          "field": "confidence",
+          "status": "accepted",
+          "reason": "valid_confidence",
+          "value": 0.9
+        },
+        {
+          "field": "request_type",
+          "status": "accepted",
+          "reason": "valid_turn_classification",
+          "value": "diagnosis",
+          "raw_value": "diagnosis"
+        },
+        {
+          "field": "unknown_facts",
+          "status": "omitted",
+          "reason": "no_unknown_slots_claimed"
+        },
+        {
+          "field": "object_evidence",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 62,
+          "end": 70
+        },
+        {
+          "field": "object",
+          "status": "accepted",
+          "reason": "unique_registered_object_alias_from_current_message",
+          "value": "касса",
+          "start": 56,
+          "end": 61
+        },
+        {
+          "field": "specialist_evidence",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "specialist_requested",
+          "status": "accepted",
+          "reason": "not_requested"
+        },
+        {
+          "field": "entities",
+          "status": "accepted",
+          "reason": "valid_array",
+          "count": 2
+        },
+        {
+          "field": "entities[0]",
+          "status": "rejected",
+          "reason": "invalid_entity_claim_shape"
+        },
+        {
+          "field": "entities[1]",
+          "status": "rejected",
+          "reason": "invalid_entity_claim_shape"
+        },
+        {
+          "field": "entities.manufacturer",
+          "status": "accepted",
+          "reason": "exact_known_alias_found_in_current_message",
+          "value": "АТОЛ",
+          "start": 4,
+          "end": 8
+        },
+        {
+          "field": "entities.equipment",
+          "status": "accepted",
+          "reason": "exact_known_manufacturer_model_span",
+          "value": "АТОЛ 30Ф",
+          "start": 4,
+          "end": 12
+        },
+        {
+          "field": "entities.equipment",
+          "status": "accepted",
+          "reason": "exact_known_manufacturer_model_span",
+          "value": "АТОЛ 55Ф",
+          "start": 62,
+          "end": 70
+        },
+        {
+          "field": "goal",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 31,
+          "end": 71
+        },
+        {
+          "field": "symptom",
+          "status": "omitted",
+          "reason": "not_claimed"
+        }
+      ],
+      "tokens": {
+        "prompt_tokens": 1177,
+        "completion_tokens": 1340,
+        "total_tokens": 2517
+      },
+      "duration_ms": 2484,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\", \"For every equipment entity set role to client_equipment, referenced_equipment, peripheral, or uncertain according to its role in the current message. A mention alone does not establish client ownership. Include all named equipment mentions even if they are only references.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Для АТОЛ 30Ф нашёл инструкцию. Подойдёт ли она для моей кассы АТОЛ 55Ф?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "role": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "complete"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "validated_with_field_rejections",
+      "structured_output": {
+        "request_type": "information",
+        "relation": "continue",
+        "intent": "device",
+        "operation": "explain",
+        "object": "instruction",
+        "object_evidence": {
+          "quote": "инструкцию для Штрих-М 02Ф"
+        },
+        "goal": {
+          "quote": "Можно ли использовать инструкцию для Штрих-М 02Ф?"
+        },
+        "symptom": {
+          "quote": "Моя касса Штрих-М 01Ф не печатает"
+        },
+        "entities": [
+          {
+            "slot": "equipment",
+            "value": "Штрих-М 01Ф",
+            "evidence": {
+              "quote": "Штрих-М 01Ф"
+            },
+            "role": "client_equipment"
+          },
+          {
+            "slot": "equipment",
+            "value": "Штрих-М 02Ф",
+            "evidence": {
+              "quote": "Штрих-М 02Ф"
+            },
+            "role": "referenced_equipment"
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "field_diagnostics": [
+        {
+          "field": "relation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "continue"
+        },
+        {
+          "field": "intent",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "device"
+        },
+        {
+          "field": "operation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "explain"
+        },
+        {
+          "field": "object",
+          "status": "rejected",
+          "reason": "unsupported_object_value",
+          "claimed": "instruction"
+        },
+        {
+          "field": "confidence",
+          "status": "accepted",
+          "reason": "valid_confidence",
+          "value": 0.9
+        },
+        {
+          "field": "request_type",
+          "status": "accepted",
+          "reason": "valid_turn_classification",
+          "value": "information",
+          "raw_value": "information"
+        },
+        {
+          "field": "unknown_facts",
+          "status": "omitted",
+          "reason": "no_unknown_slots_claimed"
+        },
+        {
+          "field": "object_evidence",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 57,
+          "end": 83
+        },
+        {
+          "field": "specialist_evidence",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "specialist_requested",
+          "status": "accepted",
+          "reason": "not_requested"
+        },
+        {
+          "field": "entities",
+          "status": "accepted",
+          "reason": "valid_array",
+          "count": 2
+        },
+        {
+          "field": "entities[0]",
+          "status": "rejected",
+          "reason": "invalid_entity_claim_shape"
+        },
+        {
+          "field": "entities[1]",
+          "status": "rejected",
+          "reason": "invalid_entity_claim_shape"
+        },
+        {
+          "field": "entities.manufacturer",
+          "status": "accepted",
+          "reason": "exact_known_alias_found_in_current_message",
+          "value": "Штрих-М",
+          "start": 10,
+          "end": 17
+        },
+        {
+          "field": "entities.equipment",
+          "status": "accepted",
+          "reason": "exact_known_manufacturer_model_span",
+          "value": "Штрих-М 01Ф",
+          "start": 10,
+          "end": 21
+        },
+        {
+          "field": "entities.equipment",
+          "status": "accepted",
+          "reason": "exact_known_manufacturer_model_span",
+          "value": "Штрих-М 02Ф",
+          "start": 72,
+          "end": 83
+        },
+        {
+          "field": "goal",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 35,
+          "end": 84
+        },
+        {
+          "field": "symptom",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 0,
+          "end": 33
+        }
+      ],
+      "tokens": {
+        "prompt_tokens": 1178,
+        "completion_tokens": 1172,
+        "total_tokens": 2350
+      },
+      "duration_ms": 2335,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\", \"For every equipment entity set role to client_equipment, referenced_equipment, peripheral, or uncertain according to its role in the current message. A mention alone does not establish client ownership. Include all named equipment mentions even if they are only references.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"Моя касса Штрих-М 01Ф не печатает. Можно ли использовать инструкцию для Штрих-М 02Ф?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "role": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "complete"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "quota_deferred",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "tpm_insufficient"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 1,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"На кассе aQsi 5 подключён внешний сканер штрихкодов, он перестал считывать этикетки. Что проверить?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "role": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "quota",
+      "error_code": "groq_quota_deferred"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "quota_deferred",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "tpm_insufficient"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 1,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"У нас две кассы Эвотор 6 и Эвотор 7.3, обе не передают чеки в ОФД. С чего начать?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "role": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "quota",
+      "error_code": "groq_quota_deferred"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "quota_deferred",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "tpm_insufficient"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 1,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"В документе упомянута касса АТОЛ 30Ф, а модель нашего оборудования пока неизвестна. Как проверить связь?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "role": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "quota",
+      "error_code": "groq_quota_deferred"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "quota_deferred",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "tpm_insufficient"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 1,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"У меня не Эвотор 6, а Эвотор 7.3. Как проверить связь с ОФД?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "role": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "quota",
+      "error_code": "groq_quota_deferred"
+    }
+  ]
+}

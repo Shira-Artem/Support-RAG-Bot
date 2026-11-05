@@ -1,0 +1,52 @@
+[
+  {
+    "path": "reports\\b2_2c_20261104\\kb_drafts\\1c\\directbank-auto-schedule-extension.md",
+    "status": "draft",
+    "chunks": 3,
+    "source_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html",
+    "content_hash": "7c430774707c741ab053e58d78483de3b3277ae95d6f8ee0c0860a62fec408c9",
+    "operations": [
+      "schedule_bank_statement_import"
+    ]
+  },
+  {
+    "path": "reports\\b2_2c_20261104\\kb_drafts\\1c\\directbank-definition.md",
+    "status": "draft",
+    "chunks": 3,
+    "source_url": "https://v8.1c.ru/its/services/1c-direktbank/",
+    "content_hash": "1a95cf477ff5098bb0d1587120cb43acd2f5e9ac38d0f9702f16e207cff6e714",
+    "operations": [
+      "explain"
+    ]
+  },
+  {
+    "path": "reports\\b2_2c_20261104\\kb_drafts\\diadoc\\pending-revocation.md",
+    "status": "draft",
+    "chunks": 3,
+    "source_url": "https://www.diadoc.ru/articles/25195-statusy_v_edo",
+    "content_hash": "77ac3e3a04464cbbaf5c7098e96cc7b8c17e8cd633539b9c95af55396831fe1a",
+    "operations": [
+      "explain_document_status"
+    ]
+  },
+  {
+    "path": "reports\\b2_2c_20261104\\kb_drafts\\evotor\\evotor-7-3-receipt-copy.md",
+    "status": "draft",
+    "chunks": 3,
+    "source_url": "https://evotor.ru/manuals/7-3/kak-vosstanovit-chek/",
+    "content_hash": "bcc458c060e65942680a159fe329b39d47305ada39975f5f0dbf45ca05ee6874",
+    "operations": [
+      "repeat_print"
+    ]
+  },
+  {
+    "path": "reports\\b2_2c_20261104\\kb_drafts\\saby\\incorrect-processing.md",
+    "status": "draft",
+    "chunks": 3,
+    "source_url": "https://online.sbis.ru/page/kbase_entity/e0ccd4d9-9159-48a2-9143-3479ea0917b4?folderId=3bf9582e-acfa-4bc6-9b6d-45b738dab6e3",
+    "content_hash": "62195a17af9ee219323352f422b526c20162babdff9eb086b41a40f4e2605c10",
+    "operations": [
+      "explain_document_status"
+    ]
+  }
+]

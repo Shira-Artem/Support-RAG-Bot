@@ -1,0 +1,496 @@
+{
+  "status": "INCOMPLETE; not an estimate of all 24 or of production quality",
+  "turn_counts": {
+    "F": 1,
+    "H": 2
+  },
+  "case_counts": {
+    "H": 2,
+    "NOT_RUN": 22
+  },
+  "planned_cases": 24,
+  "planned_turns": 30,
+  "baseline_turns_executed": 3,
+  "holdout_reserved": 12,
+  "holdout_executed": 0,
+  "runtime_fixes_implemented": 0,
+  "before_after_available": false,
+  "covered_question_self_resolution_rate": null,
+  "self_resolution_note": "Cannot estimate: only two attempted cases, both technically incomplete. Do not report 0/24 or merge A-D.",
+  "baseline_http_statuses": {
+    "200": 2,
+    "429": 2
+  },
+  "all_real_http_statuses_including_diagnostic_repeats": {
+    "200": 3,
+    "429": 3
+  },
+  "confirmed_usage_total_tokens_including_diagnostic_repeats": 7264,
+  "usage_unknown_http_count": 3,
+  "baseline_sqlite_reopen_equal": {
+    "passed": 3,
+    "checked": 3
+  },
+  "turns": [
+    {
+      "case": "k01",
+      "turn": 1,
+      "question": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "grade": "F",
+      "reason": "Ложный отказ при approved ФН234; model-null early filter. Неверных инструкций нет.",
+      "dangerous_instructions_observed": false,
+      "approved_sources_actually_used_in_answer": [],
+      "selected_for_context": [],
+      "sqlite_reopen_equal": true,
+      "task_frame": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "unknown",
+        "subject": "ФН",
+        "operation": "diagnose",
+        "symptom": null,
+        "task_fact": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "superseded_facts": [],
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "scope_operation_planner_note": "Not reached for k01. k02 source sections reached Planner request, but no Planner decision/answer due429; scope context in generation input.",
+      "trace": "b22c_baseline_v3_live.json"
+    },
+    {
+      "case": "k01",
+      "turn": 2,
+      "question": "Дата на экране правильная, а время пока не сверял. С чего продолжить?",
+      "answer": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+      "grade": "H",
+      "reason": "Understanding HTTP429 TPD; продолжение не оценено.",
+      "dangerous_instructions_observed": false,
+      "approved_sources_actually_used_in_answer": [],
+      "selected_for_context": [],
+      "sqlite_reopen_equal": true,
+      "task_frame": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "unknown",
+        "subject": "ФН",
+        "operation": "diagnose",
+        "symptom": null,
+        "task_fact": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "superseded_facts": [],
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 2
+      },
+      "scope_operation_planner_note": "Not reached for k01. k02 source sections reached Planner request, but no Planner decision/answer due429; scope context in generation input.",
+      "trace": "b22c_baseline_v3_live.json"
+    },
+    {
+      "case": "k02",
+      "turn": 1,
+      "question": "На aQsi 5 кончилась лента прямо при продаже. Бумагу вставили, покупатель уже заплатил. Как допечатать, чтобы не пробить второй чек?",
+      "answer": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+      "grade": "H",
+      "reason": "Understanding 200, Planner HTTP429 TPD; ошибочная потеря релевантного источника в pipeline доказана, итоговые инструкции не получены.",
+      "dangerous_instructions_observed": false,
+      "approved_sources_actually_used_in_answer": [],
+      "selected_for_context": [
+        "aqsi_devices/sales/marked-product.md"
+      ],
+      "sqlite_reopen_equal": true,
+      "task_frame": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "information",
+        "intent": "device",
+        "subject": "чек",
+        "operation": "unknown",
+        "symptom": {
+          "value": "На aQsi 5 кончилась лента прямо при продаже.",
+          "message_id": 1,
+          "quote": "На aQsi 5 кончилась лента прямо при продаже.",
+          "start": 0,
+          "end": 44
+        },
+        "task_fact": {
+          "value": "На aQsi 5 кончилась лента прямо при продаже. Бумагу вставили, покупатель уже заплатил. Как допечатать, чтобы не пробить второй чек?",
+          "message_id": 1,
+          "quote": "На aQsi 5 кончилась лента прямо при продаже. Бумагу вставили, покупатель уже заплатил. Как допечатать, чтобы не пробить второй чек?",
+          "start": 0,
+          "end": 131
+        },
+        "goals": [
+          {
+            "value": "Как допечатать, чтобы не пробить второй чек?",
+            "message_id": 1,
+            "quote": "Как допечатать, чтобы не пробить второй чек?",
+            "start": 87,
+            "end": 131
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [],
+        "superseded_facts": [],
+        "entities": {
+          "equipment": [
+            {
+              "value": "aQsi 5",
+              "message_id": 1,
+              "quote": "aQsi 5",
+              "start": 3,
+              "end": 9
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 3,
+              "end": 7
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "scope_operation_planner_note": "Not reached for k01. k02 source sections reached Planner request, but no Planner decision/answer due429; scope context in generation input.",
+      "trace": "b22c_baseline_v4_live.json"
+    }
+  ],
+  "cases": [
+    {
+      "case": "k01",
+      "group": "kkt",
+      "status": "H",
+      "executed_turns": 2,
+      "planned_turns": 2,
+      "prefix_quality": [
+        "F",
+        "H"
+      ],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "k02",
+      "group": "kkt",
+      "status": "H",
+      "executed_turns": 1,
+      "planned_turns": 1,
+      "prefix_quality": [
+        "H"
+      ],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "k03",
+      "group": "kkt",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "k04",
+      "group": "kkt",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "o01",
+      "group": "ofd",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 2,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "o02",
+      "group": "ofd",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "o03",
+      "group": "ofd",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "o04",
+      "group": "ofd",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "b01",
+      "group": "bank",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 2,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "b02",
+      "group": "bank",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "b03",
+      "group": "bank",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "b04",
+      "group": "bank",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "e01",
+      "group": "edo",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 2,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "e02",
+      "group": "edo",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "e03",
+      "group": "edo",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "e04",
+      "group": "edo",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "m01",
+      "group": "marking",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 2,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "m02",
+      "group": "marking",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "m03",
+      "group": "marking",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "m04",
+      "group": "marking",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "s01",
+      "group": "other",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 2,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "s02",
+      "group": "other",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "s03",
+      "group": "other",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    },
+    {
+      "case": "s04",
+      "group": "other",
+      "status": "NOT_RUN",
+      "executed_turns": 0,
+      "planned_turns": 1,
+      "prefix_quality": [],
+      "fully_covered_answerability": "Not a quality outcome; see frozen KB coverage."
+    }
+  ]
+}

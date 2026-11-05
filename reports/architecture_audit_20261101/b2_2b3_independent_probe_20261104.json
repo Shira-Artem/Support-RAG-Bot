@@ -1,0 +1,89 @@
+[
+  {
+    "case": "reference_first",
+    "message": "Инструкция АТОЛ 30Ф подойдёт для моей кассы АТОЛ 55Ф?",
+    "raw_claims": [
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 30Ф",
+        "evidence": {
+          "quote": "АТОЛ 30Ф"
+        }
+      },
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 55Ф",
+        "evidence": {
+          "quote": "АТОЛ 55Ф"
+        }
+      }
+    ],
+    "equipment": [
+      "АТОЛ 30Ф",
+      "АТОЛ 55Ф"
+    ]
+  },
+  {
+    "case": "two_owned",
+    "message": "У меня две кассы АТОЛ 30Ф и АТОЛ 55Ф, обе не печатают.",
+    "raw_claims": [
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 30Ф",
+        "evidence": {
+          "quote": "АТОЛ 30Ф"
+        }
+      },
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 55Ф",
+        "evidence": {
+          "quote": "АТОЛ 55Ф"
+        }
+      }
+    ],
+    "equipment": [
+      "АТОЛ 30Ф",
+      "АТОЛ 55Ф"
+    ]
+  },
+  {
+    "case": "uncertain",
+    "message": "В инструкции встречается АТОЛ 30Ф, модель моей кассы неизвестна.",
+    "raw_claims": [
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 30Ф",
+        "evidence": {
+          "quote": "АТОЛ 30Ф"
+        }
+      }
+    ],
+    "equipment": [
+      "АТОЛ 30Ф"
+    ]
+  },
+  {
+    "case": "negated",
+    "message": "У меня не АТОЛ 30Ф, а АТОЛ 55Ф.",
+    "raw_claims": [
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 30Ф",
+        "evidence": {
+          "quote": "АТОЛ 30Ф"
+        }
+      },
+      {
+        "slot": "equipment",
+        "value": "АТОЛ 55Ф",
+        "evidence": {
+          "quote": "АТОЛ 55Ф"
+        }
+      }
+    ],
+    "equipment": [
+      "АТОЛ 55Ф"
+    ]
+  }
+]

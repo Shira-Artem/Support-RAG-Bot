@@ -1,0 +1,72 @@
+.....F....F..F..F....................................................... [ 88%]
+.........                                                                [100%]
+================================== FAILURES ===================================
+__ test_explicit_reviewed_operation_can_bridge_category_but_conflict_cannot ___
+
+    def test_explicit_reviewed_operation_can_bridge_category_but_conflict_cannot():
+        query="В АТОЛ Онлайн где проверить состояние ФН?"
+        state=state_for(query,intent="fiscal_drive",service="АТОЛ Онлайн")
+        def hit(key,operations):
+            return SearchResult(key,"Откройте мониторинг и проверьте состояние ФН.",.9,.85,5.,
+                {"source":key,"document_id":key,"status":"approved","service":"АТОЛ Онлайн",
+                 "manufacturer":"АТОЛ","model":"АТОЛ Онлайн — облачная ККТ",
+                 "task_category":"cash_list","operations":operations,"title":"Мониторинг ФН"})
+        result=RetrievalPipeline(SimpleNamespace(search=lambda *args,**kwargs:[hit("monitor",["inspect_fiscal_drive"]),hit("replace",["replace_fiscal_drive"])] )).search(state,query)
+>       assert any(item.document_id=="monitor" and item.selected for item in result.candidates)
+E       assert False
+E        +  where False = any(<generator object test_explicit_reviewed_operation_can_bridge_category_but_conflict_cannot.<locals>.<genexpr> at 0x0000027F68993ED0>)
+
+tests\test_b2_2c_quality_contracts.py:79: AssertionError
+____ test_simple_creation_goal_is_not_a_request_for_unverified_permissions ____
+
+    def test_simple_creation_goal_is_not_a_request_for_unverified_permissions():
+        q="Создать сотруднику новую запись"
+        state=state_for(q,intent="access",operation="add_employee",service="aQsi Online")
+        state.task_context.goals=[Fact.span(q,1)]
+        text="Откройте пользователей и создайте новую запись."
+        doc=SearchResult("users.md",text,.9,metadata={"status":"approved","task_category":"access",
+            "operations":["add_employee"],"evidence_coverage":{"add_employee":"full"},
+            "source_url":"https://example.test/users","source_checked_at":"2026-11-04","section":"Создание"})
+        level,missing,steps=_access_evidence(state,[doc],text)
+>       assert level=="full" and not missing and steps
+E       AssertionError: assert ('partial' == 'full'
+E         
+E         - full
+E         + partial)
+
+tests\test_b2_2c_quality_contracts.py:113: AssertionError
+_______ test_physical_manufacturer_does_not_confirm_aqsi_online_service _______
+
+    def test_physical_manufacturer_does_not_confirm_aqsi_online_service():
+        state = _state(manufacturer="aQsi")
+        result = assess_source_scope(state, {
+            "service": "aQsi Online", "manufacturer": "aQsi",
+            "model": "aQsi Online (облачная касса)", "task_category": "refund",
+        })
+>       assert result.missing == ("service",)
+E       AssertionError: assert ('model',) == ('service',)
+E         
+E         At index 0 diff: 'model' != 'service'
+E         Use -v to get more diff
+
+tests\test_scope_policy.py:42: AssertionError
+_______ test_scope_policy_distinguishes_unknown_from_confirmed_conflict _______
+
+    def test_scope_policy_distinguishes_unknown_from_confirmed_conflict():
+        source = {"service": "aQsi Online", "manufacturer": "aQsi",
+                  "model": "aQsi Online cloud KKT", "task_category": "refund"}
+        unknown = assess_source_scope(_state(), source)
+        conflict = assess_source_scope(_state(service="АТОЛ Онлайн"), source)
+>       assert unknown.missing == ("service",)
+E       AssertionError: assert ('service', '...rer', 'model') == ('service',)
+E         
+E         Left contains 2 more items, first extra item: 'manufacturer'
+E         Use -v to get more diff
+
+tests\test_scope_policy.py:93: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_b2_2c_quality_contracts.py::test_explicit_reviewed_operation_can_bridge_category_but_conflict_cannot
+FAILED tests/test_b2_2c_quality_contracts.py::test_simple_creation_goal_is_not_a_request_for_unverified_permissions
+FAILED tests/test_scope_policy.py::test_physical_manufacturer_does_not_confirm_aqsi_online_service
+FAILED tests/test_scope_policy.py::test_scope_policy_distinguishes_unknown_from_confirmed_conflict
+4 failed, 77 passed in 11.18s

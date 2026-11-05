@@ -1,0 +1,19 @@
+{
+  "id": "KB-C13",
+  "frozen_case": "o04",
+  "frozen_original_not_modified": true,
+  "local_candidates_reviewed": [
+    "platformaofd/fn/fn-number-in-lkk.md",
+    "platformaofd/ofd/lkk-cash-search.md",
+    "platformaofd/ofd/lkk-cash-monitoring.md",
+    "platformaofd/ofd/connect-kkt.md"
+  ],
+  "official_sources_checked": [
+    "https://platformaofd.ru/baza-znaniy/smena-fn-v-lkk/",
+    "https://platformaofd.ru/baza-znaniy/lkk-razdel-kassy/"
+  ],
+  "finding": "Sources describe changing/entering the new number, search by an already known number, and monitoring status. Read-only display of the current FN serial number is not explicitly established. Approved alternative document locations are partial evidence, not a verified cabinet lookup.",
+  "draft_created": false,
+  "reason": "Insufficient evidence for the requested read-only interface procedure; do not invent an existing field or replace viewing with editing.",
+  "baseline_answer_grade": "G: generic monitoring filters did not answer the question. Incorrect preflight gold does not excuse wrong answer."
+}

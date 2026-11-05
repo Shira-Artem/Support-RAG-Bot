@@ -9,6 +9,7 @@ import re
 from qdrant_client import models
 
 from app.vector_store import QdrantStore
+from app.scope_policy import matches_model_scope
 
 
 STOP = {"и", "в", "на", "по", "с", "не", "как", "что", "у", "для", "а", "или", "это", "мне", "из", "при", "ли", "the"}
@@ -133,7 +134,9 @@ class Retriever:
         for point, counts in zip(points, corpus, strict=True):
             text = point.payload["text"]
             point_model = _normalize_model(str(point.payload.get("model") or ""))
-            if requested_model and point_model != requested_model:
+            if requested_model and not matches_model_scope(
+                    str(point.payload.get("model") or ""), requested_model,
+                    str(point.payload.get("manufacturer") or "")):
                 continue
             brand_text = " ".join((text, str(point.payload.get("title") or ""),
                                    str(point.payload.get("manufacturer") or ""), point_model))

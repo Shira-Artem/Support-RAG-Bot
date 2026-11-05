@@ -10,8 +10,55 @@ from app.dialogue_state import ENTITY_NAMES
 HARDWARE_TASK_CATEGORIES = {
     "device", "fiscal_drive", "network", "network_diagnostics", "ofd_connection",
     "error_diagnosis", "receipt_transmission", "fiscal_document_control",
-    "fiscal_format", "marking", "tspiot",
+    "fiscal_format", "marking", "tspiot", "peripheral_setup",
 }
+
+
+def generic_physical_model(model: str | None, manufacturer: str | None) -> bool:
+    """Recognize an explicit physical product class, never a model alias.
+
+    The reviewed corpus also stores labels such as '<vendor> (physical KKT)'
+    in the model field. Those labels constrain product family, not a numbered
+    device. Unknown names, versions, and Online/cloud labels stay specific.
+    """
+    if not model or not manufacturer or re.search(r"\d|online|онлайн|cloud|облач", model, re.I):
+        return False
+    words = set(re.findall(r"[a-zа-яё]+", model.casefold()))
+    brand = set(re.findall(r"[a-zа-яё]+", manufacturer.casefold()))
+    rest = words - brand
+    return (bool(brand) and brand <= words and bool(rest)
+            and any(word.startswith("физическ") for word in rest)
+            and all(word.startswith(("физическ", "касс", "терминал")) or word == "ккт"
+                    for word in rest))
+
+
+def matches_model_scope(model: str | None, equipment: str | None,
+                        manufacturer: str | None = None) -> bool:
+    """Compare a document's requirement with a client model, directionally."""
+    if not model:
+        return True  # No document model requirement; other scope gates still run.
+    if generic_physical_model(model, manufacturer):
+        if equipment and re.search(r"online|онлайн|cloud|облач", equipment, re.I):
+            return False
+        brand = manufacturer_from_equipment(equipment or "")
+        return not brand or matches_scope_value(manufacturer or "", brand)
+    if not equipment:
+        return False
+    required_numbers = re.findall(r"\d+(?:[.,]\d+)*", model)
+    if required_numbers and required_numbers != re.findall(r"\d+(?:[.,]\d+)*", equipment):
+        return False
+    def designation(value):
+        value = re.sub(r"[^a-zа-яё0-9]+", " ", value.casefold().replace("ё", "е")).strip()
+        value = re.sub(r"^(?:(?:касса|ккт|терминал|модель)\s+)+", "", value)
+        for slot, canonical, aliases in ENTITY_NAMES:
+            if slot != "manufacturer":
+                continue
+            for alias in aliases:
+                prefix = re.sub(r"[^a-zа-яё0-9]+", " ", alias.casefold()).strip()
+                if value == prefix or value.startswith(prefix + " "):
+                    return canonical.casefold() + value[len(prefix):]
+        return value
+    return designation(model) == designation(equipment)
 
 
 def matches_scope_value(expected: str, confirmed: str) -> bool:
@@ -78,6 +125,10 @@ def assess_source_scope(state, scope: dict) -> ScopeAssessment:
     model = str(scope.get("model") or "")
     service = str(scope.get("service") or "")
     manufacturer = str(scope.get("manufacturer") or "")
+    # A hardware model stays binding even if a neighboring category labels
+    # the article as sales, catalog or another workflow. Software publishers
+    # are not hardware brands and retain their separate service contract.
+    hardware = hardware or bool(model and manufacturer_from_equipment(manufacturer))
     entities = state.task_entities
     # The legacy route facade deliberately hides non-route facts for cabinet
     # tasks. Hardware applicability still needs facts owned by the active
@@ -97,21 +148,22 @@ def assess_source_scope(state, scope: dict) -> ScopeAssessment:
             for left in confirmed_manufacturers for right in equipment_manufacturers):
         return ScopeAssessment(mismatches=("manufacturer",))
     confirmed_service = [fact.value for fact in entities.get("service", [])]
+    cloud_document = bool(service and ("облач" in model.casefold() or "cloud" in model.casefold()))
     cloud_service_scope = (
-        ("облач" in model.casefold() or "cloud" in model.casefold())
-        and bool(service)
+        (cloud_document or (bool(re.search(r"online|онлайн", model, re.I))
+                            and matches_scope_value(service, model)))
         and any(matches_scope_value(service, value) for value in confirmed_service)
     )
 
     requirements: list[tuple[str, set[str]]] = []
     if service and not (manufacturer and matches_scope_value(service, manufacturer)):
         service_slots = {"service", "software", "integration", "ofd"}
-        if hardware:
+        if scope.get("task_category") in HARDWARE_TASK_CATEGORIES:
             service_slots.add("manufacturer")
         requirements.append(("service", service_slots))
-    if hardware and manufacturer and not cloud_service_scope:
+    if hardware and manufacturer and not (cloud_document or cloud_service_scope):
         requirements.append(("manufacturer", {"manufacturer"}))
-    if hardware and model and not cloud_service_scope:
+    if hardware and model and not (cloud_document or cloud_service_scope) and not generic_physical_model(model, manufacturer):
         requirements.append(("model", {"equipment"}))
 
     missing: list[str] = []
@@ -125,7 +177,8 @@ def assess_source_scope(state, scope: dict) -> ScopeAssessment:
             values.extend(equipment_manufacturers)
         if not values:
             missing.append(field)
-        elif not any(matches_scope_value(expected, value) for value in values):
+        elif not any((matches_model_scope(expected, value, manufacturer) if field == "model"
+                      else matches_scope_value(expected, value)) for value in values):
             mismatches.append(field)
     return ScopeAssessment(tuple(dict.fromkeys(missing)),
                            tuple(dict.fromkeys(mismatches)), cloud_service_scope)

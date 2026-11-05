@@ -1,0 +1,11 @@
+{
+  "case": "h03",
+  "question_and_frozen_file_not_changed": true,
+  "original_expected_minimum": "Объяснить точный 508, не 507; проверить время без неподтверждённой корректировки расчёта.",
+  "preflight_error": "Упоминание времени в expected minimum ошибочно. Уже сохранённый frozen approved body связывает 508 с итогом и суммой позиций (1020/1043), а не датой.",
+  "evaluation_policy": "Оригинальный ошибочный минимум остаётся в frozen JSON. Источник и фактическая правильность имеют приоритет над ошибочной частью рубрики: не штрафовать корректное объяснение сумм за отсутствие выдуманной проверки времени. Это disclosed correction, не изменение вопроса/кода по holdout.",
+  "source": "platformaofd/flk/flk-508.md",
+  "source_url": "https://platformaofd.ru/baza-znaniy/kody-flk-ne-uchityvayushhiesya-v-vyruchke/",
+  "actual_response_factually_correct": true,
+  "raw_prespecified_time_item_met": false
+}

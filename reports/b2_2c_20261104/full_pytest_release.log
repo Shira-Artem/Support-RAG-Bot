@@ -1,0 +1,38 @@
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+........................................................................ [ 40%]
+........................................................................ [ 50%]
+........................................................................ [ 61%]
+........................................................................ [ 71%]
+........................................................................ [ 81%]
+........................................................................ [ 91%]
+...x.x.xx......................................F..........               [100%]
+================================== FAILURES ===================================
+___________ test_unresolved_task_keeps_service_and_model_boundaries ___________
+
+    def test_unresolved_task_keeps_service_and_model_boundaries():
+        query = "Где проверить состояние Эвотор 6?"
+        result = RetrievalPipeline(Source([_hit(
+            "Проверьте состояние устройства в настройках.", service="Эвотор",
+            model="Эвотор 7", document_id="wrong-model"),
+        ])).search(_state(query, service="Эвотор", equipment="Эвотор 6"), query)
+    
+>       assert not result.documents
+E       AssertionError: assert not [SearchResult(source='wrong-model.md', text='Проверьте состояние устройства в настройках.', score=0.04, semantic_score..._task_category': 'account_settings', 'operation': 'edit_profile', '_operations_explicit': True, 'manufacturer': None})]
+E        +  where [SearchResult(source='wrong-model.md', text='Проверьте состояние устройства в настройках.', score=0.04, semantic_score..._task_category': 'account_settings', 'operation': 'edit_profile', '_operations_explicit': True, 'manufacturer': None})] = RetrievalResult(query='Где проверить состояние Эвотор 6?', candidates=[EvaluatedDocument(source='wrong-model.md', docu...ent_id': 'wrong-model', 'section': None, 'kind': 'procedure', 'text': 'Проверьте состояние устройства в настройках.'}]).documents
+
+tests\test_unresolved_routing_fallback.py:75: AssertionError
+============================== warnings summary ===============================
+tests/test_b1_1_task_lifecycle.py::test_task_boundary_matrix_and_sqlite_reopen
+  C:\Users\Shira\AppData\Roaming\Python\Python314\site-packages\qdrant_client\qdrant_remote.py:284: UserWarning: Qdrant client version 1.19.1 is incompatible with server version 1.15.4. Major versions should match and minor version difference must not exceed 1. Set check_compatibility=False to skip version check.
+    show_warning(
+
+tests/test_vnext_retrieval.py: 13 warnings
+  C:\Users\Shira\Documents\ChatGPT\Rag\.local\vnext-deps\langsmith\_internal\_beta_decorator.py:70: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_unresolved_routing_fallback.py::test_unresolved_task_keeps_service_and_model_boundaries
+1 failed, 701 passed, 4 xfailed, 14 warnings in 168.77s (0:02:48)

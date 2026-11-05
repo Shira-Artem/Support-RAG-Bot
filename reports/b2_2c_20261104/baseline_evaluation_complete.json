@@ -1,0 +1,441 @@
+{
+  "status": "completed primary 24/30 baseline; one separate H400 retry",
+  "case_counts": {
+    "F": 12,
+    "E": 3,
+    "B": 2,
+    "G": 2,
+    "A": 2,
+    "D": 3
+  },
+  "turn_counts": {
+    "F": 17,
+    "E": 4,
+    "B": 2,
+    "G": 2,
+    "A": 2,
+    "D": 3
+  },
+  "case_grades": {
+    "k01": "F",
+    "k02": "F",
+    "k03": "E",
+    "k04": "F",
+    "o01": "F",
+    "o02": "F",
+    "o03": "B",
+    "o04": "G",
+    "b01": "G",
+    "b02": "B",
+    "b03": "A",
+    "b04": "F",
+    "e01": "F",
+    "e02": "F",
+    "e03": "D",
+    "e04": "D",
+    "m01": "F",
+    "m02": "E",
+    "m03": "E",
+    "m04": "A",
+    "s01": "F",
+    "s02": "F",
+    "s03": "F",
+    "s04": "D"
+  },
+  "turns": [
+    {
+      "case": "k01",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R1: ранний model filter исключил manufacturer-wide approved статью ФН234.",
+      "question": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "k01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "R1: ранний model filter исключил manufacturer-wide approved статью ФН234.",
+      "question": "Дата на экране правильная, а время пока не сверял. С чего продолжить?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "k02",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R1: generic physical model отклонён unresolved fallback; Planner корректно отказался от нерелевантного marked-product.",
+      "question": "На aQsi 5 кончилась лента прямо при продаже. Бумагу вставили, покупатель уже заплатил. Как допечатать, чтобы не пробить второй чек?",
+      "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "k03",
+      "turn": 1,
+      "grade": "E",
+      "reason": "R1/R2: cloud service проигнорирован при model gate и gold cash_list отвергнут coarse fiscal_drive category при совпадающей inspect operation.",
+      "question": "В АТОЛ Онлайн хочу заранее понять, сколько ещё проживёт ФН у каждой нашей кассы. Где это видно?",
+      "answer": "Какое именно оборудование используется?",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "k04",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R1: ранний model filter; approved ФН212 существует.",
+      "question": "Эвотор 7.3 ругается на ФН 212 при попытке работы. Что означает этот код?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "o01",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R2: incidental OFD/receipt diagnostic переопределил namespace ФЛК; второй ход не дал доступный факт при select/order=false.",
+      "question": "Платформа ОФД показывает ФЛК 507 у одного чека. Что там не сходится и какие данные приготовить поддержке?",
+      "answer": "Для этой задачи в «Платформа ОФД» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "o01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "R2: incidental OFD/receipt diagnostic переопределил namespace ФЛК; второй ход не дал доступный факт при select/order=false.",
+      "question": "То есть просто отправить этот же чек ещё раз будет достаточно?",
+      "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "o02",
+      "turn": 1,
+      "grade": "F",
+      "reason": "OPEN: coarse check нормализован как connect вместо вопроса о применимости архива.",
+      "question": "В Платформе ОФД хочу убрать запасную кассу из текущих отчётов на пару месяцев. Архив в кабинете для этого подходит?",
+      "answer": "Для этой задачи в «Платформа ОФД» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "o03",
+      "turn": 1,
+      "grade": "B",
+      "reason": "Полезное начало в журнале и граница архива; точный экспорт недельных чеков полностью не описан.",
+      "question": "В АТОЛ Онлайн собираюсь выгрузить чеки за прошлую неделю одним файлом, а не открывать каждый. Где начать?",
+      "answer": "В «Журнале чеков» доступны поиск и просмотр недавних зарегистрированных чеков. По описанию АТОЛ Онлайн основной журнал показывает последние две недели; для более раннего периода используют вкладку «Архив чеков», выбирают организацию, магазин и даты и заказывают выгрузку. Архив формируется не мгновенно. Зарегистрированные чеки также можно искать в кабинете выбранного ОФД.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nОграничения выгрузки и сроки могут зависеть от текущего интерфейса сервиса.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/receipts/receipt-journal-export.md — Подтверждённые сведения",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/atol_online/receipts/receipt-journal-export.md"
+      ],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "approved"
+    },
+    {
+      "case": "o04",
+      "turn": 1,
+      "grade": "G",
+      "reason": "G: ответ о фильтрах мониторинга не отвечает номеру ФН. Ошибка preflight: предполагаемый gold описывает изменение номера после замены, не read-only просмотр.",
+      "question": "В Платформе ОФД надо найти номер установленного ФН, коробка потерялась. Это видно в кабинете?",
+      "answer": "Откройте «Кассы» → «Мониторинг». Здесь отображаются результаты мониторинга подключённых ККТ. Предустановленные фильтры позволяют отбирать открытые и закрытые смены, кассы без документов, с почти заполненной памятью ФН, с оплатой или без неё.\n\nИсточник: data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md — Просмотр списка касс",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md"
+      ],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "approved_fact_irrelevant"
+    },
+    {
+      "case": "b01",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R2/OPEN: accounting return переопределён как клиентский refund; на продолжении reducer создал новую задачу и потерял 1С; выдан нерелевантный факт Эвотора.",
+      "question": "В 1С:Бухгалтерии 3.0.207 банк отдельно списал деньги за возврат покупателю по карте. Какая операция для этого предусмотрена?",
+      "answer": "Для этой задачи в «1С» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "b01",
+      "turn": 2,
+      "grade": "G",
+      "reason": "R2/OPEN: accounting return переопределён как клиентский refund; на продолжении reducer создал новую задачу и потерял 1С; выдан нерелевантный факт Эвотора.",
+      "question": "Банк списал отдельно, из следующего поступления ничего не удерживал. Что сверить, чтобы не отразить возврат дважды?",
+      "answer": "Конкретные IP, домены, порты и ИНН не следует подставлять из памяти: значения могут изменяться.\n\nОбласть источника: Эвотор. Модель оборудования не подтверждена; привожу только общий факт из источника.\nИсточник: data/knowledge/evotor/ofd/ofd-settings-check.md — Важно",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/evotor/ofd/ofd-settings-check.md"
+      ],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "approved_fact_irrelevant"
+    },
+    {
+      "case": "b02",
+      "turn": 1,
+      "grade": "B",
+      "reason": "Полезный факт зависимости от банка, но не подтверждены расписание/параметры.",
+      "question": "1С:Бухгалтерия 3.0.195: хочу, чтобы ДиректБанк сам забирал выписки утром. От чего зависит такая возможность?",
+      "answer": "Поддержка зависит от конкретного банка.\n\nОбласть источника: 1С:Бухгалтерия 8, 1С, 1С:Бухгалтерия 8, редакция 3.0.\nИсточник: data/knowledge/1c/bank/directbank-auto-schedule.md — Подтверждённая возможность",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/1c/bank/directbank-auto-schedule.md"
+      ],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "approved"
+    },
+    {
+      "case": "b03",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Полное объяснение возможности посредника, версии и ограничений списка банков.",
+      "question": "Наш банк не умеет прямой обмен с 1С. В Бухгалтерии 3.0.203 есть вариант забирать его выписки через банк-посредник?",
+      "answer": "С версии 3.0.203 предусмотрена загрузка выписок из других банков через банк-посредник. Список доступных банков определяется конкретным посредником. В материале 1С приведён пример банка «Точка».\n\nДополнительное условие источника (Ограничение):\nЭто функция банковского обмена, а не универсальный парсер любых выписок.\n\nИсточник: data/knowledge/1c/bank/directbank-other-banks.md — Подтверждённая возможность",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/1c/bank/directbank-other-banks.md"
+      ],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "approved"
+    },
+    {
+      "case": "b04",
+      "turn": 1,
+      "grade": "F",
+      "reason": "OPEN: unresolved task ambiguity потеряла подходящие общие безопасные сверки; сам запрет массового удаления уместен, но не объяснён в ответе.",
+      "question": "После загрузки выписки в 1С вижу два одинаковых платежа. Можно просто массово удалить дубли? Банк и релиз сейчас назвать не могу.",
+      "answer": "Для этой задачи в «1С» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "e01",
+      "turn": 1,
+      "grade": "E",
+      "reason": "OPEN/R3: два service в одном slot дали relation unknown; смена на aQsi Online состоялась, reset-password partial заблокирован целиком.",
+      "question": "Жду закрывающие от АТОЛ Онлайн через Диадок. Где принять приглашение именно от них?",
+      "answer": "Не удалось надёжно определить текущую задачу. Добавьте важную деталь или запросите специалиста.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "e01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "OPEN/R3: два service в одном slot дали relation unknown; смена на aQsi Online состоялась, reset-password partial заблокирован целиком.",
+      "question": "Теперь отдельный вопрос: как в aQsi Online восстановить забытый пароль?",
+      "answer": "Для этой задачи в «aQsi Online» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "e02",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R2: generic 1С integration вытеснил explicit ЭДО connection domain.",
+      "question": "Собираемся подключить 1С-ЭДО для УПД новому поставщику. Какие сведения подготовить перед настройкой?",
+      "answer": "Для этой задачи в «1С» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "e03",
+      "turn": 1,
+      "grade": "D",
+      "reason": "D: approved процедура оператора по аннулированию отсутствует; корректная граница без выдуманных кнопок.",
+      "question": "В Диадоке документ висит с надписью «Ожидается аннулирование». Кто должен нажать какую кнопку, чтобы снять его окончательно?",
+      "answer": "Для этой задачи в «Диадок» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "e04",
+      "turn": 1,
+      "grade": "D",
+      "reason": "D: approved восстановление ошибочно отклонённого акта Saby отсутствует.",
+      "question": "В Saby сотрудник случайно отклонил входящий акт. Как вернуть его в прежнее состояние?",
+      "answer": "Для этой задачи в «Saby» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "m01",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R1/OPEN: model-null source потерян; второй отказ не объяснил имеющийся approved запрет обхода проверки.",
+      "question": "На Эвотор 7.3 при оплате пишет «Марка не была проверена». Как выяснить, какая позиция мешает?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "m01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "R1/OPEN: model-null source потерян; второй отказ не объяснил имеющийся approved запрет обхода проверки.",
+      "question": "Предупреждение у одной бутылки нашёл. Можно её пока продать без проверки?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "m02",
+      "turn": 1,
+      "grade": "E",
+      "reason": "B2.2b.3 OPEN: fallback производителя весов конфликтует с производителем кассы, task relation unknown; не исправлялся.",
+      "question": "На физической aQsi 5 хотим подключить весы ШТРИХ-СЛИМ 200. Какая связь и где проверить, что касса их видит?",
+      "answer": "Не удалось надёжно определить текущую задачу. Добавьте важную деталь или запросите специалиста.",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "m03",
+      "turn": 1,
+      "grade": "E",
+      "reason": "OPEN/R2: receipt diagnose категория потеряла индикаторы ЦРПТ; вопрос производителя не нужен для панели Платформы ОФД.",
+      "question": "В Платформе ОФД жёлтый показатель ЦРПТ. Это уже доказанное нарушение или надо открыть конкретные чеки?",
+      "answer": "Какой производитель оборудования используется?",
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "m04",
+      "turn": 1,
+      "grade": "A",
+      "reason": "A: тестовая среда, API/ФФД, границы без реальных фискальных операций. Предшествующий 400 — отдельный H, не скрыт.",
+      "question": "Для интеграции с АТОЛ Онлайн хочу сначала гонять тестовые чеки, не боевые. Что предусмотрено для проверки API?",
+      "answer": "У АТОЛ Онлайн есть документация API и отдельная тестовая среда. В справке API v5 соотнесён с ФФД 1.2, а API v4 — с ФФД 1.05. Сначала уточните используемый формат фискальных данных и тип внешней системы, затем проводите проверку в тестовой среде без реальных фискальных операций.\n\nДополнительное условие источника (Важно / когда передать специалисту):\nИзменения протокола и переход ФФД требуют согласования с разработчиком интеграции.\n\n> Материал относится к облачному сервису «АТОЛ Онлайн», а не ко всем физическим моделям АТОЛ.\n\nИсточник: data/knowledge/atol_online/integration/api-test.md — Подтверждённые сведения",
+      "trace_file": "b22c_baseline_resumed_part2_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/atol_online/integration/api-test.md"
+      ],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "approved"
+    },
+    {
+      "case": "s01",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R3/OPEN: generic goal неверно помечен требованием специфичных прав; новый subtask роли потерял route и coarse configure не сопоставлен.",
+      "question": "В aQsi Online новый сотрудник, своей записи у него ещё нет. Как завести ему вход в кабинет?",
+      "answer": "Для этой задачи в «aQsi Online» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_part2_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "s01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "R3/OPEN: generic goal неверно помечен требованием специфичных прав; новый subtask роли потерял route и coarse configure не сопоставлен.",
+      "question": "Роль ещё не создали. Где задать ей права просмотра и редактирования?",
+      "answer": "Для этой задачи не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_part2_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "s02",
+      "turn": 1,
+      "grade": "F",
+      "reason": "R2: упоминание чека с check без transmission evidence принудительно стало receipt_transmission вместо account settings.",
+      "question": "В aQsi Online хочу получать каждый день отчёт по чекам на почту. Есть такая настройка в профиле?",
+      "answer": "Для этой задачи в «aQsi Online» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_part2_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "s03",
+      "turn": 1,
+      "grade": "F",
+      "reason": "OPEN: named/identifier guard HTTP-статуса блокирует general-knowledge fallback; общего approved объяснения нет.",
+      "question": "Объясните без сложных слов: зачем интеграции нужен HTTP-статус и чем 404 отличается от 500?",
+      "answer": "Для этой задачи не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_part2_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    },
+    {
+      "case": "s04",
+      "turn": 1,
+      "grade": "D",
+      "reason": "D: персональная оплата не устанавливается из статической KB; честная передача без выдуманного статуса.",
+      "question": "Можете сказать, оплачен ли у нашей организации тариф aQsi Online на следующий месяц? Доступа в кабинет под рукой нет.",
+      "answer": "Для этой задачи в «aQsi Online» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_baseline_resumed_part2_live.json",
+      "approved_sources_actually_used": [],
+      "dangerous_instructions_observed": false,
+      "knowledge_kind": "boundary_or_refusal"
+    }
+  ],
+  "http_statuses": {
+    "200": 36,
+    "400": 1
+  },
+  "confirmed_tokens": 83929,
+  "self_resolution_A_only": {
+    "all_cases": {
+      "numerator": 2,
+      "denominator": 24
+    },
+    "covered_denominator_note": "o04 coverage preflight was incorrect; e03/e04 personal s04 excluded from approved answerable denominator. A-D are never combined."
+  },
+  "technical_attempts": [
+    {
+      "trace_file": "b22c_baseline_resumed_live.json",
+      "case": "m04",
+      "turn": 1,
+      "grade": "H",
+      "reason": "HTTP400 json_validate_failed; retried unchanged runtime in part2"
+    }
+  ],
+  "interpretation": "Manual grades against original questions and frozen criteria; not gold-hit scoring. Prefix failures preserved at turn level. Approved irrelevant facts count G, not grounded success."
+}

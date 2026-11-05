@@ -19,6 +19,7 @@ from app.response_grounding import (claim_supported, content_terms, evidence_sta
                                     has_named_role, normalize, permission_clauses, statements,
                                     unsafe_operation_issue)
 from app.task_operation_resolver import resolve_task_operation
+from app.scope_policy import assess_source_scope, matches_model_scope
 
 
 class CandidateSource(Protocol):
@@ -501,7 +502,7 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
                               ))))
         if search_request:
             return "receipt_search"
-        if state.operation in {"diagnose", "status", "check", "transmit"}:
+        if state.operation == "transmit":
             return "receipt_transmission"
         if any(term in task_folded for term in _TASK_TERMS["receipt_transmission"]):
             return "receipt_transmission"
@@ -771,9 +772,15 @@ def _unresolved_task_fallback(state: DialogueState, query: str, hit: SearchResul
     manufacturer = state.entity("manufacturer") or state.task_entity("manufacturer")
     equipment = state.entity("equipment") or state.task_entity("equipment")
     software = state.entity("software") or state.task_entity("software")
-    if any((manufacturer and not manufacturer_match,
-            equipment and not model_match,
-            software and not software_match)):
+    # Use document requirements, not raw entity-string equality. In
+    # particular, a confirmed cloud service does not require a numbered
+    # physical device. Missing facts remain for the downstream scope gate;
+    # a confirmed conflict can never pass this fallback.
+    assessment = assess_source_scope(state, metadata)
+    explicit_model_conflict = (equipment and metadata.get("model") and not model_match
+                               and not assessment.cloud_service_scope)
+    if (assessment.mismatches or explicit_model_conflict
+            or (software and not software_match)):
         return False
     if operation_status == "mismatch":
         return False
@@ -804,6 +811,21 @@ def _unresolved_task_fallback(state: DialogueState, query: str, hit: SearchResul
     combined = 0.55 * max(0.0, float(semantic)) + 0.45 * overlap
     return (shared_terms >= 2 and overlap >= 0.15 and float(semantic) >= 0.33
             and combined >= 0.28)
+
+
+def _reviewed_operation_bridge(state, expected_task, metadata, query):
+    """An explicit operation match can reconcile coarse category labels.
+
+    Unknown operations and real operation conflicts never use this bridge.
+    Product, scope, topic, source integrity and safety remain independent gates.
+    """
+    return bool(expected_task and metadata.get("task_category")
+        and metadata.get("task_category") != expected_task
+        and metadata.get("status") == "approved"
+        and metadata.get("_operations_explicit") and metadata.get("operations")
+        and state.operation not in {"unknown", "explain"}
+        and operation_compatibility(state.operation, metadata, query,
+                                    task_category=expected_task) == "match")
 
 
 def _access_evidence(state, documents, context):
@@ -858,7 +880,7 @@ def _access_evidence(state, documents, context):
                         "create_role": "role_creation_workflow_unverified"}.get(state.operation, "access_workflow_unverified"))
     request = " ".join(f.value for f in [*state.goals, *state.constraints, *state.details,
                                         *([state.task] if state.task else [])])
-    if (state.goals or state.constraints or has_named_role(request)
+    if (has_named_role(request) or any(permission_clauses(request))
             or state.operation == "change_permissions"):
         missing.append("requested_role_or_permissions_unverified")
     status = "full" if steps and not missing else "partial" if steps else "none"
@@ -881,7 +903,8 @@ def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str
         if meta.get("status") != "approved":
             continue
         if (expected_task and meta.get("task_category") != expected_task
-                and not _related_task_for_query(state, expected_task, meta.get("task_category"), query)):
+                and not _related_task_for_query(state, expected_task, meta.get("task_category"), query)
+                and not _reviewed_operation_bridge(state, expected_task, meta, query)):
             continue
         if (state.operation != "explain"
                 and operation_compatibility(state.operation, meta, query,
@@ -960,7 +983,7 @@ class RetrievalPipeline:
             manufacturer_fact = state.entity("manufacturer") or state.task_entity("manufacturer")
             equipment_fact = state.entity("equipment") or state.task_entity("equipment")
             manufacturer_match = _matches_entity(manufacturer_fact, meta.get("manufacturer"))
-            model_match = _matches_entity(equipment_fact, meta.get("model"))
+            model_match = matches_model_scope(meta.get("model"), equipment_fact, meta.get("manufacturer"))
             technical = (state.intent in {'device', 'fiscal_drive', 'network'}
                         and expected_task in {
                             'device', 'fiscal_drive', 'network_diagnostics', 'ofd_connection',
@@ -991,6 +1014,8 @@ class RetrievalPipeline:
                     and not diagnostic_version_compatible(query, meta)):
                 reasons.append("version_below_reviewed_minimum")
             operation_match = operation_status == "match"
+            operation_bridge = _reviewed_operation_bridge(state, expected_task, meta, query)
+            related_search_task = related_search_task or operation_bridge
             explanation_lookup = (expected_task is None and state.intent == "general"
                                   and state.operation == "explain")
             unscoped_match = (expected_task is None and state.intent != "unknown"
@@ -1041,9 +1066,10 @@ class RetrievalPipeline:
                          and not (expected_task == "integration" and software and software_match)))):
                 reasons.append("subtask_anchor_uncovered")
             model_bound = technical or expected_task in {"model_features", "integration"}
-            if model_bound and manufacturer_fact and not manufacturer_match:
+            scope_assessment = assess_source_scope(state, meta)
+            if model_bound and "manufacturer" in scope_assessment.mismatches:
                 reasons.append("manufacturer_mismatch_or_unlabeled")
-            if model_bound and equipment_fact and not model_match:
+            if model_bound and "model" in scope_assessment.mismatches:
                 reasons.append("equipment_mismatch_or_unlabeled")
             if ofd and not ofd_match:
                 reasons.append("ofd_mismatch_or_unlabeled")
@@ -1111,6 +1137,8 @@ class RetrievalPipeline:
                 relevance_reasons.append("scope_deferred_to_source_first_fact_only_gate")
             if unresolved_fallback:
                 relevance_reasons.append("unresolved_task_fallback")
+            if operation_bridge:
+                relevance_reasons.append("reviewed_operation_bridges_category")
             relevance = Relevance("match" if service_match else "unknown_or_mismatch",
                                   "match" if task_match else "mismatch", round(score, 4),
                                   relevance_reasons)
@@ -1293,7 +1321,8 @@ class RetrievalPipeline:
                     continue
                 fragment_task = meta.get("task_category")
                 if (expected_task and fragment_task and fragment_task != expected_task
-                        and not _related_task_for_query(state, expected_task, fragment_task, query)):
+                        and not _related_task_for_query(state, expected_task, fragment_task, query)
+                        and not _reviewed_operation_bridge(state, expected_task, meta, query)):
                     continue
                 if fragment is not hit and expected_task:
                     section = str(meta.get("section") or "")

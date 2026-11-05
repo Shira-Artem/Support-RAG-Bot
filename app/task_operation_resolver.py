@@ -34,10 +34,29 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
     def result(task: str | None, op: str, domain: str, mode: str, why: str):
         return TaskOperation(task, op, domain, mode, why)
 
+    # A typed control-code namespace is more specific than the surrounding
+    # receipt/OFD vocabulary. Preserve an explanatory speech act when present.
+    if _has(s, r"\bфлк\s*[-№#:]?\s*\d{2,5}\b"):
+        op = operation if operation in {"explain", "check", "status", "diagnose"} else "diagnose"
+        return result("fiscal_document_control", op, "receipt",
+                      "information" if op == "explain" else "diagnostic", "typed_fiscal_control_code")
+
+    # Recording a bank entry in accounting software is not issuing a customer
+    # refund. Domain evidence must precede the generic word 'return'.
+    accounting = _has(s, r"\b1[сc]\b|\bбухгалтер\w*")
+    bank_entry = (_has(s, r"\bбанк\w*|\bэквайринг\w*")
+                  and _has(s, r"\bсписа\w*|\bпоступлен\w*|\bвыписк\w*|расчетн\w*\s+счет"))
+    if accounting and bank_entry and _has(s, r"\bвозврат\w*"):
+        return result("bank_statement", operation, "bank_statement",
+                      "information" if operation in {"unknown", "explain"} else "diagnostic",
+                      "accounting_bank_entry_domain")
+
     # A qualified business document is not a fiscal receipt. Keep the user's
     # read-only action separate from document signing/sending, for every EDO.
     edo_subject = _has(s, r"\b(?:эдо|упд|накладн\w*)\b|\b(?:электронн\w*|входящ\w*|исходящ\w*|отправленн\w*)\s+документ\w*")
     if edo_subject and not _has(s, r"\b(?:чек\w*|офд|фискальн\w*)\b"):
+        if operation == "connect":
+            return result("edo", "connect", "delivery_document", "action", "edo_connection_domain")
         if _has(s, r"\b(?:статус\w*|состояни\w*)\b") and operation in {"unknown", "status", "check", "search", "explain"}:
             return result("edo", "status", "delivery_document", "information", "electronic_document_status")
         if operation in {"search", "check", "status", "diagnose"}:

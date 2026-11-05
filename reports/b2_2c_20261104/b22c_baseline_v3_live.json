@@ -1,0 +1,2531 @@
+{
+  "created_at": "2026-11-04T17:32:22.469331+00:00",
+  "head": "0f83c035942d17058474eedf620da3b99c748da0",
+  "source_hashes": {
+    "bot.py": "e533b202572bf9cfd25af05d9cd7171b5814a1fc92f9b80d4af8565dc2e988cc",
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/ai_coordinator.py": "2a485358eabf4c1183771d45e6f3c75ced015beb18e14de54ac39c79a043a546",
+    "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+    "app/api.py": "f6b5ebd9d394ead610dc6a0160566cba3a0ae428c8f0bcd08d6d3737e076ed8b",
+    "app/bot_runtime.py": "7a93c28e090390501db083b8c7a0e480ef8d4d303037bd0d2953f319de121b91",
+    "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+    "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
+    "app/conversation_store.py": "2a9abe68c977c6132486a18adf8d40a4343658a436ec5e2b8ffdb630ea181be5",
+    "app/dialogue_state.py": "679b1fa431da190a8c766a52df8907d1e27057a7e98c5a9da52d02dd8914edaf",
+    "app/dialogue_understanding.py": "6b3a4213cba2763accd7e82b56cf85ce3549f2f54b81732a7edbd5e76397c9f6",
+    "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
+    "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
+    "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+    "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+    "app/groq_rate_limit.py": "58203fd4dd88bd3809adbd019b23dfa5bf715b3a075b051fef1ddd64274f3744",
+    "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
+    "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
+    "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+    "app/llm_client.py": "c2dd323e6a0734a41a7970e763c2b8ac302b13faec7362921b9ec07722c96698",
+    "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+    "app/procedure_policy.py": "3b03a70a1ab30a229230db53b7c178d20fa70f9f4905672a3fa22e8aa69673e6",
+    "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+    "app/rag_query.py": "2d75b44831200c3324b7be6e9d66b85d1422098a9e9784c05e9fef083204c2ef",
+    "app/response_grounding.py": "e83efa31023d5a95830ba593e466be13561b1a92839c82fbc71655394c3cef27",
+    "app/retrieval.py": "9499dd9e665d1eedbc1672aa7d66f4f161beba83ed17312469b029c9335d0b27",
+    "app/retrieval_pipeline.py": "85890b22e6e527d604a98156c010464c5fc950eff7341817510bc75df447b45c",
+    "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
+    "app/scope_policy.py": "820d3682670b38757de13ceab0e258011e48672f8a39dbd88ebdcc5738aea246",
+    "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
+    "app/source_actions.py": "a725728f7330f36cc3bb10e2db25d25704d5ec081b548b21ebf9e6ecf9b7f6ea",
+    "app/source_first_service.py": "763af07c4013000a2c2da810954e7932f05c675b80054fd8554fbefc7716572d",
+    "app/task_operation_resolver.py": "7af463d9ff6066349fd17d1f4a739b6c36d3d867d61f341454dfb20eea7564e2",
+    "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
+  },
+  "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "points": 934,
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "medium",
+  "turns": [
+    {
+      "case": "k01",
+      "turn": 1,
+      "question": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "latency_ms": 2851,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 0,
+        "session": {
+          "entities": {},
+          "active_route": null
+        },
+        "task_context": null,
+        "task_id": null,
+        "topic_start_message_id": null,
+        "intent": "unknown",
+        "request_type": "unknown",
+        "operation": "unknown",
+        "object": null,
+        "entities": {},
+        "routing_slot": null,
+        "parameters": [],
+        "object_reference": null,
+        "task": null,
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 1.0,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_before_reopen": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "sqlite_reopen_equal": true,
+      "task_frame": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "unknown",
+        "subject": "ФН",
+        "operation": "diagnose",
+        "symptom": null,
+        "task_fact": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "superseded_facts": [],
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 1
+      },
+      "same_task": false,
+      "understanding": [
+        {
+          "request_type": "diagnosis",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 1120,
+            "completion_tokens": 1439,
+            "total_tokens": 2559
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 2593,
+          "validation_diagnostics": [
+            {
+              "field": "relation",
+              "status": "accepted",
+              "reason": "valid_semantic_classification",
+              "value": "new_task"
+            },
+            {
+              "field": "intent",
+              "status": "accepted",
+              "reason": "valid_semantic_classification",
+              "value": "device"
+            },
+            {
+              "field": "operation",
+              "status": "accepted",
+              "reason": "valid_semantic_classification",
+              "value": "diagnose"
+            },
+            {
+              "field": "object",
+              "status": "rejected",
+              "reason": "unsupported_object_value",
+              "claimed": "Эвотор 7.3"
+            },
+            {
+              "field": "confidence",
+              "status": "accepted",
+              "reason": "valid_confidence",
+              "value": 0.9
+            },
+            {
+              "field": "request_type",
+              "status": "accepted",
+              "reason": "valid_turn_classification",
+              "value": "diagnosis",
+              "raw_value": "diagnosis"
+            },
+            {
+              "field": "unknown_facts",
+              "status": "omitted",
+              "reason": "no_unknown_slots_claimed"
+            },
+            {
+              "field": "object_evidence",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 0,
+              "end": 30
+            },
+            {
+              "field": "object",
+              "status": "accepted",
+              "reason": "unique_registered_object_alias_from_current_message",
+              "value": "ФН",
+              "start": 59,
+              "end": 69
+            },
+            {
+              "field": "specialist_evidence",
+              "status": "omitted",
+              "reason": "not_claimed"
+            },
+            {
+              "field": "specialist_requested",
+              "status": "accepted",
+              "reason": "not_requested"
+            },
+            {
+              "field": "entities",
+              "status": "accepted",
+              "reason": "valid_array",
+              "count": 3
+            },
+            {
+              "field": "entities[0]",
+              "status": "accepted",
+              "reason": "exact_source_value",
+              "slot": "equipment",
+              "value": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            },
+            {
+              "field": "entities[1]",
+              "status": "rejected",
+              "reason": "entity_not_supported_by_source_alias",
+              "slot": "component",
+              "claimed": "ФН 234",
+              "start": 0,
+              "end": 30
+            },
+            {
+              "field": "entities[2]",
+              "status": "rejected",
+              "reason": "entity_not_supported_by_source_alias",
+              "slot": "component",
+              "claimed": "накопитель",
+              "start": 59,
+              "end": 69
+            },
+            {
+              "field": "entities.manufacturer",
+              "status": "accepted",
+              "reason": "exact_known_alias_found_in_current_message",
+              "value": "Эвотор",
+              "start": 3,
+              "end": 9
+            },
+            {
+              "field": "goal",
+              "status": "accepted",
+              "reason": "exact_current_message_span",
+              "start": 32,
+              "end": 105
+            },
+            {
+              "field": "symptom",
+              "status": "omitted",
+              "reason": "not_claimed"
+            },
+            {
+              "field": "task_operation_resolution",
+              "status": "accepted",
+              "reason": "reported_error",
+              "task_category": "error_diagnosis",
+              "previous_operation": "diagnose",
+              "value": "diagnose"
+            }
+          ],
+          "observation": {
+            "intent": "unknown",
+            "operation": "diagnose",
+            "object": "ФН",
+            "relation": "new_task",
+            "confidence": 0.9,
+            "intent_evidence": null,
+            "operation_evidence": null,
+            "object_evidence": {
+              "value": "накопитель",
+              "message_id": 1,
+              "quote": "накопитель",
+              "start": 59,
+              "end": 69
+            },
+            "relation_evidence": null,
+            "evidence": {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            },
+            "symptom": null,
+            "goals": [
+              {
+                "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "message_id": 1,
+                "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "start": 32,
+                "end": 105
+              }
+            ],
+            "unknown_facts": {},
+            "entities": {
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "diagnostics": {
+        "text": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "no_context",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": 232,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "escalate",
+        "scenario_reason": "insufficient_applicable_evidence",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": "no_candidates",
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": "оборудование: Эвотор 7.3 — производитель: Эвотор — На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+        "active_request": "оборудование: Эвотор 7.3 — производитель: Эвотор — На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 1,
+          "session": {
+            "entities": {
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            }
+          },
+          "task_context": {
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "unknown",
+            "request_type": "diagnosis",
+            "operation": "diagnose",
+            "object": "ФН",
+            "entities": {
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            },
+            "parameters": [],
+            "object_reference": null,
+            "task_fact": {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            },
+            "operation_evidence": null,
+            "operation_confidence": 0.9,
+            "symptom": null,
+            "superseded_facts": [],
+            "goals": [
+              {
+                "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "message_id": 1,
+                "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "start": 32,
+                "end": 105
+              }
+            ],
+            "constraints": [],
+            "details": [
+              {
+                "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "message_id": 1,
+                "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "start": 0,
+                "end": 105
+              }
+            ],
+            "error": null,
+            "expected": null,
+            "relation": "new_task",
+            "confidence": 0.9,
+            "transition": "new_task",
+            "analysis_required": false,
+            "unresolved": null,
+            "unknown_facts": [],
+            "unknown_evidence": {},
+            "procedure_id": null,
+            "shown_units": [],
+            "eligible_units": [],
+            "checks": [],
+            "open_question": null,
+            "current_subgoal": {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            },
+            "clarification_repeats": {},
+            "closed": false
+          },
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "routing_slot": "manufacturer",
+          "parameters": [],
+          "object_reference": null,
+          "task": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": null,
+        "retrieval_diagnostics": {
+          "rag_query": "оборудование: Эвотор 7.3 — производитель: Эвотор — На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "candidates": [],
+          "rejected": [],
+          "selected": [],
+          "sufficient": false,
+          "insufficiency_reason": "no_candidates",
+          "context": "",
+          "evidence_status": "none",
+          "evidence_level": "none",
+          "missing_evidence": [],
+          "supported_steps": [],
+          "relevant": false,
+          "timing_ms": {
+            "retrieval": 230
+          },
+          "engine": "source_first"
+        },
+        "retrieval_collection": "knowledge_stage3_retrieval_20261022",
+        "reasoning_effort": "medium",
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": null,
+        "dialogue_understanding": {
+          "request_type": "diagnosis",
+          "specialist_requested": false,
+          "unknown_facts": [],
+          "tokens": {
+            "prompt_tokens": 1120,
+            "completion_tokens": 1439,
+            "total_tokens": 2559
+          },
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 2593
+        },
+        "coordinator_decision": {
+          "request_type": "diagnosis",
+          "route": "technical_action",
+          "task_relation": "new_task",
+          "current_subgoal": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+          "rationale": "task_requires_applicability_checked_action"
+        },
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        0
+      ]
+    },
+    {
+      "case": "k01",
+      "turn": 2,
+      "question": "Дата на экране правильная, а время пока не сверял. С чего продолжить?",
+      "answer": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+      "latency_ms": 800,
+      "state_before": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_after": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "state_before_reopen": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": null,
+          "shown_units": [],
+          "eligible_units": [],
+          "checks": [],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.9,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "sqlite_reopen_equal": true,
+      "task_frame": {
+        "task_id": "task:1",
+        "closed": false,
+        "request_type": "diagnosis",
+        "intent": "unknown",
+        "subject": "ФН",
+        "operation": "diagnose",
+        "symptom": null,
+        "task_fact": {
+          "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "message_id": 1,
+          "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+          "start": 0,
+          "end": 105
+        },
+        "goals": [
+          {
+            "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 32,
+            "end": 105
+          }
+        ],
+        "constraints": [],
+        "parameters": [],
+        "details": [
+          {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          }
+        ],
+        "superseded_facts": [],
+        "entities": {
+          "equipment": [
+            {
+              "value": "Эвотор 7.3",
+              "message_id": 1,
+              "quote": "Эвотор 7.3",
+              "start": 3,
+              "end": 13
+            }
+          ],
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 3,
+              "end": 9
+            }
+          ]
+        },
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "checks": [],
+        "relation": "new_task",
+        "transition": "new_task",
+        "expected_slot": null,
+        "analysis_required": false,
+        "revision": 2
+      },
+      "same_task": true,
+      "understanding": [
+        null
+      ],
+      "diagnostics": {
+        "text": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.",
+        "rag_engine": "source_first",
+        "results": [],
+        "used_model": false,
+        "generation_status": "error",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_ms": null,
+        "raw_text": null,
+        "raw_model_text": null,
+        "scenario": "clarify",
+        "scenario_reason": "groq_quota_deferred",
+        "validation_status": "not_run",
+        "validation_reason": null,
+        "generation_reason": "groq_quota_deferred",
+        "provider": "groq",
+        "total_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "api_call_id": null,
+        "rag_chunks": null,
+        "context_chars": null,
+        "rag_query": null,
+        "active_request": null,
+        "confirmed_service": null,
+        "dialogue_state": {
+          "schema_version": 2,
+          "revision": 2,
+          "session": {
+            "entities": {
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            }
+          },
+          "task_context": {
+            "task_id": "task:1",
+            "topic_start_message_id": 1,
+            "intent": "unknown",
+            "request_type": "diagnosis",
+            "operation": "diagnose",
+            "object": "ФН",
+            "entities": {
+              "equipment": [
+                {
+                  "value": "Эвотор 7.3",
+                  "message_id": 1,
+                  "quote": "Эвотор 7.3",
+                  "start": 3,
+                  "end": 13
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Эвотор",
+                  "message_id": 1,
+                  "quote": "Эвотор",
+                  "start": 3,
+                  "end": 9
+                }
+              ]
+            },
+            "active_route": {
+              "slot": "manufacturer",
+              "fact": {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            },
+            "parameters": [],
+            "object_reference": null,
+            "task_fact": {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            },
+            "operation_evidence": null,
+            "operation_confidence": 0.9,
+            "symptom": null,
+            "superseded_facts": [],
+            "goals": [
+              {
+                "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "message_id": 1,
+                "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "start": 32,
+                "end": 105
+              }
+            ],
+            "constraints": [],
+            "details": [
+              {
+                "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "message_id": 1,
+                "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+                "start": 0,
+                "end": 105
+              }
+            ],
+            "error": null,
+            "expected": null,
+            "relation": "new_task",
+            "confidence": 0.9,
+            "transition": "new_task",
+            "analysis_required": false,
+            "unresolved": null,
+            "unknown_facts": [],
+            "unknown_evidence": {},
+            "procedure_id": null,
+            "shown_units": [],
+            "eligible_units": [],
+            "checks": [],
+            "open_question": null,
+            "current_subgoal": {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            },
+            "clarification_repeats": {},
+            "closed": false
+          },
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "equipment": [
+              {
+                "value": "Эвотор 7.3",
+                "message_id": 1,
+                "quote": "Эвотор 7.3",
+                "start": 3,
+                "end": 13
+              }
+            ],
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "Эвотор",
+                "start": 3,
+                "end": 9
+              }
+            ]
+          },
+          "routing_slot": "manufacturer",
+          "parameters": [],
+          "object_reference": null,
+          "task": {
+            "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "message_id": 1,
+            "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+            "start": 0,
+            "end": 105
+          },
+          "operation_evidence": null,
+          "goals": [
+            {
+              "value": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 32,
+              "end": 105
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "message_id": 1,
+              "quote": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+              "start": 0,
+              "end": 105
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.9,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null
+        },
+        "clarification_slot": null,
+        "retrieval_diagnostics": null,
+        "retrieval_collection": null,
+        "reasoning_effort": null,
+        "llm_call_attempted": false,
+        "llm_retry_count": 0,
+        "llm_retry_wait_seconds": 0.0,
+        "response_repair": null,
+        "generation_error": {
+          "stage": "understanding",
+          "http_status": 429,
+          "retry_after_seconds": 1213.0,
+          "rate_limit_headers": {
+            "retry-after": "1213",
+            "x-ratelimit-limit-requests": "1000",
+            "x-ratelimit-remaining-requests": "997",
+            "x-ratelimit-reset-requests": "4m19.2s",
+            "x-ratelimit-limit-tokens": "8000",
+            "x-ratelimit-remaining-tokens": "7424",
+            "x-ratelimit-reset-tokens": "4.319s"
+          }
+        },
+        "dialogue_understanding": null,
+        "coordinator_decision": null,
+        "progress_update": null
+      },
+      "generation_call_indices": [],
+      "understanding_call_indices": [
+        1
+      ]
+    }
+  ],
+  "generation_calls": [],
+  "understanding_calls": [
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "validated_with_field_rejections",
+      "structured_output": {
+        "request_type": "diagnosis",
+        "relation": "new_task",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "Эвотор 7.3",
+        "object_evidence": {
+          "quote": "На Эвотор 7.3 выскочила ФН 234"
+        },
+        "goal": {
+          "quote": "Это уже обязательно менять накопитель или можно сначала что-то проверить?"
+        },
+        "symptom": null,
+        "entities": [
+          {
+            "slot": "equipment",
+            "value": "Эвотор 7.3",
+            "evidence": {
+              "quote": "На Эвотор 7.3 выскочила ФН 234"
+            }
+          },
+          {
+            "slot": "component",
+            "value": "ФН 234",
+            "evidence": {
+              "quote": "На Эвотор 7.3 выскочила ФН 234"
+            }
+          },
+          {
+            "slot": "component",
+            "value": "накопитель",
+            "evidence": {
+              "quote": "накопитель"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "field_diagnostics": [
+        {
+          "field": "relation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "new_task"
+        },
+        {
+          "field": "intent",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "device"
+        },
+        {
+          "field": "operation",
+          "status": "accepted",
+          "reason": "valid_semantic_classification",
+          "value": "diagnose"
+        },
+        {
+          "field": "object",
+          "status": "rejected",
+          "reason": "unsupported_object_value",
+          "claimed": "Эвотор 7.3"
+        },
+        {
+          "field": "confidence",
+          "status": "accepted",
+          "reason": "valid_confidence",
+          "value": 0.9
+        },
+        {
+          "field": "request_type",
+          "status": "accepted",
+          "reason": "valid_turn_classification",
+          "value": "diagnosis",
+          "raw_value": "diagnosis"
+        },
+        {
+          "field": "unknown_facts",
+          "status": "omitted",
+          "reason": "no_unknown_slots_claimed"
+        },
+        {
+          "field": "object_evidence",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 0,
+          "end": 30
+        },
+        {
+          "field": "object",
+          "status": "accepted",
+          "reason": "unique_registered_object_alias_from_current_message",
+          "value": "ФН",
+          "start": 59,
+          "end": 69
+        },
+        {
+          "field": "specialist_evidence",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "specialist_requested",
+          "status": "accepted",
+          "reason": "not_requested"
+        },
+        {
+          "field": "entities",
+          "status": "accepted",
+          "reason": "valid_array",
+          "count": 3
+        },
+        {
+          "field": "entities[0]",
+          "status": "accepted",
+          "reason": "exact_source_value",
+          "slot": "equipment",
+          "value": "Эвотор 7.3",
+          "start": 3,
+          "end": 13
+        },
+        {
+          "field": "entities[1]",
+          "status": "rejected",
+          "reason": "entity_not_supported_by_source_alias",
+          "slot": "component",
+          "claimed": "ФН 234",
+          "start": 0,
+          "end": 30
+        },
+        {
+          "field": "entities[2]",
+          "status": "rejected",
+          "reason": "entity_not_supported_by_source_alias",
+          "slot": "component",
+          "claimed": "накопитель",
+          "start": 59,
+          "end": 69
+        },
+        {
+          "field": "entities.manufacturer",
+          "status": "accepted",
+          "reason": "exact_known_alias_found_in_current_message",
+          "value": "Эвотор",
+          "start": 3,
+          "end": 9
+        },
+        {
+          "field": "goal",
+          "status": "accepted",
+          "reason": "exact_current_message_span",
+          "start": 32,
+          "end": 105
+        },
+        {
+          "field": "symptom",
+          "status": "omitted",
+          "reason": "not_claimed"
+        },
+        {
+          "field": "task_operation_resolution",
+          "status": "accepted",
+          "reason": "reported_error",
+          "task_category": "error_diagnosis",
+          "previous_operation": "diagnose",
+          "value": "diagnose"
+        }
+      ],
+      "tokens": {
+        "prompt_tokens": 1120,
+        "completion_tokens": 1439,
+        "total_tokens": 2559
+      },
+      "duration_ms": 2593,
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [], \"active_task_state\": {\"active_task\": null, \"expected_clarification\": null}, \"current_message\": \"На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "complete"
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "provider_http_error",
+      "structured_output": null,
+      "field_diagnostics": [
+        {
+          "field": "$",
+          "status": "rejected",
+          "reason": "groq_http_429"
+        }
+      ],
+      "tokens": null,
+      "duration_ms": 775,
+      "error": "Groq HTTP 429",
+      "provider_error": "HTTP 429",
+      "request_payload": {
+        "model": "openai/gpt-oss-20b",
+        "reasoning_effort": "medium",
+        "temperature": 0,
+        "max_completion_tokens": 4096,
+        "messages": [
+          {
+            "role": "user",
+            "content": "{\"task\": \"Interpret the latest client turn. Return the requested structured JSON; do not answer or give technical steps.\", \"rules\": [\"Use recent conversation and active task only to resolve reference, continuity, new task, clarification answer, and missing information.\", \"Intent, operation, request type, and relation are semantic classifications. Infer them from meaning; do not require or invent quote evidence for these labels.\", \"Every concrete client fact must cite one exact unique substring of current_message: entities, object, goal, symptom, an explicit unknown fact, and a direct specialist request.\", \"For the output symptom field, return null when the current message states no symptom; otherwise return only {\\\"quote\\\": \\\"an exact unique substring of current_message\\\"}. Prior symptom facts are context, never a new current-message symptom.\", \"Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.\", \"Do not infer a cash-register manufacturer from an OFD operator or the reverse.\", \"Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.\", \"Set specialist_requested only for a direct, positive request to speak with a human specialist.\", \"Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.\", \"Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer.\"], \"preferred_labels\": {\"request_type\": [\"diagnosis\", \"escalation\", \"feedback\", \"greeting\", \"information\", \"instruction\", \"resolved\", \"unknown\"], \"relation\": [\"answer_to_clarification\", \"constraint_update\", \"continue\", \"contradiction\", \"new_task\", \"parameter_update\", \"unknown\"], \"intent\": [\"access\", \"bank_statement\", \"billing\", \"credentials\", \"delivery_document\", \"device\", \"fiscal_drive\", \"general\", \"marking\", \"network\", \"receipt\", \"report\", \"tax\", \"unknown\"], \"operation\": [\"add\", \"add_employee\", \"assign\", \"assign_role\", \"change\", \"change_permissions\", \"check\", \"close\", \"configure\", \"connect\", \"correct\", \"create_role\", \"diagnose\", \"explain\", \"fiscalize\", \"list\", \"reconcile\", \"repeat_print\", \"replace\", \"request_specialist\", \"reset_password\", \"return\", \"search\", \"status\", \"transmit\", \"unknown\", \"view_reports\"], \"entity_slots\": [\"component\", \"equipment\", \"integration\", \"manufacturer\", \"ofd\", \"service\", \"software\"]}, \"recent_history\": [{\"role\": \"user\", \"content\": \"На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?\"}, {\"role\": \"assistant\", \"content\": \"Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.\"}], \"active_task_state\": {\"active_task\": {\"task_id\": \"task:1\", \"intent\": \"unknown\", \"operation\": \"diagnose\", \"object\": \"ФН\", \"entities\": {\"equipment\": [{\"value\": \"Эвотор 7.3\", \"source_message_id\": 1}], \"manufacturer\": [{\"value\": \"Эвотор\", \"source_message_id\": 1}]}, \"unknown_facts\": [], \"prior_symptom_facts\": [], \"goals\": [{\"value\": \"Это уже обязательно менять накопитель или можно сначала что-то проверить?\", \"source_message_id\": 1}], \"constraints\": [], \"details\": [{\"value\": \"На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?\", \"source_message_id\": 1}], \"active_route\": {\"slot\": \"manufacturer\", \"value\": \"Эвотор\"}, \"progress\": {\"shown_checks\": [], \"client_results\": []}}, \"expected_clarification\": null}, \"current_message\": \"Дата на экране правильная, а время пока не сверял. С чего продолжить?\"}"
+          }
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "conversational_understanding",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request_type": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "intent": {
+                  "type": "string"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "object_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "goal": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "symptom": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "value",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "unknown_facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "properties": {
+                          "quote": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "quote"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "slot",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "specialist_requested": {
+                  "type": "boolean"
+                },
+                "specialist_evidence": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "request_type",
+                "relation",
+                "intent",
+                "operation",
+                "object",
+                "object_evidence",
+                "goal",
+                "symptom",
+                "entities",
+                "unknown_facts",
+                "specialist_requested",
+                "specialist_evidence",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "phase": "provider",
+      "error_code": "groq_http_429"
+    }
+  ],
+  "provider_errors": [
+    {
+      "status": 429,
+      "code": "rate_limit_exceeded",
+      "type": "tokens",
+      "param": null,
+      "message": "Rate limit reached for model `openai/gpt-oss-20b` in organization `[REDACTED_ORG]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199970, Requested 2836. Please try again in 20m12.192s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ],
+  "http_trace": [
+    {
+      "at_utc": "2026-11-04T17:32:25.820017+00:00",
+      "stage": "understanding",
+      "http_status": 200,
+      "duration_ms": 2575,
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6736",
+        "x-ratelimit-reset-tokens": "9.48s"
+      },
+      "usage": {
+        "prompt_tokens": 1120,
+        "completion_tokens": 1439,
+        "total_tokens": 2559
+      },
+      "llm_http_attempt": 1
+    },
+    {
+      "at_utc": "2026-11-04T17:32:38.876115+00:00",
+      "stage": "understanding",
+      "http_status": 429,
+      "duration_ms": 769,
+      "rate_limit_headers": {
+        "retry-after": "1213",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "7424",
+        "x-ratelimit-reset-tokens": "4.319s"
+      },
+      "usage": {
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "total_tokens": null
+      },
+      "llm_http_attempt": 2
+    }
+  ]
+}

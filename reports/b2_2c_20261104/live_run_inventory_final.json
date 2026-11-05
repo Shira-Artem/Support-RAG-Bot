@@ -1,0 +1,116 @@
+{
+  "traces": [
+    {
+      "trace": "harness_initial_error_recovery.json",
+      "http_statuses": {
+        "200": 1
+      },
+      "confirmed_tokens": 2370,
+      "usage_unknown_http": 0,
+      "turns": 1
+    },
+    {
+      "trace": "b22c_baseline_v2_live.json",
+      "http_statuses": {
+        "429": 1
+      },
+      "confirmed_tokens": 0,
+      "usage_unknown_http": 1,
+      "turns": 1
+    },
+    {
+      "trace": "b22c_baseline_v3_live.json",
+      "http_statuses": {
+        "200": 1,
+        "429": 1
+      },
+      "confirmed_tokens": 2559,
+      "usage_unknown_http": 1,
+      "turns": 2
+    },
+    {
+      "trace": "b22c_baseline_v4_live.json",
+      "http_statuses": {
+        "200": 1,
+        "429": 1
+      },
+      "confirmed_tokens": 2335,
+      "usage_unknown_http": 1,
+      "turns": 1
+    },
+    {
+      "trace": "b22c_baseline_resumed_live.json",
+      "http_statuses": {
+        "200": 29,
+        "400": 1
+      },
+      "confirmed_tokens": 68953,
+      "usage_unknown_http": 1,
+      "turns": 25
+    },
+    {
+      "trace": "b22c_baseline_resumed_part2_live.json",
+      "http_statuses": {
+        "200": 7
+      },
+      "confirmed_tokens": 14976,
+      "usage_unknown_http": 0,
+      "turns": 6
+    },
+    {
+      "trace": "b22c_after_live.json",
+      "http_statuses": {
+        "200": 11,
+        "400": 1
+      },
+      "confirmed_tokens": 24158,
+      "usage_unknown_http": 1,
+      "turns": 6
+    },
+    {
+      "trace": "b22c_after_final_live.json",
+      "http_statuses": {
+        "200": 28
+      },
+      "confirmed_tokens": 63139,
+      "usage_unknown_http": 0,
+      "turns": 17
+    },
+    {
+      "trace": "b22c_holdout_live.json",
+      "http_statuses": {
+        "200": 19
+      },
+      "confirmed_tokens": 43738,
+      "usage_unknown_http": 0,
+      "turns": 13
+    },
+    {
+      "trace": "b22c_holdout_final_live.json",
+      "http_statuses": {
+        "200": 19
+      },
+      "confirmed_tokens": 42841,
+      "usage_unknown_http": 0,
+      "turns": 13
+    },
+    {
+      "trace": "b22c_final_controls_live.json",
+      "http_statuses": {
+        "200": 6
+      },
+      "confirmed_tokens": 13339,
+      "usage_unknown_http": 0,
+      "turns": 3
+    }
+  ],
+  "all_recorded_http_statuses": {
+    "200": 122,
+    "429": 3,
+    "400": 2
+  },
+  "all_confirmed_tokens": 278408,
+  "unknown_usage_http": 5,
+  "sum_handle_message_attempts_including_repeats": 88,
+  "counting": "Only observe HTTP rows, no retry-scheduled/local-deferred events. Generation usage is not double-counted. Repeated cases are not independent samples."
+}

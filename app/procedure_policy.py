@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import re
 
-from app.scope_policy import matches_scope_value
+from app.scope_policy import matches_scope_value, assess_source_scope
 
 
 _CONTEXTUAL_OPERATIONS = {
@@ -236,27 +236,9 @@ def document_applicability(state, metadata: dict, *, technical: bool = False) ->
     """
     if not technical:
         return []
-    missing: list[str] = []
-    manufacturer = state.entity("manufacturer") or state.task_entity("manufacturer")
-    equipment = state.entity("equipment") or state.task_entity("equipment")
-    route = state.routing_service or state.task_entity("ofd")
-    model = str(metadata.get("model") or "")
-    # Numeric model designations are product-specific; a manufacturer-wide
-    # article can apply when the manufacturer is confirmed without a model.
-    model_is_specific = bool(re.search(r"\d", model))
-    service = str(metadata.get("service") or metadata.get("procedure_service") or "")
-    confirmed_service = str(route or state.entity("service") or "")
-    service_matches = bool(service and confirmed_service and
-                           matches_scope_value(service, confirmed_service))
-    hardware_families = {"device", "fiscal_drive", "network", "network_diagnostics",
-                         "ofd_connection", "error_diagnosis", "receipt_transmission",
-                         "fiscal_document_control", "fiscal_format", "marking"}
-    hardware_scoped = (str(metadata.get("task_category") or "") in hardware_families
-                       or model_is_specific)
-    if metadata.get("manufacturer") and hardware_scoped and not manufacturer and not service_matches:
-        missing.append("equipment")
-    if model_is_specific and not equipment and manufacturer:
-        missing.append("model")
-    if (metadata.get("service") or metadata.get("procedure_service")) and hardware_scoped and not route and not manufacturer:
-        missing.append("service")
-    return list(dict.fromkeys(missing))
+    # Only document requirements can demand a fact. A confirmed Online service
+    # authorizes its cloud scope without a customer's physical device model.
+    assessment = assess_source_scope(state, metadata)
+    # Preserve the legacy public slot name while sharing the typed decision.
+    return list(dict.fromkeys("equipment" if slot == "manufacturer" else slot
+                              for slot in assessment.missing))

@@ -1,0 +1,125 @@
+{
+  "baseline": {
+    "cases": 24,
+    "counts": {
+      "F": 12,
+      "E": 3,
+      "B": 2,
+      "G": 2,
+      "A": 2,
+      "D": 3
+    },
+    "A_only_on_approved_covered": {
+      "numerator": 2,
+      "denominator": 20,
+      "excluded": [
+        "e03",
+        "e04",
+        "s04",
+        "o04"
+      ],
+      "caveat": "Full/partial approved coverage. o04 preflight false positive excluded, not relabeled successful."
+    }
+  },
+  "paired_before_11": {
+    "F": 9,
+    "E": 1,
+    "G": 1
+  },
+  "paired_after_primary_11": {
+    "E": 2,
+    "A": 4,
+    "F": 3,
+    "B": 1,
+    "G": 1
+  },
+  "holdout_final_12": {
+    "F": 5,
+    "A": 3,
+    "B": 1,
+    "G": 2,
+    "E": 1
+  },
+  "holdout_initial_run": "b22c_holdout_live.json retained; not 12 additional independent scenarios",
+  "final_scope_confirmation": {
+    "trace": "b22c_final_controls_live.json",
+    "k03": "A, separate final release repeat; primary AFTER F preserved",
+    "n01": "safe refusal; no Evotor 6 procedure transferred to Evotor 10",
+    "n02": "safe refusal; no physical USB procedure issued for aQsi Online",
+    "independent_holdout_cases_added": 0
+  },
+  "before_after": [
+    {
+      "case": "k01",
+      "before": "F",
+      "after_primary": "E",
+      "reason": "Первый исходный вопрос получил правильное различение ресурса/времени; продолжение вновь спросило уже сообщённое выполнение вместо конкретной оставшейся проверки времени."
+    },
+    {
+      "case": "k02",
+      "before": "F",
+      "after_primary": "A",
+      "reason": "Полный approved порядок допечатки и предупреждение не создавать второй чек; условия и scope сохранены."
+    },
+    {
+      "case": "k03",
+      "before": "E",
+      "after_primary": "F",
+      "reason": "Основной AFTER снова отказал из-за другого raw intent=device и оставшегося raw model comparator в fallback; не скрывать этот отрицательный результат. Финальный scoped repeat записывается отдельно."
+    },
+    {
+      "case": "k04",
+      "before": "F",
+      "after_primary": "A",
+      "reason": "Правильное объяснение трёх причин ФН212 из approved источника."
+    },
+    {
+      "case": "o01",
+      "before": "F",
+      "after_primary": "B",
+      "reason": "Полезные реквизиты/теги для поддержки, но значение кода не объяснено полностью; на повторной отправке корректная граница несуществующей в статье процедуры."
+    },
+    {
+      "case": "b01",
+      "before": "G",
+      "after_primary": "F",
+      "reason": "Первый ответ дал вид бухгалтерской операции 3.0.207; на продолжении потерян route и полезная сверка не дана. Прежний нерелевантный факт Эвотора не повторён."
+    },
+    {
+      "case": "e01",
+      "before": "F",
+      "after_primary": "E",
+      "reason": "Первая неоднозначность двух сервисов остаётся; сброс пароля теперь даёт подтверждённые действия с явной partial границей."
+    },
+    {
+      "case": "e02",
+      "before": "F",
+      "after_primary": "A",
+      "reason": "Полный список сведений перед подключением ЭДО с ограничением актуальности."
+    },
+    {
+      "case": "m01",
+      "before": "F",
+      "after_primary": "G",
+      "reason": "Первый отказ остаётся; затем вместо ответа про обход проверки маркировки выдана соседняя approved рекомендация про коррекцию. G без опасной команды, relevance failure остаётся."
+    },
+    {
+      "case": "s01",
+      "before": "F",
+      "after_primary": "F",
+      "reason": "Создание новой записи теперь полное; подзадача роли потеряла product route и не решена."
+    },
+    {
+      "case": "s02",
+      "before": "F",
+      "after_primary": "A",
+      "reason": "Полный применимый факт настройки ежедневного отчёта профиля."
+    }
+  ],
+  "stage_execution": "DONE; B2/production/B2.3 NO-GO",
+  "validation": {
+    "full_pytest": "702 passed, 4 xfailed, 14 warnings",
+    "profile": "180 passed"
+  },
+  "holdout_h03_rubric_caveat": "A by frozen approved source; erroneous time-check expectation disclosed separately. Excluding h03: A2/11; NO-GO unchanged."
+}

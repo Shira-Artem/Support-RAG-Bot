@@ -1,0 +1,44 @@
+{
+  "kind": "offline isolation; not a proposed unconditional model bypass, not a LIVE AFTER",
+  "state_task_category": null,
+  "state_operation": "unknown",
+  "rows": [
+    {
+      "source": "aqsi_devices/sales/marked-product.md",
+      "metadata_model": "aQsi 5Ф",
+      "client_model": "aQsi 5",
+      "predicate_inputs": {
+        "service_match": true,
+        "manufacturer_match": true,
+        "model_match": true,
+        "software_match": true,
+        "operation_status": "unknown"
+      },
+      "fallback_actual": true,
+      "fallback_if_model_match_only": true,
+      "saved_rejection": [],
+      "saved_selected": true,
+      "text": "Проверенная информация и первичная диагностика\n1. В карточке товара должны быть корректно заполнены номенклатура, способ/признак расчёта, НДС и признак «Маркированный товар» с соответствующей группой.\n2. При оформлении продажи кассир добавляет позицию в чек и сканирует код маркировки (встроенным или совместимым внешним сканером).\n3. Перед применением проверьте ФФД 1.2, регистрацию ККТ для маркированных товаров и действующий разрешительный режим.\n4. Ошибки статуса кода маркировки и запреты продажи нельзя обходить отключением контроля."
+    },
+    {
+      "source": "aqsi_devices/errors/paper-print-retry.md",
+      "metadata_model": "aQsi (физическая ККТ)",
+      "client_model": "aQsi 5",
+      "predicate_inputs": {
+        "service_match": true,
+        "manufacturer_match": true,
+        "model_match": false,
+        "software_match": true,
+        "operation_status": "unknown"
+      },
+      "fallback_actual": false,
+      "fallback_if_model_match_only": true,
+      "saved_rejection": [
+        "task_unresolved"
+      ],
+      "saved_selected": false,
+      "text": "Проверенная информация и первичная диагностика\n1. Если во время оформления чека закончилась бумага либо открыт лоток, в истории чеков может появиться документ со статусом ошибки печати.\n2. Загрузите чековую ленту и проверьте правильность установки рулона.\n3. В разделе истории чеков выберите запись с ошибкой печати: производитель описывает повторную печать через действие «Оформить».\n4. Сначала проверьте, что чек уже существует, и не создавайте повторный фискальный чек на ту же оплату."
+    }
+  ],
+  "conclusion": "Generic physical product-class model fails the legacy entity matcher in unresolved fallback; model_match alone is sufficient for target rejection. The selected adjacent sales article has a numeric-suffix model match. The relationship between 5 and 5Ф is not established here. Need a consistent applicability contract, not arbitrary model=True."
+}

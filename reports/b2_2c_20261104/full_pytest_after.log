@@ -1,0 +1,316 @@
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+..........................................F............................. [ 40%]
+........................................................................ [ 51%]
+.....................................................................F.. [ 61%]
+........................................F............................... [ 71%]
+........................................................................ [ 81%]
+..........................................F............................. [ 92%]
+.x.x.xx.................................................                 [100%]
+================================== FAILURES ===================================
+________ test_unknown_model_does_not_trigger_same_scope_question_again ________
+
+    def test_unknown_model_does_not_trigger_same_scope_question_again():
+        from types import SimpleNamespace
+        class RejectedRetrieval:
+            def diagnostics(self): return {"selected": []}
+            documents = []
+            sufficient = False
+            evidence_status = "insufficient"
+            insufficiency_reason = "applicability_model_unconfirmed"
+            rejected = [SimpleNamespace(reasons=["applicability_model_unconfirmed"])]
+        class Rag:
+            retriever = None
+            def search_for_state(self, *_args): return RejectedRetrieval()
+        state = DialogueState(task_id="task:model", intent="fiscal_drive", operation="check")
+        state.task_context.unknown_facts = ["equipment"]
+        text = "Не знаю точную модель кассы."
+        history = [{"role":"user", "content":text, "semantic_mode":True,
+            "understanding":{"request_type":"diagnosis", "specialist_requested":False,
+            "unknown_facts":["equipment"], "tokens":{}, "model":"test", "duration_ms":1,
+            "observation":{"symptom":None,"goals":[],"entities":{}}}}]
+>       answer = asyncio.run(SourceFirstService(Rag(), get_settings(),
+            Path(__file__).resolve().parents[1]).answer(text, state=state, history=history))
+
+tests\test_dialogue_understanding.py:880: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.source_first_service.SourceFirstService object at 0x00000243F511DF60>
+user_message = 'Не знаю точную модель кассы.'
+state = <app.dialogue_state.DialogueState object at 0x00000243F511E660>
+history = [{'role': 'user', 'content': 'Не знаю точную модель кассы.', 'semantic_mode': True, 'understanding': {'request_type': 'diagnosis', 'specialist_requested': False, 'unknown_facts': ['equipment'], 'tokens': {}, ...}}]
+coordinator_decision = None
+
+    async def answer(self, user_message: str, *, state: DialogueState,
+                     history: list[dict] | None = None,
+                     coordinator_decision=None) -> Answer:
+        started = perf_counter()
+        model = self.settings.groq_model if self.settings.llm_provider == "groq" else self.settings.openrouter_model
+        base = dict(rag_engine="source_first", model=model, provider=self.settings.llm_provider,
+                    dialogue_state=state.to_dict(),
+                    retrieval_collection=getattr(getattr(getattr(self.rag, "retriever", None), "store", None), "collection", None),
+                    reasoning_effort=self.settings.groq_reasoning_effort if self.settings.llm_provider == "groq" else None,
+                    coordinator_decision=(coordinator_decision.to_dict()
+                        if hasattr(coordinator_decision, "to_dict") else coordinator_decision))
+        current_event = next((item for item in reversed(history or [])
+                              if item.get("role") == "user" and item.get("content") == user_message), {})
+        understanding = current_event.get("understanding")
+        semantic_mode = current_event.get("semantic_mode", False)
+        understanding_error = current_event.get("understanding_error")
+        if semantic_mode and not understanding:
+            return self._escalate("Не удалось надёжно понять сообщение из-за ошибки анализа. Попробуйте повторить его позже или запросите специалиста кнопкой ниже.",
+                "understanding_error", understanding_error or "missing_validated_understanding", started, **base,
+                generation_status="error", generation_error={"stage": "understanding",
+                    "error_type": (understanding_error or {}).get("type", "invalid_or_unavailable")
+                        if isinstance(understanding_error, dict) else "invalid_or_unavailable",
+                    "detail": understanding_error})
+        if understanding:
+            base["dialogue_understanding"] = {key: understanding.get(key) for key in
+                ("request_type", "specialist_requested", "unknown_facts", "tokens", "model", "duration_ms")}
+            turn_kind = understanding["request_type"]
+        else:
+            # Compatibility for direct non-Telegram callers/tests. The
+            # allowlisted Telegram route always persists semantic_mode=True.
+            turn_kind = classify_user_turn(user_message)
+        decision = (coordinator_decision.to_dict()
+                    if hasattr(coordinator_decision, "to_dict") else coordinator_decision)
+        if is_resolution_turn(user_message):
+            return Answer("Рад, что вопрос решён. Если появится новая проблема, напишите.",
+                scenario="answer", scenario_reason="client_closed_resolved_task",
+                generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
+        if understanding and understanding.get("specialist_requested"):
+            return self._escalate("Конечно. Нажмите кнопку «Позвать специалиста» ниже, чтобы оформить заявку. Она сохраняется локально; доставка сотруднику пока не настроена.",
+                "client_requested_specialist", "explicit_specialist_request", started, **base)
+        if understanding and turn_kind == "escalation":
+            return self._escalate("Не могу подтвердить безопасное решение для этого запроса. Можно оформить обращение специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+                "understanding_recommends_escalation", "semantic_escalation", started, **base)
+        if turn_kind == "greeting":
+            text, scenario = "Здравствуйте! Чем могу помочь?", "answer"
+            return Answer(text, scenario=scenario, scenario_reason="source_first_social_turn",
+                          generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
+        if turn_kind == "feedback":
+            observed = (understanding or {}).get("observation") or {}
+            reported_check = bool(state.active_task and any(
+                (item.get("result_span") or {}).get("quote") == user_message
+                for item in state.active_task.checks))
+            has_new_evidence = bool(reported_check or observed.get("symptom") or
+                                    observed.get("goals") or observed.get("entities"))
+            if not has_new_evidence:
+                task = state.active_task
+                shown_ids = {unit.get("unit_id") for unit in (task.shown_units if task else [])
+                             if unit.get("source_verified") is True}
+                pending_check = next((check for check in reversed(task.checks if task else [])
+                    if check.get("unit_id") in shown_ids
+                    and check.get("task_id") == task.task_id
+                    and check.get("status") in {"asked", "unknown", "not_done"}), None)
+                question = ("Удалось выполнить показанную проверку и каков её результат?"
+                            if pending_check else
+                            "Понял. Что именно осталось нерешённым или изменилось?")
+                return Answer(question, scenario="clarify",
+                    scenario_reason="client_feedback_needs_progress_detail", clarification_slot="details",
+                    generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
+        if not understanding and turn_kind != "task":
+            text, scenario = {"thanks": ("Пожалуйста! Если появится ещё вопрос, напишите.", "answer"),
+                "capabilities": ("Помогаю с вопросами по кассам, ОФД и связанным сервисам. Опишите задачу или проблему.", "answer"),
+                "vague_help": ("Опишите, пожалуйста, что именно нужно сделать или что не работает.", "clarify")}.get(
+                    turn_kind, ("Опишите задачу или проблему.", "clarify"))
+            return Answer(text, scenario=scenario, scenario_reason="source_first_social_turn",
+                          generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
+        # DialogueState is authoritative for whether a task is ready. Do not
+        # turn a vague request into a retrieval miss followed by escalation.
+        # `explain` can mean either a complete concept question or a broad
+        # request to help. Only explicit definition/explanation questions are
+        # retrieval-ready; do not convert “help me figure out cash registers”
+        # into a technical search or a false evidence failure.
+        coordinator_route = decision.get("route") if isinstance(decision, dict) else None
+        coordinator_selected_retrieval = coordinator_route in {"grounded_information", "technical_action"}
+        broad_explanation = (not coordinator_selected_retrieval
+            and state.intent == "general" and state.operation == "explain"
+            and not re.search(r"\b(?:что такое|кто такой|что означает|зачем|почему|для чего|как работает|"
+                              r"объясни(?:те)?|расскажи(?:те)?)\b",
+                              user_message, re.I))
+        # Coordinator is the sole readiness decision when enabled. Rechecking
+        # the same task with SourceFirst's older wording/uncertainty heuristics
+        # created contradictory routes (e.g. coordinator says retrieve while
+        # the service asks for a task). Safety, approved-source and
+        # applicability gates still run after retrieval.
+        incomplete_task = (not coordinator_selected_retrieval and (
+                            broad_explanation
+                            or (state.expected and state.expected.slot in {"task", "goal", "details"})
+                            or state.analysis_required
+                            or state.operation == "unknown"))
+        if incomplete_task:
+            prior_clarifications = sum(1 for item in (history or [])[:-1]
+                if item.get("role") == "assistant" and item.get("scenario") == "clarify"
+                and item.get("scenario_reason") == "dialogue_state_task_incomplete")
+            if prior_clarifications >= 2:
+                return self._escalate("Пока не удалось определить задачу. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+                                      "dialogue_task_remains_undefined", "two_task_clarifications_without_resolved_task", started, **base)
+            question = state.expected.question if state.expected else "Что именно нужно сделать или что сейчас не работает?"
+            return Answer(question, scenario="clarify", scenario_reason="dialogue_state_task_incomplete",
+                          clarification_slot=state.expected.slot if state.expected else "task",
+                          generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
+        if (decision and decision.get("route") == "technical_action" and state.expected
+                and state.expected.slot in {"equipment", "model"} and state.task_context
+                and state.task_context.procedure_id and state.task_context.checks):
+            confirmed = [item.get("result_span", {}).get("quote") for item in state.task_context.checks
+                         if item.get("status") == "passed" and item.get("result_span", {}).get("quote")]
+            unresolved_results = [item for item in state.task_context.checks
+                if item.get("status") in {"unknown", "not_done"}
+                and item.get("result_span", {}).get("quote")]
+            unresolved_summary = " ".join(
+                (f"Результат проверки «{item['result_span']['quote']}» пока не подтверждён."
+                 if item.get("status") == "unknown" else
+                 f"Проверка «{item['result_span']['quote']}» пока не выполнена.")
+                for item in unresolved_results)
+            latest_user = next((item for item in reversed(history or []) if item.get("role") == "user"), {})
+            latest_understanding = latest_user.get("understanding") or {}
+            current_evidence = (latest_understanding.get("observation") or {}).get("evidence") or {}
+            new_check_report = any((item.get("result_span") or {}).get("message_id") == current_evidence.get("message_id")
+                                   for item in state.task_context.checks)
+            already_waiting = any(item.get("role") == "assistant"
+                and item.get("scenario_reason") == "progress_ledger_waiting_for_model"
+                for item in (history or [])[:-1])
+            if already_waiting and not new_check_report:
+                return Answer((unresolved_summary + " " if unresolved_summary else "") +
+                    "Результаты сохранены. Без подтверждённой модели безопасно выбрать следующий шаг нельзя. "
+                    "К этой диагностике можно вернуться, когда модель станет известна.",
+                    scenario="answer", scenario_reason="progress_ledger_waiting_for_model",
+                    generation_status="generated", duration_ms=round((perf_counter()-started)*1000), **base)
+            summary = ("Учитываю подтверждённые результаты: " + "; ".join(f"«{quote}»" for quote in confirmed) + ". ") if confirmed else ""
+            return Answer(summary + (unresolved_summary + " " if unresolved_summary else "") +
+                "Следующая применимая проверка зависит от точной модели оборудования. "
+                "Пока модель не подтверждена, не буду приводить модельное меню или действия. "
+                "Когда модель станет известна, продолжу по инструкции.",
+                scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
+                clarification_slot="equipment", generation_status="clarification",
+                duration_ms=round((perf_counter()-started)*1000), **base)
+        try:
+            query = build_rag_query(state)
+        except QueryNeedsClarification as exc:
+            return self._escalate("Не удалось надёжно определить текущую задачу. Добавьте важную деталь или запросите специалиста.",
+                                  "dialogue_state_unresolved", str(exc), started, **base)
+        unsafe = unsafe_operation_issue(query)
+        if unsafe:
+            return self._escalate("Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+                                  "unsafe_operation", unsafe, started, **base)
+        try:
+            retrieval_started = perf_counter()
+            retrieval = self.rag.search_for_state(state, query)
+            retrieval_ms = round((perf_counter() - retrieval_started) * 1000)
+        except Exception as exc:
+            return self._escalate("Поиск по базе сейчас недоступен. Я не буду предполагать решение; попробуйте позже или запросите специалиста.",
+                                  "retrieval_error", type(exc).__name__, started, **base,
+                                  generation_status="error",
+                                  generation_error={"stage": "qdrant_search", "error_type": type(exc).__name__})
+        diagnostics = retrieval.diagnostics()
+        diagnostics["timing_ms"] = {"retrieval": retrieval_ms}
+        base.update(results=retrieval.documents, rag_query=query, active_request=query,
+                    retrieval_diagnostics={**diagnostics, "engine": "source_first"})
+        # A partial access workflow is not a full permission grant. It can
+        # still provide a scoped, source-verified part when no named-role or
+        # privilege requirement is unresolved. All SourceFirst gates below run.
+>       bounded_access = bool(retrieval.evidence_level == "partial"
+                              ^^^^^^^^^^^^^^^^^^^^^^^^
+            and retrieval.insufficiency_reason == "access_evidence_incomplete"
+            and retrieval.documents and retrieval.supported_steps
+            and all(normalize_metadata(doc.metadata or {}).get("task_category") == "access"
+                    for doc in retrieval.documents)
+            and retrieval.missing_evidence
+            and all(item.endswith("workflow_unverified") for item in retrieval.missing_evidence))
+E       AttributeError: 'RejectedRetrieval' object has no attribute 'evidence_level'
+
+app\source_first_service.py:1962: AttributeError
+________ test_specialized_aqsi_procedure_needs_confirmed_applicability ________
+
+    def test_specialized_aqsi_procedure_needs_confirmed_applicability():
+        generic = state("Как узнать, какой ОФД подключён?")
+        guide = hit(
+            "В настройках aQsi Online проверьте IP-адрес и порт подключения.",
+            manufacturer="aQsi", model="aQsi Online", service="aQsi Online",
+            task_category="ofd_connection", operations=["connect_cash_register"],
+            _operations_explicit=True,
+        )
+        missing = document_applicability(generic, guide.metadata, technical=True)
+>       assert "equipment" in missing
+E       AssertionError: assert 'equipment' in ['service', 'manufacturer', 'model']
+
+tests\test_procedure_applicability.py:85: AssertionError
+________________________ test_evotor_models_do_not_mix ________________________
+
+tmp_path = WindowsPath('C:/Users/Shira/AppData/Local/Temp/pytest-of-Shira/pytest-1055/test_evotor_models_do_not_mix0')
+
+    def test_evotor_models_do_not_mix(tmp_path: Path):
+        store = QdrantStore(QdrantClient(":memory:"), FakeEmbedding())
+        for name, model in [("six", "Эвотор 6"), ("lite", "Эвотор 6 lite"), ("seven2", "Эвотор 7.2"), ("seven3", "Эвотор 7.3")]:
+            (tmp_path / f"{name}.txt").write_text(f"Модель {model}: проверьте питание кассы.", encoding="utf-8")
+            (tmp_path / f"{name}.txt.meta.yaml").write_text(f"status: approved\nverified_at: 2026-10-12\nmodel: {model}\n", encoding="utf-8")
+        store.index(DocumentLoader(tmp_path).load_all())
+        retriever = Retriever(store)
+        for model in ("Эвотор 6", "Эвотор 6 lite", "Эвотор 7.2", "Эвотор 7.3"):
+            hits = retriever.search(model)
+>           assert hits and all(hit.metadata["model"] == model for hit in hits)
+E           AssertionError: assert ([Hit(text='Модель Эвотор 6: проверьте питание кассы.', score=0.05, semantic_score=0.5, lexical_score=1.11044, metadata...nk_index': 0, 'chunk_role': 'detail', 'previous_chunk_id': None, 'next_chunk_id': None, 'relation_to_previous': None})] and False)
+E            +  where False = all(<generator object test_evotor_models_do_not_mix.<locals>.<genexpr> at 0x00000243B30B12A0>)
+
+tests\test_retrieval.py:130: AssertionError
+_ test_independent_task_paraphrases[\u0412 1\u0421:\u0414\u0438\u0440\u0435\u043a\u0442\u0411\u0430\u043d\u043a \u043f\u0440\u043e\u043f\u0430\u043b \u0440\u0430\u0441\u0447\u0451\u0442\u043d\u044b\u0439 \u0441\u0447\u0451\u0442 \u0431\u0430\u043d\u043a\u0430.-bank_statement-diagnose] _
+
+text = 'В 1С:ДиректБанк пропал расчётный счёт банка.', task = 'bank_statement'
+operation = 'diagnose'
+
+    @pytest.mark.parametrize("text,task,operation", [
+        ("Какие сведения сверить до фискализации облачной ККТ?", "service_connection", "fiscalize"),
+        ("Покупатель возвращает часть товара; как оформить возврат?", "refund", "return"),
+        ("У сервиса возник долг за обслуживание; где проверить состояние оплаты?", "billing", "check"),
+        ("Можно ли проверить, заблокирован ли ФН?", "fiscal_drive", "check"),
+        ("API интеграции отвечает, но результат запроса не виден; как тестировать?", "integration", "check"),
+        ("Как узнать статус конкретного чека после контроля ФНС?", "receipt_status", "status"),
+        ("Появилась ошибка ФН 7; какие первые проверки безопасны?", "error_diagnosis", "diagnose"),
+        ("Внешний сканер не считывает штрихкоды; как проверить подключение?", "peripheral_setup", "check"),
+        ("Добавьте нового пользователя кабинета и назначьте роль.", "access", "add_employee"),
+        ("Чеки перестали передаваться оператору; как выяснить причину?", "receipt_transmission", "diagnose"),
+        ("Эвотор 7.3 пробивает чеки, но они не уходят оператору ОФД. Что посмотреть первым делом?", "receipt_transmission", "diagnose"),
+        ("Касса печатает фискальные документы, а в ОФД их нет. С чего начать диагностику?", "receipt_transmission", "diagnose"),
+        ("Чеки накопились в очереди и отсутствуют у оператора фискальных данных. Что проверить?", "receipt_transmission", "diagnose"),
+        ("Через ДиректБанк не виден второй банковский счёт организации.", "bank_statement", "diagnose"),
+        ("В 1С:ДиректБанк пропал расчётный счёт банка.", "bank_statement", "diagnose"),
+        ("При обмене с банком ошибка получения выписки.", "bank_statement", "diagnose"),
+        ("Как подключить банковский счёт к DirectBank?", "integration", "connect"),
+    ])
+    def test_independent_task_paraphrases(text, task, operation):
+        result = resolve_task_operation(text)
+>       assert (result.task_category, result.operation) == (task, operation)
+E       AssertionError: assert ('bank_statement', 'unknown') == ('bank_statement', 'diagnose')
+E         
+E         At index 1 diff: 'unknown' != 'diagnose'
+E         Use -v to get more diff
+
+tests\test_task_operation_resolver.py:35: AssertionError
+============================== warnings summary ===============================
+tests/test_b1_1_task_lifecycle.py::test_task_boundary_matrix_and_sqlite_reopen
+  C:\Users\Shira\AppData\Roaming\Python\Python314\site-packages\qdrant_client\qdrant_remote.py:284: UserWarning: Qdrant client version 1.19.1 is incompatible with server version 1.15.4. Major versions should match and minor version difference must not exceed 1. Set check_compatibility=False to skip version check.
+    show_warning(
+
+tests/test_vnext_retrieval.py: 13 warnings
+  C:\Users\Shira\Documents\ChatGPT\Rag\.local\vnext-deps\langsmith\_internal\_beta_decorator.py:70: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_dialogue_understanding.py::test_unknown_model_does_not_trigger_same_scope_question_again
+FAILED tests/test_procedure_applicability.py::test_specialized_aqsi_procedure_needs_confirmed_applicability
+FAILED tests/test_retrieval.py::test_evotor_models_do_not_mix - AssertionErro...
+FAILED tests/test_task_operation_resolver.py::test_independent_task_paraphrases[\u0412 1\u0421:\u0414\u0438\u0440\u0435\u043a\u0442\u0411\u0430\u043d\u043a \u043f\u0440\u043e\u043f\u0430\u043b \u0440\u0430\u0441\u0447\u0451\u0442\u043d\u044b\u0439 \u0441\u0447\u0451\u0442 \u0431\u0430\u043d\u043a\u0430.-bank_statement-diagnose]
+4 failed, 696 passed, 4 xfailed, 14 warnings in 187.93s (0:03:07)

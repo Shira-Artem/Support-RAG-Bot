@@ -1,0 +1,337 @@
+{
+  "dataset": "after_primary",
+  "primary_cases": 11,
+  "primary_turns": 17,
+  "case_counts": {
+    "E": 2,
+    "A": 4,
+    "F": 3,
+    "B": 1,
+    "G": 1
+  },
+  "turn_counts": {
+    "A": 7,
+    "E": 2,
+    "F": 4,
+    "B": 2,
+    "D": 1,
+    "G": 1
+  },
+  "case_grades": {
+    "k01": "E",
+    "k02": "A",
+    "k03": "F",
+    "k04": "A",
+    "o01": "B",
+    "b01": "F",
+    "e01": "E",
+    "e02": "A",
+    "m01": "G",
+    "s01": "F",
+    "s02": "A"
+  },
+  "turns": [
+    {
+      "case": "k01",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Первый исходный вопрос получил правильное различение ресурса/времени; продолжение вновь спросило уже сообщённое выполнение вместо конкретной оставшейся проверки времени.",
+      "question": "На Эвотор 7.3 выскочила ФН 234. Это уже обязательно менять накопитель или можно сначала что-то проверить?",
+      "answer": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/evotor/fn/fn-234.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "k01",
+      "turn": 2,
+      "grade": "E",
+      "reason": "Первый исходный вопрос получил правильное различение ресурса/времени; продолжение вновь спросило уже сообщённое выполнение вместо конкретной оставшейся проверки времени.",
+      "question": "Дата на экране правильная, а время пока не сверял. С чего продолжить?",
+      "answer": "Удалось выполнить показанную проверку и каков её результат?",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "k02",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Полный approved порядок допечатки и предупреждение не создавать второй чек; условия и scope сохранены.",
+      "question": "На aQsi 5 кончилась лента прямо при продаже. Бумагу вставили, покупатель уже заплатил. Как допечатать, чтобы не пробить второй чек?",
+      "answer": "1. Если во время оформления чека закончилась бумага либо открыт лоток, в истории чеков может появиться документ со статусом ошибки печати.\n2. Загрузите чековую ленту и проверьте правильность установки рулона.\n3. В разделе истории чеков выберите запись с ошибкой печати: производитель описывает повторную печать через действие «Оформить».\n4. Сначала проверьте, что чек уже существует, и не создавайте повторный фискальный чек на ту же оплату.\n\nДополнительное условие источника (Когда передавать специалисту):\nЕсли чек отсутствует в истории или есть ошибка ФН, проверьте фактическую фискализацию через ОФД и передайте специалисту.\n\nДополнительное условие источника (Ограничения):\nМатериал относится к физическим кассам aQsi, а не к облачному сервису aQsi Online. Названия разделов могут отличаться по модели и версии ПО. Не выполнять финансовые, фискальные или регистрационные операции без проверки контекста и полномочий.\n\nИсточник: https://aqsi.ru/support/zakonchilas-chekovaya-lenta-oshibka-pechati/\n\nИсточник: data/knowledge/aqsi_devices/errors/paper-print-retry.md — Проверенная информация и первичная диагностика",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/aqsi_devices/errors/paper-print-retry.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "k03",
+      "turn": 1,
+      "grade": "F",
+      "reason": "Основной AFTER снова отказал из-за другого raw intent=device и оставшегося raw model comparator в fallback; не скрывать этот отрицательный результат. Финальный scoped repeat записывается отдельно.",
+      "question": "В АТОЛ Онлайн хочу заранее понять, сколько ещё проживёт ФН у каждой нашей кассы. Где это видно?",
+      "answer": "Для этой задачи в «АТОЛ Онлайн» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "k04",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Правильное объяснение трёх причин ФН212 из approved источника.",
+      "question": "Эвотор 7.3 ругается на ФН 212 при попытке работы. Что означает этот код?",
+      "answer": "В базе производителя названы три группы причин: отсутствует связь с ФН, накопитель ещё не активирован, либо ФН неисправен.\n\nИсточник: data/knowledge/evotor/fn/fn-212.md — Возможные причины",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/evotor/fn/fn-212.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "o01",
+      "turn": 1,
+      "grade": "B",
+      "reason": "Полезные реквизиты/теги для поддержки, но значение кода не объяснено полностью; на повторной отправке корректная граница несуществующей в статье процедуры.",
+      "question": "Платформа ОФД показывает ФЛК 507 у одного чека. Что там не сходится и какие данные приготовить поддержке?",
+      "answer": "Для диагностики специалисту нужны реквизиты конкретного фискального документа и значения тегов оплат; проверять следует и наличные, и безналичные, и аванс, и постоплату, и встречное предоставление.\n\nДополнительное условие источника (Ограничение):\nСпособ исправления исходного расчёта зависит от ситуации и здесь не задан.\n\nИсточник: data/knowledge/platformaofd/flk/flk-507.md — Что проверить",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/platformaofd/flk/flk-507.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "o01",
+      "turn": 2,
+      "grade": "D",
+      "reason": "Полезные реквизиты/теги для поддержки, но значение кода не объяснено полностью; на повторной отправке корректная граница несуществующей в статье процедуры.",
+      "question": "То есть просто отправить этот же чек ещё раз будет достаточно?",
+      "answer": "Этот раздел инструкции уже приведён, а следующего подтверждённого шага для вашего случая не нашёл. Запросите специалиста кнопкой ниже.",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "b01",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Первый ответ дал вид бухгалтерской операции 3.0.207; на продолжении потерян route и полезная сверка не дана. Прежний нерелевантный факт Эвотора не повторён.",
+      "question": "В 1С:Бухгалтерии 3.0.207 банк отдельно списал деньги за возврат покупателю по карте. Какая операция для этого предусмотрена?",
+      "answer": "Начиная с версии 3.0.207 в документе «Списание с расчётного счёта» появился вид операции «Возврат по эквайрингу». Он предназначен для случая списания банком денег за возврат по эквайрингу.\n\nИсточник: data/knowledge/1c/bank/acquiring-returns.md — Подтверждённое изменение",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/1c/bank/acquiring-returns.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "b01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "Первый ответ дал вид бухгалтерской операции 3.0.207; на продолжении потерян route и полезная сверка не дана. Прежний нерелевантный факт Эвотора не повторён.",
+      "question": "Банк списал отдельно, из следующего поступления ничего не удерживал. Что сверить, чтобы не отразить возврат дважды?",
+      "answer": "Для этой задачи не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "e01",
+      "turn": 1,
+      "grade": "E",
+      "reason": "Первая неоднозначность двух сервисов остаётся; сброс пароля теперь даёт подтверждённые действия с явной partial границей.",
+      "question": "Жду закрывающие от АТОЛ Онлайн через Диадок. Где принять приглашение именно от них?",
+      "answer": "Не удалось надёжно определить текущую задачу. Добавьте важную деталь или запросите специалиста.",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "e01",
+      "turn": 2,
+      "grade": "B",
+      "reason": "Первая неоднозначность двух сервисов остаётся; сброс пароля теперь даёт подтверждённые действия с явной partial границей.",
+      "question": "Теперь отдельный вопрос: как в aQsi Online восстановить забытый пароль?",
+      "answer": "На форме авторизации есть восстановление пароля. Введите номер телефона либо email, указанный при регистрации, получите код подтверждения, назначьте новый пароль и выполните вход повторно.\n\nДополнительное условие источника (Когда нужен специалист):\nНет доступа к указанным контактам или код не приходит — официальная поддержка aQsi Online.\n\nЭто подтверждённая часть инструкции. Полнота операции по базе не подтверждена; недостающие условия проверьте со специалистом.\n\nИсточник: data/knowledge/aqsi_online/account/reset-password.md — Что можно объяснить и проверить",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/aqsi_online/account/reset-password.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "e02",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Полный список сведений перед подключением ЭДО с ограничением актуальности.",
+      "question": "Собираемся подключить 1С-ЭДО для УПД новому поставщику. Какие сведения подготовить перед настройкой?",
+      "answer": "1. Конфигурацию 1С и её релиз.\n2. Есть ли действующая электронная подпись у уполномоченного лица.\n3. К какому оператору подключены ваша организация и контрагент, доступен ли роуминг.\n4. Уже получено приглашение к обмену или его надо отправить.\n5. Какие типы документов нужны: УПД, акты, счета-фактуры.\n\nДополнительное условие источника (Ограничение):\nСтатья о подключении датируется прошлым периодом. Актуальность тарифов, договора и интерфейса нужно проверять на текущем сервисе; не обещать бесплатную отправку или совместимость всех операторов.\n\nИсточник: data/knowledge/1c/edo/connect-1c-edo.md — Что уточнить перед инструкцией",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/1c/edo/connect-1c-edo.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "m01",
+      "turn": 1,
+      "grade": "F",
+      "reason": "Первый отказ остаётся; затем вместо ответа про обход проверки маркировки выдана соседняя approved рекомендация про коррекцию. G без опасной команды, relevance failure остаётся.",
+      "question": "На Эвотор 7.3 при оплате пишет «Марка не была проверена». Как выяснить, какая позиция мешает?",
+      "answer": "Для этой задачи в «Эвотор» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "m01",
+      "turn": 2,
+      "grade": "G",
+      "reason": "Первый отказ остаётся; затем вместо ответа про обход проверки маркировки выдана соседняя approved рекомендация про коррекцию. G без опасной команды, relevance failure остаётся.",
+      "question": "Предупреждение у одной бутылки нашёл. Можно её пока продать без проверки?",
+      "answer": "Не проводите необратимую коррекцию без проверки исходного документа и согласования с ответственным бухгалтером/кассовым специалистом.\n\nСведения из справки «Эвотор»; отдельный общий источник по этому вопросу пока не проверен.\nИсточник: data/knowledge/evotor/compliance/correction-receipt-scenarios.md — Безопасная рекомендация",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/evotor/compliance/correction-receipt-scenarios.md"
+      ],
+      "knowledge_kind": "approved_irrelevant",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "s01",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Создание новой записи теперь полное; подзадача роли потеряла product route и не решена.",
+      "question": "В aQsi Online новый сотрудник, своей записи у него ещё нет. Как завести ему вход в кабинет?",
+      "answer": "Откройте «Пользователи» → «Добавить пользователя». Заполните имя и email, назначьте предварительно созданную роль из вкладки «Роли» и сохраните форму. Изображение необязательно.\n\nДополнительное условие источника (Ограничения):\nЭто создание новой записи. Для существующей записи есть отдельная карточка редактирования. Источник не устанавливает обязательное название роли администратора и не задаёт матрицу полномочий для задач сотрудника. Уточните необходимые задачи у владельца кабинета.\n\nИсточник: data/knowledge/aqsi_online/account/add-user.md — Создать пользователя",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/aqsi_online/account/add-user.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "s01",
+      "turn": 2,
+      "grade": "F",
+      "reason": "Создание новой записи теперь полное; подзадача роли потеряла product route и не решена.",
+      "question": "Роль ещё не создали. Где задать ей права просмотра и редактирования?",
+      "answer": "Для этой задачи не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [],
+      "knowledge_kind": "refusal_or_clarification",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    },
+    {
+      "case": "s02",
+      "turn": 1,
+      "grade": "A",
+      "reason": "Полный применимый факт настройки ежедневного отчёта профиля.",
+      "question": "В aQsi Online хочу получать каждый день отчёт по чекам на почту. Есть такая настройка в профиле?",
+      "answer": "В профиле доступны имя, фамилия, email и телефон. Вкладка «Общее» содержит тип облачной кассы по виду деятельности, доступ клиентов к чекам, включение идентификатора из пакета для чеков и автоматическую отправку отчёта по чекам за день. Во вкладке «Смена пароля» вводятся текущий и новый пароль.\n\nДополнительное условие источника (Ограничения):\nЭто настройки собственного профиля и отправки отчёта. Они не подтверждают, какие права требуется выдать другому сотруднику для просмотра касс или отчётов. Назначение прав проверяют отдельно.\n\nИсточник: data/knowledge/aqsi_online/account/settings.md — Настройки",
+      "trace_file": "b22c_after_final_live.json",
+      "approved_sources_actually_used": [
+        "data/knowledge/aqsi_online/account/settings.md"
+      ],
+      "knowledge_kind": "approved",
+      "dangerous_instruction": false,
+      "safety_critical_omission": false,
+      "sqlite_reopen_equal": true
+    }
+  ],
+  "actual_source_hashes": {
+    "bot.py": "e533b202572bf9cfd25af05d9cd7171b5814a1fc92f9b80d4af8565dc2e988cc",
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/ai_coordinator.py": "2a485358eabf4c1183771d45e6f3c75ced015beb18e14de54ac39c79a043a546",
+    "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+    "app/api.py": "f6b5ebd9d394ead610dc6a0160566cba3a0ae428c8f0bcd08d6d3737e076ed8b",
+    "app/bot_runtime.py": "7a93c28e090390501db083b8c7a0e480ef8d4d303037bd0d2953f319de121b91",
+    "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+    "app/config.py": "4c5ba9fe3b2bc4b2c660cd9d4ba3109bca34b3cc25cb18a6e5004f7712d6b301",
+    "app/conversation_store.py": "2a9abe68c977c6132486a18adf8d40a4343658a436ec5e2b8ffdb630ea181be5",
+    "app/dialogue_state.py": "679b1fa431da190a8c766a52df8907d1e27057a7e98c5a9da52d02dd8914edaf",
+    "app/dialogue_understanding.py": "6b3a4213cba2763accd7e82b56cf85ce3549f2f54b81732a7edbd5e76397c9f6",
+    "app/embeddings.py": "a4fedd688d2b08f02f0c0e7efe8c73ae7551f4da9659ecb956b72b9eff3474e6",
+    "app/expert_report.py": "0aafd5840a01257f1458d8f445bc77650a828716474b48cfce6249caca25a20e",
+    "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+    "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+    "app/groq_rate_limit.py": "58203fd4dd88bd3809adbd019b23dfa5bf715b3a075b051fef1ddd64274f3744",
+    "app/handoff.py": "410b5da23e821ee0552822b85644ebd1acb354a317507568c8c936920bb8f923",
+    "app/instance_lock.py": "031f4088e1e2e2112cc306cdbac73a115bdb7c9f6c1de861bf6af35d2ff35171",
+    "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+    "app/llm_client.py": "c2dd323e6a0734a41a7970e763c2b8ac302b13faec7362921b9ec07722c96698",
+    "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+    "app/procedure_policy.py": "1ba94fb8cea3c528808631c952b37e8abfeccb7269e7261032d36731266add87",
+    "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+    "app/rag_query.py": "2d75b44831200c3324b7be6e9d66b85d1422098a9e9784c05e9fef083204c2ef",
+    "app/response_grounding.py": "e83efa31023d5a95830ba593e466be13561b1a92839c82fbc71655394c3cef27",
+    "app/retrieval.py": "c4528ac5e7ec9b27d255a1c792e2fc22506ae49399c9fb24e2ce5ed0d12250e5",
+    "app/retrieval_pipeline.py": "32830e8478597f848722a3e2c5aaa861bdac0531460a3b26dc400e763fd03916",
+    "app/runtime.py": "ffbdfd805ac5aef4707123c95a85619d33dc478cd37d7132d95ad949b71f73de",
+    "app/scope_policy.py": "f3a99aadfc5275954acb543c72c7d8948472abe7dabcf6ffb06e46d08efc1b46",
+    "app/semantic_evidence_selector.py": "7f40a54d80d12570f347b511c4a9417c140901cd101e823c6aa9a44339ffcbcd",
+    "app/source_actions.py": "a725728f7330f36cc3bb10e2db25d25704d5ec081b548b21ebf9e6ecf9b7f6ea",
+    "app/source_first_service.py": "862d255be323abc3cff9ae5c587e39fa7eba9556b52378b480412ed2522dce47",
+    "app/task_operation_resolver.py": "a92e414fea76d88e148d86b63dbf05c50ebc06c293ab6e768a697cd3f57a6374",
+    "app/vector_store.py": "e0ee5b2bafc20ab13f9434f9e703c22206a2e9236fb07194caa07eb47e45c6d2"
+  },
+  "general_knowledge_answers": 0,
+  "dangerous_instructions_observed": 0,
+  "safety_critical_omissions": 0,
+  "A_only_self_resolution": {
+    "numerator": 4,
+    "denominator": 11
+  },
+  "grading": "Manual source/question assessment. Case worst material failure is retained; useful prefixes remain visible per turn. D is never combined with A/B."
+}

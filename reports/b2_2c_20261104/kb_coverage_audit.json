@@ -1,0 +1,1115 @@
+{
+  "kind": "Full local frontmatter/body scan; lexical matches are candidates, not automatic semantic coverage verdicts. Manual decisions in kb_gap_matrix.csv.",
+  "document_counts": {
+    "approved": 206,
+    "draft": 63
+  },
+  "groups": {
+    "evotor_receipt_copy": [
+      {
+        "path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+        "status": "approved",
+        "title": "aQsi: чек не напечатался, закончилась бумага",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "59b6dd94837d7f08f43c0e7bccd673fa7a32e0d408faeed1bd3dcc4d25c769fc"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/start/unbox-hardware.md",
+        "status": "approved",
+        "title": "aQsi 5 и 6: подготовка кассы к первому использованию",
+        "service": "aQsi",
+        "model": "aQsi 5 / aQsi 6",
+        "operations": [
+          "setup_cash_register"
+        ],
+        "evidence_coverage": null,
+        "sha256": "0ca5dca90c67aff8277fcb1a3865791160e0c4173b247b2ccd02c598294f889c"
+      },
+      {
+        "path": "data/knowledge/atol_online/billing/debt-payment.md",
+        "status": "approved",
+        "title": "Задолженность АТОЛ Онлайн: где получить счёт и восстановить доступ",
+        "service": "АТОЛ Онлайн",
+        "model": "АТОЛ Онлайн — облачная ККТ",
+        "operations": [
+          "manage_billing",
+          "pay_debt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "1f594c7c852810c45d1951a7b8cf4139f9a733f0791a26a688cbcd01ef1e9356"
+      },
+      {
+        "path": "data/knowledge/evotor/cash/evotor-6-receipt-copy.md",
+        "status": "approved",
+        "title": "Эвотор 6: печать копии фискального документа",
+        "service": "Эвотор",
+        "model": "Эвотор 6",
+        "operations": [
+          "repeat_print"
+        ],
+        "evidence_coverage": {
+          "repeat_print": "full"
+        },
+        "sha256": "c63115dad3b5e0bfa176692ec2db918047fe5fce02dc748d5681e862d25bcd74"
+      },
+      {
+        "path": "data/knowledge/evotor/fn/fn-231.md",
+        "status": "approved",
+        "title": "Эвотор: ошибка ФН 231 / -3975 при продаже",
+        "service": "Эвотор",
+        "model": null,
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "20f873f2e718cce3ee802a56090e358775152c9a57197c2b277cb11d9f6e44a9"
+      },
+      {
+        "path": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+        "status": "approved",
+        "title": "Эвотор: «Касса не может связаться с ОФД» — первичная диагностика",
+        "service": "Эвотор",
+        "model": "",
+        "operations": [
+          "check_transmission"
+        ],
+        "evidence_coverage": null,
+        "sha256": "f60e847bb28c5ee63346fd2fc1b5aa7ca4b19bce2eb478a8826db8dd02c5d651"
+      }
+    ],
+    "diadoc": [
+      {
+        "path": "data/knowledge/atol_online/billing/closing-docs.md",
+        "status": "approved",
+        "title": "Закрывающие документы АТОЛ Онлайн: как получить и проверить",
+        "service": "АТОЛ Онлайн",
+        "model": "АТОЛ Онлайн — облачная ККТ",
+        "operations": [
+          "manage_billing",
+          "get_closing_documents"
+        ],
+        "evidence_coverage": null,
+        "sha256": "7ca6728f614644c7aefe366d2ca34211edfd485571aebec4527a72597bd21458"
+      },
+      {
+        "path": "data/knowledge/atol_online/edo/incoming-documents.md",
+        "status": "approved",
+        "title": "Как получать документы АТОЛ Онлайн через ЭДО",
+        "service": "АТОЛ Онлайн",
+        "model": "АТОЛ Онлайн — облачная ККТ",
+        "operations": [
+          "accept_edo_invitation",
+          "configure_edo_roaming"
+        ],
+        "evidence_coverage": null,
+        "sha256": "86bdf43b53ac05795d89c9ef977d31a58a3775e36a843a28a580ed4377a3c085"
+      }
+    ],
+    "saby": [
+      {
+        "path": "data/knowledge/evotor/ofd/ofd-settings-check.md",
+        "status": "approved",
+        "title": "Эвотор: где проверять параметры ОФД и ОИСМ",
+        "service": "Эвотор",
+        "model": "",
+        "operations": [
+          "check_transmission"
+        ],
+        "evidence_coverage": null,
+        "sha256": "0dd0d31c8dbfa2550c68f23fcbac6edfb56faabbf35dff41be03c5c9b7b54e0c"
+      }
+    ],
+    "directbank": [
+      {
+        "path": "data/knowledge/1c/bank/directbank-all-accounts.md",
+        "status": "approved",
+        "title": "Загрузка выписок сразу по нескольким счетам через 1С:ДиректБанк",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "operations": [
+          "load_bank_statements",
+          "list_bank_statements"
+        ],
+        "evidence_coverage": {
+          "load_bank_statements": "partial"
+        },
+        "sha256": "c020b78a39ba7dcfa8d5bc51660fe3f48f91db165d57ff2b6d427504384eda72"
+      },
+      {
+        "path": "data/knowledge/1c/bank/directbank-auto-schedule.md",
+        "status": "approved",
+        "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "operations": [
+          "schedule_bank_statement_import"
+        ],
+        "evidence_coverage": null,
+        "sha256": "7c3e4a3ccde255176dd8826a63b032dbf7abd5133c885ac3c743d71d6f2b345a"
+      },
+      {
+        "path": "data/knowledge/1c/bank/directbank-other-banks.md",
+        "status": "approved",
+        "title": "Загрузка выписки другого банка через посредника в 1С:ДиректБанк",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "operations": [
+          "import_bank_statements_via_intermediary"
+        ],
+        "evidence_coverage": null,
+        "sha256": "86662632ee5f3fa64b5dcb92c26de082e667d54a6092e36cfce6ebb6c148e2a8"
+      },
+      {
+        "path": "data/knowledge/1c/bank/import-file-directbank.md",
+        "status": "approved",
+        "title": "Загрузка банковской выписки из файла при подключённом 1С:ДиректБанк",
+        "service": "1С:Бухгалтерия 8",
+        "model": "1С:Бухгалтерия 8, редакция 3.0",
+        "operations": [
+          "import_bank_statement_file"
+        ],
+        "evidence_coverage": null,
+        "sha256": "36cdaf9619757fa1fe19892151c32b398093038e0d419e4cff74c594cee74dc9"
+      }
+    ],
+    "aqsi_peripheral": [
+      {
+        "path": "data/knowledge/accounting/usn/usn-max-limit.md",
+        "status": "draft",
+        "title": "Предельный доход для применения УСН в 2026 году",
+        "service": "Налоги и бухгалтерский учёт",
+        "model": null,
+        "operations": [
+          "check_vat_rules"
+        ],
+        "evidence_coverage": null,
+        "sha256": "8b75cdbaed626decc6119f82da20f8fa136e3b764542e690e15cafc95c1325f1"
+      },
+      {
+        "path": "data/knowledge/aqsi/aqsi-error-115.md",
+        "status": "approved",
+        "title": "aQsi: ошибка 115 при операциях и закрытии ФН",
+        "service": "aQsi",
+        "model": null,
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "8b2c7d78e8e6fb0626352102eca0c5c6c2747906e162c41bd05d3b0c78b2c384"
+      },
+      {
+        "path": "data/knowledge/aqsi/aqsi-error-126.md",
+        "status": "approved",
+        "title": "aQsi: ошибка ККТ 126 — длина кадра приёма",
+        "service": "aQsi",
+        "model": null,
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "36506c6da00b584ead54c11b4adadc13d9e1b6a8f9c98a31d82d4af0937474a6"
+      },
+      {
+        "path": "data/knowledge/aqsi/aqsi-error-20-fn.md",
+        "status": "draft",
+        "title": "aQsi: ошибка ФН 20 — ограничение ресурса",
+        "service": "aQsi",
+        "model": null,
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "7749610c0c950cb6417cd09ff86c7eb5097a285fa8c63e404e59aad36a9ba27d"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/catalog/create-product.md",
+        "status": "approved",
+        "title": "aQsi: создание карточки товара на кассе",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_product_catalog",
+          "create_product"
+        ],
+        "evidence_coverage": null,
+        "sha256": "3774575753d147fee02c74ec8b6b0bf6af4f895e66f4c3a461554b03aca645e2"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/catalog/excel-import.md",
+        "status": "approved",
+        "title": "aQsi: импорт Excel-каталога товаров и категорий",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_product_catalog",
+          "import_product_catalog"
+        ],
+        "evidence_coverage": null,
+        "sha256": "67841be99f97f57b4f8aa8a2d23510e627bd184b7d446a02f49ed1ccf899e396"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/catalog/shop-assignment.md",
+        "status": "approved",
+        "title": "aQsi: товар есть в кабинете, но не привязан к магазину",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_product_catalog",
+          "assign_products_to_shop"
+        ],
+        "evidence_coverage": null,
+        "sha256": "71e6b6cf728b5f1e4585d1f2910b22b7db60891f34290bef091c3650e8861cdc"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/correction/ffd105-check.md",
+        "status": "draft",
+        "title": "aQsi: что проверить перед чеком коррекции на ФФД 1.05",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "prepare_correction_receipt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "c21880af8a33439e7171ba6766ca845dabfa0497be89a65cac3f7fb26a863ddc"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/correction/ffd12-check.md",
+        "status": "draft",
+        "title": "aQsi: особенности чека коррекции на ФФД 1.2",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "prepare_correction_receipt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "b49f9a71d588be652fea0b18dfb9b46af5e125128f007e391eeba0b94a28576e"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/fn161-document-not-saved.md",
+        "status": "approved",
+        "title": "aQsi: ошибка 161, чек не записался в ФН",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "febe1c65b05714f3b647f44ee7587288060084abd464d1c73e38b98e1dafcee8"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/fn18-expired.md",
+        "status": "approved",
+        "title": "aQsi: ошибка 18 — срок ФН истёк",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "aa672eaf024baff9e38dcc7df950929348f9850f225548b241fff9e16a64e879"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/fn7-date.md",
+        "status": "approved",
+        "title": "aQsi: ошибка ФН 7 — дата и время",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "850ed000abd56f87c25aa9a8748199ae8cbdefa350944a9d641892340ac6081a"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/goods-not-on-device.md",
+        "status": "approved",
+        "title": "aQsi: товары есть в личном кабинете, но не видны на кассе",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "d138e5953c66b0de7c0bf7d943e4ffed635c803c70421a8d3a97198dc7feb712"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/marking-178.md",
+        "status": "approved",
+        "title": "aQsi: ошибка 178 при продаже маркированного товара",
+        "service": "aQsi",
+        "model": "aQsi 5Ф",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "3103c8a6d0998d7352455a2a36df2f5901943b4c5ed5fd72681d83aff82aa09f"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+        "status": "approved",
+        "title": "aQsi: чек не напечатался, закончилась бумага",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "59b6dd94837d7f08f43c0e7bccd673fa7a32e0d408faeed1bd3dcc4d25c769fc"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/errors/red-blinking-battery.md",
+        "status": "approved",
+        "title": "aQsi: быстро мигает красный индикатор",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "diagnose_error"
+        ],
+        "evidence_coverage": null,
+        "sha256": "886bf24185c29bad056c6500c453fe2c8cb6557afd62db5464c38e27d1b1eb49"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/fn/fn-close-safety.md",
+        "status": "approved",
+        "title": "aQsi: что проверить перед закрытием ФН",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "inspect_fiscal_drive"
+        ],
+        "evidence_coverage": null,
+        "sha256": "1cd58656319b94f73548bfc6253e79ab05f5d738b62cad0cf203cee8ede27cc7"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/marking/permission-diagnostics.md",
+        "status": "approved",
+        "title": "aQsi: почему не проходит проверка кода маркировки",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "check_marking_code"
+        ],
+        "evidence_coverage": null,
+        "sha256": "6b8c5f331056eb547ebfea71db9e8c0da343ee2eb56d121b3464d0f943885c76"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/marking/permission-setup.md",
+        "status": "approved",
+        "title": "aQsi: разрешительный режим «Честного ЗНАКа»",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "check_marking_code"
+        ],
+        "evidence_coverage": null,
+        "sha256": "ba643901e3715ca722aead5046a4d22e43029dfbdac8634de9ab149723c10ce2"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/ofd/connection-fields.md",
+        "status": "approved",
+        "title": "aQsi: где находятся параметры подключения ОФД и ОИСМ",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_ofd_connection"
+        ],
+        "evidence_coverage": null,
+        "sha256": "8944f9bb852d72642b7272a03f6d1d48fa23e21d67a39d4748afa1a6c7c6df74"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/ofd/ofd-oism-current-credentials.md",
+        "status": "approved",
+        "title": "aQsi: как проверять реквизиты ОФД и ОИСМ",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_ofd_connection"
+        ],
+        "evidence_coverage": null,
+        "sha256": "70082a54728b3ce09c95b353a4be0e20e7f686c888d0758525bddcd70b0870f1"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/peripherals/scales.md",
+        "status": "approved",
+        "title": "aQsi: подключение весов ШТРИХ-СЛИМ 200",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_peripheral"
+        ],
+        "evidence_coverage": null,
+        "sha256": "efaaffaff676aece9b84c126f2b0dc00c4bfd85882a10f311921141166360968"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md",
+        "status": "approved",
+        "title": "aQsi Hub: питание при подключении внешних устройств",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_peripheral"
+        ],
+        "evidence_coverage": null,
+        "sha256": "fbb17c7c09c06bc262a72dca0f934e7101d7eb1f1abaf31bd310dbf9664dd758"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+        "status": "approved",
+        "title": "aQsi: внешний сканер не считывает DataMatrix",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_peripheral"
+        ],
+        "evidence_coverage": null,
+        "sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/sales/deferred-order-refund.md",
+        "status": "approved",
+        "title": "aQsi: возврат прихода через отложенный заказ",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "issue_refund"
+        ],
+        "evidence_coverage": null,
+        "sha256": "8f7eea6d0529a0c71b442a36e6fd8f492f7f3b339d44f36318b6203882674f21"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/sales/deferred-order.md",
+        "status": "approved",
+        "title": "aQsi: отложить заказ и затем оформить чек",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "process_sale"
+        ],
+        "evidence_coverage": null,
+        "sha256": "66980158ca1fa682c9b665f253c7bdad54019429125e3940be4ee9b00043c9b1"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/sales/marked-beer.md",
+        "status": "approved",
+        "title": "aQsi: продажа пива в упаковке и на розлив",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "process_sale"
+        ],
+        "evidence_coverage": null,
+        "sha256": "b23a59fb6dc0f194909e7a8ddb0ddfda466b5c45a669b2119355408aa3b6aae2"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/sales/marked-product.md",
+        "status": "approved",
+        "title": "aQsi 5Ф: оформление продажи маркированного товара",
+        "service": "aQsi",
+        "model": "aQsi 5Ф",
+        "operations": [
+          "process_sale"
+        ],
+        "evidence_coverage": null,
+        "sha256": "c02e2e7a29e53863711c7947940d133133864f85e4dcde3b9a6d49e100896e5c"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/sales/standard-refund.md",
+        "status": "approved",
+        "title": "aQsi: возврат по наличной и карточной оплате",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "issue_refund"
+        ],
+        "evidence_coverage": null,
+        "sha256": "b9501be677f7548428543335586caabe8a5b9b9606d1a7a564270b3cd0b312d8"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/settings/android-clock.md",
+        "status": "approved",
+        "title": "aQsi: проверка времени Android и фискального ядра",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_settings"
+        ],
+        "evidence_coverage": null,
+        "sha256": "33a83ffef05d07e0d8225581eda035a274d353e0eb2f8211846a7de4c90750f2"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/shifts/cash-in-out.md",
+        "status": "approved",
+        "title": "aQsi: внесение и изъятие наличных в смене",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_shift",
+          "record_cash_in_out"
+        ],
+        "evidence_coverage": null,
+        "sha256": "eed2dfddd3169230830b9e73cea7d6f55bc64e5e7cb748da04800d633180858c"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/shifts/fiscal-status-report.md",
+        "status": "approved",
+        "title": "aQsi: отчёт о текущем состоянии расчётов",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_shift",
+          "print_fiscal_status_report"
+        ],
+        "evidence_coverage": null,
+        "sha256": "d7044064ee39ecf075f4fc1947d9cd30bbf43853f707335651018863dc52ebd9"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/shifts/opening-closing.md",
+        "status": "approved",
+        "title": "aQsi: открытие и закрытие кассовой смены",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_shift",
+          "open_close_shift"
+        ],
+        "evidence_coverage": null,
+        "sha256": "a7309101de28ae0b6d8b5337534988802bf7bd0308d813b1ca4f353a3b3eda3b"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/shifts/x-report.md",
+        "status": "approved",
+        "title": "aQsi: как сформировать X-отчёт",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "manage_shift",
+          "print_x_report"
+        ],
+        "evidence_coverage": null,
+        "sha256": "6213198f0edbd9d93e28fa940f3a4c09659cabcd557841fa751cdcc9f45b96c6"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/start/first-start-internet.md",
+        "status": "approved",
+        "title": "aQsi: первый запуск, Wi-Fi и SIM",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "setup_cash_register"
+        ],
+        "evidence_coverage": null,
+        "sha256": "057f485095cef00e9227125883c92ad3d6ffea235d7a97eb64f296d6babda118"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/start/unbox-hardware.md",
+        "status": "approved",
+        "title": "aQsi 5 и 6: подготовка кассы к первому использованию",
+        "service": "aQsi",
+        "model": "aQsi 5 / aQsi 6",
+        "operations": [
+          "setup_cash_register"
+        ],
+        "evidence_coverage": null,
+        "sha256": "0ca5dca90c67aff8277fcb1a3865791160e0c4173b247b2ccd02c598294f889c"
+      },
+      {
+        "path": "data/knowledge/aqsi_devices/vat/vat22-configuration.md",
+        "status": "draft",
+        "title": "aQsi: подготовка кассы к НДС 22%",
+        "service": "aQsi",
+        "model": "aQsi (физическая ККТ)",
+        "operations": [
+          "configure_vat_rate"
+        ],
+        "evidence_coverage": null,
+        "sha256": "1458fe505776641e920d29512b7dcc794b9befc8516e409f880cea7369311771"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/add-user.md",
+        "status": "approved",
+        "title": "aQsi Online: добавление сотрудника в личный кабинет",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "add_employee",
+          "assign_role"
+        ],
+        "evidence_coverage": {
+          "add_employee": "full",
+          "assign_role": "partial"
+        },
+        "sha256": "8df26ccc8d094b577cc979163b087d6ec004dc68f97a4f68e08c9a77265dd126"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/contact-support.md",
+        "status": "approved",
+        "title": "aQsi Online: обращение в поддержку из кабинета",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "contact_support"
+        ],
+        "evidence_coverage": null,
+        "sha256": "303f7083d6a693733e9f7599a63b7675724d6f6907dce845dc60e109d2dd678e"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/create-role.md",
+        "status": "approved",
+        "title": "aQsi Online: создание роли и доступ к разделам",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "create_role",
+          "configure_role",
+          "assign_role"
+        ],
+        "evidence_coverage": {
+          "create_role": "partial",
+          "configure_role": "partial",
+          "assign_role": "partial"
+        },
+        "sha256": "35a16e120324836eb37429ce3f9a0c59757adfdda0cd627396fad586ae150b34"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/edit-user.md",
+        "status": "approved",
+        "title": "aQsi Online: изменение существующего пользователя",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "edit_user"
+        ],
+        "evidence_coverage": {
+          "edit_user": "partial",
+          "change_permissions": "partial"
+        },
+        "sha256": "66b147307dad061d151f5051b2fa7936da3634b3d9cfe00088256e81b5e2eb9d"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/monitoring.md",
+        "status": "approved",
+        "title": "aQsi Online: мониторинг продаж и ФН",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "list_cash_registers",
+          "view_analytics"
+        ],
+        "evidence_coverage": null,
+        "sha256": "a1fbec7ddb7df9e0c1075a9a86b037d495fc9fa141e54b015d470dedc42bd564"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/my-cash-registers.md",
+        "status": "approved",
+        "title": "aQsi Online: где посмотреть кассы и их состояние",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "list_cash_registers"
+        ],
+        "evidence_coverage": null,
+        "sha256": "cd9e312f3e20dc9a41484ac6974483ad0121e2375e1e1dd270ba662b4690b663"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/register-account.md",
+        "status": "approved",
+        "title": "aQsi Online: регистрация личного кабинета",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "register_account"
+        ],
+        "evidence_coverage": null,
+        "sha256": "247b3cd7bc117235baacb3aaaf62c08ef89b6c9f91f340ad4da595ee0725fbab"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/reset-password.md",
+        "status": "approved",
+        "title": "aQsi Online: восстановление доступа к личному кабинету",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "reset_password"
+        ],
+        "evidence_coverage": {
+          "reset_password": "partial"
+        },
+        "sha256": "0ae0bda3313b0d6469f104bec8384835403b3e8410b2e46d0cf9ae6e75bdd0d6"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/account/settings.md",
+        "status": "approved",
+        "title": "aQsi Online: настройки профиля и чеков",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "edit_profile",
+          "configure_receipt_reports",
+          "change_password"
+        ],
+        "evidence_coverage": null,
+        "sha256": "3f8209d2654154fee7bdaaf01ba5ddbe6d717ac6425d042c45aa906f07e67ec2"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/fns/finish-reg.md",
+        "status": "approved",
+        "title": "aQsi Online: завершение регистрации и проверка статуса ФНС",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "check_registration"
+        ],
+        "evidence_coverage": null,
+        "sha256": "81fcae7a3bdb164e5b5a2ccdc1e4623bb5b0e679a54e56a223f36bc1762afd67"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/fns/register-ip.md",
+        "status": "approved",
+        "title": "aQsi Online: регистрация облачной ККТ в ФНС для ИП",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "check_registration"
+        ],
+        "evidence_coverage": null,
+        "sha256": "b4b1df939b78ee1bcd66e08a5e9afc83ee8d5a44497065a12b422d68393d719a"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/fns/register-ooo.md",
+        "status": "approved",
+        "title": "aQsi Online: регистрация облачной ККТ в ФНС организацией",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "check_registration"
+        ],
+        "evidence_coverage": null,
+        "sha256": "55aef9712084ed8de38862595fb0f544fbb50f03758429e6583be5ff89909534"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/fns/reregister-fn.md",
+        "status": "draft",
+        "title": "aQsi Online: перерегистрация ККТ после замены ФН",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "check_reregistration"
+        ],
+        "evidence_coverage": null,
+        "sha256": "985b88f4d8e8a6a879fc6a44d86718f9f029b59fca29ed8c0597ce0446cb703a"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/integration/1c-setup.md",
+        "status": "draft",
+        "title": "aQsi Online: интеграция с 1С через драйвер ККТ",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "configure_integration"
+        ],
+        "evidence_coverage": null,
+        "sha256": "4943001e48cd51e1e40994baaea3b6e57088a6adc0e426399bb8dead5264331d"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/integration/direct-api.md",
+        "status": "approved",
+        "title": "aQsi Online: прямое подключение API или CMS",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "configure_integration"
+        ],
+        "evidence_coverage": null,
+        "sha256": "bcc685dae34bb4f77b106d3ae6416f220868afd93a243d2c95f197ddfd03a798"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/ofd/taxcom-account.md",
+        "status": "approved",
+        "title": "aQsi Online: подключение к ОФД Такском",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "open_ofd_account"
+        ],
+        "evidence_coverage": null,
+        "sha256": "9ba9afe1960b20027f9992965bfaabc4dff583cf7dfd94bc202cc510e1e4b4ee"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/receipts/correction-105.md",
+        "status": "draft",
+        "title": "aQsi Online: чек коррекции для ФФД 1.05",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "correct_receipt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "3b36baf07b0e190a5cf0a6e41ffb6bad0c343786cca5e71a78885856db55569e"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/receipts/correction-12.md",
+        "status": "draft",
+        "title": "aQsi Online: чек коррекции при ФФД 1.2",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "correct_receipt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "aa48ae42f18e090bd27595b149ea8b978d48739b5c466936a2bb61ef14cb5596"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/receipts/enable-manual-receipt.md",
+        "status": "approved",
+        "title": "aQsi Online: ручное создание чека из личного кабинета",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "issue_receipt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "1ea5306c14bcf8875b9058565b6773e210a5ee94d9b17e7dea44d0648c6141ff"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/receipts/full-refund.md",
+        "status": "approved",
+        "title": "aQsi Online: полный возврат по ранее пробитому чеку",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "issue_refund"
+        ],
+        "evidence_coverage": null,
+        "sha256": "5185c844bb437463924c1fe4426f84f1316f6bcb2fc813b9be08ddd8ea563a7c"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/receipts/incorrect-105.md",
+        "status": "approved",
+        "title": "aQsi Online: ошибочный чек при ФФД 1.05",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "correct_receipt"
+        ],
+        "evidence_coverage": null,
+        "sha256": "83e5eda6de463263be7e721535163629fb82208d860499212fcbd1efa17615e8"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/receipts/partial-refund.md",
+        "status": "approved",
+        "title": "aQsi Online: частичный возврат по чеку",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "issue_refund"
+        ],
+        "evidence_coverage": null,
+        "sha256": "14db144345cb79ab9c9df272941a184550ff91a057bf72870e6b1563bb79dc51"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/setup/add-store.md",
+        "status": "approved",
+        "title": "aQsi Online: добавление интернет-магазина",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "connect_cash_register",
+          "add_store"
+        ],
+        "evidence_coverage": null,
+        "sha256": "8a72755c63bc70d4e551521dbe9ed16595b0e7119a945650c5970273f968440f"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/setup/company-details.md",
+        "status": "approved",
+        "title": "aQsi Online: реквизиты организации и банка",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "connect_cash_register",
+          "edit_company_details"
+        ],
+        "evidence_coverage": null,
+        "sha256": "9510f1b0990e3f244bd7f12efa8abee13e41608a6f9add56e8235ec35949c156"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/setup/fiscalize.md",
+        "status": "approved",
+        "title": "aQsi Online: фискализация после регистрации в ФНС",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "connect_cash_register",
+          "fiscalize_cash_register"
+        ],
+        "evidence_coverage": null,
+        "sha256": "688397b9b34519984bb6061d3ff157f93c388513b1bdcaba79b4e1d1d5044812"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/setup/order-cash-register.md",
+        "status": "approved",
+        "title": "aQsi Online: заказ облачной ККТ",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "connect_cash_register",
+          "order_cash_register"
+        ],
+        "evidence_coverage": null,
+        "sha256": "26f68b87325bea69f8fad3f9343b2d6c7270e941bf33ac53fffb93681f8c98d3"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/setup/sign-contract.md",
+        "status": "approved",
+        "title": "aQsi Online: получение и подписание договора",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "connect_cash_register",
+          "sign_contract"
+        ],
+        "evidence_coverage": null,
+        "sha256": "0e0af1a9895f82db32a9dcf47956f0fca4965df7596f35e8b563769d7cf2c794"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/couriers-fiscalization.md",
+        "status": "draft",
+        "title": "aQsi Online: кассовые решения для курьеров и доставки",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "6b8be73c959b834cc5e9468584f5349153c58d27e1c390a2af063fae86b83078"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/housing-krasinform-gorod.md",
+        "status": "draft",
+        "title": "aQsi Online для ЖКХ: интеграции Красинформ и Система Город",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "3fbe9cfa0acb42bba323e48a8162928f68db930a2ef1d3f368ff2df6b0b1ce0f"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/housing-register-payments.md",
+        "status": "draft",
+        "title": "aQsi Online для ЖКХ: чеки по реестрам платежей",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "84629f2dcb2baebd18c60198e839c14dff8e5900d5d24d70cc693d78d02a6f51"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/internet-store-cms-aggregator.md",
+        "status": "draft",
+        "title": "aQsi Online: подключение интернет-магазина через CMS или платёжный агрегатор",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "ccbfe9ad983d10aaf73c42f83b0199cb8798abc8b6f73509060a87c8581ab0b9"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/retail-physical-vs-cloud.md",
+        "status": "draft",
+        "title": "aQsi: розничная касса aQsi 5 и облачный сервис — как не перепутать инструкции",
+        "service": "aQsi Online",
+        "model": "aQsi Online / aQsi 5 (сравнение)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "5678c4ab6ab97e4799d00fe486848aa90829dfcf7688b53772a7725f44d198a2"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/taxi-aggregator.md",
+        "status": "draft",
+        "title": "aQsi Online: интеграция такси с Яндекс Такси и Резидент Такси",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "6bd61f988b34f53991a57f07e7a8b4afb1f61f8008f0febcd903e83595423c2f"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/taxi-cloud-or-terminal.md",
+        "status": "draft",
+        "title": "aQsi для такси: облачная касса или физическая aQsi 5",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "f7591844e6132010396c29fc3e7f22e13d649aff8554a2f0a360a8233d09fe4d"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/transport-operator.md",
+        "status": "draft",
+        "title": "aQsi Online: фискализация платежей на городском транспорте",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "d6f104541a9e96a2194f034cc0e8329f5d2940eee6a85f2e74854e8d3792721e"
+      },
+      {
+        "path": "data/knowledge/aqsi_online/use_cases/vending-telemetry.md",
+        "status": "draft",
+        "title": "aQsi Online: облачная фискализация торговых автоматов и телеметрия",
+        "service": "aQsi Online",
+        "model": "aQsi Online (облачная касса)",
+        "operations": [
+          "assess_service_fit"
+        ],
+        "evidence_coverage": null,
+        "sha256": "70c6a6cfe8af3cfcf63ba1aca15080743467e4130b6a337282d127a46be9e770"
+      },
+      {
+        "path": "data/knowledge/atol_online/connection/shop-without-url.md",
+        "status": "approved",
+        "title": "Что писать вместо URL, если у бизнеса нет интернет-магазина",
+        "service": "АТОЛ Онлайн",
+        "model": "АТОЛ Онлайн — облачная ККТ",
+        "operations": [
+          "connect_cash_register",
+          "configure_shop_address"
+        ],
+        "evidence_coverage": null,
+        "sha256": "1c672842b9b5ec3a4d7b3ceec4b5ef1dd3865461558336928bcc440b9a2c837c"
+      },
+      {
+        "path": "data/knowledge/evotor/ffd/how-to-check-ffd.md",
+        "status": "approved",
+        "title": "Эвотор: как узнать используемую версию ФФД",
+        "service": "Эвотор",
+        "model": "",
+        "operations": [
+          "check_ffd"
+        ],
+        "evidence_coverage": null,
+        "sha256": "3bfe4ab830ba73768b1873bf7cf9315db0a901295270c476dee05b2f477971ad"
+      }
+    ],
+    "bifit": []
+  }
+}

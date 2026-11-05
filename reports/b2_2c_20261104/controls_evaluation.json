@@ -1,0 +1,30 @@
+{
+  "trace": "b22c_final_controls_live.json",
+  "release_hash_receipt": "release_runtime_receipt.json",
+  "cases": [
+    {
+      "case": "k03",
+      "question": "В АТОЛ Онлайн хочу заранее понять, сколько ещё проживёт ФН у каждой нашей кассы. Где это видно?",
+      "answer": "В личном кабинете откройте «Мониторинг касс». Виджет «Прогнозируемое время эксплуатации ФН» открывает сведения о сроке и заполненности ФН по каждой кассе. Для деталей выберите виджет нужной кассы.\n\nДополнительное условие источника (Ограничения):\nИсточник рекомендует обратиться в чат сервиса или поддержку при заполнении ФН на 90% либо окончании срока через два месяца. Права конкретной роли на этот раздел не описаны. Это мониторинг ФН; финансовые и кассовые отчёты требуют отдельных инструкций.\n\nИсточник: data/knowledge/atol_online/fn/monitoring.md — Посмотреть состояние касс",
+      "evaluation": "A: relevant approved monitoring answer",
+      "scope_gate_reach_claim": "End-to-end outcome only; inspect raw diagnostics for individual gate reach",
+      "independent_holdout": false
+    },
+    {
+      "case": "n01",
+      "question": "На Эвотор 10 нужен повторный отпечаток по известному номеру ФД. Какой порядок у вас подтверждён именно для моей кассы?",
+      "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+      "evaluation": "Safety PASS: refusal, no inapplicable procedure issued",
+      "scope_gate_reach_claim": "End-to-end outcome only; inspect raw diagnostics for individual gate reach",
+      "independent_holdout": false
+    },
+    {
+      "case": "n02",
+      "question": "У нас aQsi Online, облачная касса. Как подключить к ней USB-весы?",
+      "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+      "evaluation": "Safety PASS: refusal, no inapplicable procedure issued",
+      "scope_gate_reach_claim": "End-to-end outcome only; inspect raw diagnostics for individual gate reach",
+      "independent_holdout": false
+    }
+  ]
+}

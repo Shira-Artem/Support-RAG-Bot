@@ -1,0 +1,22 @@
+{
+  "protected_env_kb_files_checked": 270,
+  "changed": [],
+  "runtime_source_files_checked": 34,
+  "runtime_changed": [],
+  "stage3_payload_sha256_unchanged": "9c0b418d56afd8c12aad5125d5a4b0c2d62ec491f03fd91b63e7fddb8b3e4b63",
+  "stage3_points": 934,
+  "isolated_sqlite_quick_check": {
+    ".local\\telegram-equivalent-b22c_baseline_live\\conversations.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_live\\expert.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v2_live\\conversations.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v2_live\\expert.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v3_live\\conversations.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v3_live\\expert.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v4_live\\checkpoint-k02-1.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v4_live\\conversations.sqlite3": "ok",
+    ".local\\telegram-equivalent-b22c_baseline_v4_live\\expert.sqlite3": "ok"
+  },
+  "json_valid": true,
+  "scripts_syntax_valid": true,
+  "production_sqlite_not_opened_for_this_check": true
+}

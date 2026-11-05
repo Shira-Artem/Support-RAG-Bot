@@ -1,0 +1,77 @@
+{
+  "candidate": "Disable deterministic known entity fallback, preserve validated model claims",
+  "cases": [
+    {
+      "scenario": "b222_wrong_model",
+      "question": "На Эвотор 7.3 хочу повторно распечатать фискальный документ по известному номеру ФД. Подойдёт ли порядок для Эвотор 6?",
+      "raw_entities": [
+        {
+          "slot": "software",
+          "value": "Эвотор 7.3",
+          "evidence": {
+            "quote": "Эвотор 7.3"
+          }
+        },
+        {
+          "slot": "software",
+          "value": "Эвотор 6",
+          "evidence": {
+            "quote": "Эвотор 6"
+          }
+        }
+      ],
+      "baseline": {
+        "manufacturer": [
+          "Эвотор"
+        ],
+        "equipment": [
+          "Эвотор 7.3",
+          "Эвотор 6"
+        ]
+      },
+      "candidate_no_fallback": {}
+    },
+    {
+      "scenario": "b2b_aqsi",
+      "question": "Физическая касса aQsi 5, терминал aQsi 5: внешний сканер не читает DataMatrix. Что проверить первым делом?",
+      "raw_entities": [
+        {
+          "slot": "equipment",
+          "value": "aQsi 5",
+          "evidence": {
+            "quote": "Физическая касса aQsi 5"
+          }
+        },
+        {
+          "slot": "equipment",
+          "value": "aQsi 5",
+          "evidence": {
+            "quote": "терминал aQsi 5"
+          }
+        },
+        {
+          "slot": "equipment",
+          "value": "внешний сканер",
+          "evidence": {
+            "quote": "внешний сканер"
+          }
+        }
+      ],
+      "baseline": {
+        "equipment": [
+          "aQsi 5",
+          "внешний сканер"
+        ],
+        "manufacturer": [
+          "aQsi"
+        ]
+      },
+      "candidate_no_fallback": {
+        "equipment": [
+          "aQsi 5",
+          "внешний сканер"
+        ]
+      }
+    }
+  ]
+}
