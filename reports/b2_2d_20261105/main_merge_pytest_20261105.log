@@ -1,0 +1,66 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 29%]
+........................................................................ [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 59%]
+........................................................................ [ 69%]
+........................................................................ [ 79%]
+........................................................................ [ 89%]
+........................x.x.xx.......................................... [ 99%]
+......F                                                                  [100%]
+================================== FAILURES ===================================
+____ test_graph_records_effective_query_context_and_claim_without_network _____
+
+stage3 = <experiments.vnext.stage3_retrieval.ReadOnlyStage3 object at 0x000001C134A7CE30>
+
+    def test_graph_records_effective_query_context_and_claim_without_network(stage3):
+>       from experiments.vnext.cli import build_graph
+
+tests\test_vnext_retrieval.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+experiments\vnext\cli.py:26: in <module>
+    from langgraph.checkpoint.memory import MemorySaver
+.local\vnext-deps\langgraph\checkpoint\memory\__init__.py:16: in <module>
+    from langgraph.checkpoint.base import (
+.local\vnext-deps\langgraph\checkpoint\base\__init__.py:21: in <module>
+    from langgraph.checkpoint.serde.encrypted import EncryptedSerializer
+.local\vnext-deps\langgraph\checkpoint\serde\encrypted.py:5: in <module>
+    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+.local\vnext-deps\langgraph\checkpoint\serde\jsonplus.py:30: in <module>
+    import ormsgpack
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    # SPDX-License-Identifier: (Apache-2.0 OR MIT)
+    
+>   from .ormsgpack import (
+        OPT_DATETIME_AS_TIMESTAMP_EXT,
+        OPT_NAIVE_UTC,
+        OPT_NON_STR_KEYS,
+        OPT_OMIT_MICROSECONDS,
+        OPT_PASSTHROUGH_BIG_INT,
+        OPT_PASSTHROUGH_DATACLASS,
+        OPT_PASSTHROUGH_DATETIME,
+        OPT_PASSTHROUGH_ENUM,
+        OPT_PASSTHROUGH_SUBCLASS,
+        OPT_PASSTHROUGH_TUPLE,
+        OPT_PASSTHROUGH_UUID,
+        OPT_REPLACE_SURROGATES,
+        OPT_SERIALIZE_NUMPY,
+        OPT_SERIALIZE_PYDANTIC,
+        OPT_SORT_KEYS,
+        OPT_UTC_Z,
+        Ext,
+        Fragment,
+        MsgpackDecodeError,
+        MsgpackEncodeError,
+        __version__,
+        packb,
+        unpackb,
+    )
+E   ModuleNotFoundError: No module named 'ormsgpack.ormsgpack'
+
+.local\vnext-deps\ormsgpack\__init__.py:3: ModuleNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/test_vnext_retrieval.py::test_graph_records_effective_query_context_and_claim_without_network
+1 failed, 722 passed, 4 xfailed in 188.41s (0:03:08)
