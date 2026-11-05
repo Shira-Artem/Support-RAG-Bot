@@ -1,0 +1,127 @@
+{
+  "status": "IN_PROGRESS / LIVE_INCOMPLETE",
+  "quality_gate": "NO-GO",
+  "baseline": {
+    "counts": {
+      "A": 4,
+      "B": 2,
+      "C": 0,
+      "D": 1,
+      "E": 3,
+      "F": 4,
+      "G": 4,
+      "H": 0
+    },
+    "full_answer_rate": 0.2222222222222222,
+    "false_refusal_rate": 0.2222222222222222,
+    "unnecessary_clarification_rate": 0.16666666666666666,
+    "safety_critical_omissions": 2,
+    "incorrect_instructions": 1
+  },
+  "selected_old_regressions_before": {
+    "F": 6,
+    "G": 3,
+    "A": 0
+  },
+  "selected_regressions_primary_after_v2": {
+    "counts": {
+      "A": 3,
+      "B": 3,
+      "C": 0,
+      "D": 0,
+      "E": 1,
+      "F": 2,
+      "G": 0,
+      "H": 0
+    },
+    "full_answer_rate": 0.3333333333333333,
+    "false_refusal_rate": 0.2222222222222222,
+    "unnecessary_clarification_rate": 0.1111111111111111,
+    "safety_critical_omissions": 1
+  },
+  "h10_later_release_repeat": "A, full prerequisites and secret-sharing boundary; not substituted into primary9 metrics",
+  "m01_later_warning_candidate": "offline SourceFirst reproduction passes; LIVE verification outstanding",
+  "partial_current_runtime_runs": [
+    {
+      "trace": "b22d_release_regressions_live.json",
+      "target": 9,
+      "attempted_cases": [
+        "h01",
+        "h10"
+      ],
+      "technical_failure_cases": [
+        "h01"
+      ],
+      "not_run_cases": [
+        "b01",
+        "h05",
+        "h06",
+        "h07",
+        "h08",
+        "m01",
+        "s01"
+      ],
+      "complete_cases": [
+        "h10"
+      ]
+    },
+    {
+      "trace": "b22d_new_access_u01_live.json",
+      "target": 12,
+      "attempted_cases": [
+        "u01"
+      ],
+      "technical_failure_cases": [
+        "u01"
+      ],
+      "not_run_cases": [
+        "u02",
+        "u03",
+        "u04",
+        "u05",
+        "u06",
+        "u07",
+        "u08",
+        "u09",
+        "u10",
+        "u11",
+        "u12"
+      ],
+      "complete_cases": []
+    }
+  ],
+  "holdout_accuracy": null,
+  "holdout_note": "0 completed of12; u01 H on provider,11 unattempted. No percentage inferred from HTTP failures or unrun cases.",
+  "quota_latest": {
+    "provider": "Groq",
+    "dimension": "TPD",
+    "limit": 200000,
+    "used": 199975,
+    "remaining_at_failure": 25,
+    "retry_after_seconds": 1061,
+    "observed_at_utc": "2026-11-05T05:42:18.337074+00:00",
+    "earliest_retry_moscow": "2026-11-05 08:59:59",
+    "full_daily_reset_guaranteed": false
+  },
+  "decision": "Paused at owner request. Resume only on owner instruction; no background LIVE. B2.3/production NO-GO.",
+  "work_status": "PAUSED_BY_OWNER",
+  "full_pytest": {
+    "passed": 716,
+    "xfailed": 4,
+    "warnings": 14,
+    "log": "full_pytest_privacy_final.log"
+  },
+  "observed_live": {
+    "handle_attempts": 44,
+    "completed_turns": 39,
+    "http_200": 61,
+    "http_429": 5,
+    "known_tokens": 144564,
+    "separate_probe_tokens": 99
+  },
+  "tokens": {
+    "mean_per_completed_turn": 3519.4871794871797,
+    "mean_understanding_only": 2301.35,
+    "mean_understanding_and_planner": 4801.736842105263
+  }
+}

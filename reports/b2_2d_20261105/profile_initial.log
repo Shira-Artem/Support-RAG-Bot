@@ -1,0 +1,64 @@
+F.....F................................................................. [ 40%]
+........................................................................ [ 80%]
+...................................                                      [100%]
+================================== FAILURES ===================================
+_ test_semantic_continuation_keeps_product_through_sqlite_reopen[\u0412 1\u0421 \u0431\u0430\u043d\u043a \u0441\u043f\u0438\u0441\u0430\u043b \u0432\u043e\u0437\u0432\u0440\u0430\u0442 \u043f\u043e \u044d\u043a\u0432\u0430\u0439\u0440\u0438\u043d\u0433\u0443. \u041a\u0430\u043a\u0430\u044f \u043e\u043f\u0435\u0440\u0430\u0446\u0438\u044f?-\u041d\u0443\u0436\u043d\u043e \u0441\u0432\u0435\u0440\u0438\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0435 \u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, \u0447\u0442\u043e\u0431\u044b \u043d\u0435 \u0437\u0430\u0434\u0432\u043e\u0438\u0442\u044c \u0432\u043e\u0437\u0432\u0440\u0430\u0442.-bank_statement-check] _
+
+tmp_path = WindowsPath('C:/Users/Shira/AppData/Local/Temp/pytest-of-Shira/pytest-1061/test_semantic_continuation_kee0')
+first = 'В 1С банк списал возврат по эквайрингу. Какая операция?'
+next_text = 'Нужно сверить исходное списание, чтобы не задвоить возврат.'
+intent = 'bank_statement', operation = 'check'
+
+    @pytest.mark.parametrize('first,next_text,intent,operation', [
+        ('В 1С банк списал возврат по эквайрингу. Какая операция?',
+         'Нужно сверить исходное списание, чтобы не задвоить возврат.', 'bank_statement','check'),
+        ('В aQsi Online добавляем сотрудника.',
+         'Теперь для его роли задаём права просмотра.', 'access','configure'),
+    ])
+    def test_semantic_continuation_keeps_product_through_sqlite_reopen(tmp_path, first, next_text, intent, operation):
+        store=ConversationStore(tmp_path/'isolated.sqlite3')
+        cid=store.new(1,1)
+        first_raw=raw(first,intent='bank_statement' if '1С' in first else 'credentials',operation='explain' if '1С' in first else 'add_employee')
+        _,_,_,obs=validate_response(first_raw,first,1)
+        manager=DialogueManager()
+        state=manager.advance(DialogueState(),first,1,observation=obs)
+        _,_,_,obs2=validate_response(raw(next_text,intent=intent,operation=operation,relation='continue'),next_text,2,state)
+        continued=manager.advance(state,next_text,2,observation=obs2)
+        assert continued.task_id==state.task_id
+        assert continued.task_entities==state.task_entities
+        assert continued.routing_service==state.routing_service
+        # Persist the actual validated observations through the production store.
+        for text,payload in [(first,first_raw),(next_text,raw(next_text,intent=intent,operation=operation,relation='continue'))]:
+            from app.dialogue_understanding import Understanding,understanding_to_dict
+            before=store.dialogue_state(cid)
+            kind,specialist,unknown,observation=validate_response(payload,text,'current',before)
+            u=Understanding(kind,specialist,tuple(unknown),observation,{},'test',0)
+            mid=store.begin(cid,text,semantic_mode=True,understanding=understanding_to_dict(u))
+            store.complete(mid,Answer('ok'))
+        before=store.dialogue_state(cid)
+        after=ConversationStore(tmp_path/'isolated.sqlite3').dialogue_state(cid)
+        assert before.to_dict()==after.to_dict()
+        assert after.task_entity('software') or after.task_entity('service')
+        switched='Новый вопрос: как на Эвотор 6 проверить время?'
+        _,_,_,obs3=validate_response(raw(switched,operation='check',relation='continue'),switched,3,after)
+        new=manager.advance(after,switched,3,observation=obs3)
+>       assert new.task_id!=after.task_id
+E       AssertionError: assert 'task:1' != 'task:1'
+E        +  where 'task:1' = <app.dialogue_state.DialogueState object at 0x000001ED7FD36E40>.task_id
+E        +  and   'task:1' = <app.dialogue_state.DialogueState object at 0x000001ED7FDB7AD0>.task_id
+
+tests\test_b22d_contracts.py:55: AssertionError
+___________ test_capability_fact_is_not_required_to_be_a_definition ___________
+
+    def test_capability_fact_is_not_required_to_be_a_definition():
+        from app.source_first_service import _conceptually_answering_sentence
+        fact='Начиная с версии 3.0.188 поддержан сценарий одного документа поступления товаров и нескольких приходных ордеров для разных складов.'
+>       assert _conceptually_answering_sentence(fact,'Есть ли возможность поступления товаров на разные склады?')
+E       AssertionError: assert False
+E        +  where False = <function _conceptually_answering_sentence at 0x000001ED0112E3E0>('Начиная с версии 3.0.188 поддержан сценарий одного документа поступления товаров и нескольких приходных ордеров для разных складов.', 'Есть ли возможность поступления товаров на разные склады?')
+
+tests\test_b22d_contracts.py:83: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_b22d_contracts.py::test_semantic_continuation_keeps_product_through_sqlite_reopen[\u0412 1\u0421 \u0431\u0430\u043d\u043a \u0441\u043f\u0438\u0441\u0430\u043b \u0432\u043e\u0437\u0432\u0440\u0430\u0442 \u043f\u043e \u044d\u043a\u0432\u0430\u0439\u0440\u0438\u043d\u0433\u0443. \u041a\u0430\u043a\u0430\u044f \u043e\u043f\u0435\u0440\u0430\u0446\u0438\u044f?-\u041d\u0443\u0436\u043d\u043e \u0441\u0432\u0435\u0440\u0438\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0435 \u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, \u0447\u0442\u043e\u0431\u044b \u043d\u0435 \u0437\u0430\u0434\u0432\u043e\u0438\u0442\u044c \u0432\u043e\u0437\u0432\u0440\u0430\u0442.-bank_statement-check]
+FAILED tests/test_b22d_contracts.py::test_capability_fact_is_not_required_to_be_a_definition
+2 failed, 177 passed in 12.35s

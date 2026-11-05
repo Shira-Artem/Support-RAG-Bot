@@ -1201,6 +1201,10 @@ class DialogueManager:
         explicit_new_topic = obs.new_topic or _explicit_new_topic(text)
         scope_conflict = _scope_conflicts(previous, obs.entities) if previous.task_id else False
         independent_operation = _operation_is_independent(previous.operation, obs.operation)
+        semantic_refinement = (observation is not None and relation == "continue"
+            and not explicit_new_topic and not scope_conflict
+            and ({previous.operation, obs.operation} <= {"explain", "check", "status", "diagnose"}
+                 or {previous.intent, obs.intent} <= {"access", "credentials"}))
         independent_subject = (previous.object is not None and obs.object is not None
                                and previous.object != obs.object)
         independent_domain = (previous.intent not in {"unknown", "general", "device"}
@@ -1211,10 +1215,10 @@ class DialogueManager:
                               and any(domain == obs.intent and any(
                                   token.startswith(root) for token in words(text) for root in roots)
                                   for domain, _, roots in OBJECTS))
-        if not previous.task_id or (previous.task_context and previous.task_context.closed):
+        if not previous.task_id or explicit_new_topic or (previous.task_context and previous.task_context.closed):
             relation = "new_task"
         elif (observation is not None and relation in {"continue", "unknown"}
-              and ((independent_operation and obs.request_type != "feedback")
+              and ((independent_operation and obs.request_type != "feedback" and not semantic_refinement)
                    or (scope_conflict and obs.symptom)
                    or (independent_subject and obs.symptom)
                    or independent_domain)):
@@ -1334,6 +1338,8 @@ class DialogueManager:
                 # confirmed route/model facts and the same task identity.
                 state.task = obs.evidence
             if obs.intent != "unknown" and (obs.intent == state.intent or state.intent == "unknown"
+                                            or (semantic_refinement
+                                                and {previous.intent, obs.intent} <= {"access", "credentials"})
                                             or promotes_unresolved):
                 state.intent = obs.intent
                 # Words inside a requested detail (for example «чек уже

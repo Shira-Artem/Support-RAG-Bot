@@ -41,6 +41,27 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
         return result("fiscal_document_control", op, "receipt",
                       "information" if op == "explain" else "diagnostic", "typed_fiscal_control_code")
 
+    # Identify the technical subject before generic error/connect labels.
+    # These projections never assert client equipment or source applicability.
+    if (_has(s, r'\b(?:интернет\w*|связ\w*|сеть|сети)\b')
+            and _has(s, r'\bsim\b|сим[ -]?карт|мобильн\w*|wi[ -]?fi')
+            and not _has(s, r'\b(?:офд|фнс|оисм)\b')
+            and operation in {'unknown','explain','check','diagnose'}):
+        return result('network_diagnostics', 'check', 'network', 'diagnostic', 'network_transport_subject')
+    if (_has(s, r'\b(?:выписк\w*)\b') and _has(s, r'\bфайл\w*\b')
+            and _has(s, r'\b1[сc]\b|директбанк|directbank|\bбанк\w*\b')
+            and _has(s, r'загруз\w*|импорт\w*')
+            and operation in {'unknown','explain','connect','list','search','diagnose'}
+            and not _has(s, r'ошиб\w*|не\s+загружа\w*|перестал\w*')):
+        return result('bank_statement', 'list', 'bank_statement', 'action', 'bank_file_import_subject')
+    if (_has(s, r'акт\w*\s+сверк\w*|свер\w*\s+с\s+контрагент\w*')
+            and _has(s, r'с\s+чего\s+начать|начать|подготов\w*|провер\w*')
+            and operation in {'unknown','explain','reconcile','check'}):
+        return result('reconciliation', 'reconcile', 'general', 'diagnostic', 'reconciliation_preparation')
+    if (_has(s, r'\bрол\w*\b') and _has(s, r'прав\w*|просмотр\w*|редактир\w*')
+            and operation == 'configure'):
+        return result('access', 'create_role', 'access', 'action', 'role_configuration_subject')
+
     # Recording a bank entry in accounting software is not issuing a customer
     # refund. Domain evidence must precede the generic word 'return'.
     accounting = _has(s, r"\b1[сc]\b|\bбухгалтер\w*")
@@ -94,7 +115,7 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
         return result("integration", "connect", "unknown", "action", "software_integration_connection")
     if _has(s, r"\b(?:сканер\w*|штрихкод\w*)\b") and _has(s, r"\b(?:подключ\w*|работ\w*|считыва\w*)\b"):
         return result("peripheral_setup", "check", "device", "diagnostic", "peripheral_check")
-    if _has(s, r"\b(?:маркиров\w*|маркированн\w*)\b") and (error or _has(s, r"\bне\s+(?:получа\w*|проход\w*|прода\w*)")):
+    if _has(s, r"\b(?:маркиров\w*|маркированн\w*|марка|марку|марки)\b") and (error or _has(s, r"\bне\s+(?:получа\w*|проход\w*|прода\w*)|\bне\s+(?:был\w*\s+)?провер\w*")):
         return result("marking", "diagnose", "marking", "diagnostic", "marking_failure")
     if _has(s, r"\b(?:время|дата|часы)\b") and _has(s, r"\b(?:неправильн\w*|некорректн\w*|расхожд\w*|не\s+совпад\w*)"):
         return result("error_diagnosis", "diagnose", "unknown", "diagnostic", "clock_discrepancy")

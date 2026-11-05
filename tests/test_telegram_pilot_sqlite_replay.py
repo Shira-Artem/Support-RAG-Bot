@@ -833,7 +833,12 @@ def test_continuation_still_verifies_related_source_conditions(monkeypatch, tmp_
     cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
     trace = _run_replay(monkeypatch, tmp_path, cases[:2],
         sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
-    assert trace[1]["reason"] == "source_context_section_changed"
+    # A same-source warning is now also a selectable answer. The injected
+    # mutation must fail closed whether Planner selects it or only retains
+    # it as related context; both exact-section gates protect the response.
+    assert trace[1]["reason"] in {"source_context_section_changed", "source_section_changed"}
+    assert trace[1]["route"] == "escalate"
+    assert "Changed condition" not in trace[1]["final_reply"]
 
 
 def test_bplus_semantic_recovery_reaches_local_approved_retrieval(monkeypatch, tmp_path):

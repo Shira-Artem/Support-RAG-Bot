@@ -274,7 +274,7 @@ def evidence_kind(sentence: str, section: str = "", metadata: dict | None = None
         return "limitation"
     if _INTERFACE_REFERENCE.search(sentence):
         return "interface"
-    if _PROCEDURE_VERB.search(sentence) or re.search(r"(?:^|\s)\d+[.)]\s*", sentence):
+    if _PROCEDURE_VERB.search(sentence) or re.search(r"(?:^|\s)\d+[.)](?:\s+|$)", sentence):
         return "procedure"
     return "fact"
 

@@ -1,0 +1,470 @@
+{
+  "origin": "Recorded B2.2d v2 m01/2; no provider calls in fixture test",
+  "question": "Предупреждение у одной бутылки нашёл. Можно её пока продать без проверки?",
+  "state": {
+    "schema_version": 2,
+    "revision": 2,
+    "session": {
+      "entities": {
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 23,
+            "quote": "Эвотор",
+            "start": 3,
+            "end": 9
+          }
+        ],
+        "equipment": [
+          {
+            "value": "Эвотор 7.3",
+            "message_id": 23,
+            "quote": "Эвотор 7.3",
+            "start": 3,
+            "end": 13
+          }
+        ]
+      },
+      "active_route": {
+        "slot": "manufacturer",
+        "fact": {
+          "value": "Эвотор",
+          "message_id": 23,
+          "quote": "Эвотор",
+          "start": 3,
+          "end": 9
+        }
+      }
+    },
+    "task_context": {
+      "task_id": "task:23",
+      "topic_start_message_id": 23,
+      "intent": "marking",
+      "request_type": "information",
+      "operation": "diagnose",
+      "object": null,
+      "entities": {
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 23,
+            "quote": "Эвотор",
+            "start": 3,
+            "end": 9
+          }
+        ],
+        "equipment": [
+          {
+            "value": "Эвотор 7.3",
+            "message_id": 23,
+            "quote": "Эвотор 7.3",
+            "start": 3,
+            "end": 13
+          }
+        ]
+      },
+      "active_route": {
+        "slot": "manufacturer",
+        "fact": {
+          "value": "Эвотор",
+          "message_id": 23,
+          "quote": "Эвотор",
+          "start": 3,
+          "end": 9
+        }
+      },
+      "parameters": [],
+      "object_reference": null,
+      "task_fact": {
+        "value": "На Эвотор 7.3 при оплате пишет «Марка не была проверена». Как выяснить, какая позиция мешает?",
+        "message_id": 23,
+        "quote": "На Эвотор 7.3 при оплате пишет «Марка не была проверена». Как выяснить, какая позиция мешает?",
+        "start": 0,
+        "end": 93
+      },
+      "operation_evidence": null,
+      "operation_confidence": 0.9,
+      "symptom": {
+        "value": "Марка не была проверена",
+        "message_id": 23,
+        "quote": "Марка не была проверена",
+        "start": 32,
+        "end": 55
+      },
+      "superseded_facts": [],
+      "goals": [
+        {
+          "value": "какая позиция мешает",
+          "message_id": 23,
+          "quote": "какая позиция мешает",
+          "start": 72,
+          "end": 92
+        },
+        {
+          "value": "Можно её пока продать без проверки?",
+          "message_id": 25,
+          "quote": "Можно её пока продать без проверки?",
+          "start": 38,
+          "end": 73
+        }
+      ],
+      "constraints": [],
+      "details": [
+        {
+          "value": "Предупреждение у одной бутылки нашёл.",
+          "message_id": 25,
+          "quote": "Предупреждение у одной бутылки нашёл.",
+          "start": 0,
+          "end": 37
+        }
+      ],
+      "error": null,
+      "expected": null,
+      "relation": "continue",
+      "confidence": 0.9,
+      "transition": "continue_task",
+      "analysis_required": false,
+      "unresolved": null,
+      "unknown_facts": [],
+      "unknown_evidence": {},
+      "procedure_id": "evotor-mark-check-error-20261019",
+      "shown_units": [
+        {
+          "unit_id": "6e21b1e92dfcf3808607",
+          "label": "В текущем чеке найдите проблемную позицию с предупреждающим значком, откройте его описание и запишите точный текст ошибки.",
+          "source": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+          "section": "Что безопасно проверить",
+          "source_verified": true,
+          "model_scope": null,
+          "model_value": null,
+          "source_order": {
+            "source_sha256": "ad5365be0150b95d8a73b4af338da344b42efb2319b8979d6dcbf7633a035944",
+            "context": "74bca9faed7fc849ba311f3aaba4fc1c9328c3284d7dcf1209ae9aab0218c75d"
+          },
+          "components": []
+        }
+      ],
+      "eligible_units": [
+        {
+          "unit_id": "6e21b1e92dfcf3808607",
+          "label": "В текущем чеке найдите проблемную позицию с предупреждающим значком, откройте его описание и запишите точный текст ошибки.",
+          "source": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+          "section": "Что безопасно проверить",
+          "source_verified": true,
+          "model_scope": null,
+          "model_value": null,
+          "source_order": {
+            "source_sha256": "ad5365be0150b95d8a73b4af338da344b42efb2319b8979d6dcbf7633a035944",
+            "context": "74bca9faed7fc849ba311f3aaba4fc1c9328c3284d7dcf1209ae9aab0218c75d"
+          },
+          "components": []
+        },
+        {
+          "unit_id": "480ccb52db5053a813cc",
+          "label": "Уточните, открыта ли смена; при закрытой смене проверка марки может не выполняться.",
+          "source": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+          "section": "Что безопасно проверить",
+          "source_verified": true,
+          "model_scope": null,
+          "model_value": null,
+          "source_order": {
+            "source_sha256": "ad5365be0150b95d8a73b4af338da344b42efb2319b8979d6dcbf7633a035944",
+            "context": "74bca9faed7fc849ba311f3aaba4fc1c9328c3284d7dcf1209ae9aab0218c75d"
+          },
+          "components": []
+        },
+        {
+          "unit_id": "16078331b7a16cd2b3ee",
+          "label": "Если ошибка указывает на неправильное состояние ФН, сравните настройки маркировки и сведения из итогов регистрации ККТ, но не запускайте перерегистрацию самостоятельно.",
+          "source": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+          "section": "Что безопасно проверить",
+          "source_verified": true,
+          "model_scope": null,
+          "model_value": null,
+          "source_order": {
+            "source_sha256": "ad5365be0150b95d8a73b4af338da344b42efb2319b8979d6dcbf7633a035944",
+            "context": "74bca9faed7fc849ba311f3aaba4fc1c9328c3284d7dcf1209ae9aab0218c75d"
+          },
+          "components": [
+            {
+              "component_id": "6ac4c57e419f11991cbd",
+              "label": "сравните настройки маркировки и сведения из итогов регистрации ККТ, но не запускайте перерегистрацию самостоятельно."
+            }
+          ]
+        },
+        {
+          "unit_id": "407d23c73c4851d7ae94",
+          "label": "Если не передаются уведомления в ОИСМ, проверьте доступность канала и обратитесь к оператору ОФД, если реквизиты верны.",
+          "source": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+          "section": "Что безопасно проверить",
+          "source_verified": true,
+          "model_scope": null,
+          "model_value": null,
+          "source_order": {
+            "source_sha256": "ad5365be0150b95d8a73b4af338da344b42efb2319b8979d6dcbf7633a035944",
+            "context": "74bca9faed7fc849ba311f3aaba4fc1c9328c3284d7dcf1209ae9aab0218c75d"
+          },
+          "components": [
+            {
+              "component_id": "e724d70fc6e8e2b194dc",
+              "label": "проверьте доступность канала и обратитесь к оператору ОФД, если реквизиты верны."
+            }
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "task_id": "task:23",
+          "unit_id": "6e21b1e92dfcf3808607",
+          "label": "В текущем чеке найдите проблемную позицию с предупреждающим значком, откройте его описание и запишите точный текст ошибки.",
+          "source": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+          "section": "Что безопасно проверить",
+          "source_verified": true,
+          "asked_message_id": 24,
+          "status": "asked",
+          "components": [],
+          "component_results": []
+        }
+      ],
+      "open_question": null,
+      "current_subgoal": {
+        "value": "Можно её пока продать без проверки?",
+        "message_id": 25,
+        "quote": "Можно её пока продать без проверки?",
+        "start": 38,
+        "end": 73
+      },
+      "clarification_repeats": {},
+      "closed": false
+    },
+    "task_id": "task:23",
+    "topic_start_message_id": 23,
+    "intent": "marking",
+    "request_type": "information",
+    "operation": "diagnose",
+    "object": null,
+    "entities": {
+      "manufacturer": [
+        {
+          "value": "Эвотор",
+          "message_id": 23,
+          "quote": "Эвотор",
+          "start": 3,
+          "end": 9
+        }
+      ],
+      "equipment": [
+        {
+          "value": "Эвотор 7.3",
+          "message_id": 23,
+          "quote": "Эвотор 7.3",
+          "start": 3,
+          "end": 13
+        }
+      ]
+    },
+    "routing_slot": "manufacturer",
+    "parameters": [],
+    "object_reference": null,
+    "task": {
+      "value": "На Эвотор 7.3 при оплате пишет «Марка не была проверена». Как выяснить, какая позиция мешает?",
+      "message_id": 23,
+      "quote": "На Эвотор 7.3 при оплате пишет «Марка не была проверена». Как выяснить, какая позиция мешает?",
+      "start": 0,
+      "end": 93
+    },
+    "operation_evidence": null,
+    "goals": [
+      {
+        "value": "какая позиция мешает",
+        "message_id": 23,
+        "quote": "какая позиция мешает",
+        "start": 72,
+        "end": 92
+      },
+      {
+        "value": "Можно её пока продать без проверки?",
+        "message_id": 25,
+        "quote": "Можно её пока продать без проверки?",
+        "start": 38,
+        "end": 73
+      }
+    ],
+    "constraints": [],
+    "details": [
+      {
+        "value": "Предупреждение у одной бутылки нашёл.",
+        "message_id": 25,
+        "quote": "Предупреждение у одной бутылки нашёл.",
+        "start": 0,
+        "end": 37
+      }
+    ],
+    "error": null,
+    "expected": null,
+    "relation": "continue",
+    "confidence": 0.9,
+    "transition": "continue_task",
+    "analysis_required": false,
+    "unresolved": null
+  },
+  "understanding": {
+    "request_type": "information",
+    "specialist_requested": false,
+    "unknown_facts": [],
+    "tokens": {
+      "prompt_tokens": 1560,
+      "completion_tokens": 1202,
+      "total_tokens": 2762
+    },
+    "model": "openai/gpt-oss-20b",
+    "duration_ms": 2527,
+    "validation_diagnostics": [
+      {
+        "field": "relation",
+        "status": "accepted",
+        "reason": "valid_semantic_classification",
+        "value": "continue"
+      },
+      {
+        "field": "intent",
+        "status": "accepted",
+        "reason": "valid_semantic_classification",
+        "value": "marking"
+      },
+      {
+        "field": "operation",
+        "status": "accepted",
+        "reason": "valid_semantic_classification",
+        "value": "diagnose"
+      },
+      {
+        "field": "object",
+        "status": "rejected",
+        "reason": "unsupported_object_value",
+        "claimed": "бутылка"
+      },
+      {
+        "field": "confidence",
+        "status": "accepted",
+        "reason": "valid_confidence",
+        "value": 0.9
+      },
+      {
+        "field": "request_type",
+        "status": "accepted",
+        "reason": "valid_turn_classification",
+        "value": "information",
+        "raw_value": "information"
+      },
+      {
+        "field": "unknown_facts",
+        "status": "omitted",
+        "reason": "no_unknown_slots_claimed"
+      },
+      {
+        "field": "object_evidence",
+        "status": "accepted",
+        "reason": "exact_current_message_span",
+        "start": 15,
+        "end": 30
+      },
+      {
+        "field": "specialist_evidence",
+        "status": "omitted",
+        "reason": "not_claimed"
+      },
+      {
+        "field": "specialist_requested",
+        "status": "accepted",
+        "reason": "not_requested"
+      },
+      {
+        "field": "entities",
+        "status": "accepted",
+        "reason": "valid_array",
+        "count": 1
+      },
+      {
+        "field": "entities[0]",
+        "status": "rejected",
+        "reason": "entity_not_supported_by_source_alias",
+        "slot": "component",
+        "claimed": "бутылка",
+        "start": 15,
+        "end": 30
+      },
+      {
+        "field": "goal",
+        "status": "accepted",
+        "reason": "exact_current_message_span",
+        "start": 38,
+        "end": 73
+      },
+      {
+        "field": "symptom",
+        "status": "accepted",
+        "reason": "exact_current_message_span",
+        "start": 0,
+        "end": 37
+      },
+      {
+        "field": "request_type_operation",
+        "status": "accepted",
+        "reason": "independent_turn_type_and_task_operation",
+        "request_type": "information",
+        "operation": "diagnose"
+      }
+    ],
+    "observation": {
+      "intent": "marking",
+      "operation": "diagnose",
+      "object": null,
+      "relation": "continue",
+      "confidence": 0.9,
+      "intent_evidence": null,
+      "operation_evidence": null,
+      "object_evidence": {
+        "value": "у одной бутылки",
+        "message_id": 25,
+        "quote": "у одной бутылки",
+        "start": 15,
+        "end": 30
+      },
+      "relation_evidence": null,
+      "evidence": {
+        "value": "Предупреждение у одной бутылки нашёл. Можно её пока продать без проверки?",
+        "message_id": 25,
+        "quote": "Предупреждение у одной бутылки нашёл. Можно её пока продать без проверки?",
+        "start": 0,
+        "end": 73
+      },
+      "symptom": {
+        "value": "Предупреждение у одной бутылки нашёл.",
+        "message_id": 25,
+        "quote": "Предупреждение у одной бутылки нашёл.",
+        "start": 0,
+        "end": 37
+      },
+      "goals": [
+        {
+          "value": "Можно её пока продать без проверки?",
+          "message_id": 25,
+          "quote": "Можно её пока продать без проверки?",
+          "start": 38,
+          "end": 73
+        }
+      ],
+      "unknown_facts": {},
+      "entities": {}
+    }
+  },
+  "coordinator": {
+    "request_type": "information",
+    "route": "technical_action",
+    "task_relation": "continue",
+    "current_subgoal": "Можно её пока продать без проверки?",
+    "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+    "rationale": "task_requires_applicability_checked_action"
+  }
+}

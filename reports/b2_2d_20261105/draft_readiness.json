@@ -1,0 +1,42 @@
+[
+  {
+    "path": "reports/b2_2c_20261104/kb_drafts/1c/directbank-auto-schedule-extension.md",
+    "status": "draft",
+    "verified_at": null,
+    "source_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html",
+    "chunks": 3,
+    "sme_review_required": true
+  },
+  {
+    "path": "reports/b2_2c_20261104/kb_drafts/1c/directbank-definition.md",
+    "status": "draft",
+    "verified_at": null,
+    "source_url": "https://v8.1c.ru/its/services/1c-direktbank/",
+    "chunks": 3,
+    "sme_review_required": true
+  },
+  {
+    "path": "reports/b2_2c_20261104/kb_drafts/diadoc/pending-revocation.md",
+    "status": "draft",
+    "verified_at": null,
+    "source_url": "https://www.diadoc.ru/articles/25195-statusy_v_edo",
+    "chunks": 3,
+    "sme_review_required": true
+  },
+  {
+    "path": "reports/b2_2c_20261104/kb_drafts/evotor/evotor-7-3-receipt-copy.md",
+    "status": "draft",
+    "verified_at": null,
+    "source_url": "https://evotor.ru/manuals/7-3/kak-vosstanovit-chek/",
+    "chunks": 3,
+    "sme_review_required": true
+  },
+  {
+    "path": "reports/b2_2c_20261104/kb_drafts/saby/incorrect-processing.md",
+    "status": "draft",
+    "verified_at": null,
+    "source_url": "https://online.sbis.ru/page/kbase_entity/e0ccd4d9-9159-48a2-9143-3479ea0917b4?folderId=3bf9582e-acfa-4bc6-9b6d-45b738dab6e3",
+    "chunks": 3,
+    "sme_review_required": true
+  }
+]

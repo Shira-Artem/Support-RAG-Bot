@@ -1,0 +1,24 @@
+{
+  "check": "Current .env Groq credential, minimal account availability probe; no key/header authorization retained",
+  "http_status": 200,
+  "headers": {
+    "x-ratelimit-limit-requests": "1000",
+    "x-ratelimit-limit-tokens": "8000",
+    "x-ratelimit-remaining-requests": "999",
+    "x-ratelimit-remaining-tokens": "7797",
+    "x-ratelimit-reset-requests": "1m26.4s",
+    "x-ratelimit-reset-tokens": "1.522s"
+  },
+  "usage": {
+    "queue_time": 0.210278277,
+    "prompt_tokens": 75,
+    "prompt_time": 0.005499585,
+    "completion_tokens": 24,
+    "completion_time": 0.052637304,
+    "total_tokens": 99,
+    "total_time": 0.058136889,
+    "completion_tokens_details": {
+      "reasoning_tokens": 14
+    }
+  }
+}

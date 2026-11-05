@@ -1,0 +1,8 @@
+..................................................................       [100%]
+============================== warnings summary ===============================
+tests/test_vnext_retrieval.py: 13 warnings
+  C:\Users\Shira\Documents\ChatGPT\Rag\.local\vnext-deps\langsmith\_internal\_beta_decorator.py:70: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+66 passed, 13 warnings in 10.98s

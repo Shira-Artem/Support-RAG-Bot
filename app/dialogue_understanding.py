@@ -77,6 +77,8 @@ _EXPLICIT_LOOKUP_ACTION = re.compile(
     r"\b(?:найти|найдите|находить|ищу|ищем|ищут|искать|поищи|поищите|"
     r"поискать|разыскать|отыскать|найден|поиск|find|search\s+for|look\s+up)\b", re.I)
 _PROCEDURE_GOAL = re.compile(
+    r"(?:\bс\s+чего\s+начать\b|\bчто\s+(?:нужно\s+)?подготовить\b|"
+    r"\bкакие\s+(?:технические\s+|предварительные\s+)?(?:условия|предпосылки)\b)|"
     r"^\s*как\s+(?:(?:мне|нам|можно|правильно)\s+)*"
     r"(?!понять\b|узнать\b|объяснить\b|работать\b|отличить\b)"
     r"[а-яё]+(?:ть|ти|чь)(?:ся)?\b", re.I)
@@ -143,6 +145,15 @@ def _is_conceptual_information_request(text: str) -> bool:
     """Recognize generic conceptual questions without binding them to a domain."""
     return bool(_CONCEPTUAL_INFORMATION_REQUEST.search(text)
                 and not _EXPLICIT_LOOKUP_ACTION.search(text))
+
+
+def requests_procedure_context(text: str) -> bool:
+    """A source-order request remains such when the provider omits its goal.
+
+    This reads only the client's message. It neither supplies a missing task
+    fact nor authorizes any procedure; the full SourceFirst gates still apply.
+    """
+    return bool(_PROCEDURE_GOAL.search(text))
 
 
 class UnderstandingError(ValueError):

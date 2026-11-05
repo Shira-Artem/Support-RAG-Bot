@@ -1,0 +1,22 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  23%|██▎       | 45/199 [00:00<00:00, 413.79it/s]
+Loading weights:  48%|████▊     | 95/199 [00:00<00:00, 435.21it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 836.36it/s]
+Traceback (most recent call last):
+  File "C:\Users\Shira\Documents\ChatGPT\Rag\scripts\b2_2d_sprint.py", line 80, in <module>
+    asyncio.run(run(SimpleNamespace(cases=args.cases or ','.join(c['id'] for c in data['cases']),output=args.output,pause=12)))
+  File "C:\Users\Shira\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Shira\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shira\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 685, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Shira\Documents\ChatGPT\Rag\scripts\b2_2c_live_harness.py", line 122, in run
+    private.mkdir(parents=True, exist_ok=False)
+  File "C:\Users\Shira\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1311, in mkdir
+    os.mkdir(self, mode)
+FileExistsError: [WinError 183] Невозможно создать файл, так как он уже существует: 'C:\\Users\\Shira\\Documents\\ChatGPT\\Rag\\.local\\telegram-equivalent-baseline_live'

@@ -1,0 +1,8 @@
+id,kind,status,evidence,next_step
+D-KB-01,existing_gap,OPEN,Диадок: baseline d12; applicable approved операторской отмены подписанного УПД нет; прежний B2.2c backlog,Сохранить прежний gap; primary/SME процедура по точному состоянию; не переносить интерфейс других операторов
+D-KB-02,metadata_review,OPEN,1c/bank/acquiring-returns.md: body о возврате; operations load_bank_statements; b01 continuation сохраняет 1С но не даёт диагностику,SME review operation metadata и согласованного read-model; не добавлять дубликат статьи
+D-KB-03,pipeline_not_gap,OPEN,h08 approved receive-marked-upd-prereqs содержит формат и границу подписания; task edo vs marking,Исправлять доказанный общий compatibility contract без ослабления service/model/operation
+D-KB-04,pipeline_not_gap,IMPROVED,h01/h05/h06/h07/h10/s01/m01 approved body существует; ответы и неполнота сохранены в evaluations,Завершить LIVE предупреждения и независимый holdout; отсутствие полного ответа не объявлять новым KB gap
+D-KB-05,existing_drafts,SME_REVIEW_ONLY,Пять B2.2c draft прошли Loader/Chunker; hashes unchanged; verified_at null,SME review отдельно; не approved и не индексировать
+D-KB-06,potential_gap_not_live,UNTESTED,Saby specific role permissions u08 frozen; holdout semantic outputs ещё не получены,Проверить полный raw retrieval и pipeline после квоты; затем primary evidence и решение о draft
+D-KB-07,personal_state_not_static_KB,NOT_KB_GAP,u12 биллинг организации не может устанавливаться статической KB,Не выдумывать статус оплаты; проверить на holdout без нового документа

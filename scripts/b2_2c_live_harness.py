@@ -87,6 +87,12 @@ class ReadOnlyQdrant:
 
 
 async def run(args):
+    # Optional immutable BEFORE source snapshot lets a quota-interrupted
+    # baseline resume after local candidate work without mixing runtimes.
+    runtime_root = Path(getattr(args, "runtime_dir", None) or ROOT).resolve()
+    if runtime_root != ROOT:
+        assert not any(name == "app" or name.startswith("app.") for name in sys.modules)
+        sys.path.insert(0, str(runtime_root))
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env", override=False)
     os.environ.update({"RAG_BACKEND": "qdrant", "QDRANT_COLLECTION": "knowledge_stage3_retrieval_20261022",
@@ -106,6 +112,7 @@ async def run(args):
     import httpx
 
     settings = replace(get_settings(), source_first_telegram_ids=frozenset({42}),
+                       docs_dir=ROOT / "data" / "knowledge",
                        telegram_bot_token="isolated-no-telegram-token")
     assert settings.llm_provider == "groq" and settings.groq_api_key
     assert settings.groq_model == 'openai/gpt-oss-20b'
@@ -173,8 +180,9 @@ async def run(args):
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),
         "head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "source_hashes": {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
-                          for p in [ROOT / "bot.py", *sorted((ROOT / "app").glob("*.py"))]},
+        "runtime_root": str(runtime_root),
+        "source_hashes": {str(p.relative_to(runtime_root)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
+                          for p in [runtime_root / "bot.py", *sorted((runtime_root / "app").glob("*.py"))]},
         "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
         "collection": collection, "points": info.points_count, "model": settings.groq_model,
         "reasoning_effort": settings.groq_reasoning_effort, "turns": []}

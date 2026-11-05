@@ -1,0 +1,17 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  26%|██▌       | 52/199 [00:00<00:00, 486.47it/s]
+Loading weights:  51%|█████     | 101/199 [00:00<00:00, 488.03it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 687.74it/s]
+h01 1 network check Эвотор True evidence_coverage_incomplete ['evotor/network/mobile-internet-first-checks.md']
+h05 1 unknown connect 1С False no_task_matched_candidates []
+Traceback (most recent call last):
+  File "C:\Users\Shira\Documents\ChatGPT\Rag\scripts\b2_2d_replay.py", line 51, in <module>
+    if __name__=='__main__': main()
+                             ^^^^^^
+  File "C:\Users\Shira\Documents\ChatGPT\Rag\scripts\b2_2d_replay.py", line 40, in main
+    state=DialogueManager().advance(before,turn['question'],turn['turn'],observation=obs,unknown_facts=list(unknown))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shira\Documents\ChatGPT\Rag\app\dialogue_state.py", line 1191, in advance
+    raise ValueError('Unsupported analyser task; extend the typed vocabulary explicitly')
+ValueError: Unsupported analyser task; extend the typed vocabulary explicitly

@@ -1,0 +1,56 @@
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+........................................................................ [ 40%]
+........................................................................ [ 50%]
+........................................................................ [ 60%]
+........................................................................ [ 70%]
+........................................................................ [ 80%]
+........................................................................ [ 90%]
+...............x.x.xx.....F...........................................   [100%]
+================================== FAILURES ===================================
+_________ test_continuation_still_verifies_related_source_conditions __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024854D22040>
+tmp_path = WindowsPath('C:/Users/Shira/AppData/Local/Temp/pytest-of-Shira/pytest-1074/test_continuation_still_verifi0')
+
+    def test_continuation_still_verifies_related_source_conditions(monkeypatch, tmp_path):
+        import app.source_first_service as source_module
+        original = source_module._source_sections
+        calls = []
+    
+        def changed_related_section(*args, **kwargs):
+            sections = original(*args, **kwargs)
+            calls.append(True)
+            if len(calls) == 2:
+                # Simulate a section that no longer matches the approved file;
+                # narrowing the planner choice must not remove this renderer gate.
+                sections.append({**sections[0], "id": "changed-condition",
+                    "section": "Ограничения", "text": "Changed condition"})
+            return sections
+    
+        monkeypatch.setattr(source_module, "_source_sections", changed_related_section)
+        cases = json.loads((ROOT / "tests/fixtures/live_compound_check_20261029.json").read_text(encoding="utf-8"))
+        trace = _run_replay(monkeypatch, tmp_path, cases[:2],
+            sources=("evotor/ofd/evotor-7-3-ofd-connection.md",), coordinator_enabled=True)
+>       assert trace[1]["reason"] == "source_context_section_changed"
+E       AssertionError: assert 'source_section_changed' == 'source_conte...ction_changed'
+E         
+E         - source_context_section_changed
+E         ?       --------
+E         + source_section_changed
+
+tests\test_telegram_pilot_sqlite_replay.py:836: AssertionError
+============================== warnings summary ===============================
+tests/test_b1_1_task_lifecycle.py::test_task_boundary_matrix_and_sqlite_reopen
+  C:\Users\Shira\AppData\Roaming\Python\Python314\site-packages\qdrant_client\qdrant_remote.py:284: UserWarning: Qdrant client version 1.19.1 is incompatible with server version 1.15.4. Major versions should match and minor version difference must not exceed 1. Set check_compatibility=False to skip version check.
+    show_warning(
+
+tests/test_vnext_retrieval.py: 13 warnings
+  C:\Users\Shira\Documents\ChatGPT\Rag\.local\vnext-deps\langsmith\_internal\_beta_decorator.py:70: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_continuation_still_verifies_related_source_conditions
+1 failed, 713 passed, 4 xfailed, 14 warnings in 177.68s (0:02:57)

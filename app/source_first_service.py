@@ -19,6 +19,7 @@ from time import perf_counter
 import yaml
 
 from app.answer_service import Answer
+from app.secret_safety import with_secret_warning
 from app.config import Settings
 from app.dialogue_state import DialogueState, classify_user_turn, is_resolution_turn
 from app.llm_client import GenerationError, generate
@@ -33,7 +34,8 @@ from app.response_grounding import (claim_supported, content_terms, evidence_kin
                                     instruction_issue, statements, unsafe_operation_issue)
 
 
-_SCOPE_OR_SAFETY_HEADING = re.compile(r"важн|огранич|предупреж|услов|специалист", re.I)
+_SCOPE_OR_SAFETY_HEADING = re.compile(
+    r"важн|огранич|предупреж|услов|специалист|эскалац|инженер|безопасност|передать", re.I)
 _PARTIAL_DEPENDENT_OPENING = re.compile(
     r"^(?:и|но|однако|при этом|в этом случае|для этого|только тогда|поэтому|"
     r"иначе|тогда|это|этот|эта|эти|он|она|они|такой|такая|такие|кроме того)\b",
@@ -374,6 +376,13 @@ def _conceptually_answering_sentence(sentence: str, question: str,
         return False
     concepts = _comparison_concepts(question)
     if not concepts:
+        # A capability question needs a capability fact, not the grammatical
+        # form of a definition. Require shared subject terms as well: a true
+        # neighbouring fact from the same article is still insufficient.
+        if (re.search(r'есть\s+ли|можно\s+ли|возможност|поддержива', question, re.I)
+                and re.search(r'можно|доступн|поддерж|предусмотр|позволя', sentence, re.I)):
+            terms = _focus_terms(question) - _focus_terms('есть ли можно возможность штатная')
+            return len(terms & _focus_terms(sentence)) >= min(2, len(terms)) if terms else False
         # The validated object is an exact client span. In a purpose question
         # it avoids treating a beneficiary ("for the shop owner") as part of
         # the concept that the source must define.
@@ -1793,6 +1802,14 @@ class SourceFirstService:
     async def answer(self, user_message: str, *, state: DialogueState,
                      history: list[dict] | None = None,
                      coordinator_decision=None) -> Answer:
+        answer = await self._answer(user_message, state=state, history=history,
+                                    coordinator_decision=coordinator_decision)
+        answer.text = with_secret_warning(answer.text, user_message)
+        return answer
+
+    async def _answer(self, user_message: str, *, state: DialogueState,
+                      history: list[dict] | None = None,
+                      coordinator_decision=None) -> Answer:
         started = perf_counter()
         model = self.settings.groq_model if self.settings.llm_provider == "groq" else self.settings.openrouter_model
         base = dict(rag_engine="source_first", model=model, provider=self.settings.llm_provider,
@@ -2017,7 +2034,8 @@ class SourceFirstService:
         # A procedure must be applicable to facts confirmed by the customer.
         # Metadata scope is authoritative; absence of a client fact is not a
         # match. Definitions may use scoped material, but are attributed below.
-        informational = state.intent == "general" and state.operation == "explain"
+        informational = (state.intent == "general" and state.operation == "explain"
+                         and not (decision and decision.get("route") == "technical_action"))
         inapplicable = []
         if not informational:
             scoped = []
@@ -2153,11 +2171,15 @@ class SourceFirstService:
                 "section_id": continuation["id"], "source_sha256": continuation["source_sha256"],
                 "reason": "same_task_scope_and_unchanged_source_order",
                 "other_sections_deferred": len(sections) - 1}
-            # Finish the active source's remaining checks before selecting a
-            # different procedure. The planner may still reject applicability.
-            # Keep all verified sections for the renderer's related scope and
-            # warning checks. Only the planner's procedure choice is narrowed.
-            planner_sections = [continuation]
+            # Keep the active procedure, together with its verified warnings.
+            # A follow-up may ask about permission/limits rather than the next
+            # check. Hiding the same source's warning forced a false progress
+            # question even though the required boundary was already present.
+            planner_sections = [continuation, *[item for item in sections
+                if item['id'] != continuation['id']
+                and item['document_id'] == continuation['document_id']
+                and item['source'] == continuation['source']
+                and _SCOPE_OR_SAFETY_HEADING.search(item['section'])]]
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
                   "Не выбирай раздел, который только повторяет вопрос пользователя и не содержит объяснения или подтверждённой инструкции. "
                   "Не создавай и не пересказывай инструкции. Для task с техническими действиями select допускается только при совпадении task, сервиса, модели и условий источника с подтверждёнными фактами клиента. "

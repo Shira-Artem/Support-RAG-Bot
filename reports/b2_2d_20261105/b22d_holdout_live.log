@@ -1,0 +1,7 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  24%|██▎       | 47/199 [00:00<00:00, 424.08it/s]
+Loading weights:  93%|█████████▎| 185/199 [00:00<00:00, 958.91it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 941.03it/s]
+{"case": "u01", "turn": 1, "answer": "Сейчас достигнут лимит запросов к модели. Переписка сохранена; повторите вопрос немного позже.", "latency_ms": 868, "same_task": true}
+Provider/runtime error recorded; stopping bounded batch

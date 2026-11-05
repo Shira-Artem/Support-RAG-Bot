@@ -17,6 +17,7 @@ from app.ai_coordinator import coordinate
 from app.expert_store import ExpertStore
 from app.expert_telegram import ExpertTelegram
 from app.source_first_service import SourceFirstService
+from app.secret_safety import redact_client_secrets, with_secret_warning
 from app.dialogue_understanding import UnderstandingError, understand_message, understanding_to_dict
 from app.handoff import HandoffService, HandoffSettings, TelegramBotApiTransport, specialist_request
 from app.groq_rate_limit import allowlist_local_tpm_bypass
@@ -216,7 +217,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if not update.message or not update.message.text:
         return
     user_id, chat_id = identity(update)
-    user_text = update.message.text.strip()
+    user_text = redact_client_secrets(update.message.text.strip())
 
     if not user_text:
         return
@@ -361,6 +362,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                        'для этой задачи пока не нашёл. Напишите новую важную деталь или '
                        'запросите специалиста кнопкой ниже.')
         answer.scenario_reason = 'repeated_unresolved_request'
+    answer.text = with_secret_warning(answer.text, user_text)
     # Telegram limit is 4096 symbols.
     parts = split_for_telegram(answer.text)
     try:

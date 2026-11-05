@@ -880,7 +880,12 @@ def _access_evidence(state, documents, context):
                         "create_role": "role_creation_workflow_unverified"}.get(state.operation, "access_workflow_unverified"))
     request = " ".join(f.value for f in [*state.goals, *state.constraints, *state.details,
                                         *([state.task] if state.task else [])])
-    if (has_named_role(request) or any(permission_clauses(request))
+    # Merely asking where the view/edit switches live is not a request for
+    # a matrix of privileges on a particular tool. Workflow coverage remains
+    # partial; named roles and concrete target privileges still need proof.
+    target_privileges = any(claims - {"view", "edit"}
+                            for claims, _negative in permission_clauses(request))
+    if (has_named_role(request) or target_privileges
             or state.operation == "change_permissions"):
         missing.append("requested_role_or_permissions_unverified")
     status = "full" if steps and not missing else "partial" if steps else "none"

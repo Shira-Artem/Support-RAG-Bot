@@ -10,6 +10,7 @@ from dataclasses import asdict, dataclass
 from typing import Literal
 
 from app.dialogue_state import DialogueState
+from app.dialogue_understanding import requests_procedure_context
 
 
 Route = Literal["conversation", "grounded_information", "technical_action"]
@@ -79,6 +80,11 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
             "reported_result_for_shown_verified_check")
     elif frame.expected_slot in {"task", "goal", "details"}:
         route, action, rationale = "conversation", "ask_for_missing_task_detail", "task_not_ready"
+    elif (operation == "explain" and frame.intent == "general"
+            and requests_procedure_context(str(current_quote or (state.task.value if state.task else "")))):
+        route, action, rationale = (
+            "technical_action", "retrieve_then_apply_independent_scope_and_safety_gates",
+            "procedure_context_requires_complete_scoped_section")
     elif operation == "explain" and frame.intent == "general":
         route, action, rationale = (
             "grounded_information", "retrieve_and_quote_focused_approved_evidence",

@@ -1,0 +1,462 @@
+{
+  "accounting": "Observed actual usage, not max_completion allowance. Across all explicitly user-configured credentials in this sprint; not an account billing audit.",
+  "http_requests": 66,
+  "http_200": 61,
+  "http_429": 5,
+  "handle_attempts": 44,
+  "completed_turns": 39,
+  "technical_failures": 5,
+  "known_tokens": 144564,
+  "probe_tokens": 99,
+  "including_minimal_probe_tokens": 144663,
+  "unknown_usage_responses": 5,
+  "stages": {
+    "understanding": {
+      "requests": 44,
+      "http_200": 42,
+      "http_429": 2,
+      "prompt_tokens": 51157,
+      "completion_tokens": 45454,
+      "total_tokens": 96611
+    },
+    "planner": {
+      "requests": 22,
+      "http_200": 19,
+      "http_429": 3,
+      "prompt_tokens": 39534,
+      "completion_tokens": 8419,
+      "total_tokens": 47953
+    }
+  },
+  "completed_turn_costs": {
+    "one_understanding_only": {
+      "turns": 20,
+      "known_tokens": 46027,
+      "mean": 2301.35,
+      "median": 2246.5,
+      "min": 1925,
+      "max": 3225
+    },
+    "understanding_and_planner": {
+      "turns": 19,
+      "known_tokens": 91233,
+      "mean": 4801.736842105263,
+      "median": 4702,
+      "min": 3898,
+      "max": 5584
+    },
+    "all_completed": {
+      "turns": 39,
+      "known_tokens": 137260,
+      "mean": 3519.4871794871797,
+      "median": 3225,
+      "min": 1925,
+      "max": 5584
+    }
+  },
+  "cohorts": {
+    "baseline": {
+      "turns": 24,
+      "cases": 18,
+      "known_tokens": 76241,
+      "mean_per_turn": 3176.7083333333335,
+      "mean_per_scenario": 4235.611111111111
+    },
+    "primary_regressions": {
+      "turns": 13,
+      "cases": 9,
+      "known_tokens": 51996,
+      "mean_per_turn": 3999.6923076923076,
+      "mean_per_scenario": 5777.333333333333
+    }
+  },
+  "runs": [
+    {
+      "run": "b22d_baseline_live.json",
+      "known_tokens": 35241
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "known_tokens": 41000
+    },
+    {
+      "run": "b22d_h10_v3_retry_live.json",
+      "known_tokens": 4547
+    },
+    {
+      "run": "b22d_holdout_live.json",
+      "known_tokens": 0
+    },
+    {
+      "run": "b22d_new_access_u01_live.json",
+      "known_tokens": 2429
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "known_tokens": 51996
+    },
+    {
+      "run": "b22d_regressions_v3_live.json",
+      "known_tokens": 2069
+    },
+    {
+      "run": "b22d_release_regressions_live.json",
+      "known_tokens": 7282
+    }
+  ],
+  "turns": [
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d01",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4687,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d01",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 3225,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d02",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 5461,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d03",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 3898,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d04",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2189,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d04",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 2510,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d05",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2485,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d06",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2041,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d07",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2485,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d07",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 1925,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d08",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2391,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d09",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 1944,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_live.json",
+      "case": "d10",
+      "turn": 1,
+      "completed": false,
+      "known_tokens": 0,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d10",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 5134,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d10",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 2470,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d11",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 5285,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d12",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2175,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d13",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4751,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d13",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 2176,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d14",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4702,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d15",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 5251,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d16",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2150,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d16",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 2465,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d17",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2304,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_baseline_resume1_live.json",
+      "case": "d18",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2137,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_h10_v3_retry_live.json",
+      "case": "h10",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4547,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_holdout_live.json",
+      "case": "u01",
+      "turn": 1,
+      "completed": false,
+      "known_tokens": 0,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_new_access_u01_live.json",
+      "case": "u01",
+      "turn": 1,
+      "completed": false,
+      "known_tokens": 2429,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h10",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 1961,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h01",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4284,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h05",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4578,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h06",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4512,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h07",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2513,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h08",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 2121,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "h08",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 2360,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "b01",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4807,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "b01",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 5385,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "s01",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4646,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "s01",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 4830,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "m01",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4415,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_live.json",
+      "case": "m01",
+      "turn": 2,
+      "completed": true,
+      "known_tokens": 5584,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_regressions_v3_live.json",
+      "case": "h10",
+      "turn": 1,
+      "completed": false,
+      "known_tokens": 2069,
+      "planner_used": false
+    },
+    {
+      "run": "b22d_release_regressions_live.json",
+      "case": "h10",
+      "turn": 1,
+      "completed": true,
+      "known_tokens": 4476,
+      "planner_used": true
+    },
+    {
+      "run": "b22d_release_regressions_live.json",
+      "case": "h01",
+      "turn": 1,
+      "completed": false,
+      "known_tokens": 2806,
+      "planner_used": false
+    }
+  ],
+  "reasoning_note": "Main HTTP trace keeps total prompt/completion usage without a reliable reasoning split. Zero recorded reasoning detail must not be treated as zero reasoning cost. Minimal separate probe reported14 reasoning within24 completion tokens, not a representative estimate."
+}
