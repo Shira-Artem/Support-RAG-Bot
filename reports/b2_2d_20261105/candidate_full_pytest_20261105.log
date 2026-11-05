@@ -1,0 +1,60 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 29%]
+........................................................................ [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 59%]
+........................................................................ [ 69%]
+........................................................................ [ 79%]
+........................................................................ [ 89%]
+...................x.x.xx............................................... [ 99%]
+.F                                                                       [100%]
+================================== FAILURES ===================================
+____ test_graph_records_effective_query_context_and_claim_without_network _____
+
+stage3 = <experiments.vnext.stage3_retrieval.ReadOnlyStage3 object at 0x0000029D578682B0>
+
+    def test_graph_records_effective_query_context_and_claim_without_network(stage3):
+>       from experiments.vnext.cli import build_graph
+
+tests\test_vnext_retrieval.py:96:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Isolated LangGraph + Groq + read-only Stage3 prototype; no Telegram or production writes.
+
+    Run with the project's .venv Python. LangGraph is installed only under .local/vnext-deps.
+    The graph has three nodes: understand, retrieve, respond. In-memory checkpointing
+    keeps each scenario's exact user messages and confirmed user quotes independent.
+    """
+    from __future__ import annotations
+
+    import argparse
+    import json
+    import operator
+    import os
+    import re
+    import sys
+    import time
+    from difflib import SequenceMatcher
+    from pathlib import Path
+    from typing import Annotated, TypedDict
+
+    ROOT = Path(__file__).resolve().parents[2]
+    sys.path.insert(0, str(ROOT))
+    sys.path.insert(0, str(ROOT / ".local" / "vnext-deps"))
+
+    import httpx
+    from dotenv import dotenv_values
+>   from langgraph.checkpoint.memory import MemorySaver
+E   ModuleNotFoundError: No module named 'langgraph'
+
+experiments\vnext\cli.py:26: ModuleNotFoundError
+============================== warnings summary ===============================
+tests/test_b1_1_task_lifecycle.py::test_task_boundary_matrix_and_sqlite_reopen
+  C:\Users\Shira\AppData\Roaming\Python\Python314\site-packages\qdrant_client\qdrant_remote.py:284: UserWarning: Qdrant client version 1.19.1 is incompatible with server version 1.15.4. Major versions should match and minor version difference must not exceed 1. Set check_compatibility=False to skip version check.
+    show_warning(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_vnext_retrieval.py::test_graph_records_effective_query_context_and_claim_without_network
+1 failed, 717 passed, 4 xfailed, 1 warning in 161.38s (0:02:41)

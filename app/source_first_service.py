@@ -326,6 +326,11 @@ def _focused_approved_sentence(sections: list[dict], focus: str, *,
                                conceptual_question: str | None = None,
                                conceptual_subject: str | None = None) -> tuple[dict, str] | None:
     focus_terms = _focus_terms(focus)
+    # A model subgoal may omit the client-supplied condition distinguishing
+    # two otherwise similar products. Use the whole question for ranking only;
+    # it does not establish a customer fact or bypass any source gate.
+    if conceptual_question:
+        focus_terms |= _focus_terms(conceptual_question)
     if conceptual_subject:
         focus_terms |= _focus_terms(conceptual_subject)
     if not focus_terms:
@@ -348,12 +353,19 @@ def _focused_approved_sentence(sections: list[dict], focus: str, *,
             sentence_terms = _focus_terms(sentence)
             overlap = len(focus_terms & sentence_terms)
             if overlap:
-                ranked.append((overlap / len(focus_terms), overlap, -section_index,
+                asks_guarantee = bool(conceptual_question and re.search(
+                    r"гарант\w*|\bвсегда\b|\bлюб(?:ой|ая|ое|ые)\b", conceptual_question, re.I))
+                explicit_limit = bool(re.search(
+                    r"\bне\b|\bнет\b|\bневозмож\w*|завис\w*|отлича\w*", sentence, re.I))
+                # A limitation directly answers a request for a guarantee;
+                # require shared content so unrelated warnings do not outrank.
+                limit_match = asks_guarantee and explicit_limit and overlap >= 2
+                ranked.append((int(limit_match), overlap / len(focus_terms), overlap, -section_index,
                                -sentence_index, item, sentence))
     if not ranked:
         return None
-    best = max(ranked, key=lambda row: row[:4])
-    return best[4], best[5]
+    best = max(ranked, key=lambda row: row[:5])
+    return best[5], best[6]
 
 
 def _comparison_concepts(question: str) -> tuple[set[str], set[str]] | None:
@@ -2020,8 +2032,10 @@ class SourceFirstService:
                                   "Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
                                   "insufficient_applicable_evidence", reason, started, **base)
         conceptual_lookup = state.intent == "general" and state.operation == "explain"
-        sections = _source_sections(self.rag, retrieval, self.root,
-                                    12 if conceptual_lookup else 4)
+        # A single article commonly occupies four or more chunks, including
+        # its question heading. Give the existing planner room to compare
+        # multiple already admitted, locally verified articles and limits.
+        sections = _source_sections(self.rag, retrieval, self.root, 12)
         if not sections:
             fallback = await self._general_knowledge_fallback(
                 user_message, state, started, base)
@@ -2181,6 +2195,10 @@ class SourceFirstService:
                 and item['source'] == continuation['source']
                 and _SCOPE_OR_SAFETY_HEADING.search(item['section'])]]
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
+                  "Ответ должен относиться к текущему сообщению, его предмету, действию и условиям; похожая тема или соседний факт не заменяет ответ. "
+                  "Если текущий вопрос состоит из нескольких частей, предпочитай раздел, покрывающий их и необходимые ограничения; не переноси правила другого процесса или устройства. "
+                  "Не выбирай раздел, уже выданный в истории, если новый вопрос требует другого содержания. Раздел передачи специалисту не заменяет доступный полезный ответ, но предупреждения и предварительные условия сохраняй. "
+                  "Неизвлечённый полный текст продолжения — слова клиента для интерпретации, а не подтверждение выполнения проверок или применимости процедуры. "
                   "Не выбирай раздел, который только повторяет вопрос пользователя и не содержит объяснения или подтверждённой инструкции. "
                   "Не создавай и не пересказывай инструкции. Для task с техническими действиями select допускается только при совпадении task, сервиса, модели и условий источника с подтверждёнными фактами клиента. "
                   "Учитывай shown_units и checks текущей задачи: asked/unknown не означают выполненную проверку. Выбирай раздел с оставшимися применимыми проверками; не считай весь раздел выполненным по одному результату. Не придумывай дополнительные проверки в reason. "

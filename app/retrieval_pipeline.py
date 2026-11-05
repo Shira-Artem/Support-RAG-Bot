@@ -652,6 +652,37 @@ def _related_search_task(state: DialogueState, expected: str | None, actual: str
             and {expected, actual} == {"receipt_search", "fiscal_drive_search"})
 
 
+def _exact_incident_section_bridge(state: DialogueState, hit: SearchResult, metadata: dict) -> bool:
+    """Admit an exact diagnostic incident across coarse categories for inspection.
+
+    An observed error and the explicit object must both occur in the candidate
+    itself. This does not establish procedure applicability, completion, or a
+    fact about the customer; the normal scope and source integrity gates apply.
+    """
+    symptom = state.symptom.value.strip() if state.symptom else ""
+    subject = (state.object or "").strip()
+    if (state.operation not in {"diagnose", "check"} or metadata.get("status") != "approved"
+            or len(symptom) < 8 or len(subject) < 3):
+        return False
+    fold = lambda value: re.sub(r"\s+", " ", str(value).casefold().replace("ё", "е")).strip()
+    return (fold(symptom) in fold(hit.text)
+            and fold(subject) in fold(str(metadata.get("title") or "") + " " + hit.text))
+
+
+def _document_exchange_scope_conflict(query: str, metadata: dict) -> bool:
+    """Keep transport-only source workflows out of ordinary document exchange.
+
+    Explicit comparisons or a request mentioning transport may inspect both.
+    The document title defines the source's workflow, not the customer's facts.
+    """
+    if metadata.get("task_category") != "edo":
+        return False
+    transport = re.compile(r"(?<!\w)(?:эпд|эптд)(?!\w)|перевозочн\w*|транспортн\w*\s+документ", re.I)
+    ordinary = re.compile(r"(?<!\w)(?:эдо|упд)(?!\w)", re.I)
+    return bool(transport.search(str(metadata.get("title") or ""))
+                and ordinary.search(query) and not transport.search(query))
+
+
 def _related_task_for_query(state: DialogueState, expected: str | None,
                             actual: str | None, query: str) -> bool:
     if _related_search_task(state, expected, actual):
@@ -909,11 +940,13 @@ def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str
             continue
         if (expected_task and meta.get("task_category") != expected_task
                 and not _related_task_for_query(state, expected_task, meta.get("task_category"), query)
-                and not _reviewed_operation_bridge(state, expected_task, meta, query)):
+                and not _reviewed_operation_bridge(state, expected_task, meta, query)
+                and not _exact_incident_section_bridge(state, document, meta)):
             continue
         if (state.operation != "explain"
                 and operation_compatibility(state.operation, meta, query,
-                                            task_category=expected_task) == "mismatch"):
+                                            task_category=expected_task) == "mismatch"
+                and not _exact_incident_section_bridge(state, document, meta)):
             continue
         key = str(meta.get("document_id") or meta.get("source") or document.source)
         if primary_key is None:
@@ -1002,6 +1035,9 @@ class RetrievalPipeline:
             body_terms = _terms(hit.text + " " + str(meta.get("title") or ""))
             lexical_overlap = len(query_terms & body_terms) / max(1, len(query_terms))
             related_search_task = _related_task_for_query(state, expected_task, actual_task, query)
+            incident_bridge = bool(expected_task and actual_task and expected_task != actual_task
+                                   and _exact_incident_section_bridge(state, hit, meta))
+            related_search_task = related_search_task or incident_bridge
             operation_metadata = meta
             article_text = ""
             if expected_task and actual_task == expected_task and meta.get("document_id"):
@@ -1042,6 +1078,8 @@ class RetrievalPipeline:
             procedure_service = meta.get("procedure_service")
             if not _procedure_matches(state, meta):
                 reasons.append(f"procedure_service_mismatch:{procedure_service}")
+            if _document_exchange_scope_conflict(query, meta):
+                reasons.append("document_workflow_scope_mismatch")
             title = str(meta.get("title") or "")
             title_topic_overlap = subtask_topics & _subtask_title_terms(title, expected_task)
             question_topic_overlap = subtask_topics & _subtask_question_terms(article_text, expected_task)
@@ -1144,6 +1182,8 @@ class RetrievalPipeline:
                 relevance_reasons.append("unresolved_task_fallback")
             if operation_bridge:
                 relevance_reasons.append("reviewed_operation_bridges_category")
+            if incident_bridge:
+                relevance_reasons.append("exact_incident_and_subject_bridge_category")
             relevance = Relevance("match" if service_match else "unknown_or_mismatch",
                                   "match" if task_match else "mismatch", round(score, 4),
                                   relevance_reasons)
@@ -1327,7 +1367,8 @@ class RetrievalPipeline:
                 fragment_task = meta.get("task_category")
                 if (expected_task and fragment_task and fragment_task != expected_task
                         and not _related_task_for_query(state, expected_task, fragment_task, query)
-                        and not _reviewed_operation_bridge(state, expected_task, meta, query)):
+                        and not _reviewed_operation_bridge(state, expected_task, meta, query)
+                        and not _exact_incident_section_bridge(state, fragment, meta)):
                     continue
                 if fragment is not hit and expected_task:
                     section = str(meta.get("section") or "")
