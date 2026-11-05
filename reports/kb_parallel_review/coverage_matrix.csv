@@ -1,0 +1,16 @@
+id,topic,classification,approved_document_id,approved_path,scope_and_evidence,source_id,next_step
+G1,Эвотор 7.3 повторный чек,gap,evotor-6-receipt-copy-360005002514,data/knowledge/evotor/cash/evotor-6-receipt-copy.md,Только модель 6; 7.3 draft отдельно,S1,SME: права и ПО
+G2,Диадок ожидание аннулирования,gap,,,Статус; процедура отдельно,S2,SME
+G3,Диадок подписанный УПД,gap,,,Двусторонне подписанный УПД; кандидат отдельно,S3,"SME: интерфейс, полномочия, роуминг"
+G4,Saby ошибочно обработанный акт,gap_unresolved,,,Approved операторской инструкции нет; точная процедура не доказана,S4,Открыть исходную справку и проверить статус
+G5,ДиректБанк определение,gap,,,Процедуры не заменяют определения сервиса,S5,SME определение
+P1,ДиректБанк импорт файла,approved_partial,batch-20261013-bank-import-file-directbank,data/knowledge/1c/bank/import-file-directbank.md,"Бухгалтерия 8 ред. 3.0 от 3.0.117; безопасная проверка, не полный интерфейс",S6,Не дублировать; возможное расширение по источнику
+P2,ДиректБанк расписание,approved_partial,batch-20261013-bank-directbank-auto-schedule,data/knowledge/1c/bank/directbank-auto-schedule.md,3.0.195 и банк; точные меню и параметры требуют проверки,S7,Проверить доступ к статье и дополнение
+P3,ДиректБанк все счета,approved_partial,batch-20261013-bank-directbank-all-accounts,data/knowledge/1c/bank/directbank-all-accounts.md,"3.0.148, настроенные счета",S8,Не дублировать; сверить интерфейс
+R1,Эвотор ФН 234,runtime_existing_evidence,evotor-fn-234-360005580254,data/knowledge/evotor/fn/fn-234.md,"Общая диагностика ФН 234, модель не задана",S9,Владелец runtime: retrieval и continuation
+R2,aQsi бумага и допечатка,runtime_existing_evidence,aqsi-device-paper-print-retry,data/knowledge/aqsi_devices/errors/paper-print-retry.md,"Физическая ККТ, случай кончившейся бумаги",S10,Владелец runtime: route и scope
+R3,aQsi сканер и Hub,runtime_existing_evidence,aqsi-device-scanner; aqsi-device-scanner-hub-power,data/knowledge/aqsi_devices/peripherals/scanner.md; data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md,"Физическая касса, общие проверки, не совместимость всех моделей",S11,Владелец runtime: роли и retrieval
+M1,1С возврат по эквайрингу,metadata_error,batch-20261013-bank-acquiring-returns,data/knowledge/1c/bank/acquiring-returns.md,"Бухгалтерия 8 ред. 3.0, от 3.0.207; списание, не загрузка выписки",S12,Согласовать vocabulary; approved не менять до review
+U1,БИФИТ столы/эквайринг,unresolved,,,Руководство Розница Windows/Linux найдено; запрошенные столы/сценарий и релиз не определены,S13,"Уточнить продукт, ОС, версию и шаг"
+U2,Эвотор Power повторный чек,potential_gap,,,Отдельное модельное руководство; сравнение всего корпуса не завершено,S14,Проверить применимость к запросу и scope
+N1,Оплата конкретной организацией,not_static_kb,,,Состояние счёта доступно авторизованному пользователю,,Не придумывать статус
