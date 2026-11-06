@@ -1604,7 +1604,7 @@ class SourceFirstService:
         source sentence matching this strict read-only contract can be returned.
         """
         if (not state.task_context or state.analysis_required
-                or not re.search(r"\b(?:можно|допустим\w*|совместим\w*|поддержива\w*|возможн\w*|гарант\w*)\b", question, re.I)
+                or not re.search(r"\b(?:можно|допустим\w*|совместим\w*|поддержива\w*|возможн\w*|гарант\w*|точно|наверняка)\b", question, re.I)
                 or "?" not in question):
             return None
         source = getattr(getattr(self.rag, "pipeline", None), "source", None)
@@ -1615,7 +1615,8 @@ class SourceFirstService:
         matches = []
         for rejected in [*retrieval.candidates, *retrieval.rejected]:
             if (not rejected.document_id or
-                    any(not reason.startswith("task_mismatch:") for reason in rejected.reasons)):
+                    any(not (reason.startswith("task_mismatch:") or reason == "unresolved_task_ambiguous")
+                        for reason in rejected.reasons)):
                 continue
             entry = index.get(rejected.document_id)
             if not entry:
@@ -1660,6 +1661,85 @@ class SourceFirstService:
                     continue
                 matches.append((path, heading, sentence, sha256(snapshot).hexdigest()))
         return matches[0] if len(matches) == 1 else None
+
+    def _rejected_conditional_inspection(self, state, question, retrieval):
+        """Resolve one exact, closed-language inspection without admitting a workflow."""
+        if (not state.task_context or state.analysis_required
+                or state.operation not in {"diagnose", "check", "status"}
+                or unsafe_operation_issue(question)
+                or re.search(r"\b(?:настроить|настройте|изменить|измените|переключить|"
+                             r"переключите|подключить|подключите|установить|установите|"
+                             r"удалить|удалите|отправить|отправьте)\b", question, re.I)):
+            return None
+        # This is deliberately a closed read-only language. Unknown words,
+        # additional actions, and compound conditions cannot grant a procedure.
+        inspection_words = frozenset("""
+            состояние наличие отсутствие модель номер дату даты время версию статус
+            кабель кабеля провод провода разъем разъема подключение соединение
+            наклейки этикетки контраст повреждения код кода текста качество
+            возможность чтения того же в на и или официальном приложении устройстве
+            документа документации маркировки информации экране индикатор индикатора
+        """.split())
+        condition_words = frozenset("код документ индикатор экран устройство приложение соединение".split())
+        condition_states = frozenset("читается работает отображается доступен доступно".split())
+        article = getattr(getattr(getattr(self.rag, "pipeline", None), "source", None), "article", None)
+        if not callable(article):
+            return None
+        fields = ("status", "service", "task_category", "manufacturer", "model", "procedure_service")
+        matches = []
+        selected_ids = {item.get("document_id") for item in retrieval.diagnostics().get("selected", [])}
+        for rejected in [*retrieval.candidates, *retrieval.rejected]:
+            if (not rejected.document_id or
+                    (not rejected.reasons and rejected.document_id not in selected_ids) or
+                    any(not reason.startswith("task_mismatch:") for reason in rejected.reasons)):
+                continue
+            entry = _approved_sources(self.root).get(rejected.document_id)
+            if not entry:
+                continue
+            path, metadata, body = entry
+            scope = normalize_metadata({**metadata, "source": path.relative_to(self.root).as_posix()})
+            indexed = normalize_metadata(rejected.metadata)
+            if any(scope.get(field) != indexed.get(field) for field in fields):
+                continue
+            assessment = assess_source_scope(state, scope)
+            if assessment.missing or assessment.mismatches:
+                continue
+            if (generic_physical_model(scope.get("model"), scope.get("manufacturer")) and
+                    any(re.search(r"online|онлайн|облач|cloud", fact.value, re.I)
+                        for fact in state.task_entities.get("service", []))):
+                continue
+            if len(_focus_terms(question) & _focus_terms(str(metadata.get("title") or ""))) < 2:
+                continue
+            hits = list(article(rejected.document_id))
+            for heading, section in _sections(body):
+                for line in section.splitlines():
+                    match = re.fullmatch(r"\s*(?:\d+[.)]|[-*])\s+(.+?[.])\s*", line)
+                    if not match:
+                        continue
+                    sentence = match.group(1)
+                    parsed = re.fullmatch(
+                        r"если ([а-я]+) не ([а-я]+), (?:проверьте|сверьте|осмотрите) ([^.;:!?]+)[.]",
+                        sentence.casefold().replace("ё", "е"))
+                    if not parsed:
+                        continue
+                    subject, state_word, operand = parsed.groups()
+                    words = re.findall(r"[а-яa-z]+", operand)
+                    if (subject not in condition_words or state_word not in condition_states
+                            or not words or any(word not in inspection_words for word in words)):
+                        continue
+                    if not any((hit.metadata or {}).get("section") == heading
+                               and all(normalize_metadata(hit.metadata or {}).get(field) == scope.get(field)
+                                       for field in fields)
+                               and sentence in hit.text for hit in hits):
+                        continue
+                    snapshot = path.read_bytes()
+                    parts = snapshot.decode("utf-8").replace("\r\n", "\n").split("---", 2)
+                    if len(parts) != 3 or (yaml.safe_load(parts[1]) or {}) != metadata or parts[2].strip() != body:
+                        continue
+                    matches.append((path, heading, sentence, sha256(snapshot).hexdigest(), rejected.document_id))
+        unique = list({(str(p), h, sentence): (p, h, sentence, digest, doc)
+                       for p, h, sentence, digest, doc in matches}.values())
+        return unique[0] if len(unique) == 1 else None
 
     async def _general_knowledge_fallback(self, user_message: str, state: DialogueState,
                                          started: float, base: dict) -> Answer | None:
@@ -2191,6 +2271,24 @@ class SourceFirstService:
                           scenario="answer", scenario_reason="source_first_rejected_handoff_limit",
                           generation_status="generated", validation_status="exact_approved_conditional_handoff",
                           duration_ms=round((perf_counter()-started)*1000), **base)
+        inspection = (self._rejected_conditional_inspection(state, user_message, retrieval)
+                      if retrieval.evidence_status != "unsafe" else None)
+        if inspection:
+            path, heading, sentence, digest, document_id = inspection
+            if sha256(path.read_bytes()).hexdigest() != digest:
+                return self._escalate("Источник изменился. Повторите вопрос.",
+                    "source_changed_during_answer", str(path), started, **base)
+            relative = path.relative_to(self.root).as_posix()
+            units = _approved_check_units("1. " + sentence, relative, heading,
+                equipment=state.task_entity("equipment"), manufacturer=state.task_entity("manufacturer"))
+            base["progress_update"] = {"procedure_id": document_id, "shown_units": units, "eligible_units": units}
+            base["retrieval_diagnostics"]["rejected_conditional_inspection"] = {
+                "source": relative, "section": heading, "source_sha256": digest,
+                "quote": sentence, "procedure_admitted": False}
+            return Answer(f"{sentence}\n\nИсточник: {relative} — {heading}",
+                scenario="answer", scenario_reason="source_first_rejected_conditional_inspection",
+                generation_status="generated", validation_status="exact_approved_read_only_unit",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         # A partial access workflow is not a full permission grant. It can
         # still provide a scoped, source-verified part when no named-role or
         # privilege requirement is unresolved. All SourceFirst gates below run.

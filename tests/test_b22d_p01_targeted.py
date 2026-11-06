@@ -52,7 +52,10 @@ def test_future_or_question_does_not_claim_observation(monkeypatch, tmp_path, me
     assert 'неверное время может создать ложное впечатление' not in turn['final_reply'].casefold()
 
 @pytest.mark.parametrize(('message','status'), [
-    ('Дата и время верны. Что теперь проверить?', 'unknown'),
+    ('Дата и время верны. Что теперь проверить?', 'passed'),
+    ('Дата верна. Что теперь проверить?', 'unknown'),
+    ('Время верно. Что теперь проверить?', 'unknown'),
+    ('Дата верна, время неправильное. Что теперь проверить?', 'failed'),
     ('Проверил дату и время, они не совпадают. Что теперь проверить?', 'failed'),
 ])
 def test_explicit_check_result_keeps_real_ledger_outcome(monkeypatch, tmp_path, message, status):
@@ -60,6 +63,11 @@ def test_explicit_check_result_keeps_real_ledger_outcome(monkeypatch, tmp_path, 
     checks = turn['state_after_sqlite_reopen']['task_context']['checks']
     assert any(check['status'] == status and check.get('result_span') for check in checks)
     assert turn['reason'] != 'source_first_observation_explanation'
+    subjects = checks[0].get('subject_results', [])
+    if 'верн' in message and 'не совпадают' not in message:
+        assert len({item['subject'] for item in subjects}) == (2 if 'Дата и время' in message or ',' in message else 1)
+    if 'неправильное' in message:
+        assert {item['status'] for item in subjects} == {'passed', 'failed'}
 
 
 def test_new_task_does_not_reuse_old_observation_or_ledger(monkeypatch, tmp_path):
@@ -167,3 +175,106 @@ def test_independent_scanner_diagnosis_first_turn_reaches_approved_evidence(monk
     reply=trace[0]['final_reply'].casefold()
     assert 'aqsi_devices/peripherals/scanner.md' in reply
     assert 'проверьте' in reply or 'свер' in reply
+
+
+def test_unchecked_compound_does_not_pass(monkeypatch, tmp_path):
+    _, turn = run_dialogue(monkeypatch, tmp_path, 'Пока не проверял дату и время.')
+    checks = turn['state_after_sqlite_reopen']['task_context']['checks']
+    assert all(check['status'] != 'passed' for check in checks)
+
+
+@pytest.mark.parametrize(('question', 'service'), [
+    ('На aQsi Online DataMatrix читается плохо. Что проверить?', 'aQsi Online'),
+    ('Для АТОЛ DataMatrix читается плохо. Что проверить?', 'АТОЛ'),
+])
+def test_rejected_inspection_does_not_cross_first_turn_scope(monkeypatch, tmp_path, question, service):
+    slot = 'service' if 'Online' in service else 'manufacturer'
+    raw = {'request_type':'diagnosis','relation':'new_task','intent':'device','operation':'diagnose',
+           'object':None,'object_evidence':None,'goal':{'quote':question},'symptom':None,
+           'entities':[{'slot':slot,'value':service,'evidence':{'quote':service}}],
+           'unknown_facts':[],'specialist_requested':False,'specialist_evidence':None,'confidence':.9}
+    trace = _run_replay(monkeypatch,tmp_path,[{'id':'negative','text':question,'provider_raw':raw}],
+        coordinator_enabled=True,validate_with_state=True,
+        sources=('aqsi_devices/peripherals/scanner.md','aqsi_devices/errors/goods-not-on-device.md'))
+    assert trace[0]['reason'] != 'source_first_rejected_conditional_inspection'
+    assert 'aqsi_devices/peripherals/scanner.md' not in trace[0]['final_reply']
+
+
+def test_rejected_inspection_refuses_modification_request(monkeypatch,tmp_path):
+    question = 'На aQsi DataMatrix не читается. Как переключить режим USB?'
+    raw = {'request_type':'diagnosis','relation':'new_task','intent':'device','operation':'diagnose',
+           'object':None,'object_evidence':None,'goal':{'quote':question},'symptom':None,
+           'entities':[{'slot':'manufacturer','value':'aQsi','evidence':{'quote':'aQsi'}}],
+           'unknown_facts':[],'specialist_requested':False,'specialist_evidence':None,'confidence':.9}
+    trace = _run_replay(monkeypatch,tmp_path,[{'id':'action','text':question,'provider_raw':raw}],
+        coordinator_enabled=True,validate_with_state=True,
+        sources=('aqsi_devices/peripherals/scanner.md','aqsi_devices/errors/goods-not-on-device.md'))
+    assert trace[0]['reason'] != 'source_first_rejected_conditional_inspection'
+
+
+@pytest.mark.parametrize(('last','expected'), [
+    ('Время верно.', 'passed'),
+    ('Время неправильное.', 'failed'),
+])
+def test_compound_subjects_accumulate_across_sqlite_reopens(monkeypatch, tmp_path, last, expected):
+    first = TURNS[0]
+    messages = ['Дата верна.', last]
+    cases = [{'id':'first','text':first['question'],
+              'provider_raw':TRACE['understanding_calls'][first['understanding_call_indices'][-1]]['structured_output']}]
+    for text in messages:
+        cases.append({'id': text, 'text': text, 'provider_raw': {
+            'request_type':'information','relation':'continue','intent':'unknown','operation':'diagnose',
+            'object':None,'object_evidence':None,'goal':None,'symptom':None,'entities':[],
+            'unknown_facts':[],'specialist_requested':False,'specialist_evidence':None,'confidence':.9}})
+    planner = {i:{'mode':'select','section_id':SECTION,'applicability_confirmed':True,
+                  'source_order_complete':True,'reason':'approved section'} for i in (1,2,3)}
+    turns = _run_replay(monkeypatch,tmp_path,cases,sources=('evotor/fn/fn-234.md',),
+                        coordinator_enabled=True,validate_with_state=True,planner_overrides=planner)
+    checks = turns[-1]['state_after_sqlite_reopen']['task_context']['checks']
+    assert checks[0]['status'] == expected
+    assert len({x['subject'] for x in checks[0]['subject_results']}) == 2
+
+
+def test_ambiguous_mixed_clause_never_attributes_failure_to_both_subjects(monkeypatch, tmp_path):
+    _, turn = run_dialogue(monkeypatch, tmp_path, 'Дата верна и время неправильное.')
+    check = turn['state_after_sqlite_reopen']['task_context']['checks'][0]
+    records = check.get('subject_results', [])
+    assert not (len(records) == 2 and all(item['status'] == 'failed' for item in records))
+    assert check['status'] != 'passed'
+
+
+def test_n03_initial_turn_shows_a_real_check_not_a_fact(monkeypatch, tmp_path):
+    first, _ = run_scanner(monkeypatch, tmp_path)
+    answer = first['final_reply'].casefold()
+    assert 'если код не читается' in answer and 'проверьте' in answer
+    checks = first['state_after_sqlite_reopen']['task_context']['checks']
+    assert len(checks) == 1 and 'проверьте' in checks[0]['label'].casefold()
+    assert 'совместимость зависит' not in checks[0]['label'].casefold()
+
+
+def test_live_continuation_with_change_intent_keeps_confirmed_scope(monkeypatch, tmp_path):
+    live = json.loads((ROOT / 'reports/b2_2d_20261106/p01_coverage_live_20261106_after.json').read_text(encoding='utf8'))
+    turns = [t for t in live['turns'] if t['case'] == 'N03']
+    cases = [{'id':str(t['turn']), 'text':t['question'],
+              'provider_raw':live['understanding_calls'][t['understanding_call_indices'][-1]]['structured_output']}
+             for t in turns]
+    result = _run_replay(monkeypatch,tmp_path,cases,coordinator_enabled=True,validate_with_state=True,
+        sources=('aqsi_devices/peripherals/scanner.md','aqsi_devices/errors/goods-not-on-device.md'))
+    first = result[0]['state_after_sqlite_reopen']['task_context']
+    second = result[1]['state_after_sqlite_reopen']['task_context']
+    assert second['task_id'] == first['task_id']
+    assert second['active_route'] == first['active_route']
+    assert second['operation'] == 'change'  # Scope retention never grants the action.
+    assert 'если стандартные проверки не помогли' in result[1]['final_reply'].casefold()
+
+
+def test_live_new_wording_certainty_question_keeps_handoff_condition(monkeypatch, tmp_path):
+    live = json.loads((ROOT / 'reports/b2_2d_20261106/p01_coverage_live_20261106_after.json').read_text(encoding='utf8'))
+    turns = [t for t in live['turns'] if t['case'] == 'N03_new']
+    cases = [{'id':str(t['turn']), 'text':t['question'],
+              'provider_raw':live['understanding_calls'][t['understanding_call_indices'][-1]]['structured_output']}
+             for t in turns]
+    result = _run_replay(monkeypatch,tmp_path,cases,coordinator_enabled=True,validate_with_state=True,
+        sources=('aqsi_devices/peripherals/scanner.md','aqsi_devices/errors/goods-not-on-device.md'))
+    assert 'если стандартные проверки не помогли' in result[1]['final_reply'].casefold()
+    assert result[1]['state_after_sqlite_reopen']['task_context']['task_id'] == result[0]['state_after_sqlite_reopen']['task_context']['task_id']

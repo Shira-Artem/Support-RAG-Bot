@@ -1201,10 +1201,31 @@ class DialogueManager:
         explicit_new_topic = obs.new_topic or _explicit_new_topic(text)
         scope_conflict = _scope_conflicts(previous, obs.entities) if previous.task_id else False
         independent_operation = _operation_is_independent(previous.operation, obs.operation)
+        # An information question can ask about another operation on the same
+        # explicitly named item without abandoning the active diagnostic task.
+        # Preserve the new operation for safety gates; retain context only when
+        # an exact current entity is also named in the prior symptom.
+        prior_symptom = (previous.symptom.quote.casefold().replace("ё", "е")
+                         if previous.symptom else "")
+        shared_subject = any(
+            len(fact.value.strip()) >= 4 and re.search(
+                r"(?<!\w)" + re.escape(fact.value.strip().casefold().replace("ё", "е")) + r"(?!\w)",
+                prior_symptom)
+            for fact in obs.entities.get("equipment", []))
+        if (scope_conflict and shared_subject and set(obs.entities) == {"equipment"}
+                and not previous.task_entities.get("equipment")
+                and previous.routing_slot == "manufacturer"):
+            # A peripheral named in the prior symptom refines the item, not
+            # the confirmed manufacturer of the host device.
+            scope_conflict = False
+        same_subject_question = (obs.request_type == "information" and obs.question
+            and obs.intent == previous.intent and previous.operation in {"check", "diagnose", "status"}
+            and not obs.symptom and not obs.error and bool(shared_subject))
         semantic_refinement = (observation is not None and relation == "continue"
             and not explicit_new_topic and not scope_conflict
             and ({previous.operation, obs.operation} <= {"explain", "check", "status", "diagnose"}
-                 or {previous.intent, obs.intent} <= {"access", "credentials"}))
+                 or {previous.intent, obs.intent} <= {"access", "credentials"}
+                 or same_subject_question))
         independent_subject = (previous.object is not None and obs.object is not None
                                and previous.object != obs.object)
         independent_domain = (previous.intent not in {"unknown", "general", "device"}
@@ -1652,6 +1673,9 @@ class DialogueManager:
                 return "failed"
             if re.search(r"\b(?:не\s+работ\w*|не\s+прош\w*|не\s+(?:напечат|распечат)\w*|не\s+оплач\w*|не\s+подключ\w*|не\s+(?:отправля|переда)\w*|не\s+уменьш\w*|не\s+совпад\w*|не\s+(?:верн\w*|корректн\w*|соответству\w*)|не\s+измен\w*|остал\w*\s+(?:той\s+же|прежн\w*|без\s+изменен\w*)|нестабил\w*|пропад\w*|истек\w*|законч\w*)\b", normalized):
                 return "failed"
+            if (re.search(r"\bнеправильн\w*\b", normalized)
+                    and not re.search(r"\b(?:замет\w*|увид\w*|обнаруж\w*)\b", normalized)):
+                return "failed"
             if re.search(r"\b(?:работа\w*|успешн\w*|прошл\w*|оплачен\w*|действу\w*|подключен\w*|исправлен\w*|уменьш\w*|совпад\w*|верн\w*|корректн\w*|соответству\w*|стабил\w*|подтвержден\w*|напечатал\w*|распечатал\w*|напечатан\w*|распечатан\w*)\b", normalized):
                 return "passed"
             if re.search(r"\b(?:провер\w*|посмотр\w*|свер\w*|узнал\w*)\b", normalized):
@@ -2032,6 +2056,68 @@ class DialogueManager:
                         check["result_span"] = deepcopy(decisive)
                 elif any(item is not None for item in statuses):
                     check["status"] = "unknown"
+            # A source check can contain two coordinated subjects in one
+            # component. Persist outcomes per subject; never infer completion
+            # from a report about just one of them. Restrict this to a single
+            # check action and an unambiguous source-derived coordination.
+            source_components = unit.get("components") or []
+            if len(source_components) == 1 and len(instruction_sentences) == 1:
+                action = CHECK_ACTION_PATTERN.search(instruction_sentences[0])
+                action_text = (instruction_sentences[0][action.start():].split(":", 1)[0]
+                               if action else "")
+                pairs = list(re.finditer(
+                    r"\b([а-яa-z]{4,})\s+и\s+([а-яa-z]{4,})\s+(?:на|в|у)\b",
+                    action_text.casefold().replace("ё", "е")))
+                if len(pairs) == 1:
+                    subjects = [value[:4] for value in pairs[0].groups()]
+                    if len(set(subjects)) == 2:
+                        records = check.setdefault("subject_results", [])
+                        for span in clauses:
+                            if component_target_by_span.get(span) != unit_key:
+                                continue
+                            raw = text[span[0]:span[1]]
+                            outcome = reported_status(raw)
+                            if outcome not in {"passed", "failed", "unknown", "not_done"}:
+                                continue
+                            quote = raw.strip()
+                            start_pos = span[0] + len(raw) - len(raw.lstrip())
+                            normalized = quote.casefold().replace("ё", "е")
+                            locations = [(subject, match.start()) for subject in subjects
+                                if (match := re.search(r"(?<!\w)" + re.escape(subject) + r"\w*", normalized))]
+                            locations.sort(key=lambda item: item[1])
+                            individual = {}
+                            if len(locations) == len(subjects):
+                                for index, (subject, position) in enumerate(locations):
+                                    end = locations[index + 1][1] if index + 1 < len(locations) else len(normalized)
+                                    individual[subject] = reported_status(normalized[position:end])
+                            distinct = {value for value in individual.values() if value in {"passed", "failed"}}
+                            for subject, _ in locations:
+                                # Explicit contradictory predicates apply to their
+                                # own named subject. If segmentation is incomplete,
+                                # preserve uncertainty instead of spreading a result.
+                                subject_status = (individual.get(subject) or "unknown") if len(distinct) > 1 else outcome
+                                record = {"subject": subject, "status": subject_status,
+                                          "message_id": message_id, "quote": quote,
+                                          "start": start_pos, "end": start_pos + len(quote)}
+                                if record not in records:
+                                    records.append(record)
+                        subject_statuses = []
+                        for subject in subjects:
+                            values = {item["status"] for item in records if item.get("subject") == subject}
+                            subject_statuses.append("unknown" if {"passed", "failed"} <= values
+                                else "failed" if "failed" in values
+                                else "unknown" if "unknown" in values
+                                else "passed" if "passed" in values
+                                else "not_done" if "not_done" in values else None)
+                        if "failed" in subject_statuses:
+                            check["status"] = "failed"
+                        elif all(value == "passed" for value in subject_statuses):
+                            check["status"] = "passed"
+                        elif any(value is not None for value in subject_statuses):
+                            check["status"] = "unknown"
+                        if records:
+                            check["result_span"] = {key: records[-1][key] for key in
+                                                    ("message_id", "quote", "start", "end")}
             changed = True
         return changed
 
