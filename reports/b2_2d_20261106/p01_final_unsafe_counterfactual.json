@@ -1,0 +1,687 @@
+[
+  {
+    "turn": 1,
+    "case_id": "1",
+    "user_text": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+    "raw_provider_fixture": {
+      "request_type": "diagnosis",
+      "relation": "new_task",
+      "intent": "fiscal_drive",
+      "operation": "diagnose",
+      "object": "Эвотор",
+      "object_evidence": {
+        "quote": "Эвотор"
+      },
+      "goal": {
+        "quote": "Это точно означает, что накопитель надо заменить?"
+      },
+      "symptom": {
+        "quote": "ФН 234"
+      },
+      "entities": [
+        {
+          "slot": "equipment",
+          "value": "Эвотор",
+          "evidence": {
+            "quote": "Эвотор"
+          }
+        },
+        {
+          "slot": "component",
+          "value": "ФН 234",
+          "evidence": {
+            "quote": "ФН 234"
+          }
+        },
+        {
+          "slot": "component",
+          "value": "накопитель",
+          "evidence": {
+            "quote": "накопитель"
+          }
+        }
+      ],
+      "unknown_facts": [],
+      "specialist_requested": false,
+      "specialist_evidence": null,
+      "confidence": 0.85
+    },
+    "validated": {
+      "request_type": "diagnosis",
+      "intent": "unknown",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": true,
+      "intent": "unknown",
+      "operation": "diagnose",
+      "object": "ФН",
+      "relation": "new_task",
+      "expected_slot": null,
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 1,
+      "client_details": [],
+      "unknown_facts": []
+    },
+    "state_after_sqlite_reopen": {
+      "schema_version": 2,
+      "revision": 1,
+      "session": {
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 13,
+              "end": 19
+            }
+          ]
+        },
+        "active_route": {
+          "slot": "manufacturer",
+          "fact": {
+            "value": "Эвотор",
+            "message_id": 1,
+            "quote": "Эвотор",
+            "start": 13,
+            "end": 19
+          }
+        }
+      },
+      "task_context": {
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 13,
+              "end": 19
+            }
+          ]
+        },
+        "active_route": {
+          "slot": "manufacturer",
+          "fact": {
+            "value": "Эвотор",
+            "message_id": 1,
+            "quote": "Эвотор",
+            "start": 13,
+            "end": 19
+          }
+        },
+        "parameters": [],
+        "object_reference": null,
+        "task_fact": {
+          "value": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+          "message_id": 1,
+          "quote": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+          "start": 0,
+          "end": 94
+        },
+        "operation_evidence": null,
+        "operation_confidence": 0.85,
+        "symptom": {
+          "value": "ФН 234",
+          "message_id": 1,
+          "quote": "ФН 234",
+          "start": 37,
+          "end": 43
+        },
+        "superseded_facts": [],
+        "goals": [
+          {
+            "value": "Это точно означает, что накопитель надо заменить?",
+            "message_id": 1,
+            "quote": "Это точно означает, что накопитель надо заменить?",
+            "start": 45,
+            "end": 94
+          }
+        ],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.85,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null,
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "procedure_id": "evotor-fn-234-360005580254",
+        "shown_units": [
+          {
+            "unit_id": "e15c5e069421a2b86113",
+            "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+            "source": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины",
+            "source_verified": true,
+            "model_scope": null,
+            "model_value": null,
+            "source_order": {
+              "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+              "context": "75d16fe193fb47a3cf5abfb9beb46e232c709a39daf52d699b38096f90abfd06"
+            },
+            "components": [
+              {
+                "component_id": "e3cf2d7adc93bf3be892",
+                "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+              }
+            ]
+          }
+        ],
+        "eligible_units": [
+          {
+            "unit_id": "e15c5e069421a2b86113",
+            "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+            "source": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины",
+            "source_verified": true,
+            "model_scope": null,
+            "model_value": null,
+            "source_order": {
+              "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+              "context": "75d16fe193fb47a3cf5abfb9beb46e232c709a39daf52d699b38096f90abfd06"
+            },
+            "components": [
+              {
+                "component_id": "e3cf2d7adc93bf3be892",
+                "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+              }
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "task_id": "task:1",
+            "unit_id": "e15c5e069421a2b86113",
+            "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+            "source": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины",
+            "source_verified": true,
+            "asked_message_id": 2,
+            "status": "asked",
+            "components": [
+              {
+                "component_id": "e3cf2d7adc93bf3be892",
+                "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+              }
+            ],
+            "component_results": []
+          }
+        ],
+        "open_question": null,
+        "current_subgoal": {
+          "value": "Это точно означает, что накопитель надо заменить?",
+          "message_id": 1,
+          "quote": "Это точно означает, что накопитель надо заменить?",
+          "start": 45,
+          "end": 94
+        },
+        "clarification_repeats": {},
+        "closed": false
+      },
+      "task_id": "task:1",
+      "topic_start_message_id": 1,
+      "intent": "unknown",
+      "request_type": "diagnosis",
+      "operation": "diagnose",
+      "object": "ФН",
+      "entities": {
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 1,
+            "quote": "Эвотор",
+            "start": 13,
+            "end": 19
+          }
+        ]
+      },
+      "routing_slot": "manufacturer",
+      "parameters": [],
+      "object_reference": null,
+      "task": {
+        "value": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+        "message_id": 1,
+        "quote": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+        "start": 0,
+        "end": 94
+      },
+      "operation_evidence": null,
+      "goals": [
+        {
+          "value": "Это точно означает, что накопитель надо заменить?",
+          "message_id": 1,
+          "quote": "Это точно означает, что накопитель надо заменить?",
+          "start": 45,
+          "end": 94
+        }
+      ],
+      "constraints": [],
+      "details": [],
+      "error": null,
+      "expected": null,
+      "relation": "new_task",
+      "confidence": 0.85,
+      "transition": "new_task",
+      "analysis_required": false,
+      "unresolved": null
+    },
+    "route": "answer",
+    "reason": "source_first_exact_section",
+    "rag_query": "производитель: Эвотор — На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+    "generation_error": null,
+    "validation_status": "exact_source_copy",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "candidate_diagnostics": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "reasons": []
+      }
+    ],
+    "selected_sources": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "coordinator_decision": {
+      "request_type": "diagnosis",
+      "route": "technical_action",
+      "task_relation": "new_task",
+      "current_subgoal": "Это точно означает, что накопитель надо заменить?",
+      "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+      "rationale": "task_requires_applicability_checked_action"
+    },
+    "coordinator_evidence": null,
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "stage_call_counts": {
+      "understanding": 1,
+      "actual_provider_calls": 0,
+      "planner": 1,
+      "composer_or_repair": 0,
+      "judge": 0,
+      "provider_usage_units": 0
+    },
+    "planner_choices": [
+      {
+        "id": "evotor-fn-234-360005580254::Первое различение причины",
+        "section": "Первое различение причины",
+        "source": "data/knowledge/evotor/fn/fn-234.md"
+      }
+    ],
+    "final_reply": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины"
+  },
+  {
+    "turn": 2,
+    "case_id": "2",
+    "user_text": "Заметил неверные часы на кассе. Влияет ли это на вывод о сроке ФН и что мне делать?",
+    "raw_provider_fixture": {
+      "confidence": 0.9,
+      "entities": [],
+      "goal": {
+        "quote": "Влияет ли это на вывод о сроке ФН и что мне делать?"
+      },
+      "intent": "device",
+      "object": "ФН",
+      "object_evidence": {
+        "quote": "ФН"
+      },
+      "operation": "diagnose",
+      "relation": "continue",
+      "request_type": "diagnosis",
+      "specialist_evidence": null,
+      "specialist_requested": false,
+      "symptom": {
+        "quote": "неверные часы на кассе"
+      },
+      "unknown_facts": []
+    },
+    "validated": {
+      "request_type": "diagnosis",
+      "intent": "device",
+      "operation": "diagnose"
+    },
+    "state": {
+      "task_changed": false,
+      "intent": "device",
+      "operation": "diagnose",
+      "object": "ФН",
+      "relation": "continue",
+      "expected_slot": null,
+      "routing_service": "Эвотор",
+      "confirmed_manufacturer": "Эвотор",
+      "confirmed_equipment": null,
+      "goal_count": 2,
+      "client_details": [
+        "неверные часы на кассе",
+        "Заметил"
+      ],
+      "unknown_facts": []
+    },
+    "state_after_sqlite_reopen": {
+      "schema_version": 2,
+      "revision": 2,
+      "session": {
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 13,
+              "end": 19
+            }
+          ]
+        },
+        "active_route": {
+          "slot": "manufacturer",
+          "fact": {
+            "value": "Эвотор",
+            "message_id": 1,
+            "quote": "Эвотор",
+            "start": 13,
+            "end": 19
+          }
+        }
+      },
+      "task_context": {
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "device",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "Эвотор",
+              "start": 13,
+              "end": 19
+            }
+          ]
+        },
+        "active_route": {
+          "slot": "manufacturer",
+          "fact": {
+            "value": "Эвотор",
+            "message_id": 1,
+            "quote": "Эвотор",
+            "start": 13,
+            "end": 19
+          }
+        },
+        "parameters": [],
+        "object_reference": null,
+        "task_fact": {
+          "value": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+          "message_id": 1,
+          "quote": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+          "start": 0,
+          "end": 94
+        },
+        "operation_evidence": null,
+        "operation_confidence": 0.9,
+        "symptom": {
+          "value": "ФН 234",
+          "message_id": 1,
+          "quote": "ФН 234",
+          "start": 37,
+          "end": 43
+        },
+        "superseded_facts": [],
+        "goals": [
+          {
+            "value": "Это точно означает, что накопитель надо заменить?",
+            "message_id": 1,
+            "quote": "Это точно означает, что накопитель надо заменить?",
+            "start": 45,
+            "end": 94
+          },
+          {
+            "value": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+            "message_id": 3,
+            "quote": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+            "start": 32,
+            "end": 83
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "неверные часы на кассе",
+            "message_id": 3,
+            "quote": "неверные часы на кассе",
+            "start": 8,
+            "end": 30
+          },
+          {
+            "value": "Заметил",
+            "message_id": 3,
+            "quote": "Заметил",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null,
+        "unknown_facts": [],
+        "unknown_evidence": {},
+        "procedure_id": "evotor-fn-234-360005580254",
+        "shown_units": [
+          {
+            "unit_id": "e15c5e069421a2b86113",
+            "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+            "source": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины",
+            "source_verified": true,
+            "model_scope": null,
+            "model_value": null,
+            "source_order": {
+              "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+              "context": "75d16fe193fb47a3cf5abfb9beb46e232c709a39daf52d699b38096f90abfd06"
+            },
+            "components": [
+              {
+                "component_id": "e3cf2d7adc93bf3be892",
+                "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+              }
+            ]
+          }
+        ],
+        "eligible_units": [
+          {
+            "unit_id": "e15c5e069421a2b86113",
+            "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+            "source": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины",
+            "source_verified": true,
+            "model_scope": null,
+            "model_value": null,
+            "source_order": {
+              "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+              "context": "75d16fe193fb47a3cf5abfb9beb46e232c709a39daf52d699b38096f90abfd06"
+            },
+            "components": [
+              {
+                "component_id": "e3cf2d7adc93bf3be892",
+                "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+              }
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "task_id": "task:1",
+            "unit_id": "e15c5e069421a2b86113",
+            "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+            "source": "data/knowledge/evotor/fn/fn-234.md",
+            "section": "Первое различение причины",
+            "source_verified": true,
+            "asked_message_id": 2,
+            "status": "asked",
+            "components": [
+              {
+                "component_id": "e3cf2d7adc93bf3be892",
+                "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+              }
+            ],
+            "component_results": []
+          }
+        ],
+        "open_question": null,
+        "current_subgoal": {
+          "value": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+          "message_id": 3,
+          "quote": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+          "start": 32,
+          "end": 83
+        },
+        "clarification_repeats": {},
+        "closed": false
+      },
+      "task_id": "task:1",
+      "topic_start_message_id": 1,
+      "intent": "device",
+      "request_type": "diagnosis",
+      "operation": "diagnose",
+      "object": "ФН",
+      "entities": {
+        "manufacturer": [
+          {
+            "value": "Эвотор",
+            "message_id": 1,
+            "quote": "Эвотор",
+            "start": 13,
+            "end": 19
+          }
+        ]
+      },
+      "routing_slot": "manufacturer",
+      "parameters": [],
+      "object_reference": null,
+      "task": {
+        "value": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+        "message_id": 1,
+        "quote": "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?",
+        "start": 0,
+        "end": 94
+      },
+      "operation_evidence": null,
+      "goals": [
+        {
+          "value": "Это точно означает, что накопитель надо заменить?",
+          "message_id": 1,
+          "quote": "Это точно означает, что накопитель надо заменить?",
+          "start": 45,
+          "end": 94
+        },
+        {
+          "value": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+          "message_id": 3,
+          "quote": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+          "start": 32,
+          "end": 83
+        }
+      ],
+      "constraints": [],
+      "details": [
+        {
+          "value": "неверные часы на кассе",
+          "message_id": 3,
+          "quote": "неверные часы на кассе",
+          "start": 8,
+          "end": 30
+        },
+        {
+          "value": "Заметил",
+          "message_id": 3,
+          "quote": "Заметил",
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "error": null,
+      "expected": null,
+      "relation": "continue",
+      "confidence": 0.9,
+      "transition": "continue_task",
+      "analysis_required": false,
+      "unresolved": null
+    },
+    "route": "answer",
+    "reason": "source_first_observation_explanation",
+    "rag_query": "производитель: Эвотор — диагностика ошибки ФН — запрос клиента: На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить? — цель: Влияет ли это на вывод о сроке ФН и что мне делать? — уточнение клиента: неверные часы на кассе; Заметил",
+    "generation_error": null,
+    "validation_status": "exact_approved_observation_fact",
+    "retrieval_reason": "evidence_coverage_incomplete",
+    "candidate_diagnostics": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "reasons": []
+      }
+    ],
+    "selected_sources": [
+      {
+        "source": "evotor/fn/fn-234.md",
+        "document_id": "evotor-fn-234-360005580254",
+        "section": null
+      }
+    ],
+    "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+    "coordinator_decision": {
+      "request_type": "diagnosis",
+      "route": "technical_action",
+      "task_relation": "continue",
+      "current_subgoal": "Влияет ли это на вывод о сроке ФН и что мне делать?",
+      "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+      "rationale": "task_requires_applicability_checked_action"
+    },
+    "coordinator_evidence": null,
+    "retrieval_called": true,
+    "generation_stages": [
+      "planner"
+    ],
+    "stage_call_counts": {
+      "understanding": 1,
+      "actual_provider_calls": 0,
+      "planner": 1,
+      "composer_or_repair": 0,
+      "judge": 0,
+      "provider_usage_units": 0
+    },
+    "planner_choices": [
+      {
+        "id": "evotor-fn-234-360005580254::Первое различение причины",
+        "section": "Первое различение причины",
+        "source": "data/knowledge/evotor/fn/fn-234.md"
+      }
+    ],
+    "final_reply": "Вы сообщили: «Заметил неверные часы на кассе.» По подтверждённой инструкции: неверное время может создать ложное впечатление, что срок ФН завершился.\n\nДля дальнейших действий подтверждённого порядка здесь недостаточно; обратитесь к специалисту.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины"
+  }
+]
