@@ -570,6 +570,11 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
         return "product_catalog"
     if ("замороз" in task_folded or "без платеж" in task_folded):
         return "billing"
+    # A generic product description (e.g. a cloud cash register) also appears
+    # in settings vocabulary. Preserve a billing intent when the customer's
+    # own task contains billing evidence, before that broad product fallback.
+    if state.intent == "billing" and any(term in task_folded for term in _TASK_TERMS["billing"]):
+        return "billing"
     if any(term in task_folded for term in _TASK_TERMS["settings"]):
         return "settings"
     if any(term in task_folded for term in _TASK_TERMS["goods_receipt"]):
