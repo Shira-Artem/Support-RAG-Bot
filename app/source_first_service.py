@@ -496,6 +496,52 @@ def _read_only_status_fact(state: DialogueState, question: str, selected: dict |
         and not unsafe_operation_issue(claim) for claim in claims)
 
 
+def _observation_explanation(message: str, state: DialogueState, selected: dict) -> tuple[str, str] | None:
+    """Return a source fact about a newly reported observation, never a next step."""
+    task = state.task_context
+    if not task or not task.shown_units or not any(
+            unit.get("source_verified") is True and unit.get("source") == selected["source"]
+            and unit.get("section") == selected["section"] for unit in task.shown_units):
+        return None
+    if any(str((check.get("result_span") or {}).get("quote") or "").strip() and
+           str(check["result_span"]["quote"]).casefold() in message.casefold()
+           for check in task.checks):
+        return None
+    # A reported observation must be a separate declarative sentence, not a
+    # question, proposed future check, or instruction to perform an action.
+    parts = re.split(r"(?<=[.!?])\s+", message.strip())
+    if len(parts) < 2 or "?" not in parts[-1]:
+        return None
+    observation = parts[0].strip()
+    if (not observation.endswith(".") or "?" in observation
+            or re.search(r"\b(?:буду|будем|собира\w*|планир\w*|еще\s+не|не\s+провер\w*|проверил\w*)\b",
+                         observation, re.I)
+            or _MUTATING_REQUEST.search(observation)):
+        return None
+    observed_terms = _focus_terms(observation)
+    if len(observed_terms & _focus_terms(selected["text"])) < 2:
+        return None
+    # The explanatory clause after a colon is independently factual: the
+    # preceding check/procedure stays out of the answer. Refuse clauses that
+    # could depend on an omitted condition or contain executable instructions.
+    candidates = []
+    for sentence in statements(selected["text"]):
+        if ":" not in sentence:
+            continue
+        clause = sentence.rsplit(":", 1)[1].strip()
+        # The causal idiom is informational, although the generic source
+        # classifier sees its infinitive as a "create" procedure.
+        classified_clause = re.sub(r"\bсозда(?:ть|ет|ёт)\s+ложное\s+впечатление\b",
+                                   "означать", clause, flags=re.I)
+        if (not clause or re.match(r"^(?:это|этот|она|он|они|тогда|поэтому|если|при)\b", clause, re.I)
+                or evidence_kind(classified_clause) != "fact" or evidence_role(clause) != "fact"
+                or SOURCE_ACTION_PATTERN.search(clause) or unsafe_operation_issue(clause)):
+            continue
+        if observed_terms & _focus_terms(clause):
+            candidates.append(clause)
+    return (observation, candidates[0]) if len(candidates) == 1 else None
+
+
 def _technical_section_covers_observed_subject(state: DialogueState,
                                               selected: dict | None) -> bool:
     """Reject a broad workflow section that never names the failed object.
@@ -1551,6 +1597,70 @@ class SourceFirstService:
     def __init__(self, rag, settings: Settings, root: Path):
         self.rag, self.settings, self.root = rag, settings, root
 
+    def _read_only_handoff_limit(self, state, question, retrieval):
+        """Inspect an article only for an exact conditional handoff limit.
+
+        This is not an admission of the article's procedure: only the single
+        source sentence matching this strict read-only contract can be returned.
+        """
+        if (not state.task_context or state.analysis_required
+                or not re.search(r"\b(?:можно|допустим\w*|совместим\w*|поддержива\w*|возможн\w*|гарант\w*)\b", question, re.I)
+                or "?" not in question):
+            return None
+        source = getattr(getattr(self.rag, "pipeline", None), "source", None)
+        article = getattr(source, "article", None)
+        if not callable(article):
+            return None
+        index = _approved_sources(self.root)
+        matches = []
+        for rejected in [*retrieval.candidates, *retrieval.rejected]:
+            if (not rejected.document_id or
+                    any(not reason.startswith("task_mismatch:") for reason in rejected.reasons)):
+                continue
+            entry = index.get(rejected.document_id)
+            if not entry:
+                continue
+            path, metadata, body = entry
+            local_scope = normalize_metadata({**metadata, "source": path.relative_to(self.root).as_posix()})
+            indexed_scope = normalize_metadata(rejected.metadata)
+            fields = ("status", "service", "task_category", "manufacturer", "model", "procedure_service")
+            if any(local_scope.get(field) != indexed_scope.get(field) for field in fields):
+                continue
+            assessment = assess_source_scope(state, local_scope)
+            if assessment.missing or assessment.mismatches:
+                continue
+            # A manufacturer match is not evidence that its cloud service is
+            # a physical device. Do not carry the latter into a cloud task.
+            if (generic_physical_model(local_scope.get("model"), local_scope.get("manufacturer"))
+                    and any(re.search(r"online|онлайн|облач|cloud", fact.value, re.I)
+                            for fact in state.task_entities.get("service", []))):
+                continue
+            available = {str((hit.metadata or {}).get("section") or "")
+                         for hit in article(rejected.document_id)
+                         if (hit.metadata or {}).get("status") == "approved"
+                         and (hit.metadata or {}).get("document_id") == rejected.document_id
+                         and all(normalize_metadata(hit.metadata or {}).get(field) == local_scope.get(field)
+                                 for field in fields)}
+            for heading, text in _sections(body):
+                sentences = statements(text)
+                if heading not in available or len(sentences) != 1:
+                    continue
+                sentence = sentences[0].strip()
+                if (not re.fullmatch(r"[^.!?]{1,240}\bпередать\s+специалисту\s*,\s*если\s+[^.!?]{1,160}[.]?", sentence, re.I)
+                        or unsafe_operation_issue(sentence)
+                        or instruction_issue(sentence, "")
+                        or any(not re.fullmatch(r"передать", m.group(), re.I)
+                               for m in SOURCE_ACTION_PATTERN.finditer(sentence))
+                        or len(_focus_terms(question) & _focus_terms(sentence)) < 2):
+                    continue
+                snapshot = path.read_bytes()
+                snapshot_parts = snapshot.decode("utf-8").replace("\r\n", "\n").split("---", 2)
+                if (len(snapshot_parts) != 3 or (yaml.safe_load(snapshot_parts[1]) or {}) != metadata
+                        or snapshot_parts[2].strip() != body):
+                    continue
+                matches.append((path, heading, sentence, sha256(snapshot).hexdigest()))
+        return matches[0] if len(matches) == 1 else None
+
     async def _general_knowledge_fallback(self, user_message: str, state: DialogueState,
                                          started: float, base: dict) -> Answer | None:
         """Answer only a low-risk definition after a successful approved-source lookup."""
@@ -2064,6 +2174,23 @@ class SourceFirstService:
         diagnostics["timing_ms"] = {"retrieval": retrieval_ms}
         base.update(results=retrieval.documents, rag_query=query, active_request=query,
                     retrieval_diagnostics={**diagnostics, "engine": "source_first"})
+        handoff_limit = (self._read_only_handoff_limit(state, user_message, retrieval)
+                         if retrieval.evidence_status != "unsafe" and not unsafe_operation_issue(user_message)
+                         else None)
+        if handoff_limit:
+            limit_path, heading, sentence, digest = handoff_limit
+            if sha256(limit_path.read_bytes()).hexdigest() != digest:
+                return self._escalate("Источник изменился. Повторите вопрос.",
+                    "source_changed_during_answer", str(limit_path), started, **base)
+            relative = limit_path.relative_to(self.root).as_posix()
+            base["retrieval_diagnostics"]["read_only_rejected_handoff"] = {
+                "source": relative, "section": heading, "source_sha256": digest,
+                "progress_mutated": False, "procedure_admitted": False}
+            return Answer("Подтвердить гарантированный результат такого изменения по этой инструкции нельзя.\n"
+                          f"{sentence}\n\nИсточник: {relative} — {heading}",
+                          scenario="answer", scenario_reason="source_first_rejected_handoff_limit",
+                          generation_status="generated", validation_status="exact_approved_conditional_handoff",
+                          duration_ms=round((perf_counter()-started)*1000), **base)
         # A partial access workflow is not a full permission grant. It can
         # still provide a scoped, source-verified part when no named-role or
         # privilege requirement is unresolved. All SourceFirst gates below run.
@@ -2479,6 +2606,20 @@ class SourceFirstService:
             if selected.get("read_only_check_contract") and not read_only_check_section({"status": "approved"}, body):
                 return self._escalate("Не удалось подтвердить read-only характер раздела. Запросите специалиста.",
                     "source_read_only_contract_failed", selected["source"], started, **base)
+            explanation = (_observation_explanation(user_message, state, selected)
+                           if not informational and plan.get("applicability_confirmed") is True else None)
+            if explanation:
+                observation, fact = explanation
+                base["retrieval_diagnostics"]["observation_explanation"] = {
+                    "section_id": selected["id"], "fact": fact, "progress_mutated": False}
+                return Answer(
+                    f"Вы сообщили: «{observation}» По подтверждённой инструкции: {fact}\n\n"
+                    "Для дальнейших действий подтверждённого порядка здесь недостаточно; "
+                    "обратитесь к специалисту.\n\n"
+                    f"Источник: {selected['source']} — {selected['section']}",
+                    scenario="answer", scenario_reason="source_first_observation_explanation",
+                    generation_status="generated", validation_status="exact_approved_observation_fact",
+                    duration_ms=round((perf_counter()-started)*1000), **base)
             focused_limit = _shown_section_limit(user_message, selected, sections, history or [])
             if focused_limit:
                 # Recheck every supporting section immediately before returning

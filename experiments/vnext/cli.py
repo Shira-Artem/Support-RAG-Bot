@@ -1,6 +1,7 @@
 """Isolated LangGraph + Groq + read-only Stage3 prototype; no Telegram or production writes.
 
-Run with the project's .venv Python. LangGraph is installed only under .local/vnext-deps.
+Run with the project's .venv Python. Install LangGraph under the versioned
+.local/vnext-deps-pyXY directory for that interpreter.
 The graph has three nodes: understand, retrieve, respond. In-memory checkpointing
 keeps each scenario's exact user messages and confirmed user quotes independent.
 """
@@ -19,7 +20,7 @@ from typing import Annotated, TypedDict
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / ".local" / "vnext-deps"))
+sys.path.insert(0, str(ROOT / ".local" / f"vnext-deps-py{sys.version_info.major}{sys.version_info.minor}"))
 
 import httpx
 from dotenv import dotenv_values

@@ -1,13 +1,15 @@
 # Isolated RAG vNext CLI
 
-Run from the repository root with the existing `.venv` Python. LangGraph is kept in `.local/vnext-deps`; the Telegram worker's environment and project requirements are unchanged.
+Run from the repository root with the existing `.venv` Python. LangGraph is kept in a Python-version-specific target directory; the Telegram worker's environment and project requirements are unchanged. For the project's Python 3.12 environment:
 
 ```powershell
-.venv/Scripts/python.exe -m pip install --target .local/vnext-deps -r experiments/vnext/requirements.txt
+.venv/Scripts/python.exe -m pip install --target .local/vnext-deps-py312 -r experiments/vnext/requirements.txt
 .venv/Scripts/python.exe experiments/vnext/cli.py --preflight
 .venv/Scripts/python.exe experiments/vnext/compare_retrieval.py
 .venv/Scripts/python.exe experiments/vnext/cli.py --max-groq-calls 30
 ```
+
+For another Python version, replace `py312` with its major and minor version (for example, `py314`). Do not reuse a target built for another Python version: binary extensions are interpreter-specific.
 
 `compare_retrieval.py` is the P0.0/P0.1 no-Groq gate. It reads the three original control questions, runs old dense top-six and the approved BM25+Dense+RRF candidate source through the same post-retrieval context selector, and saves ranks, rejection predicates, exact model fragments, source hashes and timings to `p0-raw-retrieval-results.json`. It checks the 15-turn suite and three exact OFD-history turns without replaying them. These raw-question results do **not** validate LLM-generated `search_query` or client answers.
 

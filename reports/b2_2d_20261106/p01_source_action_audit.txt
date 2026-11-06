@@ -1,0 +1,16 @@
+no recognized source action but classified procedure/interface: 37
+data\knowledge\aqsi\aqsi-error-115.md : Уточнить, при какой операции появляется ошибка, и точный текст сообщения.
+data\knowledge\1c\bank\acquiring-returns.md : Уточнить версию 1С и фактическую схему расчётов: отдельное списание банком или удержание из будущих поступлений.
+data\knowledge\1c\bank\directbank-all-accounts.md : Уточнить версию «1С:Бухгалтерии» и включён ли 1С:ДиректБанк для соответствующего банка.
+data\knowledge\1c\bank\directbank-auto-schedule.md : Выяснить версию конфигурации и подключён ли 1С:ДиректБанк.
+data\knowledge\1c\bank\directbank-other-banks.md : Уточнить конфигурацию и версию — возможность относится к 3.0.203 и новее.
+data\knowledge\1c\bank\import-file-directbank.md : Уточнить версию 1С и банковский счёт.
+data\knowledge\1c\closing\close-several-months.md : Уточнить организацию, конфигурацию, редакцию, нужные периоды и наличие выделенных подразделений.
+data\knowledge\1c\closing\error-first-diagnostics.md : Уточнить редакцию/релиз 1С, организацию, налоговый режим и проблемный месяц.
+data\knowledge\1c\closing\monthly-schedule.md : Уточнить точную конфигурацию и версию — старые релизы функции не имеют.
+data\knowledge\1c\closing\monthly-schedule.md : Уточнить окна загрузки данных, обменов с банком и резервного копирования.
+data\knowledge\1c\counterparty\reconciliation-act.md : Уточнить контрагента, договор, организацию, период сверки и валюту.
+data\knowledge\1c\counterparty\reconciliation-act.md : Выяснить, какие документы отсутствуют или проведены другой датой.
+data\knowledge\1c\edo\epd-vs-edo.md : Уточнить, что используется именно 1С-ЭПД, а не обычный 1С-ЭДО для УПД.
+data\knowledge\1c\goods\single-upd-many-warehouses.md : Уточнить версию 1С и используется ли складской ордерный учёт.
+data\knowledge\1c\goods\single-upd-many-warehouses.md : Если надо распределить товары по складам, выяснить используемую в организации схему оформления первичных документов.

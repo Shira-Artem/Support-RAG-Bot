@@ -1,0 +1,1416 @@
+{
+  "N03": [
+    {
+      "turn": 1,
+      "case_id": "N03/1",
+      "user_text": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+      "raw_provider_fixture": {
+        "confidence": 0.95,
+        "entities": [
+          {
+            "evidence": {
+              "quote": "aQsi"
+            },
+            "slot": "manufacturer",
+            "value": "aQsi"
+          },
+          {
+            "evidence": {
+              "quote": "внешний сканер"
+            },
+            "slot": "equipment",
+            "value": "внешний сканер"
+          }
+        ],
+        "goal": null,
+        "intent": "device",
+        "object": "scanner",
+        "object_evidence": {
+          "quote": "внешний сканер"
+        },
+        "operation": "diagnose",
+        "relation": "new_task",
+        "request_type": "diagnosis",
+        "specialist_evidence": null,
+        "specialist_requested": false,
+        "symptom": {
+          "quote": "не считывает DataMatrix"
+        },
+        "unknown_facts": []
+      },
+      "validated": {
+        "request_type": "diagnosis",
+        "intent": "device",
+        "operation": "check"
+      },
+      "state": {
+        "task_changed": true,
+        "intent": "device",
+        "operation": "check",
+        "object": "касса",
+        "relation": "new_task",
+        "expected_slot": null,
+        "routing_service": "aQsi",
+        "confirmed_manufacturer": "aQsi",
+        "confirmed_equipment": "внешний сканер",
+        "goal_count": 0,
+        "client_details": [],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "aQsi",
+                "message_id": 1,
+                "quote": "aQsi",
+                "start": 20,
+                "end": 24
+              }
+            ],
+            "equipment": [
+              {
+                "value": "внешний сканер",
+                "message_id": 1,
+                "quote": "внешний сканер",
+                "start": 25,
+                "end": 39
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 20,
+              "end": 24
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "device",
+          "request_type": "diagnosis",
+          "operation": "check",
+          "object": "касса",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "aQsi",
+                "message_id": 1,
+                "quote": "aQsi",
+                "start": 20,
+                "end": 24
+              }
+            ],
+            "equipment": [
+              {
+                "value": "внешний сканер",
+                "message_id": 1,
+                "quote": "внешний сканер",
+                "start": 25,
+                "end": 39
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 20,
+              "end": 24
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+            "message_id": 1,
+            "quote": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+            "start": 0,
+            "end": 115
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.95,
+          "symptom": {
+            "value": "не считывает DataMatrix",
+            "message_id": 1,
+            "quote": "не считывает DataMatrix",
+            "start": 40,
+            "end": 63
+          },
+          "superseded_facts": [],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.95,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "aqsi-device-scanner",
+          "shown_units": [
+            {
+              "unit_id": "6509a6c9cef1b4c0183b",
+              "label": "Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "6509a6c9cef1b4c0183b",
+              "label": "Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            },
+            {
+              "unit_id": "cc0d4db23ee7f85ddfba",
+              "label": "Для маркировки сканер должен корректно считывать GS1 DataMatrix; модель и параметры лучше сверять с производителем и рекомендациями «Честного ЗНАКа».",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            },
+            {
+              "unit_id": "05b09529c151476b09a0",
+              "label": "Если код не читается, проверьте состояние наклейки, контраст, повреждения и возможность чтения того же кода в официальном приложении.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": [
+                {
+                  "component_id": "b682f18edd981359b335",
+                  "label": "проверьте состояние наклейки, контраст, повреждения и возможность чтения того же кода в официальном приложении."
+                }
+              ]
+            },
+            {
+              "unit_id": "0b35972d3d97f8507961",
+              "label": "Невозможность прочитать код и отказ из-за его юридического статуса — разные причины проблемы.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "6509a6c9cef1b4c0183b",
+              "label": "Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "asked",
+              "components": [],
+              "component_results": []
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": null,
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "device",
+        "request_type": "diagnosis",
+        "operation": "check",
+        "object": "касса",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 20,
+              "end": 24
+            }
+          ],
+          "equipment": [
+            {
+              "value": "внешний сканер",
+              "message_id": 1,
+              "quote": "внешний сканер",
+              "start": 25,
+              "end": 39
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+          "message_id": 1,
+          "quote": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+          "start": 0,
+          "end": 115
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.95,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "source_first_exact_section",
+      "rag_query": "оборудование: внешний сканер — производитель: aQsi — проверка касса — запрос клиента: На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+      "generation_error": null,
+      "validation_status": "exact_source_copy",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "candidate_diagnostics": [
+        {
+          "source": "aqsi_devices/peripherals/scanner.md",
+          "document_id": "aqsi-device-scanner",
+          "reasons": []
+        },
+        {
+          "source": "aqsi_devices/errors/goods-not-on-device.md",
+          "document_id": "aqsi-device-goods-not-on-device",
+          "reasons": [
+            "task_mismatch:error_diagnosis!=peripheral_setup"
+          ]
+        }
+      ],
+      "selected_sources": [
+        {
+          "source": "aqsi_devices/peripherals/scanner.md",
+          "document_id": "aqsi-device-scanner",
+          "section": null
+        }
+      ],
+      "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+      "coordinator_decision": {
+        "request_type": "diagnosis",
+        "route": "technical_action",
+        "task_relation": "new_task",
+        "current_subgoal": null,
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [
+        "planner"
+      ],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 1,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [
+        {
+          "id": "aqsi-device-scanner::Ограничения",
+          "section": "Ограничения",
+          "source": "data/knowledge/aqsi_devices/peripherals/scanner.md"
+        }
+      ],
+      "final_reply": "1. Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Проверенная информация и первичная диагностика"
+    },
+    {
+      "turn": 2,
+      "case_id": "N03/2",
+      "user_text": "Сканер сторонний. Можно сразу менять режим USB, чтобы он точно заработал?",
+      "raw_provider_fixture": {
+        "request_type": "information",
+        "relation": "continue",
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "сканер",
+        "object_evidence": {
+          "quote": "Сканер сторонний"
+        },
+        "goal": null,
+        "symptom": null,
+        "entities": [
+          {
+            "slot": "equipment",
+            "value": "сканер",
+            "evidence": {
+              "quote": "Сканер сторонний"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      },
+      "validated": {
+        "request_type": "information",
+        "intent": "device",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "device",
+        "operation": "diagnose",
+        "object": "касса",
+        "relation": "continue",
+        "expected_slot": null,
+        "routing_service": "aQsi",
+        "confirmed_manufacturer": "aQsi",
+        "confirmed_equipment": "Сканер",
+        "goal_count": 0,
+        "client_details": [],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "aQsi",
+                "message_id": 1,
+                "quote": "aQsi",
+                "start": 20,
+                "end": 24
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Сканер",
+                "message_id": 3,
+                "quote": "Сканер",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 20,
+              "end": 24
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "device",
+          "request_type": "information",
+          "operation": "diagnose",
+          "object": "касса",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "aQsi",
+                "message_id": 1,
+                "quote": "aQsi",
+                "start": 20,
+                "end": 24
+              }
+            ],
+            "equipment": [
+              {
+                "value": "Сканер",
+                "message_id": 3,
+                "quote": "Сканер",
+                "start": 0,
+                "end": 6
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 20,
+              "end": 24
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+            "message_id": 1,
+            "quote": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+            "start": 0,
+            "end": 115
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.9,
+          "symptom": {
+            "value": "не считывает DataMatrix",
+            "message_id": 1,
+            "quote": "не считывает DataMatrix",
+            "start": 40,
+            "end": 63
+          },
+          "superseded_facts": [
+            {
+              "value": "внешний сканер",
+              "message_id": 1,
+              "quote": "внешний сканер",
+              "start": 25,
+              "end": 39
+            }
+          ],
+          "goals": [],
+          "constraints": [],
+          "details": [],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "aqsi-device-scanner",
+          "shown_units": [
+            {
+              "unit_id": "6509a6c9cef1b4c0183b",
+              "label": "Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "6509a6c9cef1b4c0183b",
+              "label": "Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            },
+            {
+              "unit_id": "cc0d4db23ee7f85ddfba",
+              "label": "Для маркировки сканер должен корректно считывать GS1 DataMatrix; модель и параметры лучше сверять с производителем и рекомендациями «Честного ЗНАКа».",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            },
+            {
+              "unit_id": "05b09529c151476b09a0",
+              "label": "Если код не читается, проверьте состояние наклейки, контраст, повреждения и возможность чтения того же кода в официальном приложении.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": [
+                {
+                  "component_id": "b682f18edd981359b335",
+                  "label": "проверьте состояние наклейки, контраст, повреждения и возможность чтения того же кода в официальном приложении."
+                }
+              ]
+            },
+            {
+              "unit_id": "0b35972d3d97f8507961",
+              "label": "Невозможность прочитать код и отказ из-за его юридического статуса — разные причины проблемы.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "9c4478be23b9618f8f42e158bbf0c1096e1a7caca5d92bdfb89f2e948c982151",
+                "context": "d8bca0beb7643619b8910b457d8e015eceeca8466ea269337263dd3549254e91"
+              },
+              "components": []
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "6509a6c9cef1b4c0183b",
+              "label": "Совместимость зависит от модели сканера и интерфейса; для подключения может применяться USB-C переходник или aQsi Hub.",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+              "section": "Проверенная информация и первичная диагностика",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "asked",
+              "components": [],
+              "component_results": []
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": null,
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "device",
+        "request_type": "information",
+        "operation": "diagnose",
+        "object": "касса",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "aQsi",
+              "message_id": 1,
+              "quote": "aQsi",
+              "start": 20,
+              "end": 24
+            }
+          ],
+          "equipment": [
+            {
+              "value": "Сканер",
+              "message_id": 3,
+              "quote": "Сканер",
+              "start": 0,
+              "end": 6
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+          "message_id": 1,
+          "quote": "На физической кассе aQsi внешний сканер не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+          "start": 0,
+          "end": 115
+        },
+        "operation_evidence": null,
+        "goals": [],
+        "constraints": [],
+        "details": [],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "source_first_rejected_handoff_limit",
+      "rag_query": "оборудование: Сканер — производитель: aQsi — диагностика ошибки касса — запрос клиента: На физической кассе aQsi не считывает DataMatrix, а обычные штрихкоды читает. Что сначала проверить?",
+      "generation_error": null,
+      "validation_status": "exact_approved_conditional_handoff",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "candidate_diagnostics": [
+        {
+          "source": "aqsi_devices/errors/goods-not-on-device.md",
+          "document_id": "aqsi-device-goods-not-on-device",
+          "reasons": []
+        },
+        {
+          "source": "aqsi_devices/peripherals/scanner.md",
+          "document_id": "aqsi-device-scanner",
+          "reasons": [
+            "task_mismatch:peripheral_setup!=error_diagnosis"
+          ]
+        }
+      ],
+      "selected_sources": [
+        {
+          "source": "aqsi_devices/errors/goods-not-on-device.md",
+          "document_id": "aqsi-device-goods-not-on-device",
+          "section": null
+        }
+      ],
+      "source_scope_reason": null,
+      "coordinator_decision": {
+        "request_type": "information",
+        "route": "technical_action",
+        "task_relation": "continue",
+        "current_subgoal": null,
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 0,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [],
+      "final_reply": "Подтвердить гарантированный результат такого изменения по этой инструкции нельзя.\nНастройку неподдерживаемого сканера и изменения режима USB передать специалисту, если стандартные проверки не помогли.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner.md — Когда передавать специалисту"
+    }
+  ],
+  "N04": [
+    {
+      "turn": 1,
+      "case_id": "N04/1",
+      "user_text": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+      "raw_provider_fixture": {
+        "request_type": "diagnosis",
+        "relation": "new_task",
+        "intent": "general",
+        "operation": "diagnose",
+        "object": "накопитель",
+        "object_evidence": {
+          "quote": "накопитель обязательно надо менять"
+        },
+        "goal": {
+          "quote": "Это значит, что накопитель обязательно надо менять?"
+        },
+        "symptom": {
+          "quote": "Ошибка ФН 234"
+        },
+        "entities": [
+          {
+            "slot": "equipment",
+            "value": "Эвотор",
+            "evidence": {
+              "quote": "На Эвотор появилась ошибка ФН 234"
+            }
+          }
+        ],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.85
+      },
+      "validated": {
+        "request_type": "diagnosis",
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": true,
+        "intent": "unknown",
+        "operation": "diagnose",
+        "object": "ФН",
+        "relation": "new_task",
+        "expected_slot": null,
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 1,
+        "client_details": [
+          "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 1,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "На Эвотор появилась ошибка ФН 234",
+                "start": 0,
+                "end": 33
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234",
+              "start": 0,
+              "end": 33
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "diagnosis",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "На Эвотор появилась ошибка ФН 234",
+                "start": 0,
+                "end": 33
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234",
+              "start": 0,
+              "end": 33
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "start": 0,
+            "end": 86
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.85,
+          "symptom": null,
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это значит, что накопитель обязательно надо менять?",
+              "message_id": 1,
+              "quote": "Это значит, что накопитель обязательно надо менять?",
+              "start": 35,
+              "end": 86
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+              "start": 0,
+              "end": 86
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "new_task",
+          "confidence": 0.85,
+          "transition": "new_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "evotor-fn-234-360005580254",
+          "shown_units": [
+            {
+              "unit_id": "e15c5e069421a2b86113",
+              "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "section": "Первое различение причины",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+                "context": "82fcf5e50ad4f35f9a4b012f5605d64214cde238dbc33b3185a5a888f6ba7995"
+              },
+              "components": [
+                {
+                  "component_id": "e3cf2d7adc93bf3be892",
+                  "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+                }
+              ]
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "e15c5e069421a2b86113",
+              "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "section": "Первое различение причины",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+                "context": "82fcf5e50ad4f35f9a4b012f5605d64214cde238dbc33b3185a5a888f6ba7995"
+              },
+              "components": [
+                {
+                  "component_id": "e3cf2d7adc93bf3be892",
+                  "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+                }
+              ]
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "e15c5e069421a2b86113",
+              "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "section": "Первое различение причины",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "asked",
+              "components": [
+                {
+                  "component_id": "e3cf2d7adc93bf3be892",
+                  "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+                }
+              ],
+              "component_results": []
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "Это значит, что накопитель обязательно надо менять?",
+            "start": 35,
+            "end": 86
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "diagnosis",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234",
+              "start": 0,
+              "end": 33
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+          "message_id": 1,
+          "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+          "start": 0,
+          "end": 86
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "Это значит, что накопитель обязательно надо менять?",
+            "start": 35,
+            "end": 86
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "start": 0,
+            "end": 86
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "new_task",
+        "confidence": 0.85,
+        "transition": "new_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "source_first_exact_section",
+      "rag_query": "производитель: Эвотор — На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+      "generation_error": null,
+      "validation_status": "exact_source_copy",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "candidate_diagnostics": [
+        {
+          "source": "evotor/fn/fn-234.md",
+          "document_id": "evotor-fn-234-360005580254",
+          "reasons": []
+        }
+      ],
+      "selected_sources": [
+        {
+          "source": "evotor/fn/fn-234.md",
+          "document_id": "evotor-fn-234-360005580254",
+          "section": null
+        }
+      ],
+      "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+      "coordinator_decision": {
+        "request_type": "diagnosis",
+        "route": "technical_action",
+        "task_relation": "new_task",
+        "current_subgoal": "Это значит, что накопитель обязательно надо менять?",
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [
+        "planner"
+      ],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 1,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [
+        {
+          "id": "evotor-fn-234-360005580254::Первое различение причины",
+          "section": "Первое различение причины",
+          "source": "data/knowledge/evotor/fn/fn-234.md"
+        }
+      ],
+      "final_reply": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины"
+    },
+    {
+      "turn": 2,
+      "case_id": "N04/2",
+      "user_text": "Заметили, что дата и время на кассе неправильные. Что теперь проверить?",
+      "raw_provider_fixture": {
+        "confidence": 0.9,
+        "entities": [
+          {
+            "slot": "equipment",
+            "value": "касса",
+            "evidence": {
+              "quote": "кассе"
+            }
+          }
+        ],
+        "goal": {
+          "quote": "Что теперь проверить?"
+        },
+        "intent": "diagnose",
+        "object": null,
+        "object_evidence": null,
+        "operation": "diagnose",
+        "relation": "continue",
+        "request_type": "information",
+        "specialist_evidence": null,
+        "specialist_requested": false,
+        "symptom": {
+          "quote": "дата и время на кассе неправильные"
+        },
+        "unknown_facts": []
+      },
+      "validated": {
+        "request_type": "information",
+        "intent": "unknown",
+        "operation": "diagnose"
+      },
+      "state": {
+        "task_changed": false,
+        "intent": "unknown",
+        "operation": "diagnose",
+        "object": "ФН",
+        "relation": "continue",
+        "expected_slot": null,
+        "routing_service": "Эвотор",
+        "confirmed_manufacturer": "Эвотор",
+        "confirmed_equipment": null,
+        "goal_count": 2,
+        "client_details": [
+          "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+          "Заметили, что"
+        ],
+        "unknown_facts": []
+      },
+      "state_after_sqlite_reopen": {
+        "schema_version": 2,
+        "revision": 2,
+        "session": {
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "На Эвотор появилась ошибка ФН 234",
+                "start": 0,
+                "end": 33
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234",
+              "start": 0,
+              "end": 33
+            }
+          }
+        },
+        "task_context": {
+          "task_id": "task:1",
+          "topic_start_message_id": 1,
+          "intent": "unknown",
+          "request_type": "information",
+          "operation": "diagnose",
+          "object": "ФН",
+          "entities": {
+            "manufacturer": [
+              {
+                "value": "Эвотор",
+                "message_id": 1,
+                "quote": "На Эвотор появилась ошибка ФН 234",
+                "start": 0,
+                "end": 33
+              }
+            ]
+          },
+          "active_route": {
+            "slot": "manufacturer",
+            "fact": {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234",
+              "start": 0,
+              "end": 33
+            }
+          },
+          "parameters": [],
+          "object_reference": null,
+          "task_fact": {
+            "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "start": 0,
+            "end": 86
+          },
+          "operation_evidence": null,
+          "operation_confidence": 0.85,
+          "symptom": {
+            "value": "дата и время на кассе неправильные",
+            "message_id": 3,
+            "quote": "дата и время на кассе неправильные",
+            "start": 14,
+            "end": 48
+          },
+          "superseded_facts": [],
+          "goals": [
+            {
+              "value": "Это значит, что накопитель обязательно надо менять?",
+              "message_id": 1,
+              "quote": "Это значит, что накопитель обязательно надо менять?",
+              "start": 35,
+              "end": 86
+            },
+            {
+              "value": "Что теперь проверить?",
+              "message_id": 3,
+              "quote": "Что теперь проверить?",
+              "start": 50,
+              "end": 71
+            }
+          ],
+          "constraints": [],
+          "details": [
+            {
+              "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+              "start": 0,
+              "end": 86
+            },
+            {
+              "value": "Заметили, что",
+              "message_id": 3,
+              "quote": "Заметили, что",
+              "start": 0,
+              "end": 13
+            }
+          ],
+          "error": null,
+          "expected": null,
+          "relation": "continue",
+          "confidence": 0.9,
+          "transition": "continue_task",
+          "analysis_required": false,
+          "unresolved": null,
+          "unknown_facts": [],
+          "unknown_evidence": {},
+          "procedure_id": "evotor-fn-234-360005580254",
+          "shown_units": [
+            {
+              "unit_id": "e15c5e069421a2b86113",
+              "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "section": "Первое различение причины",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+                "context": "82fcf5e50ad4f35f9a4b012f5605d64214cde238dbc33b3185a5a888f6ba7995"
+              },
+              "components": [
+                {
+                  "component_id": "e3cf2d7adc93bf3be892",
+                  "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+                }
+              ]
+            }
+          ],
+          "eligible_units": [
+            {
+              "unit_id": "e15c5e069421a2b86113",
+              "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "section": "Первое различение причины",
+              "source_verified": true,
+              "model_scope": null,
+              "model_value": null,
+              "source_order": {
+                "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+                "context": "82fcf5e50ad4f35f9a4b012f5605d64214cde238dbc33b3185a5a888f6ba7995"
+              },
+              "components": [
+                {
+                  "component_id": "e3cf2d7adc93bf3be892",
+                  "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+                }
+              ]
+            }
+          ],
+          "checks": [
+            {
+              "task_id": "task:1",
+              "unit_id": "e15c5e069421a2b86113",
+              "label": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "section": "Первое различение причины",
+              "source_verified": true,
+              "asked_message_id": 2,
+              "status": "asked",
+              "components": [
+                {
+                  "component_id": "e3cf2d7adc93bf3be892",
+                  "label": "проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился."
+                }
+              ],
+              "component_results": []
+            }
+          ],
+          "open_question": null,
+          "current_subgoal": {
+            "value": "Что теперь проверить?",
+            "message_id": 3,
+            "quote": "Что теперь проверить?",
+            "start": 50,
+            "end": 71
+          },
+          "clarification_repeats": {},
+          "closed": false
+        },
+        "task_id": "task:1",
+        "topic_start_message_id": 1,
+        "intent": "unknown",
+        "request_type": "information",
+        "operation": "diagnose",
+        "object": "ФН",
+        "entities": {
+          "manufacturer": [
+            {
+              "value": "Эвотор",
+              "message_id": 1,
+              "quote": "На Эвотор появилась ошибка ФН 234",
+              "start": 0,
+              "end": 33
+            }
+          ]
+        },
+        "routing_slot": "manufacturer",
+        "parameters": [],
+        "object_reference": null,
+        "task": {
+          "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+          "message_id": 1,
+          "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+          "start": 0,
+          "end": 86
+        },
+        "operation_evidence": null,
+        "goals": [
+          {
+            "value": "Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "Это значит, что накопитель обязательно надо менять?",
+            "start": 35,
+            "end": 86
+          },
+          {
+            "value": "Что теперь проверить?",
+            "message_id": 3,
+            "quote": "Что теперь проверить?",
+            "start": 50,
+            "end": 71
+          }
+        ],
+        "constraints": [],
+        "details": [
+          {
+            "value": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "message_id": 1,
+            "quote": "На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять?",
+            "start": 0,
+            "end": 86
+          },
+          {
+            "value": "Заметили, что",
+            "message_id": 3,
+            "quote": "Заметили, что",
+            "start": 0,
+            "end": 13
+          }
+        ],
+        "error": null,
+        "expected": null,
+        "relation": "continue",
+        "confidence": 0.9,
+        "transition": "continue_task",
+        "analysis_required": false,
+        "unresolved": null
+      },
+      "route": "answer",
+      "reason": "source_first_observation_explanation",
+      "rag_query": "производитель: Эвотор — На Эвотор появилась ошибка ФН 234. Это значит, что накопитель обязательно надо менять? — цель: Что теперь проверить? — уточнение клиента: Заметили, что",
+      "generation_error": null,
+      "validation_status": "exact_approved_observation_fact",
+      "retrieval_reason": "evidence_coverage_incomplete",
+      "candidate_diagnostics": [
+        {
+          "source": "evotor/fn/fn-234.md",
+          "document_id": "evotor-fn-234-360005580254",
+          "reasons": []
+        }
+      ],
+      "selected_sources": [
+        {
+          "source": "evotor/fn/fn-234.md",
+          "document_id": "evotor-fn-234-360005580254",
+          "section": null
+        }
+      ],
+      "source_scope_reason": "customer_confirmed_scope_required_for_procedures",
+      "coordinator_decision": {
+        "request_type": "information",
+        "route": "technical_action",
+        "task_relation": "continue",
+        "current_subgoal": "Что теперь проверить?",
+        "required_action": "retrieve_then_apply_independent_scope_and_safety_gates",
+        "rationale": "task_requires_applicability_checked_action"
+      },
+      "coordinator_evidence": null,
+      "retrieval_called": true,
+      "generation_stages": [
+        "planner"
+      ],
+      "stage_call_counts": {
+        "understanding": 1,
+        "actual_provider_calls": 0,
+        "planner": 1,
+        "composer_or_repair": 0,
+        "judge": 0,
+        "provider_usage_units": 0
+      },
+      "planner_choices": [
+        {
+          "id": "evotor-fn-234-360005580254::Первое различение причины",
+          "section": "Первое различение причины",
+          "source": "data/knowledge/evotor/fn/fn-234.md"
+        }
+      ],
+      "final_reply": "Вы сообщили: «Заметили, что дата и время на кассе неправильные.» По подтверждённой инструкции: неверное время может создать ложное впечатление, что срок ФН завершился.\n\nДля дальнейших действий подтверждённого порядка здесь недостаточно; обратитесь к специалисту.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины"
+    }
+  ]
+}
