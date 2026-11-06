@@ -20,6 +20,7 @@ import re
 import subprocess
 import sqlite3
 import sys
+import tempfile
 from time import perf_counter
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
@@ -194,7 +195,13 @@ async def run(args):
         result["provider_errors"] = http_errors
         if quota_module._TRACE.exists():
             result["http_trace"] = [json.loads(line) for line in quota_module._TRACE.read_text(encoding="utf-8").splitlines()]
-        output.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+        # Windows viewers may hold an existing trace open. Publish a complete
+        # file atomically rather than truncate the currently displayed trace.
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=output.parent,
+                                         prefix=output.stem + "-", suffix=".tmp", delete=False) as stream:
+            json.dump(result, stream, ensure_ascii=False, indent=2, default=str)
+            temporary = stream.name
+        os.replace(temporary, output)
 
     with patch("app.config.get_settings", return_value=settings), \
          patch("app.compat.build_answer_rag", return_value=rag), \
@@ -261,6 +268,10 @@ async def run(args):
                     if limit:
                         pause = max(pause, (limit * .92 - remaining) * 60 / limit + 2)
                 await asyncio.sleep(max(0, pause))
+        after_turns = getattr(args, "after_turns", None)
+        if callable(after_turns):
+            result["negative_controls"] = await after_turns(bot, result)
+            save()
     client.close()
 
 

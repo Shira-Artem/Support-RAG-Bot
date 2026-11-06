@@ -14,6 +14,7 @@ from app.procedure_policy import (document_applicability, normalize_operation,
                                   operation_compatibility, query_operation_hints,
                                   reviewed_safe_diagnostic_section,
                                   diagnostic_version_compatible)
+from app.procedure_policy import section_check_compatible, inspection_prerequisites
 from app.rag import SearchResult
 from app.response_grounding import (claim_supported, content_terms, evidence_statements, has_action,
                                     has_named_role, normalize, permission_clauses, statements,
@@ -936,6 +937,8 @@ def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str
     primary_key: str | None = None
     for document in documents:
         meta = normalize_metadata({**(document.metadata or {}), "text": document.text})
+        if meta.get("_prerequisite_only"):
+            continue
         if meta.get("status") != "approved":
             continue
         if (expected_task and meta.get("task_category") != expected_task
@@ -946,6 +949,7 @@ def _scoped_evidence_documents(documents: list[SearchResult], expected_task: str
         if (state.operation != "explain"
                 and operation_compatibility(state.operation, meta, query,
                                             task_category=expected_task) == "mismatch"
+                and not section_check_compatible(state.operation, meta, document.text, expected_task, query)
                 and not _exact_incident_section_bridge(state, document, meta)):
             continue
         key = str(meta.get("document_id") or meta.get("source") or document.source)
@@ -1050,6 +1054,10 @@ class RetrievalPipeline:
                         operation_metadata["operations"] = _derive_operations(article_text.casefold(), actual_task)
             operation_status = operation_compatibility(
                 state.operation, operation_metadata, query, task_category=expected_task)
+            section_read_only = operation_status == "mismatch" and section_check_compatible(
+                state.operation, meta, hit.text, expected_task, query)
+            if operation_status == "mismatch" and section_read_only:
+                operation_status = "match"
             if (state.operation == "diagnose"
                     and reviewed_safe_diagnostic_section(meta, expected_task)
                     and not diagnostic_version_compatible(query, meta)):
@@ -1184,6 +1192,8 @@ class RetrievalPipeline:
                 relevance_reasons.append("reviewed_operation_bridges_category")
             if incident_bridge:
                 relevance_reasons.append("exact_incident_and_subject_bridge_category")
+            if section_read_only:
+                relevance_reasons.append("closed_read_only_section_contract")
             relevance = Relevance("match" if service_match else "unknown_or_mismatch",
                                   "match" if task_match else "mismatch", round(score, 4),
                                   relevance_reasons)
@@ -1357,8 +1367,15 @@ class RetrievalPipeline:
                             related.sort(key=lambda item: (item.metadata or {})["chunk_index"])
             for fragment in related:
                 meta = normalize_metadata({**(fragment.metadata or {}), "text": fragment.text})
+                prerequisite_only = False
+                section_read_only = section_check_compatible(
+                    state.operation, meta, fragment.text, expected_task, query)
+                if ("closed_read_only_section_contract" in evaluated.relevance.reasons
+                        and not section_read_only):
+                    continue
                 if (state.operation == "diagnose" and expected_task == "bank_statement"
-                        and not reviewed_safe_diagnostic_section(meta, expected_task)):
+                        and not reviewed_safe_diagnostic_section(meta, expected_task)
+                        and not section_read_only):
                     # The article's load/list/import sections must not become
                     # diagnostic evidence merely because a safe section passed.
                     continue
@@ -1369,13 +1386,23 @@ class RetrievalPipeline:
                         and not _related_task_for_query(state, expected_task, fragment_task, query)
                         and not _reviewed_operation_bridge(state, expected_task, meta, query)
                         and not _exact_incident_section_bridge(state, fragment, meta)):
-                    continue
+                    # A cross-category incident admits only that incident,
+                    # plus exact read-only prerequisites from its own article.
+                    # Never expose the rest of the sibling workflow.
+                    seed_meta = normalize_metadata({**(hit.metadata or {}), "text": hit.text})
+                    prerequisite_only = bool(
+                        meta.get("status") == "approved"
+                        and meta.get("document_id") == evaluated.document_id
+                        and _exact_incident_section_bridge(state, hit, seed_meta)
+                        and inspection_prerequisites(fragment.text))
+                    if not prerequisite_only:
+                        continue
                 if fragment is not hit and expected_task:
                     section = str(meta.get("section") or "")
                     evidence_terms = _TASK_EVIDENCE.get(expected_task, ())
                     reviewed_operation = (meta.get("_operations_explicit")
                                           and _operation_matches(state.operation, meta, fragment))
-                    if (not _SAFETY_SECTION.search(section) and not reviewed_operation
+                    if (not prerequisite_only and not _SAFETY_SECTION.search(section) and not reviewed_operation
                             and not any(term in fragment.text.casefold() for term in evidence_terms)):
                         continue
                 key = (str(meta.get("source") or source), fragment.text)
@@ -1383,9 +1410,13 @@ class RetrievalPipeline:
                     continue
                 seen.add(key)
                 fragment_meta = {k: v for k, v in meta.items() if k != "text"}
+                text = fragment.text
+                if prerequisite_only:
+                    fragment_meta["_prerequisite_only"] = True
+                    text = "\n".join(inspection_prerequisites(fragment.text))
                 score = fragment.score if fragment is hit else 0.0
                 # Preserve best fragment's retrieval scores only for that fragment.
-                result.append(SearchResult(str(meta.get("source") or source), fragment.text, score,
+                result.append(SearchResult(str(meta.get("source") or source), text, score,
                     fragment.semantic_score if fragment is hit else None,
                     fragment.lexical_score if fragment is hit else None, fragment_meta))
         return result

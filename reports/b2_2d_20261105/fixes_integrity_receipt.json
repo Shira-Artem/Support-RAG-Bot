@@ -1,0 +1,82 @@
+{
+  "protected_equal": true,
+  "env_unchanged": true,
+  "approved_unchanged": true,
+  "stage3": {
+    "points": 934,
+    "status": "green",
+    "id_payload_sha256": "9c0b418d56afd8c12aad5125d5a4b0c2d62ec491f03fd91b63e7fddb8b3e4b63"
+  },
+  "stage3_equal": true,
+  "runs": {
+    "fixes_offline_20261105_final_v3.json": {
+      "kind": "offline",
+      "turns": 4,
+      "statuses": {
+        "200": 6
+      },
+      "confirmed_tokens": 0,
+      "unknown_usage_responses": 0,
+      "reopen_equal": 4,
+      "sqlite_quick_check": {
+        ".local/telegram-equivalent-fixes_offline_20261105_final_v3/checkpoint-b01-1.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_offline_20261105_final_v3/checkpoint-b01-2.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_offline_20261105_final_v3/checkpoint-h08-1.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_offline_20261105_final_v3/checkpoint-h08-2.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_offline_20261105_final_v3/conversations.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_offline_20261105_final_v3/expert.sqlite3": "ok"
+      },
+      "runtime_hashes_match": true,
+      "negative_controls": [
+        {
+          "control": "foreign_service",
+          "reason": "insufficient_applicable_evidence"
+        },
+        {
+          "control": "wrong_operation",
+          "reason": "insufficient_applicable_evidence"
+        },
+        {
+          "control": "change_data",
+          "reason": "insufficient_applicable_evidence"
+        },
+        {
+          "control": "import",
+          "reason": "insufficient_applicable_evidence"
+        },
+        {
+          "control": "foreign_service_h08",
+          "reason": "insufficient_applicable_evidence"
+        },
+        {
+          "control": "unconfirmed_condition",
+          "reason": "source_first_focused_shown_limit"
+        }
+      ]
+    },
+    "fixes_live_20261105.json": {
+      "kind": "live",
+      "turns": 4,
+      "statuses": {
+        "200": 7
+      },
+      "confirmed_tokens": 21888,
+      "unknown_usage_responses": 0,
+      "reopen_equal": 4,
+      "sqlite_quick_check": {
+        ".local/telegram-equivalent-fixes_live_20261105/checkpoint-b01-1.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_live_20261105/checkpoint-b01-2.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_live_20261105/checkpoint-h08-1.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_live_20261105/checkpoint-h08-2.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_live_20261105/conversations.sqlite3": "ok",
+        ".local/telegram-equivalent-fixes_live_20261105/expert.sqlite3": "ok"
+      },
+      "runtime_hashes_match": true,
+      "negative_controls": []
+    }
+  },
+  "production_used": false,
+  "frozen_holdout_run": false,
+  "commit_push": false,
+  "historical_protected_files_equal": 275
+}

@@ -144,6 +144,88 @@ _BANK_STATEMENT_OPERATIONS = {
 }
 
 
+# Deliberately closed vocabulary: unknown words/actions fail closed. This is
+# a small read-only language, not a blacklist of potentially dangerous verbs.
+_INSPECTION_WORDS = frozenset("""
+версия версию версии конфигурация конфигурацию конфигурации модель модели
+фактическая фактическую фактической схема схему схемы расчетов
+отдельное отдельного отдельным списание списания списанием банком банка банк
+удержание удержания будущих будущие поступлений поступления
+документ документа документы документов документом исходной исходную исходного
+продажа продажей продажи продажу возврат возвратом возврата
+номер номера дату даты датой сумма сумму суммы статус статуса
+журнал журнала список списка выписки выписок банковские банковских
+интерфейс интерфейса простой полный деньги касса кассы кассу касс
+нужного нужный вида вид операции операция эквайрингу эквайринга
+1с и или с со в во из на по за для от к до нет
+""".split())
+
+
+def read_only_check_section(metadata: dict, text: str) -> bool:
+    """Prove every clause belongs to a closed read-only inspection language.
+
+    No free-form suffix is allowed, including within quotes/navigation. A
+    negative injunction may accompany a check but never grants that action.
+    Document operation metadata is intentionally left unchanged.
+    """
+    if metadata.get("status") != "approved" or not text.strip():
+        return False
+    lines = text.strip().splitlines()
+    # Indexed chunks include their exact metadata heading; it is a label,
+    # never evidence that the body is safe.
+    if lines and lines[0].strip().lstrip("# ") == metadata.get("section"):
+        text = "\n".join(lines[1:])
+    clauses = re.split(r"[\n.;]+", text)
+    checks = 0
+    for raw in clauses:
+        clause = re.sub(r"^\s*(?:\d+[.)]?|[-*])\s*", "", raw).strip()
+        if not clause:
+            continue
+        folded = clause.casefold().replace("ё", "е")
+        if re.fullmatch(r"не (?:отражать|проводить|создавать) (?:возврат|документ) повторно(?: другим способом)?", folded):
+            continue
+        # Only an absence of a UI option can guard this limited version check.
+        folded = re.sub(r"^если нужного вида операции нет,\s*", "", folded)
+        action = re.match(r"^(?:уточнить|проверить|сверить|посмотреть|открыть)\s+(.+)$", folded)
+        if not action:
+            return False
+        operand = action[1]
+        if folded.startswith("открыть ") and not re.match(r"(?:банковские выписки|журнал|список)\b", operand):
+            return False
+        words = re.findall(r"[\w]+", operand)
+        if not words or not all(word in _INSPECTION_WORDS for word in words):
+            return False
+        checks += 1
+    return checks > 0
+
+
+def section_check_compatible(operation: str, metadata: dict, text: str,
+                             task_category: str | None, query: str = "") -> bool:
+    if (operation not in {"check", "diagnose", "status"} or not task_category
+            or metadata.get("task_category") != task_category):
+        return False
+    # Prevention is not permission to perform the forbidden operation.
+    request = re.sub(r"\bне\s+(?:отразить|отражать|проводить|создавать)\b", "", query, flags=re.I)
+    if re.search(r"\b(?:изменить|измените|создать|создайте|провести|проведите|"
+                 r"загрузить|загрузите|импортировать|оплатить|отправить|удалить|"
+                 r"отразить|подтвердить|подписать)\b", request, re.I):
+        return False
+    return diagnostic_version_compatible(query, metadata) and read_only_check_section(metadata, text)
+
+
+def inspection_prerequisites(text: str) -> list[str]:
+    """Exact unconditional inspection requirements, never the adjacent workflow.
+
+    The closed nominal grammar cannot include creation, signing, or permission
+    to proceed. It establishes a prerequisite, not that it has been met.
+    """
+    pattern = (r"Перед (?:подтверждением|подписанием|отправкой) (?:УПД|документа) "
+               r"(?:сверяют|проверяют) (?:поставку|товар|номенклатуру|маркированные позиции)"
+               r"(?:(?:, | и )(?:поставку|товар|номенклатуру|маркированные позиции))*\.")
+    sentences = re.split(r"(?<=[.!?])\s+|\n", text)
+    return [sentence.strip() for sentence in sentences if re.fullmatch(pattern, sentence.strip())]
+
+
 def reviewed_safe_diagnostic_section(metadata: dict,
                                      task_category: str | None = None) -> bool:
     """Recognize an approved, explicitly reviewed bank diagnostic fragment.

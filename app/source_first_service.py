@@ -26,6 +26,7 @@ from app.llm_client import GenerationError, generate
 from app.semantic_evidence_selector import evidence_role
 from app.rag_query import QueryNeedsClarification, build_rag_query
 from app.retrieval_pipeline import normalize_metadata
+from app.procedure_policy import read_only_check_section, inspection_prerequisites
 from app.source_actions import (CHECK_ACTION_PATTERN, CHECK_ACTION_ROOTS,
                                 SOURCE_ACTION_PATTERN)
 from app.scope_policy import (HARDWARE_TASK_CATEGORIES, assess_source_scope,
@@ -202,6 +203,50 @@ def _verified_continuation_section(state: DialogueState, sections: list[dict]) -
     return selected if pending else None
 
 
+def _shown_section_limit(question: str, selected: dict, sections: list[dict],
+                         history: list[dict]) -> list[tuple[dict, str]]:
+    """Repeat an exact prohibition, with a same-source prerequisite if needed.
+
+    This never resolves a conditional branch or records a check result. In
+    particular confirmation is not inferred to mean signing: it needs its own
+    explicit prerequisite in the same, currently applicable approved article.
+    """
+    if not re.search(r"\b(?:можно|допустимо|разрешено)\b", question, re.I):
+        return []
+    if not any(item.get("role") == "assistant"
+               and selected["text"] in str(item.get("content") or "")
+               and selected["source"] in str(item.get("content") or "") for item in history):
+        return []
+    actions = [r"подпис\w*", r"подтвер(?:д|жд)\w*", r"отправ\w*", r"оплат\w*", r"пров(?:ести|ед\w*)"]
+    action = next((pattern for pattern in actions if re.search(r"\b" + pattern, question, re.I)), None)
+    if action is None:
+        return []
+    if not re.search(r"\b" + action + r"\s+(?:(?:этот|данный)\s+)?(?:документ|УПД)\b", question, re.I):
+        return []
+    limits = [line for line in statements(selected["text"])
+              if re.match(r"^Не\s+\w+\b", line, re.I)
+              and re.search(r"\bдо\s+проверк\w*\b", line, re.I)]
+    for limit in limits:
+        # Only unconditional prohibitions. Never assert that an unknown
+        # 'if' condition is met, or return a positive permission.
+        if re.search(r"\bесли\b|\bпри\s+", limit, re.I):
+            continue
+        if re.search(r"\b" + action, limit, re.I):
+            return [(selected, limit)]
+        for item in sections:
+            if item["source"] != selected["source"] or item["document_id"] != selected["document_id"]:
+                continue
+            for sentence in inspection_prerequisites(item["text"]):
+                if (re.match(r"^Перед\s+", sentence, re.I)
+                        and re.search(r"\b" + action, sentence, re.I)
+                        and re.search(r"\b(?:сверяют|проверяют)\b", sentence, re.I)
+                        and re.search(r"\bУПД\b", sentence, re.I)
+                        and re.search(r"\bУПД\b", limit, re.I)
+                        and not re.search(r"\bесли\b", sentence, re.I)):
+                    return [(item, sentence), (selected, limit)]
+    return []
+
+
 _GENERAL_CONCEPTUAL_FORM = re.compile(
     r"\b(?:что\s+(?:такое|означает|значит|делает|представляет\s+собой)|кто\s+такой|"
     r"чем\s+(?:отличает\w*|различает\w*)|в\s+ч[её]м\s+(?:разниц\w*|отличи\w*)|"
@@ -257,6 +302,33 @@ def _sections(body: str) -> list[tuple[str, str]]:
     if heading and "\n".join(lines).strip():
         rows.append((heading, "\n".join(lines).strip()))
     return rows
+
+
+def _independent_information_list(heading: str, body: str, question: str,
+                                  request_type: str) -> bool:
+    """Recognize a conservative list of information to gather, not steps.
+
+    A heading alone is insufficient: every nonempty line must be a list item,
+    and commands, dependencies and result checks exclude the whole section.
+    """
+    if request_type != "information" or not re.search(
+            r"(?:какие|что).{0,70}(?:параметр|сведени|данн|подготов|уточн)", question, re.I):
+        return False
+    if not re.search(r"уточн|подготов|потреб", heading, re.I):
+        return False
+    lines = [line.strip() for line in body.splitlines() if line.strip()]
+    if len(lines) < 2 or any(not re.match(r"^(?:\d+[.)]|[-*])\s+\S", line) for line in lines):
+        return False
+    forbidden = re.compile(
+        r"\b(?:затем|после\s+(?:этого|проверки|выполнения)|перед\s+тем\s+как|"
+        r"если|иначе|результат\w*|убедит\w*|проверь\w*|открой\w*|нажм\w*|"
+        r"выбер\w*|введите|выполн\w*|созда\w*|удал\w*|измен\w*|провед\w*|"
+        r"подпиш\w*|отправьте|загруз\w*|импортир\w*|сброс\w*|"
+        r"восстанов\w*|установ\w*|перейд\w*|зайд\w*)\b", re.I)
+    imperative = re.compile(r"\b[а-яё]{3,}(?:йте|ите|ьте|йся|йтесь|итесь)\b", re.I)
+    initial_infinitive = re.compile(r"^(?:\d+[.)]|[-*])\s+[а-яё]{3,}(?:ить|ать|ять|еть|уть)\b", re.I)
+    return not any(forbidden.search(line) or imperative.search(line)
+                   or initial_infinitive.search(line) for line in lines)
 
 
 def _section_has_answer_bearing_content(item: dict) -> bool:
@@ -1418,6 +1490,9 @@ def _source_sections(rag, retrieval, root: Path, max_sections: int = 4) -> list[
         for item in retrieval.diagnostics().get("selected", [])
         if item.get("document_id")
     }
+    read_only_documents = {str(item.get("document_id"))
+        for item in retrieval.diagnostics().get("selected", [])
+        if "closed_read_only_section_contract" in item.get("relevance", {}).get("reasons", [])}
     ordered_hits = [(str(hit.metadata.get("document_id") or ""),
                      str(hit.metadata.get("section") or ""), hit.metadata)
                     for hit in retrieval.documents if hit.metadata]
@@ -1458,11 +1533,15 @@ def _source_sections(rag, retrieval, root: Path, max_sections: int = 4) -> list[
         section = next((content for title, content in _sections(body) if title == heading), None)
         if not section:
             continue
+        if doc_id in read_only_documents and not read_only_check_section(local_scope, section):
+            continue
         out.append({"id": f"{doc_id}::{heading}", "document_id": doc_id,
                     "title": str(metadata.get("title") or ""),
                     "section": heading, "text": section,
                     "source": path.relative_to(root).as_posix(),
                     "source_sha256": sha256(path.read_bytes()).hexdigest(),
+                    "read_only_check_contract": doc_id in read_only_documents,
+                    "support_only": bool(hit_metadata.get("_prerequisite_only")),
                     "scope": {field: local_scope.get(field) for field in scope_fields},
                     "qdrant_scope": {field: hit_scope.get(field) for field in scope_fields}})
     return out[:max_sections]
@@ -2157,6 +2236,47 @@ class SourceFirstService:
                                   duration_ms=round((perf_counter()-started)*1000), **base)
                 return self._escalate("Не нашёл подтверждённый источник для указанного сервиса или оборудования. Не буду переносить инструкцию другого производителя; запросите специалиста.",
                                       "source_scope_mismatch", "retrieved_source_scope_conflicts_with_confirmed_client_facts", started, **base)
+        # Closed contracts can be selected without a model. These paths run
+        # only after Retrieval, local approved resolution and customer scope.
+        # They do not infer results or authorize a state-changing operation.
+        if not informational:
+            focused = [(item, _shown_section_limit(user_message, item, sections, history or []))
+                       for item in sections]
+            focused = [(item, quotes) for item, quotes in focused if quotes]
+            read_only = [item for item in sections if item.get("read_only_check_contract")]
+            chosen = focused[0] if len(focused) == 1 else None
+            if chosen or len(read_only) == 1:
+                selected = chosen[0] if chosen else read_only[0]
+                quotes = chosen[1] if chosen else [(selected, selected["text"])]
+                for item, quote in quotes:
+                    path = self.root / item["source"]
+                    current = path.read_text(encoding="utf-8")
+                    current_section = dict(_sections(current.split("---", 2)[2].strip())).get(item["section"])
+                    if (sha256(path.read_bytes()).hexdigest() != item["source_sha256"]
+                            or current_section != item["text"] or quote not in current_section):
+                        return self._escalate("Источник изменился. Повторите вопрос.",
+                            "source_changed_during_answer", item["source"], started, **base)
+                if not chosen and not read_only_check_section({"status": "approved"}, selected["text"]):
+                    return self._escalate("Read-only характер раздела не подтверждён.",
+                        "source_read_only_contract_failed", selected["source"], started, **base)
+                contract = "focused_shown_limit" if chosen else "closed_read_only_section_contract"
+                base["retrieval_diagnostics"]["source_section_selection"] = {
+                    "section_id": selected["id"], "contract": contract,
+                    "quotes": [{"section_id": item["id"], "quote": quote} for item, quote in quotes],
+                    "provider_calls": 0, "progress_results_mutated": False,
+                    "shown_units_published": not bool(chosen)}
+                if not chosen:
+                    units = _approved_check_units(selected["text"], selected["source"], selected["section"])
+                    base["progress_update"] = {"procedure_id": selected["document_id"],
+                        "shown_units": units, "eligible_units": units}
+                text = "\n".join(quote for _, quote in quotes)
+                text += f"\n\nИсточник: {selected['source']} — " + "; ".join(dict.fromkeys(item["section"] for item, _ in quotes))
+                return Answer(text, scenario="answer", scenario_reason="source_first_" + contract,
+                    generation_status="generated", validation_status="exact_approved_closed_contract",
+                    duration_ms=round((perf_counter()-started)*1000), **base)
+        # Prerequisite-only siblings support the exact boundary above; their
+        # full local workflow must never become selectable/renderable evidence.
+        sections = [item for item in sections if not item.get("support_only")]
         if informational:
             non_answer_sections = [item for item in sections
                                    if not _section_has_answer_bearing_content(item)]
@@ -2197,7 +2317,7 @@ class SourceFirstService:
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
                   "Ответ должен относиться к текущему сообщению, его предмету, действию и условиям; похожая тема или соседний факт не заменяет ответ. "
                   "Если текущий вопрос состоит из нескольких частей, предпочитай раздел, покрывающий их и необходимые ограничения; не переноси правила другого процесса или устройства. "
-                  "Не выбирай раздел, уже выданный в истории, если новый вопрос требует другого содержания. Раздел передачи специалисту не заменяет доступный полезный ответ, но предупреждения и предварительные условия сохраняй. "
+                  "Уже показанный раздел можно выбрать снова, если новый вопрос спрашивает о содержащемся в нём ограничении или предварительном условии. Это прямой ответ на новый вопрос, а не следующий выполненный шаг. Раздел передачи специалисту не заменяет доступный полезный ответ, но предупреждения и предварительные условия сохраняй. "
                   "Неизвлечённый полный текст продолжения — слова клиента для интерпретации, а не подтверждение выполнения проверок или применимости процедуры. "
                   "Не выбирай раздел, который только повторяет вопрос пользователя и не содержит объяснения или подтверждённой инструкции. "
                   "Не создавай и не пересказывай инструкции. Для task с техническими действиями select допускается только при совпадении task, сервиса, модели и условий источника с подтверждёнными фактами клиента. "
@@ -2356,6 +2476,25 @@ class SourceFirstService:
                 return self._escalate("Не удалось подтвердить целостность выбранного раздела. Запросите специалиста.",
                                       "source_section_changed", selected["source"], started, **base,
                                       generation_status="error")
+            if selected.get("read_only_check_contract") and not read_only_check_section({"status": "approved"}, body):
+                return self._escalate("Не удалось подтвердить read-only характер раздела. Запросите специалиста.",
+                    "source_read_only_contract_failed", selected["source"], started, **base)
+            focused_limit = _shown_section_limit(user_message, selected, sections, history or [])
+            if focused_limit:
+                # Recheck every supporting section immediately before returning
+                # exact quotes. Leave ProgressLedger entirely to the reducer.
+                if any(sha256((self.root / item["source"]).read_bytes()).hexdigest()
+                       != item["source_sha256"] for item, _ in focused_limit):
+                    return self._escalate("Источник изменился. Повторите вопрос.",
+                        "source_changed_during_answer", selected["source"], started, **base)
+                base["retrieval_diagnostics"]["focused_shown_limit"] = {
+                    "quotes": [{"section_id": item["id"], "quote": quote} for item, quote in focused_limit],
+                    "progress_mutated": False}
+                text = "\n".join(quote for _, quote in focused_limit)
+                text += f"\n\nИсточник: {selected['source']} — " + "; ".join(dict.fromkeys(item["section"] for item, _ in focused_limit))
+                return Answer(text, scenario="answer", scenario_reason="source_first_focused_shown_limit",
+                    generation_status="generated", validation_status="exact_approved_prerequisite_and_prohibition",
+                    duration_ms=round((perf_counter()-started)*1000), **base)
             preflight = _generic_preflight(body, state, selected["scope"])
             source_units = _approved_check_units(body, selected["source"], selected["section"],
                 equipment=state.task_entity("equipment"), manufacturer=state.task_entity("manufacturer"))
@@ -2446,7 +2585,9 @@ class SourceFirstService:
                 and unit.get("section") == selected["section"] for unit in prior_units)
             diagnostic_turn = (state.operation == "diagnose" or state.request_type == "diagnosis"
                 or (state.operation in {"check", "status"} and state.symptom is not None))
-            single_check = bool(diagnostic_turn or preflight or missing_manufacturer_model
+            information_list = _independent_information_list(
+                selected["section"], body, user_message, state.request_type)
+            single_check = bool((diagnostic_turn and not information_list and not selected.get("read_only_check_contract")) or preflight or missing_manufacturer_model
                 or any(unit["model_scope"] and not unit["model_value"] for unit in source_units))
             if (not informational and single_check and decision and decision.get("route") == "technical_action"
                     and source_units and not has_shown_for_section):
@@ -2455,7 +2596,7 @@ class SourceFirstService:
                     return self._escalate("Первый проверочный шаг не прошёл safety gate. Запросите специалиста.",
                         "unsafe_source_check_unit", "first_approved_check_failed_safety", started, **base)
                 exact_render = first_unit["line"]
-            if (not informational and decision and decision.get("route") == "technical_action"
+            if (not informational and not information_list and decision and decision.get("route") == "technical_action"
                     and state.task_context and state.task_context.procedure_id == selected["document_id"]
                     and state.task_context.shown_units):
                 matching_shown = [unit for unit in state.task_context.shown_units
@@ -3028,7 +3169,7 @@ class SourceFirstService:
                         unit["source_order"] = order_receipt
                 eligible_units = [unit for unit in source_units
                                   if not unit["model_scope"] or unit["model_value"]]
-                if (decision and decision.get("route") == "technical_action"
+                if (not information_list and decision and decision.get("route") == "technical_action"
                         and (visible_units or eligible_units)):
                     base["progress_update"] = {"procedure_id": selected["document_id"],
                         "shown_units": visible_units, "eligible_units": eligible_units}

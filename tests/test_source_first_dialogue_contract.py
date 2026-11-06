@@ -621,6 +621,37 @@ def test_software_integration_scope_does_not_require_hardware_model_or_ofd(tmp_p
     assert gate["inapplicable"] == []
 
 
+def test_information_list_is_not_truncated_by_prior_diagnosis(tmp_path, monkeypatch):
+    import json
+
+    source = "1c/edo/connect-1c-edo.md"
+    heading = "Что уточнить перед инструкцией"
+    content = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8")
+    body = dict(_sections(content))[heading]
+    scope = {"service": "1С:Бухгалтерия 8", "software": "1С:Бухгалтерия 8",
+             "task_category": "edo", "operations": ["exchange_edo_documents"],
+             "manufacturer": "1С", "model": "1С:Бухгалтерия 8, редакция 3.0"}
+    retrieval = _retrieval(source, "batch-20261013-edo-connect-1c-edo", heading, scope, body)
+    question = "Обмен нужен с разными операторами. Какие ещё параметры учёта подготовить для подключения?"
+    fact = Fact("1С:Бухгалтерия 8", 1, "1С:Бухгалтерия 8", 0, 17)
+    task = TaskContext(task_id="edo", intent="edo", request_type="information", operation="diagnose",
+        entities={"software": [fact]}, active_route=ActiveRoute("software", fact), relation="continue")
+
+    async def select_section(messages, _settings, *, call_stage="generation"):
+        payload = json.loads(messages[-1]["content"])
+        section = next(item for item in payload["candidate_sections"] if item["section"] == heading)
+        return Generation(json.dumps({"mode": "select", "section_id": section["id"],
+            "applicability_confirmed": True, "order_confirmed": True, "reason": "information"}), "fixture")
+
+    monkeypatch.setattr("app.source_first_service.generate", select_section)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=DialogueState(task_context=task),
+        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert all(line in answer.text for line in body.splitlines())
+    assert not answer.progress_update
+
+
 def test_information_followup_gets_grounded_answer_for_current_question(monkeypatch, tmp_path):
     import hashlib
     import json
