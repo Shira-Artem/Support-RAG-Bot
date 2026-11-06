@@ -40,6 +40,50 @@ def test_understanding_429_is_bounded_and_provider_body_is_not_persisted(monkeyp
     assert "SENSITIVE_PROVIDER_ECHO" not in str(captured)
 
 
+@pytest.mark.parametrize(('failures', 'expected_calls'), [(1, 2), (2, 2)])
+def test_understanding_retries_only_one_invalid_provider_json(monkeypatch, failures, expected_calls):
+    import json
+    import httpx
+    from types import SimpleNamespace
+    import app.dialogue_understanding as module
+    from app.groq_rate_limit import GroqRateLimiter
+
+    text = 'Что такое ОФД?'
+    valid = payload(text, kind='information', intent='general', operation='explain',
+                    obj='понятие', object_quote='ОФД', goal=text)
+    calls, traces = [], []
+
+    class FakeClient:
+        def __init__(self, *_args, **_kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *_args): return False
+        async def post(self, *_args, **kwargs):
+            calls.append(kwargs['json'])
+            if len(calls) <= failures:
+                return httpx.Response(400, json={'error': {'code': 'json_validate_failed',
+                    'failed_generation': 'SENSITIVE_PROVIDER_ECHO'}},
+                    request=httpx.Request('POST', 'https://api.groq.com'))
+            return httpx.Response(200, json={'model': 'test', 'usage': {},
+                'choices': [{'message': {'content': json.dumps(valid, ensure_ascii=False)}}]},
+                request=httpx.Request('POST', 'https://api.groq.com'))
+
+    monkeypatch.setattr(module.httpx, 'AsyncClient', FakeClient)
+    monkeypatch.setattr(module, 'groq_rate_limiter', GroqRateLimiter(minimum_interval=0, maximum_wait=0))
+    monkeypatch.setattr(module, '_append_local_trace', lambda **record: traces.append(record))
+    settings = SimpleNamespace(llm_provider='groq', groq_api_key='test-key',
+                               groq_model='test', groq_reasoning_effort='medium')
+    if failures == 1:
+        result = asyncio.run(module.understand_message(text, 1, [], DialogueState(), settings))
+        assert result.request_type == 'information'
+    else:
+        with pytest.raises(UnderstandingError) as raised:
+            asyncio.run(module.understand_message(text, 1, [], DialogueState(), settings))
+        assert raised.value.http_status == 400
+    assert len(calls) == expected_calls
+    assert len(calls[1]['messages']) == len(calls[0]['messages']) + 1
+    assert 'SENSITIVE_PROVIDER_ECHO' not in str(traces)
+
+
 @pytest.mark.parametrize("fault,code", [("timeout", "transport_error"), ("invalid_json", "invalid_json")])
 def test_understanding_fault_keeps_only_typed_diagnostics(monkeypatch, tmp_path, fault, code):
     import app.dialogue_understanding as module
@@ -89,6 +133,14 @@ def payload(text, *, kind="diagnosis", relation="new_task", intent="receipt", op
 
 def classify(text, **kwargs):
     return validate_response(payload(text, **kwargs), text, 77)
+
+
+@pytest.mark.parametrize('noun', ['накопителя', 'чека', 'отчёта', 'терминала'])
+def test_generic_task_object_is_not_a_model_when_provider_mistypes_it(noun):
+    text = f'Вопрос о работе {noun}.'
+    data = payload(text, obj=None, entities=[('equipment', noun, noun)])
+    _, _, _, observation = validate_response(data, text, 77)
+    assert not observation.entities.get('equipment')
 
 
 def test_greeting_is_typed_and_does_not_create_task():

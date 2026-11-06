@@ -20,6 +20,7 @@ from app.config import Settings
 from app.response_grounding import (evidence_kind, instruction_issue, statements,
                                     unsafe_operation_issue)
 from app.scope_policy import assess_source_scope
+from app.source_actions import SOURCE_ACTION_PATTERN
 
 
 MAX_EVIDENCE_TOKENS = 3000
@@ -182,6 +183,51 @@ def build_evidence_units(sections: list[dict], *, informational: bool = False) -
     return units
 
 
+def build_causal_fact_bundle(section: dict) -> tuple[list[EvidenceUnit], str] | None:
+    """Extract one narrowly structured explanation, retaining its source boundary.
+
+    The supported form is a context sentence followed by a check introduced by
+    a short 'before concluding' boundary and an independent causal clause after
+    a colon. Unknown structures, extra sentences, conditions, or warnings are
+    rejected rather than guessed away. The returned units are still revalidated
+    against the local approved file before use.
+    """
+    sentences = [re.sub(r"\s+", " ", s).strip() for s in statements(section.get("text") or "") if s.strip()]
+    if len(sentences) != 2:
+        return None
+    context, mixed = sentences
+    match = re.fullmatch(
+        r"(До\s+вывода\s+о\s+[а-яё]+)\s+предлагается\s+проверить,\s+"
+        r"([^:;]+):\s*([^:;]+\s+может\s+создать\s+ложное\s+впечатление,\s+что\s+[^:;]+\.)",
+        mixed, re.I)
+    if not match:
+        return None
+    boundary, inspection, fact = match.groups()
+    # A check's exceptions or prerequisites cannot be detached from its result.
+    if re.search(r"\b(?:если|когда|после|перед|при|без|не|только|кроме|иначе|услови\w*|исключени\w*|"
+                 r"необходимо|обязательно|нельзя|предупреждени\w*)\b", inspection, re.I):
+        return None
+    if (evidence_role(context) != "fact" or evidence_kind(context) != "fact"
+            or SOURCE_ACTION_PATTERN.search(context) or unsafe_operation_issue(context)
+            or SOURCE_ACTION_PATTERN.search(fact) or unsafe_operation_issue(fact)
+            or re.search(r"\b(?:нужно|надо|следует|необходимо|можно|долж\w*|"
+                         r"замен\w*|настро\w*|удал\w*|закр\w*|откро\w*|"
+                         r"выполн\w*|обратит\w*)\b", fact, re.I)
+            or re.search(r"\b[а-яё]{3,}(?:йте|ите|ьте|йся|йтесь|итесь)\b", fact, re.I)
+            or re.search(r"\b(?:если|только|кроме|иначе|при условии|но|однако)\b", context, re.I)):
+        return None
+    ordinary = build_evidence_units([section], informational=True)
+    context_unit = next((unit for unit in ordinary if unit.position == 1 and unit.text == context), None)
+    if not context_unit:
+        return None
+    digest = sha256("\0".join((context_unit.source_sha256, context_unit.document_id,
+                                context_unit.section, "2", "causal_clause")).encode("utf-8")).hexdigest()[:24]
+    fact_unit = EvidenceUnit("ev-" + digest, context_unit.document_id, context_unit.source,
+        context_unit.source_sha256, context_unit.section, 2, fact, "sentence",
+        context_unit.scope, True, "fact")
+    return [context_unit, fact_unit], boundary
+
+
 def parse_decision(raw: str, units: list[EvidenceUnit]) -> EvidenceDecision:
     try:
         payload = json.loads(raw)
@@ -215,7 +261,8 @@ def parse_decision(raw: str, units: list[EvidenceUnit]) -> EvidenceDecision:
 
 def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit],
                             state: DialogueState, root: Path, *,
-                            informational: bool) -> tuple[list[EvidenceUnit], str | None]:
+                            informational: bool,
+                            require_customer_scope: bool = False) -> tuple[list[EvidenceUnit], str | None]:
     """Revalidate provenance, scope, ordering, conditions, and safety locally."""
     if decision.mode != "select":
         return [], None
@@ -239,7 +286,7 @@ def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit
         if (not section_body
                 or _whitespace_normalized(unit.text) not in _whitespace_normalized(section_body)):
             return [], "selected_text_not_in_exact_section"
-        if not informational:
+        if not informational or require_customer_scope:
             assessment = assess_source_scope(state, front)
             if assessment.mismatches:
                 return [], f"applicability_{assessment.mismatches[0]}_mismatch"

@@ -1,0 +1,21 @@
+# P0.1: частичная реализация — NO-GO
+
+Исходный чистый `main`: `2b720e5`. До изменений два сохранённых replay-теста помечены strict xfail; после изменений они остаются xfail. Конечные ответы Эвотора не исправлены.
+
+Добавлен опциональный аргумент `require_customer_scope` функции `validate_selected_units` в `app/semantic_evidence_selector.py`. При `informational=True` и включённом аргументе проверка использует `assess_source_scope` по metadata локального файла и отклоняет отсутствующий или несовпадающий customer scope. При значении по умолчанию прежний режим сохраняется. Этот аргумент пока не используется SourceFirst: это подготовительный элемент, а не реализация пользовательского fact-only ответа. Он не проверяет самостоятельно релевантность вопросу, task scope или полноту связанных условий.
+
+В `tests/test_semantic_evidence_selector.py` добавлены три независимые проверки сервиса: совпадение, несовпадение и отсутствие. Команда `.venv\Scripts\python.exe -m pytest tests/test_semantic_evidence_selector.py tests/test_b22d_p01_final_baseline.py -q --tb=short` вернула **23 passed / 2 xfailed**. Последние два — прежние продуктовые сбои, не PASS. Остальные запрошенные отрицательные контроли для нового маршрута не выполнены, так как маршрута ещё нет. Полный pytest не запускался; Groq LIVE не запускался, поскольку обязательный offline gate не пройден. Нового BEFORE/AFTER конечных ответов и HTTP usage нет. Исторические результаты приведены в [final gate](p01_final_gate.md).
+
+Следующий шаг: реализовать выделение самостоятельного факта с сохранением условий и проверкой его отношения к текущему вопросу и наблюдению, проверить source/index и scope, не создавая ProgressLedger-записей; затем выполнить baseline, контроли, полный pytest и заранее зафиксированный LIVE. Не включать экспериментальный селектор целиком и не обходить source-order gate. Approved KB и Stage3 не изменялись; commit/push не выполнялись.
+
+## Дополнение: первый ход исправлен
+
+`build_causal_fact_bundle` выделяет контекст и причинный фрагмент в проверяемые units только для узкой формы предложения с границей вывода; неизвестные условия, предупреждения и другие конструкции блокируют извлечение. `_incomplete_order_causal_fact` проверяет текущий вопрос, код и предмет вывода, конфликт сервиса, индексированный текст и через `validate_selected_units(require_customer_scope=True)` локальный approved/SHA и service/model scope. `_source_sections` отмечает точное совпадение текста индексированного и локального раздела. SourceFirst использует этот маршрут только после выбора раздела при `source_order_complete=false`; разрешение процедуры не выдаётся.
+
+**BEFORE:** «Уточните модель оборудования, чтобы выбрать применимый порядок проверки.»
+
+**AFTER, сохранённый offline replay:** «Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене: одного кода недостаточно для окончательного решения; неверное время может создать ложное впечатление, что срок ФН завершился.» Источник: `data/knowledge/evotor/fn/fn-234.md — Первое различение причины`.
+
+Первый тест `test_saved_groq_replacement_question_receives_fact` — обычный PASS; тестовый harness проверяет равенство состояния после SQLite reopen, а сам тест — пустые checks/shown_units/eligible_units, отсутствие procedure_id и запроса модели. Отрицательные контроли находятся в `tests/test_b22d_p01_causal_fact.py`; действие и изменённый индекс дополнительно проверены через `bot.handle_message` в `tests/test_b22d_p01_final_baseline.py`. Это локальный replay с сохранёнными provider outputs, не LIVE и не точная копия Stage3. Второй тест остаётся strict xfail. Общий P0.1 — NO-GO до исправления наблюдения и полного gate. Полный pytest и новый Groq LIVE в этом шаге не запускались; approved KB и Stage3 не изменялись. Commit/push нет.
+
+Связанный профиль: `.venv\Scripts\python.exe -m pytest tests/test_b22d_p01_causal_fact.py tests/test_b22d_p01_final_baseline.py tests/test_semantic_evidence_selector.py tests/test_b22d_p01_targeted.py tests/test_b22d_read_only_and_shown_limits.py tests/test_b22d_saved_continuation.py tests/test_b22d_applicability_contract.py tests/test_source_first_dialogue_contract.py -q --tb=short` — **139 passed / 1 xfailed**. Следующий конкретный шаг — отдельно реализовать использование нового наблюдения во втором ходе без объявления проверки выполненной.

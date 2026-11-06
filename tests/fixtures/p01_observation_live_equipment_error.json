@@ -1,0 +1,60 @@
+[
+  {
+    "request_type": "diagnosis",
+    "relation": "new_task",
+    "intent": "device",
+    "operation": "diagnose",
+    "object": "Evotor",
+    "object_evidence": {
+      "quote": "Эвотор"
+    },
+    "goal": {
+      "quote": "замена накопителя"
+    },
+    "symptom": {
+      "quote": "ФН 234"
+    },
+    "entities": [
+      {
+        "slot": "component",
+        "value": "накопитель",
+        "evidence": {
+          "quote": "накопителя"
+        }
+      }
+    ],
+    "unknown_facts": [],
+    "specialist_requested": false,
+    "specialist_evidence": null,
+    "confidence": 0.9
+  },
+  {
+    "request_type": "diagnosis",
+    "relation": "continue",
+    "intent": "device",
+    "operation": "diagnose",
+    "object": "ФН",
+    "object_evidence": {
+      "quote": "На экране кассы"
+    },
+    "goal": {
+      "quote": "Что посоветуете?"
+    },
+    "symptom": {
+      "quote": "На экране кассы время отстаёт на несколько часов"
+    },
+    "entities": [
+      {
+        "slot": "equipment",
+        "value": "накопителя",
+        "evidence": {
+          "quote": "накопителя"
+        }
+      }
+    ],
+    "unknown_facts": [],
+    "specialist_requested": false,
+    "specialist_evidence": null,
+    "confidence": 0.9
+  }
+]

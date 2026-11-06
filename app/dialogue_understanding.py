@@ -457,8 +457,18 @@ def _entity_mention_is_asserted(text: str, fact: Fact) -> bool:
 
 
 def _generic_equipment_value(value: str) -> bool:
-    return bool(re.fullmatch(r"(?:касс\w*|аппарат\w*|оборудовани\w*|терминал\w*)",
-                             value, re.I))
+    if re.fullmatch(r"(?:касс\w*|аппарат\w*|оборудовани\w*|терминал\w*)", value, re.I):
+        return True
+    # A bare generic task object is not a model identity. Use the shared
+    # object vocabulary rather than a product-specific exception; retain
+    # numbered or multiword designations for the existing model gates.
+    folded = value.casefold().replace("ё", "е").strip()
+    if not re.fullmatch(r"[а-яa-z]+", folded):
+        return False
+    return any((folded.startswith(root.casefold().replace("ё", "е")) if len(root) >= 3
+                else folded == root.casefold().replace("ё", "е"))
+               for _, _, roots in OBJECTS for root in roots
+               if re.fullmatch(r"[а-яa-z]+", root.casefold().replace("ё", "е")))
 
 
 def _entity_value_supported(slot: str, value: Any, quote: str) -> bool:
@@ -1045,6 +1055,36 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(45, connect=15)) as client:
             response = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=request)
+            # Groq can reject its own malformed strict-JSON completion with
+            # json_validate_failed. Retry that specific provider failure once;
+            # never parse or repair the rejected, untrusted completion.
+            try:
+                error_code = ((response.json().get("error") or {}).get("code")
+                              if response.status_code == 400 else None)
+            except (ValueError, AttributeError, TypeError):
+                error_code = None
+            if error_code == "json_validate_failed":
+                groq_rate_limiter.observe(response.headers, status=400, usage=None,
+                    stage="understanding", duration_ms=round((perf_counter()-started)*1000),
+                    attempt_number=attempt_number)
+                observed = True
+                _append_local_trace(model=settings.groq_model, status="provider_json_retry",
+                    structured_output=None, field_diagnostics=[{"field": "$", "status": "rejected",
+                    "reason": "groq_json_validate_failed"}], tokens=None,
+                    duration_ms=round((perf_counter()-started)*1000), request_payload=request,
+                    phase="provider", error_code="groq_json_validate_failed")
+                request = {**request, "messages": [*request["messages"],
+                    {"role": "user", "content": "Return a complete valid JSON object matching the schema. "
+                     "Each array item must be an object; close every array and object."}]}
+                try:
+                    attempt_number = await groq_rate_limiter.before_request(
+                        estimate_tokens(request), stage="understanding")
+                except GroqQuotaDeferred as exc:
+                    raise UnderstandingError("Groq quota temporarily unavailable", model=settings.groq_model,
+                        phase="quota", code="groq_quota_deferred",
+                        retry_after_seconds=exc.retry_after_seconds) from exc
+                observed = False
+                response = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=request)
         if response.status_code >= 400:
             rate_headers = groq_rate_limiter.observe(response.headers, status=response.status_code,
                 usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000),

@@ -1,0 +1,62 @@
+[
+  {
+    "request_type": "diagnosis",
+    "relation": "new_task",
+    "intent": "general",
+    "operation": "diagnose",
+    "object": "ФН 234",
+    "object_evidence": {
+      "quote": "ФН 234"
+    },
+    "goal": null,
+    "symptom": {
+      "quote": "Ошибка ФН 234"
+    },
+    "entities": [
+      {
+        "slot": "equipment",
+        "value": "Эвотор",
+        "evidence": {
+          "quote": "кассе Эвотор"
+        }
+      },
+      {
+        "slot": "component",
+        "value": "накопитель",
+        "evidence": {
+          "quote": "накопителя"
+        }
+      },
+      {
+        "slot": "software",
+        "value": "ФН 234",
+        "evidence": {
+          "quote": "ФН 234"
+        }
+      }
+    ],
+    "unknown_facts": [],
+    "specialist_requested": false,
+    "specialist_evidence": null,
+    "confidence": 0.85
+  },
+  {
+    "request_type": "diagnosis",
+    "relation": "answer_to_clarification",
+    "intent": "device",
+    "operation": "diagnose",
+    "object": "накопитель",
+    "object_evidence": {
+      "quote": "накопитель"
+    },
+    "goal": {
+      "quote": "Можно уже утверждать, что накопитель пора менять?"
+    },
+    "symptom": null,
+    "entities": [],
+    "unknown_facts": [],
+    "specialist_requested": false,
+    "specialist_evidence": null,
+    "confidence": 0.85
+  }
+]
