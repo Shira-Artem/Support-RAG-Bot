@@ -18,6 +18,33 @@ def test_saved_live_continuation_without_optional_spans_is_retained():
     assert turn['question'] in build_rag_query(state)
 
 
+def test_saved_n03_n04_observations_survive_ledger_waiting_state():
+    root = Path(__file__).resolve().parents[1]
+    manager = DialogueManager()
+    for case_id in ("N03", "N04"):
+        path = root / f"reports/b2_2d_20261105/expanded_live_20261106_{case_id}.json"
+        trace = json.loads(path.read_text(encoding="utf-8"))
+        turns = [item for item in trace["turns"] if item["case"] == case_id]
+        state = DialogueState.from_dict(turns[0]["state_after"])
+        turn = turns[1]
+        raw = trace["understanding_calls"][turn["understanding_call_indices"][-1]]["structured_output"]
+        _, _, unknown, observation = validate_response(
+            raw, turn["question"], turn["turn"], state)
+        continued = manager.advance(state, turn["question"], turn["turn"],
+            observation=observation, unknown_facts=list(unknown))
+        assert continued.task_id == state.task_id
+        assert not any(check.get("status") == "passed"
+                       for check in continued.task_context.checks)
+        if case_id == "N04":
+            assert any("дата" in fact.value.casefold() and "время" in fact.value.casefold()
+                       for fact in continued.task_context.details)
+        else:
+            retained = [*continued.task_context.details,
+                        *(fact for values in continued.task_context.entities.values()
+                          for fact in values)]
+            assert any("сторон" in fact.value.casefold() for fact in retained)
+
+
 def test_empty_continuation_does_not_add_context_and_new_task_does_not_inherit():
     manager = DialogueManager()
     first = 'Проверить подключение сервиса.'
@@ -29,6 +56,24 @@ def test_empty_continuation_does_not_add_context_and_new_task_does_not_inherit()
     changed = manager.advance(continued, text, 3, observation=Observation(intent='access', operation='search', relation='new_task', request_type='information', evidence=Fact.span(text, 3)))
     assert changed.task_id != state.task_id
     assert first not in build_rag_query(changed)
+
+
+def test_clarification_reply_with_observation_is_retained_without_check_completion():
+    manager = DialogueManager()
+    original = "На кассе ошибка ФН 234. Что проверить?"
+    observation = manager.advance(DialogueState(), original, 1,
+        observation=Observation(intent="unknown", operation="diagnose", relation="new_task",
+            request_type="information", evidence=Fact.span(original, 1)))
+    observation.task_context.checks = [{"unit_id": "shown", "label": "Проверьте дату и время",
+                                       "status": "asked"}]
+    followup = "Дата и время на кассе неправильные. Что проверить дальше?"
+    continuation = manager.advance(observation, followup, 2,
+        observation=Observation(intent="unknown", operation="unknown",
+            relation="answer_to_clarification", request_type="information",
+            evidence=Fact.span(followup, 2)))
+    assert any(item.value == followup for item in continuation.details)
+    assert continuation.task_context.checks[0]["status"] == "asked"
+
 
 def test_b01_saved_followup_can_render_new_diagnostic_section(monkeypatch, tmp_path):
     import asyncio

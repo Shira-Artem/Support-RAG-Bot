@@ -1465,12 +1465,14 @@ class DialogueManager:
         if relation == "constraint_update" and not obs.constraints:
             _append_unique(state.constraints, [obs.evidence])
         _append_unique(state.details, obs.details)
-        if (relation == "continue" and not (obs.goals or obs.symptom or obs.details
+        if (relation in {"continue", "answer_to_clarification"}
+                and not (obs.goals or obs.symptom or obs.details
                 or obs.constraints or obs.parameters or obs.entities or obs.unknown_facts)
                 and _informative_detail(text)):
             # The provider may omit every optional span on a substantive
-            # continuation. Preserve the user's exact words as unclassified
-            # context, without inferring an operation or a diagnosis.
+            # continuation or clarification reply. Preserve the user's exact
+            # words as unclassified context, without inferring an operation,
+            # a diagnosis, or a check outcome.
             _append_unique(state.details, [obs.evidence])
         if (obs.request_type == "diagnosis" and obs.operation == "diagnose"
                 and obs.symptom is None and not obs.details and not obs.unknown_facts
