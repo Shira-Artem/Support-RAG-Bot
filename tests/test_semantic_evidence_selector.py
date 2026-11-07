@@ -365,7 +365,13 @@ def test_experimental_semantic_composer_uses_unfiltered_information_candidates(
         return (EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "{}"),
                 Generation("{}", "selector-model"))
 
-    async def compose(messages, _settings):
+    async def compose(messages, _settings, *, call_stage=None):
+        if call_stage == "semantic_relevance":
+            relevance_payload = json.loads(messages[-1]["content"])
+            ids = [item["id"] for item in relevance_payload["approved_evidence"]]
+            return Generation(json.dumps({"verdict": "relevant",
+                "answers_current_question": True,
+                "supporting_evidence_ids": ids}, ensure_ascii=False), "relevance-model")
         payload = json.loads(messages[-1]["content"])
         assert payload["approved_evidence"][0]["id"] == units[0].id
         return Generation(composer_output or units[0].text, "composer-model")
@@ -385,9 +391,112 @@ def test_experimental_semantic_composer_uses_unfiltered_information_candidates(
     assert result.scenario_reason == "semantic_evidence_composer"
     assert result.validation_status in {"selected_ids_grounded_composition",
                                         "exact_selected_evidence_fallback"}
+    assert result.retrieval_diagnostics["semantic_answer_relevance"]["validation"] == "accepted"
     if composer_output and "Магия" in composer_output:
         assert result.validation_status == "exact_selected_evidence_fallback"
     assert "Откройте раздел оборудования" not in seen["candidate_texts"]
+
+
+def test_experimental_composer_escalates_topically_related_but_nonanswering_evidence(
+        monkeypatch, tmp_path):
+    import asyncio
+    import app.source_first_service as source_module
+
+    text = "На официальном рисунке видны число чеков, статус и кнопка фильтра."
+    _, item, _ = _fixture(tmp_path, text, service="aQsi Online")
+    item["scope"].update(service="aQsi Online", model="aQsi Online (облачная касса)")
+    units = build_evidence_units([item], informational=True)
+    question = "Где найти чек, если его номер неизвестен?"
+
+    async def choose(_question, _state, _history, _candidates, _settings, *, current_subgoal=None):
+        return EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "{}"), Generation("{}", "selector")
+
+    async def generate(messages, _settings, *, call_stage=None):
+        if call_stage == "semantic_relevance":
+            payload = json.loads(messages[-1]["content"])
+            assert payload["current_question"] == question
+            assert payload["approved_evidence"][0]["id"] == units[0].id
+            return Generation(json.dumps({"verdict": "irrelevant",
+                "answers_current_question": False,
+                "supporting_evidence_ids": []}), "relevance-model")
+        return Generation(json.dumps({"answer": "Нажмите кнопку фильтра и выполните поиск."}),
+                          "composer-model")
+
+    monkeypatch.setattr(selector_module, "select_evidence", choose)
+    monkeypatch.setattr(source_module, "generate", generate)
+    service = SourceFirstService(None, SimpleNamespace(semantic_composer_enabled=True,
+        semantic_evidence_selector_enabled=False, groq_api_key="", openrouter_api_key="",
+        telegram_bot_token=""), tmp_path)
+    result = asyncio.run(service._semantic_composer_answer(question,
+        DialogueState(intent="receipt", operation="search"), units, 0.0,
+        {"retrieval_diagnostics": {}}))
+    assert result.scenario_reason == "semantic_composer_irrelevant_evidence"
+    assert result.validation_status == "semantic_relevance_rejected"
+    assert "чек" not in result.text.casefold()
+
+
+def test_relevance_gate_drops_selected_ids_that_do_not_support_the_answer(monkeypatch, tmp_path):
+    import asyncio
+    import app.source_first_service as source_module
+
+    body = ("ОФД получает документы от зарегистрированной ККТ и передаёт их в ФНС. "
+            "В личном кабинете также доступен отчёт о регистрации кассы.")
+    _, item, _ = _fixture(tmp_path, body)
+    units = build_evidence_units([item], informational=True)
+    assert len(units) == 2
+    question = "Что ОФД делает с документами?"
+
+    async def generate(messages, _settings, *, call_stage=None):
+        if call_stage == "semantic_relevance":
+            payload = json.loads(messages[-1]["content"])
+            assert len(payload["approved_evidence"]) == 2
+            return Generation(json.dumps({"verdict": "relevant",
+                "answers_current_question": True,
+                "supporting_evidence_ids": [units[0].id]}), "relevance-model")
+        return Generation(json.dumps({"answer": "ОФД получает документы от зарегистрированной ККТ и передаёт их в ФНС."}),
+                          "composer-model")
+
+    monkeypatch.setattr(source_module, "generate", generate)
+    service = SourceFirstService(None, SimpleNamespace(semantic_composer_enabled=True,
+        groq_api_key="", openrouter_api_key="", telegram_bot_token=""), tmp_path)
+    result = asyncio.run(service._semantic_composer_answer(question,
+        DialogueState(intent="general", operation="explain"), units, 0.0,
+        {"retrieval_diagnostics": {}}))
+    relevance = result.retrieval_diagnostics["semantic_answer_relevance"]
+    assert result.validation_status == "selected_ids_grounded_composition"
+    assert relevance["retained_evidence_ids"] == [units[0].id]
+    assert relevance["excluded_selected_ids"] == [units[1].id]
+    assert "отчёт о регистрации" not in result.text
+
+
+def test_composer_fallback_preserves_registered_source_and_required_format_qualifiers(
+        monkeypatch, tmp_path):
+    import asyncio
+    import app.source_first_service as source_module
+
+    fact = ("ОФД получает фискальные документы от зарегистрированной ККТ, "
+            "обрабатывает и передаёт их в ФНС в предусмотренном формате.")
+    _, item, _ = _fixture(tmp_path, fact, service="АТОЛ Онлайн")
+    units = build_evidence_units([item], informational=True)
+    question = "Что происходит с фискальным документом?"
+
+    async def generate(messages, _settings, *, call_stage=None):
+        if call_stage == "semantic_relevance":
+            return Generation(json.dumps({"verdict": "relevant",
+                "answers_current_question": True,
+                "supporting_evidence_ids": [units[0].id]}), "relevance-model")
+        return Generation(json.dumps({"answer": "ОФД принимает документы от кассы, обрабатывает и передаёт в ФНС."}),
+                          "composer-model")
+
+    monkeypatch.setattr(source_module, "generate", generate)
+    service = SourceFirstService(None, SimpleNamespace(semantic_composer_enabled=True,
+        groq_api_key="", openrouter_api_key="", telegram_bot_token=""), tmp_path)
+    result = asyncio.run(service._semantic_composer_answer(question,
+        DialogueState(intent="general", operation="explain"), units, 0.0,
+        {"retrieval_diagnostics": {}}))
+    assert result.validation_status == "exact_selected_evidence_fallback"
+    assert "зарегистрированной ККТ" in result.text
+    assert "в предусмотренном формате" in result.text
 
 
 def test_experimental_selector_rejects_confirmed_foreign_service(tmp_path):

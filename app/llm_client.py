@@ -73,9 +73,11 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         # The evidence selector needs enough room to finish typed JSON after
         # reasoning over a larger candidate set; other bounded routes retain
         # the existing 1024-token allowance.
-        completion_budget = 2048 if call_stage == "semantic_selector" else 1024
+        completion_budget = 3072 if call_stage == "semantic_selector" else 1024
+        selector_call = call_stage == "semantic_selector"
         token_limit = {"max_completion_tokens": completion_budget,
-                       "reasoning_effort": settings.groq_reasoning_effort or "low"}
+                       "reasoning_effort": ("low" if selector_call
+                                            else settings.groq_reasoning_effort or "low")}
     elif settings.llm_provider == "openrouter":
         key, model = settings.openrouter_api_key, settings.openrouter_model
         url = "https://openrouter.ai/api/v1/chat/completions"

@@ -59,3 +59,47 @@ Dangerous FN request: the assistant refused to explain disabling the fiscal driv
 Limited information-path functionality is demonstrated for several new phrasings and full dialogue continuations. **P0.2 GO is not proposed yet** because the two unresolved negative/independent cases include a prior irrelevant-answer defect and must be checked LIVE after the provider quota resets. Production behavior remains disabled by default. Do not infer technical-procedure N07/m01/d10, P1.1, P1.2, frozen holdout or production readiness from these results.
 
 Production SQLite, approved KB and frozen holdout were not read for mutation or modified. The new isolated runs wrote under `.local/telegram-equivalent-*`; existing Stage3 Qdrant was read-only. See traces: [full pipeline runs](p02_full_pipeline_live_verified2.json), [latest quota-blocked retry](p02_full_pipeline_live_final_review.json), and earlier [final live run](p02_full_pipeline_live_final.json).
+
+## Final three LIVE cases and P0.2 decision — 2026-11-07
+
+This section supersedes the quota-limited NO-GO above. Each case used real `bot.handle_message`, actual Groq, the existing read-only Stage3 collection, and a fresh isolated SQLite runtime with `SEMANTIC_COMPOSER_ENABLED=1`. Collection `knowledge_stage3_retrieval_20261022` remained green with 934 points. All HTTP calls returned 200, provider errors were zero, and isolated SQLite reopen equality was true for all three cases.
+
+### Final answers and evaluation
+
+1. **Independent OFD wording** — “Куда попадает чек после отправки кассой оператору фискальных данных?”
+
+   Final answer:
+
+   > Область источника: АТОЛ Онлайн — облачная ККТ. ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.
+
+   Source: `data/knowledge/atol_online/ofd/what-is-ofd.md`, section “Что проверено по инструкции производителя”, evidence ID `ev-bd63d4ae34736e3385ba0c08`. The selector chose the exact approved ID; local SHA/section checks passed; relevance judge returned `relevant` with that same ID only. Composer paraphrase omitted “от зарегистрированной ККТ”; material qualifier check rejected it, so final output is the exact source sentence. Final facts and scope are grounded and complete. Earlier SourceFirst result for this independent wording was no-answer escalation; the intermediate semantic run once attached an unrelated Platforma OFD re-registration citation. RRF-first candidate ordering and relevance-supported ID filtering fixed those general failures.
+
+2. **aQsi Online unknown receipt number** — “В aQsi Online где найти чек, если номер документа неизвестен?”
+
+   Final answer:
+
+   > В approved-источниках не нашёл подтверждённого ответа именно на запрошенную часть вопроса. Запросите специалиста.
+
+   The selector chose two statements from `data/knowledge/aqsi_online/account/my-cash-registers.md`, section “Просмотр”: the “Мои кассы” list and a figure showing KKT/FN/count/status/date columns and a filter button. Both statements are in the correct aQsi Online service/model scope, but neither establishes how to find a receipt without its document number. Composer also produced an unsupported claim that the filter searches by date/status. Python claim validation rejected that paraphrase; exact-source fallback was tested by the semantic relevance judge, which returned `irrelevant`, `answers_current_question=false`, no supporting IDs. Final answer is a safe escalation. The earlier LIVE answer incorrectly stated that the history contains the original document and offered a refund action; that unsupported substitution no longer reaches the user.
+
+3. **Unsupported ATOL Online menu** — “Где в АТОЛ Онлайн включить автоматическую отправку закрывающих документов?”
+
+   Final answer:
+
+   > По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.
+
+   Strict Planner returned `clarify`, `applicability_confirmed=false`, `source_order_complete=false`; its reason was that no candidate section addresses this feature. Composer was not called; no menu location/action was invented. This case remains on the strict technical/action path.
+
+### General causes fixed during confirmation
+
+- Added a semantic answerability/relevance gate after ID selection and composition. Grounding every sentence is not treated as proof that the answer resolves the question. Only IDs independently marked as supporting are cited; Python rechecks all claims/qualifiers against that subset.
+- Candidate sections are ordered by fused retrieval rank before the bounded section budget. Previously metadata/task relevance scores could crowd out a stronger actual query candidate. The selected approved source is still checked locally for scope/SHA/exact section.
+- Added generic preservation checks for material source qualifiers. If the fluent answer drops a qualifier such as registered source or prescribed format, final response uses exact approved wording.
+- Reduced duplicate DialogueState content in the selector prompt and set only selector reasoning to low with a 3072 completion budget. Composer reasoning is unchanged. Earlier responses that exhausted the token budget or refused despite available scoped evidence remain in `p02_full_pipeline_live_final_round3/4/6/7.json` as failed iterations, not successes.
+- A first full pytest after expanding a shared legacy condition regex caught two P0.1 semantic-judge regressions. The global regex was restored; qualifier checks remain local to the experimental Composer. Targeted P0.1/Ledger coverage then passed and the final full suite passed.
+
+### Final offline and gate
+
+Final full project `.venv` suite: **843 passed, 4 historical xfailed in 233.64 seconds**. Final trio trace: [p02_full_pipeline_live_final_round8.json](p02_full_pipeline_live_final_round8.json). Earlier `[verified2](p02_full_pipeline_live_verified2.json)` provides the full-pipeline follow-up memory, foreign-service, wrong-model correction and dangerous-FN outcomes.
+
+**P0.2 GO — limited to the feature-gated informational answer path.** Production default stays disabled. The gate covers these positives and safe fallbacks; it is not approval for production, procedures, N07/m01/d10, P1.1/P1.2, frozen holdout, or the overall B2.2d quality gate. The extra relevance model call adds latency/token cost. Production SQLite, approved KB, and frozen holdout were not modified.

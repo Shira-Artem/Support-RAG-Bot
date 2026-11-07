@@ -106,10 +106,13 @@ def test_semantic_selector_has_budget_to_finish_json_after_reasoning(monkeypatch
         "usage": {"prompt_tokens": 100, "completion_tokens": 80, "total_tokens": 180}})
     monkeypatch.setattr(client.httpx, "AsyncClient", CaptureClient)
 
+    settings = _settings()
+    settings.groq_reasoning_effort = "medium"
     asyncio.run(client.generate([{"role": "user", "content": "Choose evidence IDs."}],
-                                _settings(), call_stage="semantic_selector"))
+                                settings, call_stage="semantic_selector"))
 
-    assert calls[0]["max_completion_tokens"] == 2048
+    assert calls[0]["max_completion_tokens"] == 3072
+    assert calls[0]["reasoning_effort"] == "low"
     assert "response_format" not in calls[0]
 
 

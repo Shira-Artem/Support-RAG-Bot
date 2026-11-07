@@ -343,7 +343,7 @@ def test_experimental_information_can_resolve_approved_candidate_rejected_only_b
 
 def test_experimental_information_prioritizes_retrieval_rank_before_section_budget(tmp_path):
     candidates, articles = [], {}
-    for doc_id, score, dense in (("weak", .4, .99), ("strong", .95, .7)):
+    for doc_id, score, dense, rrf in (("weak", .95, .99, .2), ("strong", .4, .7, .9)):
         relative = f"data/knowledge/{doc_id}.md"
         path = tmp_path / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -358,7 +358,7 @@ def test_experimental_information_prioritizes_retrieval_rank_before_section_budg
         articles[doc_id] = [SearchResult(relative, f"The {doc_id} candidate supports a read-only capability.",
             dense, metadata=metadata)]
         candidates.append(EvaluatedDocument(relative, doc_id, "approved", metadata,
-            {"dense": dense, "rrf": dense}, Relevance("match", "match", score),
+            {"dense": dense, "rrf": rrf}, Relevance("match", "match", score),
             reasons=[], selected=False))
     retrieval = RetrievalResult("query", candidates, [], [], False, "no_task_matched_candidates", "")
     rag = SimpleNamespace(pipeline=SimpleNamespace(source=SimpleNamespace(article=lambda doc: articles[doc])))
