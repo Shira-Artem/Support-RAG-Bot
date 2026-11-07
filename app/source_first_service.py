@@ -1708,13 +1708,30 @@ def _source_sections(rag, retrieval, root: Path, max_sections: int = 4,
         for item in retrieval.diagnostics().get("selected", [])
         if "closed_read_only_section_contract" in item.get("relevance", {}).get("reasons", [])}
     candidate_hits = []
+    semantic_candidate_ids = set()
     task_mismatch_candidate_ids = set()
     if allow_task_mismatch_information:
         source = getattr(getattr(getattr(rag, "pipeline", None), "source", None), "article", None)
-        for candidate in [*getattr(retrieval, "candidates", []), *getattr(retrieval, "rejected", [])]:
+        candidate_documents = [*getattr(retrieval, "candidates", []),
+                               *getattr(retrieval, "rejected", [])]
+
+        def candidate_rank(candidate):
+            relevance = getattr(candidate, "relevance", None)
+            scores = getattr(candidate, "retrieval", {}) or {}
+            return (float(getattr(relevance, "score", 0.0) or 0.0),
+                    float(scores.get("dense") or 0.0),
+                    float(scores.get("rrf") or 0.0))
+
+        # Retrieval's raw candidate order can differ from its final semantic
+        # ranking. Prioritize the stronger article candidates before the
+        # bounded section budget, while keeping ID/scope verification below.
+        candidate_documents.sort(key=candidate_rank, reverse=True)
+        for candidate in candidate_documents:
             reasons = list(getattr(candidate, "reasons", []) or [])
             doc_id = str(getattr(candidate, "document_id", None) or "")
-            if not doc_id or len(reasons) != 1 or not reasons[0].startswith("task_mismatch:"):
+            is_task_mismatch_only = len(reasons) == 1 and reasons[0].startswith("task_mismatch:")
+            is_retrieval_candidate = not reasons and not getattr(candidate, "selected", False)
+            if not doc_id or not (is_task_mismatch_only or is_retrieval_candidate):
                 continue
             entry = index.get(doc_id)
             if not entry:
@@ -1727,7 +1744,9 @@ def _source_sections(rag, retrieval, root: Path, max_sections: int = 4,
                     or any(indexed_metadata.get(field) != local_scope.get(field) for field in fields)):
                 continue
             selected_documents[doc_id] = getattr(candidate, "metadata", {}) or {}
-            task_mismatch_candidate_ids.add(doc_id)
+            semantic_candidate_ids.add(doc_id)
+            if is_task_mismatch_only:
+                task_mismatch_candidate_ids.add(doc_id)
             if callable(source):
                 candidate_hits.extend((doc_id, str((hit.metadata or {}).get("section") or ""), hit.metadata or {})
                     for hit in source(doc_id) if hit.metadata
@@ -1748,7 +1767,11 @@ def _source_sections(rag, retrieval, root: Path, max_sections: int = 4,
             seen.add(key)
             keys.append((doc_id, heading, metadata))
     out = []
+    candidate_section_counts = {}
     for doc_id, heading, hit_metadata in keys:
+        if (doc_id in semantic_candidate_ids
+                and candidate_section_counts.get(doc_id, 0) >= 2):
+            continue
         source = index.get(doc_id)
         if not source or not heading:
             continue
@@ -1791,9 +1814,12 @@ def _source_sections(rag, retrieval, root: Path, max_sections: int = 4,
                     "indexed_section_match": indexed_section_match,
                     "read_only_check_contract": doc_id in read_only_documents,
                     "support_only": bool(hit_metadata.get("_prerequisite_only")),
+                    "semantic_candidate": doc_id in semantic_candidate_ids,
                     "task_category_mismatch_candidate": doc_id in task_mismatch_candidate_ids,
                     "scope": {field: local_scope.get(field) for field in scope_fields},
                     "qdrant_scope": {field: hit_scope.get(field) for field in scope_fields}})
+        if doc_id in semantic_candidate_ids:
+            candidate_section_counts[doc_id] = candidate_section_counts.get(doc_id, 0) + 1
     return out[:max_sections]
 
 
@@ -2634,11 +2660,11 @@ class SourceFirstService:
         semantic_information_route = bool(
             getattr(self.settings, "semantic_composer_enabled", False)
             and decision and decision.get("route") == "grounded_information")
-        experimental_sections = (_source_sections(self.rag, retrieval, self.root, 12,
+        experimental_sections = (_source_sections(self.rag, retrieval, self.root, 24,
             allow_task_mismatch_information=True) if semantic_information_route else None)
-        task_mismatch_information_available = bool(experimental_sections and any(
-            item.get("task_category_mismatch_candidate") for item in experimental_sections))
-        if ((not retrieval.sufficient and not bounded_access and not task_mismatch_information_available)
+        semantic_candidate_information_available = bool(experimental_sections and any(
+            item.get("semantic_candidate") for item in experimental_sections))
+        if ((not retrieval.sufficient and not bounded_access and not semantic_candidate_information_available)
                 or retrieval.evidence_status == "unsafe"):
             if retrieval.evidence_status != "unsafe":
                 fallback = await self._general_knowledge_fallback(

@@ -91,6 +91,28 @@ def test_planner_uses_a_bounded_completion_budget_for_its_short_json_schema(monk
     assert CaptureClient.requests == 1
 
 
+def test_semantic_selector_has_budget_to_finish_json_after_reasoning(monkeypatch):
+    calls = []
+
+    class CaptureClient(_Client):
+        async def post(self, *args, **kwargs):
+            calls.append(kwargs["json"])
+            return await super().post(*args, **kwargs)
+
+    CaptureClient.requests = 0
+    CaptureClient.response = _response(200, {"choices": [{"message": {
+        "content": '{"mode":"no_evidence","selected_ids":[],"clarification_slot":null,'
+                   '"reason_code":"insufficient_evidence"}'}}],
+        "usage": {"prompt_tokens": 100, "completion_tokens": 80, "total_tokens": 180}})
+    monkeypatch.setattr(client.httpx, "AsyncClient", CaptureClient)
+
+    asyncio.run(client.generate([{"role": "user", "content": "Choose evidence IDs."}],
+                                _settings(), call_stage="semantic_selector"))
+
+    assert calls[0]["max_completion_tokens"] == 2048
+    assert "response_format" not in calls[0]
+
+
 def test_missing_headers_allow_one_bounded_generation_and_next_call(monkeypatch):
     _Client.requests = 0
     _Client.response = _response(200, {"choices": [{"message": {"content": "ok"}}],

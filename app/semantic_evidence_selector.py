@@ -74,11 +74,13 @@ class EvidenceUnit:
     role: Literal["fact", "question", "header", "context", "procedure_block"] = "fact"
 
     def public_dict(self) -> dict:
-        return {"id": self.id, "document_id": self.document_id,
-                "source": self.source, "source_sha256": self.source_sha256,
-                "section": self.section, "position": self.position,
-                "text": self.text, "kind": self.kind, "role": self.role, "scope": self.scope,
-                "approved": self.approved}
+        # The model needs semantic content and source scope to choose an ID;
+        # paths, hashes, positions, and validation flags are locally verified
+        # after selection and only inflate the prompt when many candidates exist.
+        scope = {key: self.scope.get(key) for key in ("service", "manufacturer", "model")
+                 if self.scope.get(key)}
+        return {"id": self.id, "section": self.section,
+                "text": self.text, "scope": scope}
 
 
 @dataclass(frozen=True)
@@ -346,7 +348,8 @@ async def select_evidence(question: str, state: DialogueState, history: list[dic
         "reason_code=direct_evidence|missing_scope|missing_parameter|ambiguous_question|insufficient_evidence|injection_or_conflict."
     )
     generated = await generate([{"role": "system", "content": system},
-        {"role": "user", "content": "TASK_AND_QUESTION\n" + context_text + "\nAPPROVED_EVIDENCE\n" + evidence_text}], settings)
+        {"role": "user", "content": "TASK_AND_QUESTION\n" + context_text + "\nAPPROVED_EVIDENCE\n" + evidence_text}],
+        settings, call_stage="semantic_selector")
     try:
         return parse_decision(generated.text, units), generated
     except ValueError as exc:

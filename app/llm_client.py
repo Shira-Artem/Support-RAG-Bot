@@ -70,9 +70,10 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {}
         # GPT-OSS reasoning and visible JSON share the completion budget.
-        # Keep the existing bounded 1024-token allowance for Planner as well;
-        # the quota estimator includes the full allowance before each request.
-        completion_budget = 1024
+        # The evidence selector needs enough room to finish typed JSON after
+        # reasoning over a larger candidate set; other bounded routes retain
+        # the existing 1024-token allowance.
+        completion_budget = 2048 if call_stage == "semantic_selector" else 1024
         token_limit = {"max_completion_tokens": completion_budget,
                        "reasoning_effort": settings.groq_reasoning_effort or "low"}
     elif settings.llm_provider == "openrouter":

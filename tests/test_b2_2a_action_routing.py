@@ -34,6 +34,36 @@ def test_concept_question_stays_explanation():
     assert decision.route == "grounded_information"
 
 
+@pytest.mark.parametrize("question,intent,subject,subject_quote", [
+    ("Гарантируется совместимость стороннего USB-хаба с кассой?",
+     "device", "касса", "кассой"),
+    ("Можно ли автоматически получать выписки через DirectBank каждый день?",
+     "bank_statement", "выписки", "выписки"),
+])
+def test_information_request_with_check_projection_uses_grounded_route(
+        question, intent, subject, subject_quote):
+    raw = {"request_type": "information", "relation": "new_task", "intent": intent,
+        "operation": "check", "object": subject,
+        "object_evidence": {"quote": subject_quote},
+        "goal": {"quote": question}, "symptom": None, "entities": [],
+        "unknown_facts": [], "specialist_requested": False,
+        "specialist_evidence": None, "confidence": .9}
+    kind, _, unknown, observation = validate_response(raw, question, 1)
+    state = DialogueManager().advance(DialogueState(), question, 1,
+                                     observation=observation, unknown_facts=list(unknown))
+    decision = coordinate({"request_type": kind}, state)
+    assert decision.route == "grounded_information"
+    assert decision.rationale == "information_request_requires_grounded_evidence"
+
+
+def test_information_request_for_steps_stays_on_strict_technical_route():
+    obs, decision = _validated("Как проверить подключение USB-хаба?", operation="check",
+                                subject="USB-хаб", evidence="USB-хаба")
+    assert obs.operation != "explain"
+    assert decision.route == "technical_action"
+    assert decision.rationale == "procedure_context_requires_complete_scoped_section"
+
+
 def test_reported_failure_remains_diagnosis():
     obs, decision = _validated("Почему банковские выписки не загружаются через DirectBank?", evidence="выписки")
     assert obs.operation == "diagnose"

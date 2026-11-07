@@ -42,7 +42,10 @@ def test_runtime_short_retry_is_observed_once_after_wait(monkeypatch, tmp_path):
             calls.append((result.status_code, now, retry))
             return result
     monkeypatch.setattr(llm.httpx, "AsyncClient", Client)
-    monkeypatch.setattr(llm, "groq_rate_limiter", GroqRateLimiter(minimum_interval=0, maximum_wait=0))
+    # The provider-directed delay is 50ms. Leave a small local wait budget so
+    # timer scheduling jitter after asyncio.sleep does not turn the intended
+    # single retry into a false quota defer.
+    monkeypatch.setattr(llm, "groq_rate_limiter", GroqRateLimiter(minimum_interval=0, maximum_wait=0.1))
     monkeypatch.setattr("app.groq_rate_limit._TRACE", tmp_path / "trace.jsonl")
     settings = SimpleNamespace(llm_provider="groq", groq_api_key="test", groq_model="test", groq_reasoning_effort="low")
     result = asyncio.run(llm.generate([], settings, call_stage="planner"))

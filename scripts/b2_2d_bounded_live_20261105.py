@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+from contextlib import contextmanager
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 import hashlib
@@ -67,8 +68,14 @@ CASES = {
     "atol_api_incident": ["АТОЛ Онлайн: после подтверждённой оплаты API чек не найден."],
     "evotor_combined_payment": ["Эвотор: как работает комбинированная оплата?"],
     "p02_directbank_information": ["В 1С через DirectBank можно настроить получение выписок по расписанию? От чего это зависит?"],
+    "p02_directbank_paraphrase": ["Подключена 1С:Бухгалтерия к DirectBank. Можно ли забирать выписки автоматически каждый день, и зависит ли это от банка?"],
     "p02_usb_hub_compatibility": ["Гарантируется совместимость стороннего USB-хаба с физической кассой aQsi при зарядке и подключении оборудования?"],
+    "p02_usb_hub_paraphrase": ["Если подключить сканер к кассе aQsi через чужой USB-хаб, можно одновременно заряжать кассу? Производитель это подтверждает?"],
     "p02_ofd_purpose": ["Зачем магазину нужен оператор фискальных данных и что он делает с чеками?"],
+    "p02_ofd_continuation": ["Что оператор фискальных данных делает с кассовым чеком?", "А куда он его потом передаёт?"],
+    "p02_ofd_independent": ["Куда попадает чек после отправки кассой оператору фискальных данных?"],
+    "p02_foreign_service": ["В Контур.Диадок как настроить ежедневную загрузку банковских выписок через DirectBank?"],
+    "p02_wrong_model": ["На Эвотор 7.3 чеки не передаются. Как проверить связь?", "Оказалось, у меня Эвотор 6. Можно применить ту же модельную проверку?"],
     "p02_unknown_ui": ["Где в АТОЛ Онлайн включить автоматическую отправку закрывающих документов?"],
     "p02_no_knowledge": ["В aQsi Online где найти чек, если номер документа неизвестен?"],
     "p02_edo_draft": ["Что делать с расхождениями в УПД, присланном через ЭДО?"],
@@ -213,6 +220,19 @@ async def run(args):
          patch.object(httpx.AsyncClient, "post", capture_post), \
          patch.object(understanding_module, "_append_local_trace", capture_understanding):
         bot = importlib.import_module("bot")
+        if getattr(args, "respect_groq_tpm", False):
+            # Isolated LIVE runs should wait for the provider's observed TPM
+            # reset between selector and Composer calls instead of exercising
+            # the allowlisted manual-test bypass and burning a 429.
+            quota_module.groq_rate_limiter.maximum_wait = max(
+                70.0, quota_module.groq_rate_limiter.maximum_wait)
+
+            @contextmanager
+            def respect_observed_provider_quota(_enabled):
+                with quota_module.allowlist_local_tpm_bypass(False):
+                    yield
+
+            bot.allowlist_local_tpm_bypass = respect_observed_provider_quota
         logging.getLogger().setLevel(logging.WARNING)
         for case_id in args.cases.split(","):
             cid = store.new(42, 42)
@@ -280,4 +300,6 @@ if __name__ == "__main__":
     parser.add_argument("--pause", type=float, default=12)
     parser.add_argument("--semantic-composer", action="store_true",
                         help="Enable the isolated experimental information-only semantic Composer path")
+    parser.add_argument("--respect-groq-tpm", action="store_true",
+                        help="In isolated LIVE runs, wait through observed provider TPM resets instead of bypassing local estimates")
     asyncio.run(run(parser.parse_args()))

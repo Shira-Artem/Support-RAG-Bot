@@ -323,10 +323,50 @@ def test_experimental_information_can_resolve_approved_candidate_rejected_only_b
     assert len(admitted) == 1
     assert admitted[0]["id"] == "approved-info::Facts"
     assert admitted[0]["text"] == "The supported connection uses a configured endpoint."
+    assert admitted[0]["semantic_candidate"] is True
+    assert admitted[0]["task_category_mismatch_candidate"] is True
+
+    # An approved candidate that passed article gates but fell outside
+    # retrieval's document expansion limit also remains available to the
+    # semantic selector in this information-only route.
+    rejected.reasons.clear()
+    unexpanded = _source_sections(rag, retrieval, tmp_path,
+        allow_task_mismatch_information=True)
+    assert len(unexpanded) == 1
+    assert unexpanded[0]["semantic_candidate"] is True
+    assert unexpanded[0]["task_category_mismatch_candidate"] is False
 
     rejected.reasons.append("equipment_mismatch_or_unlabeled")
     assert _source_sections(rag, retrieval, tmp_path,
         allow_task_mismatch_information=True) == []
+
+
+def test_experimental_information_prioritizes_retrieval_rank_before_section_budget(tmp_path):
+    candidates, articles = [], {}
+    for doc_id, score, dense in (("weak", .4, .99), ("strong", .95, .7)):
+        relative = f"data/knowledge/{doc_id}.md"
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"---\ndocument_id: {doc_id}\nstatus: approved\n"
+            f"service: Test Service\ntask_category: integration\nmanufacturer: null\n"
+            f"model: null\nprocedure_service: null\ntitle: {doc_id}\n---\n"
+            f"## Facts\nThe {doc_id} candidate supports a read-only capability.\n",
+            encoding="utf-8")
+        metadata = {"document_id": doc_id, "status": "approved", "service": "Test Service",
+            "task_category": "integration", "manufacturer": None, "model": None,
+            "procedure_service": None, "source": relative, "section": "Facts"}
+        articles[doc_id] = [SearchResult(relative, f"The {doc_id} candidate supports a read-only capability.",
+            dense, metadata=metadata)]
+        candidates.append(EvaluatedDocument(relative, doc_id, "approved", metadata,
+            {"dense": dense, "rrf": dense}, Relevance("match", "match", score),
+            reasons=[], selected=False))
+    retrieval = RetrievalResult("query", candidates, [], [], False, "no_task_matched_candidates", "")
+    rag = SimpleNamespace(pipeline=SimpleNamespace(source=SimpleNamespace(article=lambda doc: articles[doc])))
+
+    selected = _source_sections(rag, retrieval, tmp_path, max_sections=1,
+        allow_task_mismatch_information=True)
+    assert len(selected) == 1
+    assert selected[0]["document_id"] == "strong"
 
 
 def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, tmp_path):

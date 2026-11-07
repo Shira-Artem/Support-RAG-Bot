@@ -51,6 +51,14 @@ def test_evidence_ids_are_stable_and_procedure_is_indivisible(tmp_path):
     assert "1. Откройте" in first[0].text and "2. Выберите" in first[0].text
 
 
+def test_selector_prompt_exposes_only_semantic_content_and_scope(tmp_path):
+    _, _, units = _fixture(tmp_path, "ОФД получает документы и передаёт их в ФНС.")
+    payload = units[0].public_dict()
+    assert payload == {"id": units[0].id, "section": units[0].section,
+                       "text": units[0].text, "scope": {"service": "Платформа ОФД"}}
+    assert "source_sha256" not in payload and "source" not in payload
+
+
 def test_informational_units_split_facts_from_procedure_but_keep_procedure_intact(tmp_path):
     text = ("ОФД получает документы и передаёт их в ФНС.\n"
             "Важно: статус очереди не подтверждает успешную передачу.\n"
@@ -74,6 +82,15 @@ def test_informational_units_split_facts_from_procedure_but_keep_procedure_intac
     assert len(procedural) == 1
     assert procedural[0].kind == "procedure_block"
     assert "1. Откройте" in procedural[0].text and "2. Сохраните" in procedural[0].text
+
+
+def test_information_selector_drops_descriptive_return_workflow_steps(tmp_path):
+    text = "В истории чеков находят первоначальный документ и открывают действие возврата."
+    _, item, _ = _fixture(tmp_path, text)
+    assert build_evidence_units([item], informational=True) == []
+    procedural = build_evidence_units([item])
+    assert len(procedural) == 1
+    assert procedural[0].kind == "procedure_block"
 
 
 def test_exact_section_validation_accepts_markdown_soft_line_breaks(tmp_path):
