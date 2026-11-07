@@ -1,0 +1,14 @@
+{
+  "method": "Shadow B using frozen A pre-turn state and exact approved result payload; no bot, store, ledger or retrieval calls.",
+  "turns": [],
+  "errors": [
+    {
+      "case": "1c",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "LLM request failed",
+      "status": 429,
+      "retry_after_seconds": 1157.0
+    }
+  ]
+}
