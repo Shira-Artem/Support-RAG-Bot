@@ -1968,7 +1968,8 @@ class SourceFirstService:
                     subject, state_word, operand = parsed.groups()
                     words = re.findall(r"[а-яa-z]+", operand)
                     if (subject not in condition_words or state_word not in condition_states
-                            or not words or any(word not in inspection_words for word in words)):
+                            or not words or any(word not in inspection_words for word in words)
+                            or len(_focus_terms(question) & _focus_terms(sentence)) < 2):
                         continue
                     if not any((hit.metadata or {}).get("section") == heading
                                and all(normalize_metadata(hit.metadata or {}).get(field) == scope.get(field)

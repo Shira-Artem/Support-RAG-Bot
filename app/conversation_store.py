@@ -567,6 +567,10 @@ class ConversationStore:
             task = dialogue.get('task_context') or {}
 
         task_id = task.get('task_id')
+        expected = task.get('expected') or {}
+        open_questions = list(dict.fromkeys(
+            str(value).strip() for value in (task.get('open_question'), expected.get('question'))
+            if isinstance(value, str) and value.strip()))
         # Include only completed Q/A pairs whose persisted answer snapshot is
         # bound to this exact task. A later topic in the same conversation must
         # not leak into a previously created specialist ticket.
@@ -604,6 +608,7 @@ class ConversationStore:
             'task': {'task_id': task.get('task_id'), 'intent': task.get('intent'), 'operation': task.get('operation'),
                      'object': task.get('object'), 'task': (task.get('task_fact') or {}).get('value')},
             'confirmed_facts': _handoff_facts(dialogue, task),
+            'open_questions': open_questions,
             'messages': [{'role': item['role'], 'text': item['content']}
                          for item in relevant if item['role'] in {'user', 'assistant'}],
             'escalation_reason': row['basis'],

@@ -6,7 +6,8 @@ import os
 
 @contextmanager
 def single_instance():
-    path = Path(__file__).resolve().parents[1] / '.local/bot.lock'
+    path = Path(os.getenv('BOT_INSTANCE_LOCK_PATH',
+                         str(Path(__file__).resolve().parents[1] / '.local/bot.lock')))
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a+b') as handle:
         if path.stat().st_size == 0:

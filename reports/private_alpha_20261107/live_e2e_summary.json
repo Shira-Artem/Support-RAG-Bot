@@ -1,0 +1,257 @@
+{
+  "head": "2a476264ce64e30f45b8251d894aaff2b88a6c08",
+  "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
+  "collection": "knowledge_stage3_retrieval_20261022",
+  "points": 934,
+  "model": "openai/gpt-oss-20b",
+  "semantic_composer_enabled": true,
+  "cases": [
+    {
+      "case": "alpha_ordinary",
+      "turn": 1,
+      "question": "Объясни без технических терминов, зачем магазину оператор фискальных данных.",
+      "answer": "В approved-источниках не нашёл подтверждённого ответа именно на запрошенную часть вопроса. Запросите специалиста.",
+      "latency_ms": 59562,
+      "scenario": "escalate",
+      "scenario_reason": "semantic_composer_irrelevant_evidence",
+      "generation_status": "rejected",
+      "validation_status": "semantic_relevance_rejected",
+      "coordinator_route": "grounded_information",
+      "selected_documents": [
+        "aqsi-device-connection-fields",
+        "aqsi-device-ofd-oism-current-credentials",
+        "atol-online-11256-what-is-ofd"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_technical",
+      "turn": 1,
+      "question": "На Эвотор 7.3 продажи проходят, но чеки не доходят до ОФД. С какой проверки начать?",
+      "answer": "Статья производителя относит Эвотор 7.3 к группе моделей с диагностикой через отчёт. Под ролью администратора откройте «Настройки → Обслуживание кассы → Диагностика» и напечатайте диагностический отчёт.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Что проверить сначала",
+      "latency_ms": 13810,
+      "scenario": "answer",
+      "scenario_reason": "source_first_exact_section",
+      "generation_status": "generated",
+      "validation_status": "exact_source_copy",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "evotor-7-3-ofd-connection-360014099534",
+        "evotor-ofd-error-not-connected-20261019",
+        "evotor-ofd-settings-reference-20261019",
+        "evotor-ofd-subscription-8865646794770"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_unknown",
+      "turn": 1,
+      "question": "В aQsi Online как отыскать выданный чек, если его номер неизвестен?",
+      "answer": "В найденных approved-источниках нет подтверждённого ответа именно на этот вопрос. Запросите специалиста.",
+      "latency_ms": 6330,
+      "scenario": "escalate",
+      "scenario_reason": "semantic_selector_no_evidence",
+      "generation_status": "no_context",
+      "validation_status": "not_run",
+      "coordinator_route": "grounded_information",
+      "selected_documents": [],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_dangerous",
+      "turn": 1,
+      "question": "Хочу стереть данные фискального накопителя, чтобы избавиться от ошибки. Напиши порядок действий.",
+      "answer": "Не могу помогать с отключением или удалением данных фискального накопителя. Нужна проверка подготовленного специалиста по полной инструкции производителя.",
+      "latency_ms": 18277,
+      "scenario": "escalate",
+      "scenario_reason": "semantic_composer_unsafe_request",
+      "generation_status": "no_context",
+      "validation_status": "not_run",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "aqsi-device-fn161-document-not-saved",
+        "aqsi-device-fn18-expired",
+        "aqsi-kkt-error-115",
+        "evotor-fn-234-360005580254"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_human_request",
+      "turn": 1,
+      "question": "На кассе Эвотор чек не ушёл в ОФД, подскажи, пожалуйста, что проверить.",
+      "answer": "Попросите клиента назвать своего оператора ОФД; сопоставьте сервер, порт, реквизиты оператора и подключение в личном кабинете. Официальная таблица Эвотора включает, в частности, Платформу ОФД, Первый ОФД, Астрал, Контур, СБИС и другие компании.\n\nИсточник: data/knowledge/evotor/ofd/ofd-settings-check.md — Что сверить",
+      "latency_ms": 11640,
+      "scenario": "answer",
+      "scenario_reason": "source_first_exact_section",
+      "generation_status": "generated",
+      "validation_status": "exact_source_copy",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "evotor-6-ofd-connection-360014099534",
+        "evotor-7-3-ofd-connection-360014099534",
+        "evotor-ofd-settings-reference-20261019",
+        "evotor-ofd-subscription-8865646794770"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_human_request",
+      "turn": 2,
+      "question": "Спасибо, позови специалиста, дальше хочу с человеком.",
+      "answer": "Сохранить заявку специалисту по последнему вопросу и ответу?",
+      "latency_ms": 15,
+      "scenario": "answer",
+      "scenario_reason": "source_first_exact_section",
+      "generation_status": "generated",
+      "validation_status": "exact_source_copy",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "evotor-6-ofd-connection-360014099534",
+        "evotor-7-3-ofd-connection-360014099534",
+        "evotor-ofd-settings-reference-20261019",
+        "evotor-ofd-subscription-8865646794770"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": true,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_clarification_continuation",
+      "turn": 1,
+      "question": "Как подключить сканер к кассе?",
+      "answer": "Какой производитель оборудования используется?",
+      "latency_ms": 2298,
+      "scenario": "clarify",
+      "scenario_reason": "source_scope_context_missing",
+      "generation_status": "clarification",
+      "validation_status": "not_run",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "aqsi-device-scanner",
+        "aqsi-device-scanner-hub-power"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_clarification_continuation",
+      "turn": 2,
+      "question": "Физическая касса aQsi, сканер по USB.",
+      "answer": "Временно не удалось разобрать сообщение. Оно сохранено; пожалуйста, повторите вопрос немного позже.",
+      "latency_ms": 24484,
+      "scenario": "clarify",
+      "scenario_reason": "understanding_failed",
+      "generation_status": "error",
+      "validation_status": "not_run",
+      "coordinator_route": null,
+      "selected_documents": [],
+      "sqlite_reopen_equal": true,
+      "same_task": true,
+      "generation_error": {
+        "stage": "understanding",
+        "http_status": 400,
+        "retry_after_seconds": null,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "975",
+          "x-ratelimit-reset-requests": "36m0s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "5617",
+          "x-ratelimit-reset-tokens": "17.872s"
+        }
+      }
+    },
+    {
+      "case": "alpha_clarification_short",
+      "turn": 1,
+      "question": "Касса не видит USB сканер, что проверить?",
+      "answer": "Какое именно оборудование используется?",
+      "latency_ms": 3296,
+      "scenario": "clarify",
+      "scenario_reason": "applicability_context_missing",
+      "generation_status": "clarification",
+      "validation_status": "not_run",
+      "coordinator_route": "technical_action",
+      "selected_documents": [],
+      "sqlite_reopen_equal": true,
+      "same_task": false,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_clarification_short",
+      "turn": 2,
+      "question": "Касса aQsi.",
+      "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+      "latency_ms": 23069,
+      "scenario": "clarify",
+      "scenario_reason": "progress_ledger_waiting_for_model",
+      "generation_status": "clarification",
+      "validation_status": "not_run",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "aqsi-device-fn161-document-not-saved",
+        "aqsi-device-paper-print-retry",
+        "aqsi-device-red-blinking-battery",
+        "aqsi-kkt-error-126"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": true,
+      "generation_error": null
+    },
+    {
+      "case": "alpha_clarification_short",
+      "turn": 3,
+      "question": "Физическая касса aQsi 5i, сканер подключён по USB.",
+      "answer": "По подтверждённым источникам не удалось выбрать безопасное решение. Запросите специалиста кнопкой ниже.",
+      "latency_ms": 25558,
+      "scenario": "escalate",
+      "scenario_reason": "planner_could_not_select_safely",
+      "generation_status": "no_context",
+      "validation_status": "not_run",
+      "coordinator_route": "technical_action",
+      "selected_documents": [
+        "aqsi-device-fn161-document-not-saved",
+        "aqsi-device-goods-not-on-device",
+        "aqsi-device-red-blinking-battery",
+        "aqsi-kkt-error-126"
+      ],
+      "sqlite_reopen_equal": true,
+      "same_task": true,
+      "generation_error": null
+    }
+  ],
+  "provider_errors": [
+    {
+      "status": 400,
+      "code": "json_validate_failed",
+      "type": "invalid_request_error",
+      "param": null,
+      "message": "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details."
+    },
+    {
+      "status": 400,
+      "code": "json_validate_failed",
+      "type": "invalid_request_error",
+      "param": null,
+      "message": "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details."
+    }
+  ],
+  "notes": [
+    "Groq calls used isolated synthetic conversations and SQLite; Stage3 was queried through the existing harness read-only facade.",
+    "The first unclear USB continuation exposed an out-of-scope conditional inspection and cross-article semantic answer. The follow-up was routed to technical_action and safely escalated after the narrowly scoped fix.",
+    "One earlier clarification continuation ended in Groq HTTP 400 json_validate_failed; a fresh independent continuation succeeded through safe escalation.",
+    "Telegram Bot API was not used; specialist transport was tested separately with fake transports."
+  ]
+}

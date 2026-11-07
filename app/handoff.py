@@ -112,16 +112,50 @@ class HandoffService:
         lines = [f"Заявка {bundle['ticket_id']}",
                  f"Причина эскалации: {bundle.get('escalation_reason') or 'не указана'}"]
         task = bundle.get('task') or {}
-        lines += [f"Задача: {_redact_personal_data(task.get('task') or task.get('operation') or 'не определена')}",
-                  f"Факты клиента (с цитатами): {_json_compact(_redact_value(bundle.get('confirmed_facts') or []))}"]
-        if progress is not None:
-            lines.append(f"Результаты проверок: {_json_compact(_redact_value(progress))}")
+        facts = bundle.get('confirmed_facts') or []
+        values_by_slot: dict[str, list[tuple[str, str]]] = {}
+        for fact in facts:
+            if not isinstance(fact, dict):
+                continue
+            slot = str(fact.get('slot') or '')
+            value = fact.get('value')
+            quote = fact.get('quote')
+            rendered = str(value or quote or '').strip()
+            if rendered:
+                values_by_slot.setdefault(slot, []).append((str(value or '').strip(), str(quote or '').strip()))
+
+        def values(*slots: str, quote_first: bool = False) -> str:
+            result = []
+            for slot in slots:
+                for fact_value, quote in values_by_slot.get(slot, []):
+                    value = quote if quote_first and quote else fact_value or quote
+                    if value not in result:
+                        result.append(value)
+            return ', '.join(_redact_personal_data(value) for value in result) or 'не указано'
+
+        objective = task.get('task') or task.get('operation') or task.get('object') or 'не определена'
+        lines += [
+            f"Задача: {_redact_personal_data(objective)}",
+            f"Сервис: {values('service', 'ofd', 'integration')}",
+            f"Оборудование: {values('equipment', 'manufacturer', 'model', 'component')}",
+            f"Симптомы: {values('task_fact', 'symptom', 'details', quote_first=True)}",
+            f"Код ошибки: {values('error')}",
+            f"Известные факты: {_json_compact(_redact_value(facts))}",
+            f"Результаты проверок: {_json_compact(_redact_value(progress)) if progress is not None else 'не зафиксированы'}",
+        ]
         messages = bundle.get('messages') or []
         if messages:
             lines.append("Последние значимые сообщения:")
             for item in messages[-8:]:
                 role = 'Клиент' if item.get('role') == 'user' else 'Бот'
                 lines.append(f"{role}: {_redact_personal_data(item.get('text', ''))}")
+        unresolved = list(dict.fromkeys(str(item).strip() for item in bundle.get('open_questions', [])
+                                       if str(item).strip()))
+        unanswered = _last_unanswered_question(messages)
+        if unanswered and unanswered not in unresolved:
+            unresolved.append(unanswered)
+        unresolved_text = '; '.join(_redact_personal_data(item) for item in unresolved) or 'не указаны'
+        lines.append(f"Нерешённые вопросы: {unresolved_text}")
         text = "\n".join(lines)
         return text[:3900]
 
@@ -167,6 +201,16 @@ class HandoffService:
 
 def _valid_chat_id(value: str) -> bool:
     return bool(re.fullmatch(r"-?\d{1,20}", str(value).strip()) and int(value) != 0)
+
+
+def _last_unanswered_question(messages: list[dict]) -> str | None:
+    """Return a bot clarification only when it is the last task-bound message."""
+    if not messages or messages[-1].get('role') != 'assistant':
+        return None
+    text = str(messages[-1].get('text') or '').strip()
+    if '?' not in text:
+        return None
+    return text[-1000:]
 
 
 def specialist_request(text: str) -> bool:

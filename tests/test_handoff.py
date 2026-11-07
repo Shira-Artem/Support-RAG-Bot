@@ -190,6 +190,38 @@ def test_progress_provider_is_included_in_prepared_message(tmp_path):
     assert 'Результаты проверок' in payload and 'not verified' in payload
 
 
+def test_handoff_summary_labels_only_task_evidence_and_unanswered_question(tmp_path):
+    _, _, bundle = _confirmed_bundle(tmp_path)
+    bundle['confirmed_facts'] += [
+        {'scope': 'task', 'slot': 'service', 'value': 'АТОЛ Онлайн', 'quote': 'АТОЛ Онлайн'},
+        {'scope': 'task', 'slot': 'equipment', 'value': 'Эвотор 7.3', 'quote': 'Эвотор 7.3'},
+        {'scope': 'task', 'slot': 'symptom', 'value': 'не печатает чек', 'quote': 'не печатает чек'},
+        {'scope': 'task', 'slot': 'error', 'value': '115', 'quote': 'ошибка 115'},
+    ]
+    bundle['messages'].append({'role': 'assistant', 'text': 'Какой статус отображается в кабинете?'})
+    service = HandoffService(HandoffSettings(state_path=tmp_path / 'outbox.json'),
+        progress_provider=lambda *_: {'checks': [{'step': 'Связь', 'status': 'failed'}]})
+    payload = service.prepare(bundle)
+    assert 'Задача: Не отправляются чеки' in payload
+    assert 'Сервис: АТОЛ Онлайн' in payload
+    assert 'Оборудование: Эвотор 7.3, Эвотор' in payload
+    assert 'Симптомы: не отправляет чеки, не печатает чек' in payload
+    assert 'Код ошибки: 115' in payload
+    assert 'Результаты проверок:' in payload and 'failed' in payload
+    assert 'Нерешённые вопросы: Какой статус отображается в кабинете?' in payload
+    assert 'не подтверждён' not in payload
+
+
+def test_handoff_summary_does_not_invent_missing_fields_or_open_questions(tmp_path):
+    _, _, bundle = _confirmed_bundle(tmp_path)
+    service = HandoffService(HandoffSettings(state_path=tmp_path / 'outbox.json'))
+    payload = service.prepare(bundle)
+    assert 'Сервис: не указано' in payload
+    assert 'Код ошибки: не указано' in payload
+    assert 'Результаты проверок: не зафиксированы' in payload
+    assert 'Нерешённые вопросы: не указаны' in payload
+
+
 def test_handoff_payload_redacts_contact_data_from_facts_messages_and_progress(tmp_path):
     _, _, bundle = _confirmed_bundle(tmp_path)
     bundle['task']['task'] = 'Кассовая система не отправляет чеки, клиент +7 (999) 123-45-67'

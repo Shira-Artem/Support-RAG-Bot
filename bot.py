@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+from pathlib import Path
 
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
@@ -46,9 +47,11 @@ if settings.rag_engine == "source_first":
 rag = build_answer_rag(settings.docs_dir)
 answer_service = AnswerService(rag, settings)
 source_first_service = SourceFirstService(rag, settings, settings.docs_dir.parent.parent)
-expert_store = ExpertStore()
+expert_db_path = os.getenv("EXPERT_DB_PATH")
+expert_store = ExpertStore(Path(expert_db_path)) if expert_db_path else ExpertStore()
 expert = ExpertTelegram(settings, answer_service, expert_store)
-conversations = ConversationStore()
+conversation_db_path = os.getenv("CONVERSATION_DB_PATH")
+conversations = ConversationStore(Path(conversation_db_path)) if conversation_db_path else ConversationStore()
 handoff_settings = HandoffSettings.from_env()
 handoff_service = HandoffService(handoff_settings,
     TelegramBotApiTransport(handoff_settings.bot_token) if handoff_settings.ready else None,
@@ -417,7 +420,8 @@ def main() -> None:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     logger.info("Bot started. Docs: %s, chunks: %s", settings.docs_dir, len(rag.chunks))
-    runtime = write_runtime_receipt(settings, rag)
+    runtime = write_runtime_receipt(
+        settings, rag, Path(os.getenv("BOT_RUNTIME_RECEIPT_PATH", ".local/bot-runtime.json")))
     logger.info("Bot runtime: pid=%s engine=%s collection=%s provider=%s model=%s reasoning=%s source_first_users=%s",
                 runtime['pid'], runtime['rag_engine'], runtime['collection'], runtime['provider'], runtime['model'], runtime['reasoning_effort'], runtime['source_first_user_count'])
 

@@ -46,3 +46,19 @@ def test_coordinator_feature_flag_is_opt_in_and_keeps_existing_allowlist():
     legacy = Settings("", "", "", "", "", False, Path("."), rag_engine="legacy",
                       source_first_telegram_ids=frozenset({42}), ai_coordinator_enabled=True)
     assert not should_use_ai_coordinator(legacy, 42)
+
+
+def test_coordinator_routes_diagnostic_check_requests_to_strict_technical_path():
+    text = "Касса aQsi не видит USB-сканер. Что проверить?"
+    raw = {
+        "request_type": "information", "relation": "new_task", "intent": "device",
+        "operation": "check", "object": "USB-сканер", "object_evidence": {"quote": "USB-сканер"},
+        "goal": {"quote": text}, "symptom": {"quote": "не видит USB-сканер"},
+        "entities": [{"slot": "manufacturer", "value": "aQsi", "evidence": {"quote": "aQsi"}}],
+        "unknown_facts": [], "specialist_requested": False, "specialist_evidence": None,
+        "confidence": 0.9,
+    }
+    kind, state = _state(text, raw)
+    decision = coordinate({"request_type": kind, "observation": {"goals": [{"value": text}]}}, state)
+    assert decision.route == "technical_action"
+    assert decision.rationale == "procedure_context_requires_complete_scoped_section"

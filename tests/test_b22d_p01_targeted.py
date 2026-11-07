@@ -177,6 +177,13 @@ def test_independent_scanner_diagnosis_first_turn_reaches_approved_evidence(monk
     assert 'проверьте' in reply or 'свер' in reply
 
 
+def test_conditional_inspection_must_match_the_reported_scanner_symptom(monkeypatch, tmp_path):
+    question = 'Касса aQsi не видит USB сканер. Что проверить?'
+    _, turn = run_scanner(monkeypatch, tmp_path, question)
+    assert turn['reason'] != 'source_first_rejected_conditional_inspection'
+    assert 'состояние наклейки' not in turn['final_reply'].casefold()
+
+
 def test_unchecked_compound_does_not_pass(monkeypatch, tmp_path):
     _, turn = run_dialogue(monkeypatch, tmp_path, 'Пока не проверял дату и время.')
     checks = turn['state_after_sqlite_reopen']['task_context']['checks']
