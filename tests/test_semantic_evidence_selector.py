@@ -8,7 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.dialogue_state import DialogueState, Fact, TaskContext
+from app.dialogue_state import ActiveRoute, DialogueState, Fact, TaskContext
 from app.semantic_evidence_selector import (build_evidence_units, parse_decision,
                                              validate_selected_units, EvidenceDecision,
                                              MAX_EVIDENCE_TOKENS)
@@ -324,3 +324,117 @@ def test_feature_flagged_source_first_renders_only_verified_selected_sentence(mo
     assert "Область источника: АТОЛ Онлайн." in result.text
     assert result.llm_call_attempted is True
     assert result.retrieval_diagnostics["semantic_evidence_selector"]["source_sha_verified"] is True
+
+
+@pytest.mark.parametrize("composer_output", [None,
+    '{"answer":"Для сторонних USB-хабов поведение может отличаться, гарантированной совместимости нет."}',
+    "Откройте меню «Настройки → Магия» и включите режим."])
+def test_experimental_semantic_composer_uses_unfiltered_information_candidates(
+        monkeypatch, tmp_path, composer_output):
+    import asyncio
+    import app.source_first_service as source_module
+
+    _, item, _ = _fixture(tmp_path,
+        "Для сторонних USB-хабов поведение может отличаться, гарантированной совместимости нет.\n"
+        "Откройте раздел оборудования и измените параметры питания.", service="aQsi")
+    question = "Гарантируется совместимость сторонних USB-хабов?"
+    state = DialogueState(intent="device", operation="diagnose", object="USB-хаб")
+    units = build_evidence_units([item], informational=True)
+    seen = {}
+
+    async def choose(_question, _state, _history, candidates, _settings, *, current_subgoal=None):
+        seen["candidate_texts"] = [unit.text for unit in candidates]
+        assert current_subgoal == question
+        return (EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "{}"),
+                Generation("{}", "selector-model"))
+
+    async def compose(messages, _settings):
+        payload = json.loads(messages[-1]["content"])
+        assert payload["approved_evidence"][0]["id"] == units[0].id
+        return Generation(composer_output or units[0].text, "composer-model")
+
+    monkeypatch.setattr(selector_module, "select_evidence", choose)
+    monkeypatch.setattr(source_module, "generate", compose)
+    settings = SimpleNamespace(semantic_evidence_selector_enabled=False,
+        semantic_composer_enabled=True, groq_api_key="", openrouter_api_key="",
+        telegram_bot_token="")
+    service = SourceFirstService(None, settings, tmp_path)
+    result = asyncio.run(service._coordinated_information_answer(
+        question, state, [item], {"current_subgoal": question}, 0.0,
+        {"retrieval_diagnostics": {}}))
+
+    assert "гарантированной совместимости нет" in result.text.casefold()
+    assert "измените параметры" not in result.text.casefold()
+    assert result.scenario_reason == "semantic_evidence_composer"
+    assert result.validation_status in {"selected_ids_grounded_composition",
+                                        "exact_selected_evidence_fallback"}
+    if composer_output and "Магия" in composer_output:
+        assert result.validation_status == "exact_selected_evidence_fallback"
+    assert "Откройте раздел оборудования" not in seen["candidate_texts"]
+
+
+def test_experimental_selector_rejects_confirmed_foreign_service(tmp_path):
+    _, _, units = _fixture(tmp_path, "Сервис передаёт документы в налоговую службу.",
+                           service="Сервис Альфа")
+    decision = EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "test")
+    state = _state("Сервис Бета")
+    selected, reason = validate_selected_units(decision, units, state, tmp_path,
+        informational=True, reject_confirmed_scope_mismatch=True)
+    assert selected == []
+    assert reason == "confirmed_scope_service_mismatch"
+
+
+def test_experimental_selector_rejects_confirmed_wrong_model(tmp_path):
+    source = tmp_path / "approved.md"
+    source.write_text("---\ndocument_id: demo-doc\nstatus: approved\ntask_category: device\n"
+        "manufacturer: Maker A\nmodel: Model A\n---\n\n## Раздел\nУстройство обрабатывает документы.\n",
+        encoding="utf-8")
+    digest = sha256(source.read_bytes()).hexdigest()
+    item = {"document_id": "demo-doc", "source": "approved.md", "source_sha256": digest,
+        "section": "Раздел", "text": "Устройство обрабатывает документы.",
+        "scope": {"status": "approved", "manufacturer": "Maker A", "model": "Model A"}}
+    units = build_evidence_units([item], informational=True)
+    state = DialogueState(task_context=TaskContext(intent="device", operation="explain",
+        active_route=ActiveRoute("manufacturer", Fact.span("Maker A", 1)),
+        entities={"manufacturer": [Fact.span("Maker A", 1)],
+                  "equipment": [Fact.span("Model B", 1)]}))
+    decision = EvidenceDecision("select", (units[0].id,), None, "direct_evidence", "test")
+    selected, reason = validate_selected_units(decision, units, state, tmp_path,
+        informational=True, reject_confirmed_scope_mismatch=True)
+    assert selected == []
+    assert reason == "confirmed_scope_model_mismatch"
+
+
+def test_experimental_composer_blocks_unsafe_fiscal_request_before_generation(monkeypatch, tmp_path):
+    import asyncio
+    import app.source_first_service as source_module
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("Composer must not receive an unsafe fiscal request")
+
+    monkeypatch.setattr(source_module, "generate", forbidden)
+    settings = SimpleNamespace(semantic_evidence_selector_enabled=False,
+        semantic_composer_enabled=True, groq_api_key="", openrouter_api_key="",
+        telegram_bot_token="")
+    service = SourceFirstService(None, settings, tmp_path)
+    result = asyncio.run(service._coordinated_information_answer(
+        "Хочу отключить фискальный накопитель и удалить его данные. Как сделать?",
+        DialogueState(intent="general", operation="explain"), [],
+        {"current_subgoal": "отключить и удалить"}, 0.0,
+        {"retrieval_diagnostics": {}}))
+    assert result.scenario_reason == "semantic_composer_unsafe_request"
+    assert "удалить данные" not in result.text.casefold()
+
+
+def test_experimental_composer_escalates_when_approved_evidence_is_absent(tmp_path):
+    import asyncio
+    settings = SimpleNamespace(semantic_evidence_selector_enabled=False,
+        semantic_composer_enabled=True, groq_api_key="", openrouter_api_key="",
+        telegram_bot_token="")
+    service = SourceFirstService(None, settings, tmp_path)
+    result = asyncio.run(service._coordinated_information_answer(
+        "Какой пункт меню включает автоматическую отправку документов?",
+        DialogueState(intent="general", operation="explain"), [],
+        {"current_subgoal": "пункт меню"}, 0.0,
+        {"retrieval_diagnostics": {}}))
+    assert result.scenario_reason == "semantic_selector_no_evidence_units"

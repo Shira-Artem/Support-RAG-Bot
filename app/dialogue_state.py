@@ -2091,6 +2091,20 @@ class DialogueManager:
                                     end = locations[index + 1][1] if index + 1 < len(locations) else len(normalized)
                                     individual[subject] = reported_status(normalized[position:end])
                             distinct = {value for value in individual.values() if value in {"passed", "failed"}}
+                            mentioned_subjects = {subject for subject, _ in locations}
+                            # Keep each source-derived subject visible even
+                            # when the client reports only one (for example,
+                            # wrong time while date is unknown). A source-only
+                            # placeholder carries no client quote and is
+                            # replaced if that subject is reported later.
+                            for subject in subjects:
+                                if subject in mentioned_subjects:
+                                    records[:] = [item for item in records
+                                        if not (item.get("subject") == subject
+                                                and item.get("source_unknown") is True)]
+                                elif not any(item.get("subject") == subject for item in records):
+                                    records.append({"subject": subject, "status": "unknown",
+                                                    "source_unknown": True})
                             for subject, _ in locations:
                                 # Explicit contradictory predicates apply to their
                                 # own named subject. If segmentation is incomplete,

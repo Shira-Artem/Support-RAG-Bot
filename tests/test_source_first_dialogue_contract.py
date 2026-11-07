@@ -300,6 +300,35 @@ def test_selected_document_exposes_its_exact_retrieved_information_sections():
     assert "получает фискальные документы" in verified[1]["text"]
 
 
+def test_experimental_information_can_resolve_approved_candidate_rejected_only_by_task_category(tmp_path):
+    source_path = tmp_path / "data/knowledge/vendor/article.md"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_text("---\ndocument_id: approved-info\nstatus: approved\n"
+        "service: Ledger\ntask_category: integration\nmanufacturer: null\nmodel: null\n"
+        "procedure_service: null\ntitle: Definition\n---\n## Facts\n"
+        "The supported connection uses a configured endpoint.\n", encoding="utf-8")
+    metadata = {"document_id": "approved-info", "status": "approved", "service": "Ledger",
+        "task_category": "integration", "manufacturer": None, "model": None,
+        "procedure_service": None, "source": "data/knowledge/vendor/article.md"}
+    hit = SearchResult(metadata["source"], "The supported connection uses a configured endpoint.", .8,
+        metadata={**metadata, "section": "Facts"})
+    rejected = EvaluatedDocument(metadata["source"], "approved-info", "approved", metadata, {},
+        Relevance("service", "integration", .8), reasons=["task_mismatch:integration!=settings"])
+    retrieval = RetrievalResult("query", [], [rejected], [], False, "task_mismatch", "")
+    rag = SimpleNamespace(pipeline=SimpleNamespace(source=SimpleNamespace(article=lambda _doc: [hit])))
+
+    assert _source_sections(rag, retrieval, tmp_path) == []
+    admitted = _source_sections(rag, retrieval, tmp_path,
+        allow_task_mismatch_information=True)
+    assert len(admitted) == 1
+    assert admitted[0]["id"] == "approved-info::Facts"
+    assert admitted[0]["text"] == "The supported connection uses a configured endpoint."
+
+    rejected.reasons.append("equipment_mismatch_or_unlabeled")
+    assert _source_sections(rag, retrieval, tmp_path,
+        allow_task_mismatch_information=True) == []
+
+
 def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, tmp_path):
     path = "atol_online/ofd/what-is-ofd.md"
     doc_id, heading = "atol-online-11256-what-is-ofd", "Вопрос пользователя"

@@ -65,7 +65,7 @@ def test_explicit_check_result_keeps_real_ledger_outcome(monkeypatch, tmp_path, 
     assert turn['reason'] != 'source_first_observation_explanation'
     subjects = checks[0].get('subject_results', [])
     if 'верн' in message and 'не совпадают' not in message:
-        assert len({item['subject'] for item in subjects}) == (2 if 'Дата и время' in message or ',' in message else 1)
+        assert len({item['subject'] for item in subjects}) == 2
     if 'неправильное' in message:
         assert {item['status'] for item in subjects} == {'passed', 'failed'}
 

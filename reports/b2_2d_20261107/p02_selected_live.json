@@ -1,0 +1,392 @@
+{
+  "created_at": "2026-11-07T14:31:02.994564+00:00",
+  "pipeline": "local approved candidate IDs -> real Groq semantic selector -> exact local SHA/scope validation -> real Groq Composer -> independent Python claim/safety validation",
+  "model": "openai/gpt-oss-20b",
+  "cases": [
+    {
+      "id": "directbank_schedule",
+      "question": "В каких условиях 1С:Бухгалтерия сможет автоматически получать выписки через DirectBank?",
+      "before_sourcefirst": "В approved-источниках нет подходящего концептуального объяснения; не буду подменять его технической инструкцией. Запросите специалиста.",
+      "after": "Область источника: 1С:Бухгалтерия 8, 1С, 1С:Бухгалтерия 8, редакция 3.0.\nНачиная с версии 3.0.195 программа поддерживает расписание и параметры автоматического получения банковских выписок через 1С:ДиректБанк. Поддержка зависит от конкретного банка.\n\nИсточник: data/knowledge/1c/bank/directbank-auto-schedule.md — Подтверждённая возможность; data/knowledge/1c/bank/directbank-auto-schedule.md — Подтверждённая возможность",
+      "reason": "semantic_evidence_composer",
+      "validation_status": "exact_selected_evidence_fallback",
+      "composer_candidate": "{\"answer\":\"Автоматическое получение выписок через DirectBank возможно начиная с версии 3.0.195 1С:Бухгалтерии 8, но это зависит от конкретного банка.\"}",
+      "diagnostics": {
+        "conceptual_evidence_gate": {
+          "question_kind": "conceptual",
+          "candidate_sections": 1,
+          "conceptual_fact_sections": 0,
+          "excluded_nonconceptual_or_noncovering_sections": 1,
+          "comparison_requires_both_concepts_in_one_supported_fact": false
+        },
+        "semantic_evidence_selector": {
+          "decision": {
+            "mode": "select",
+            "selected_ids": [
+              "ev-b71eea0d513dc9946080be90",
+              "ev-e429acf5acd9779bbeb4e971"
+            ],
+            "clarification_slot": null,
+            "reason_code": "direct_evidence",
+            "raw_json": "{\"mode\":\"select\",\"selected_ids\":[\"ev-b71eea0d513dc9946080be90\",\"ev-e429acf5acd9779bbeb4e971\"],\"clarification_slot\":null,\"reason_code\":\"direct_evidence\"}"
+          },
+          "candidate_ids": [
+            {
+              "id": "ev-b71eea0d513dc9946080be90",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "source": "data/knowledge/1c/bank/directbank-auto-schedule.md",
+              "source_sha256": "7c3e4a3ccde255176dd8826a63b032dbf7abd5133c885ac3c743d71d6f2b345a",
+              "section": "Подтверждённая возможность",
+              "position": 1,
+              "text": "Начиная с версии 3.0.195 программа поддерживает расписание и параметры автоматического получения банковских выписок через 1С:ДиректБанк.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "batch-20261013-bank-directbank-auto-schedule",
+                "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+                "category": "1c",
+                "service": "1С:Бухгалтерия 8",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "version": "3.0.195",
+                "source_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html",
+                "source_type": "vendor_article",
+                "published_at": "2026-05-01",
+                "collected_at": "2026-10-13",
+                "verified_at": "2026-10-22",
+                "software": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "schedule_bank_statement_import"
+                ],
+                "search_fields": [
+                  "configuration_release",
+                  "bank_exchange_settings"
+                ],
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            },
+            {
+              "id": "ev-e429acf5acd9779bbeb4e971",
+              "document_id": "batch-20261013-bank-directbank-auto-schedule",
+              "source": "data/knowledge/1c/bank/directbank-auto-schedule.md",
+              "source_sha256": "7c3e4a3ccde255176dd8826a63b032dbf7abd5133c885ac3c743d71d6f2b345a",
+              "section": "Подтверждённая возможность",
+              "position": 2,
+              "text": "Поддержка зависит от конкретного банка.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "batch-20261013-bank-directbank-auto-schedule",
+                "title": "Автоматическое получение выписок через 1С:ДиректБанк",
+                "category": "1c",
+                "service": "1С:Бухгалтерия 8",
+                "manufacturer": "1С",
+                "model": "1С:Бухгалтерия 8, редакция 3.0",
+                "version": "3.0.195",
+                "source_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html",
+                "source_type": "vendor_article",
+                "published_at": "2026-05-01",
+                "collected_at": "2026-10-13",
+                "verified_at": "2026-10-22",
+                "software": "1С:Бухгалтерия 8",
+                "task_category": "bank_statement",
+                "operations": [
+                  "schedule_bank_statement_import"
+                ],
+                "search_fields": [
+                  "configuration_release",
+                  "bank_exchange_settings"
+                ],
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            }
+          ],
+          "selected_ids_verified": [
+            "ev-b71eea0d513dc9946080be90",
+            "ev-e429acf5acd9779bbeb4e971"
+          ],
+          "rejection_reason": null,
+          "latency_ms": 1351,
+          "source_sha_verified": true
+        },
+        "semantic_composer": {
+          "model": "openai/gpt-oss-20b",
+          "candidate_sha256": "24f40191a067eec4c279ebec98531434ef5084f039bfc1a37590d30911707fdf",
+          "validation": "rejected",
+          "reason": "unsupported_information_claim",
+          "missing_required_conditions": [],
+          "fallback": "exact_selected_evidence"
+        }
+      },
+      "usage": {
+        "prompt_tokens": 3084,
+        "completion_tokens": 519,
+        "total_tokens": 3603
+      }
+    },
+    {
+      "id": "usb_hub_guarantee",
+      "question": "Для стороннего USB-хаба производитель подтверждает работу одновременно с зарядкой кассы?",
+      "before_sourcefirst": "Какой сервис или оператор ОФД используется?",
+      "after": "Область источника: aQsi, aQsi (физическая ККТ).\nДля сторонних USB‑хабов поведение может отличаться, гарантированной совместимости нет.\n\nИсточник: data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md — Проверенная информация и первичная диагностика",
+      "reason": "semantic_evidence_composer",
+      "validation_status": "selected_ids_grounded_composition",
+      "composer_candidate": "{\"answer\":\"Для сторонних USB‑хабов поведение может отличаться, гарантированной совместимости нет.\"}",
+      "diagnostics": {
+        "conceptual_evidence_gate": {
+          "question_kind": "conceptual",
+          "candidate_sections": 1,
+          "conceptual_fact_sections": 0,
+          "excluded_nonconceptual_or_noncovering_sections": 1,
+          "comparison_requires_both_concepts_in_one_supported_fact": false
+        },
+        "semantic_evidence_selector": {
+          "decision": {
+            "mode": "select",
+            "selected_ids": [
+              "ev-5a6febdb82f986f230dd18ba"
+            ],
+            "clarification_slot": null,
+            "reason_code": "direct_evidence",
+            "raw_json": "{\"mode\":\"select\",\"selected_ids\":[\"ev-5a6febdb82f986f230dd18ba\"],\"clarification_slot\":null,\"reason_code\":\"direct_evidence\"}"
+          },
+          "candidate_ids": [
+            {
+              "id": "ev-39d4841d8db460fb6726a5dd",
+              "document_id": "aqsi-device-scanner-hub-power",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md",
+              "source_sha256": "fbb17c7c09c06bc262a72dca0f934e7101d7eb1f1abaf31bd310dbf9664dd758",
+              "section": "Проверенная информация и первичная диагностика",
+              "position": 1,
+              "text": "Изготовитель указывает, что при некоторых конфигурациях aQsi Hub одновременная зарядка и работа USB-устройств требуют отдельного системного режима.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "aqsi-device-scanner-hub-power",
+                "title": "aQsi Hub: питание при подключении внешних устройств",
+                "category": "kkt",
+                "service": "aQsi",
+                "task_category": "peripheral_setup",
+                "operations": [
+                  "configure_peripheral"
+                ],
+                "manufacturer": "aQsi",
+                "model": "aQsi (физическая ККТ)",
+                "version": null,
+                "source_url": "https://aqsi.ru/support/rabota-s-vneshnim-skanerom/",
+                "source_type": "manufacturer_support_article",
+                "published_at": null,
+                "collected_at": "2026-10-19",
+                "verified_at": "2026-10-22",
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            },
+            {
+              "id": "ev-14df07f94b38ad579251bf34",
+              "document_id": "aqsi-device-scanner-hub-power",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md",
+              "source_sha256": "fbb17c7c09c06bc262a72dca0f934e7101d7eb1f1abaf31bd310dbf9664dd758",
+              "section": "Проверенная информация и первичная диагностика",
+              "position": 3,
+              "text": "Для оригинального aQsi Hub в инструкции упоминается специальная возможность «OTG HUB & Параллельная зарядка» в настройках Android.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "aqsi-device-scanner-hub-power",
+                "title": "aQsi Hub: питание при подключении внешних устройств",
+                "category": "kkt",
+                "service": "aQsi",
+                "task_category": "peripheral_setup",
+                "operations": [
+                  "configure_peripheral"
+                ],
+                "manufacturer": "aQsi",
+                "model": "aQsi (физическая ККТ)",
+                "version": null,
+                "source_url": "https://aqsi.ru/support/rabota-s-vneshnim-skanerom/",
+                "source_type": "manufacturer_support_article",
+                "published_at": null,
+                "collected_at": "2026-10-19",
+                "verified_at": "2026-10-22",
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            },
+            {
+              "id": "ev-5a6febdb82f986f230dd18ba",
+              "document_id": "aqsi-device-scanner-hub-power",
+              "source": "data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md",
+              "source_sha256": "fbb17c7c09c06bc262a72dca0f934e7101d7eb1f1abaf31bd310dbf9664dd758",
+              "section": "Проверенная информация и первичная диагностика",
+              "position": 4,
+              "text": "Для сторонних USB-хабов поведение может отличаться, гарантированной совместимости нет.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "aqsi-device-scanner-hub-power",
+                "title": "aQsi Hub: питание при подключении внешних устройств",
+                "category": "kkt",
+                "service": "aQsi",
+                "task_category": "peripheral_setup",
+                "operations": [
+                  "configure_peripheral"
+                ],
+                "manufacturer": "aQsi",
+                "model": "aQsi (физическая ККТ)",
+                "version": null,
+                "source_url": "https://aqsi.ru/support/rabota-s-vneshnim-skanerom/",
+                "source_type": "manufacturer_support_article",
+                "published_at": null,
+                "collected_at": "2026-10-19",
+                "verified_at": "2026-10-22",
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            }
+          ],
+          "selected_ids_verified": [
+            "ev-5a6febdb82f986f230dd18ba"
+          ],
+          "rejection_reason": null,
+          "latency_ms": 1236,
+          "source_sha_verified": true
+        },
+        "semantic_composer": {
+          "model": "openai/gpt-oss-20b",
+          "candidate_sha256": "8425bc8dba4357af96ed0fdf0722162f404a08569710798a9d5aebe5af16c4e1",
+          "validation": "accepted",
+          "reason": "all_sentences_supported_by_selected_section",
+          "missing_required_conditions": []
+        }
+      },
+      "usage": {
+        "prompt_tokens": 2844,
+        "completion_tokens": 507,
+        "total_tokens": 3351
+      }
+    },
+    {
+      "id": "ofd_document_flow",
+      "question": "Что происходит с фискальным документом после того, как касса его отправила ОФД?",
+      "before_sourcefirst": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.",
+      "after": "Область источника: АТОЛ Онлайн, АТОЛ, АТОЛ Онлайн — облачная ККТ.\nОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.\n\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя",
+      "reason": "semantic_evidence_composer",
+      "validation_status": "exact_selected_evidence_fallback",
+      "composer_candidate": "{\"answer\":\"ОФД получает фискальный документ от кассы, обрабатывает его и передаёт в ФНС в предусмотренном формате.\"}",
+      "diagnostics": {
+        "conceptual_evidence_gate": {
+          "question_kind": "conceptual",
+          "candidate_sections": 1,
+          "conceptual_fact_sections": 0,
+          "excluded_nonconceptual_or_noncovering_sections": 1,
+          "comparison_requires_both_concepts_in_one_supported_fact": false
+        },
+        "semantic_evidence_selector": {
+          "decision": {
+            "mode": "select",
+            "selected_ids": [
+              "ev-bd63d4ae34736e3385ba0c08"
+            ],
+            "clarification_slot": null,
+            "reason_code": "direct_evidence",
+            "raw_json": "{\"mode\":\"select\",\"selected_ids\":[\"ev-bd63d4ae34736e3385ba0c08\"],\"clarification_slot\":null,\"reason_code\":\"direct_evidence\"}"
+          },
+          "candidate_ids": [
+            {
+              "id": "ev-bd63d4ae34736e3385ba0c08",
+              "document_id": "atol-online-11256-what-is-ofd",
+              "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+              "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+              "section": "Что проверено по инструкции производителя",
+              "position": 1,
+              "text": "ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает и передаёт их в ФНС в предусмотренном формате.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "atol-online-11256-what-is-ofd",
+                "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных",
+                "category": "atol_online",
+                "service": "АТОЛ Онлайн",
+                "task_category": "ofd_connection",
+                "operations": [
+                  "explain_ofd"
+                ],
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "version": null,
+                "source_url": "https://help.atol.online/article/11256",
+                "source_type": "vendor_support_article",
+                "published_at": null,
+                "collected_at": "2026-10-19",
+                "verified_at": "2026-10-22",
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            },
+            {
+              "id": "ev-d28d34756a04c94b1f6f1046",
+              "document_id": "atol-online-11256-what-is-ofd",
+              "source": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+              "source_sha256": "206eefa55650a6a8c904d341ceb35e73219f6e9c93c3c5e86424ef3f6000ebe3",
+              "section": "Что проверено по инструкции производителя",
+              "position": 2,
+              "text": "Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.",
+              "kind": "sentence",
+              "role": "fact",
+              "scope": {
+                "document_id": "atol-online-11256-what-is-ofd",
+                "title": "Для чего АТОЛ Онлайн нужен оператор фискальных данных",
+                "category": "atol_online",
+                "service": "АТОЛ Онлайн",
+                "task_category": "ofd_connection",
+                "operations": [
+                  "explain_ofd"
+                ],
+                "manufacturer": "АТОЛ",
+                "model": "АТОЛ Онлайн — облачная ККТ",
+                "version": null,
+                "source_url": "https://help.atol.online/article/11256",
+                "source_type": "vendor_support_article",
+                "published_at": null,
+                "collected_at": "2026-10-19",
+                "verified_at": "2026-10-22",
+                "source_checked_at": "2026-10-22",
+                "status": "approved"
+              },
+              "approved": true
+            }
+          ],
+          "selected_ids_verified": [
+            "ev-bd63d4ae34736e3385ba0c08"
+          ],
+          "rejection_reason": null,
+          "latency_ms": 1194,
+          "source_sha_verified": true
+        },
+        "semantic_composer": {
+          "model": "openai/gpt-oss-20b",
+          "candidate_sha256": "5c3f3261332f3a421fd8261380efae20af636672091e54fdd2d69d006022db14",
+          "validation": "rejected",
+          "reason": "unsupported_information_claim",
+          "missing_required_conditions": [],
+          "fallback": "exact_selected_evidence"
+        }
+      },
+      "usage": {
+        "prompt_tokens": 2309,
+        "completion_tokens": 583,
+        "total_tokens": 2892
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import pytest
 from app.dialogue_state import (ActiveRoute, DialogueManager, DialogueState, Fact,
                                 SessionContext, TaskContext)
 from app.source_first_service import (_matching_verified_source_units, _merge_source_components,
-                                      _planner_task_snapshot)
+                                      _planner_task_snapshot, _approved_check_units)
 from test_telegram_pilot_sqlite_replay import ROOT, _run_replay
 
 
@@ -159,6 +159,33 @@ def test_progress_reducer_uses_exact_shown_components_when_eligible_snapshot_is_
     assert results["queue"]["status"] == "failed"
     assert "eou-network-ofd" not in results
     assert "compare-ofd" not in results
+
+
+def test_date_time_source_check_keeps_unreported_date_unknown_when_time_fails():
+    source = "data/knowledge/evotor/fn/fn-234.md"
+    section = "Первое различение причины"
+    body = (ROOT / "data/knowledge/evotor/fn/fn-234.md").read_text(encoding="utf-8").split("---", 2)[2]
+    text = next(value for heading, value in __import__(
+        "app.source_first_service", fromlist=["_sections"])._sections(body.strip())
+        if heading == section)
+    unit = _approved_check_units(text, source, section)[0]
+    task = TaskContext(task_id="task:date-time", intent="fiscal_drive", operation="diagnose",
+        object="ФН 234", procedure_id="evotor-fn-234-360005580254",
+        shown_units=[dict(unit)], eligible_units=[dict(unit)],
+        checks=[{**unit, "task_id": "task:date-time", "status": "asked",
+                 "asked_message_id": 1, "observations": [], "component_results": []}])
+    state = DialogueState(task_context=task)
+
+    DialogueManager._reduce_progress(state, "Часы на кассе показывают неправильное время", 2)
+
+    check = state.task_context.checks[0]
+    subjects = {item["subject"]: item for item in check.get("subject_results", [])}
+    date = next(item for key, item in subjects.items() if key.startswith("д"))
+    time = next(item for key, item in subjects.items() if key.startswith("в"))
+    assert date["status"] == "unknown" and date.get("quote") is None
+    assert time["status"] == "failed"
+    assert time["quote"] == "Часы на кассе показывают неправильное время"
+    assert check["status"] == "failed"
 
 
 @pytest.mark.parametrize(("message", "expected_statuses", "expected_quotes"), [

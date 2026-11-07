@@ -66,6 +66,13 @@ CASES = {
     "directbank": ["В 1С через DirectBank перестали загружаться банковские выписки. С чего начать?"],
     "atol_api_incident": ["АТОЛ Онлайн: после подтверждённой оплаты API чек не найден."],
     "evotor_combined_payment": ["Эвотор: как работает комбинированная оплата?"],
+    "p02_directbank_information": ["В 1С через DirectBank можно настроить получение выписок по расписанию? От чего это зависит?"],
+    "p02_usb_hub_compatibility": ["Гарантируется совместимость стороннего USB-хаба с физической кассой aQsi при зарядке и подключении оборудования?"],
+    "p02_ofd_purpose": ["Зачем магазину нужен оператор фискальных данных и что он делает с чеками?"],
+    "p02_unknown_ui": ["Где в АТОЛ Онлайн включить автоматическую отправку закрывающих документов?"],
+    "p02_no_knowledge": ["В aQsi Online где найти чек, если номер документа неизвестен?"],
+    "p02_edo_draft": ["Что делать с расхождениями в УПД, присланном через ЭДО?"],
+    "p02_fn_danger": ["На кассе хочу отключить фискальный накопитель и удалить его данные, чтобы убрать ошибку. Как сделать?"],
 }
 
 
@@ -112,6 +119,7 @@ async def run(args):
     import httpx
 
     settings = replace(get_settings(), source_first_telegram_ids=frozenset({42}),
+                       semantic_composer_enabled=bool(getattr(args, "semantic_composer", False)),
                        docs_dir=ROOT / "data" / "knowledge",
                        telegram_bot_token="isolated-no-telegram-token")
     assert settings.llm_provider == "groq" and settings.groq_api_key
@@ -187,6 +195,7 @@ async def run(args):
                           for p in [runtime_root / "bot.py", *sorted((runtime_root / "app").glob("*.py"))]},
         "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
         "collection": collection, "points": info.points_count, "model": settings.groq_model,
+        "semantic_composer_enabled": settings.semantic_composer_enabled,
         "reasoning_effort": settings.groq_reasoning_effort, "turns": []}
     def save():
         result["generation_calls"] = calls
@@ -269,4 +278,6 @@ if __name__ == "__main__":
     parser.add_argument("--cases", default="saby,diadoc,ofd,evotor6,bifit")
     parser.add_argument("--output", required=True)
     parser.add_argument("--pause", type=float, default=12)
+    parser.add_argument("--semantic-composer", action="store_true",
+                        help="Enable the isolated experimental information-only semantic Composer path")
     asyncio.run(run(parser.parse_args()))

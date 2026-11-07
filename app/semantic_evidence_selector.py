@@ -262,7 +262,8 @@ def parse_decision(raw: str, units: list[EvidenceUnit]) -> EvidenceDecision:
 def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit],
                             state: DialogueState, root: Path, *,
                             informational: bool,
-                            require_customer_scope: bool = False) -> tuple[list[EvidenceUnit], str | None]:
+                            require_customer_scope: bool = False,
+                            reject_confirmed_scope_mismatch: bool = False) -> tuple[list[EvidenceUnit], str | None]:
     """Revalidate provenance, scope, ordering, conditions, and safety locally."""
     if decision.mode != "select":
         return [], None
@@ -281,6 +282,10 @@ def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit
         if (front.get("status") != "approved" or front.get("document_id") != unit.document_id
                 or not unit.approved):
             return [], "source_not_approved"
+        if reject_confirmed_scope_mismatch:
+            assessment = assess_source_scope(state, front)
+            if assessment.mismatches:
+                return [], f"confirmed_scope_{assessment.mismatches[0]}_mismatch"
         section_body = next((text for heading, text in _markdown_sections(body)
                              if heading == unit.section), None)
         if (not section_body
