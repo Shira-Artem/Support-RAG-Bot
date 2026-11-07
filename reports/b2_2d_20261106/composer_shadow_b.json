@@ -1,6 +1,250 @@
 {
   "method": "Shadow B using frozen A pre-turn state and exact approved result payload; no bot, store, ledger or retrieval calls.",
-  "turns": [],
+  "turns": [
+    {
+      "case": "1c",
+      "turn": 1,
+      "input_sha256": "9308e31409dde656f6347bbc9e0df5dae417a2f0c41ee22deff16b2f3efcf098",
+      "generation": {
+        "text": "Для автоматической загрузки выписок через 1С:ДиректБанк в 1С:Бухгалтерия 8 нужно выполнить несколько простых шагов.  \n\n1. **Проверьте конфигурацию и версию**  \n   * Убедитесь, что у вас версия конфигурации ≥ 3.0.195 – только с этой версии поддерживается расписание и параметры автоматического получения.  \n   * Откройте «Банк и касса → Банк» (или «Деньги → Банк» в простом интерфейсе) и посмотрите, подключён ли к 1С:ДиректБанк конкретный банк.  \n\n2. **Настройте расписание**  \n   * В настройках банка найдите пункт «Расписание получения выписок» (или аналогичный).  \n   * Укажите интервал, в который 1С будет запрашивать выписки (обычно это несколько раз в день, но интервал должен совпадать с реальным временем формирования выписок в банке).  \n   * Сохраните настройки.  \n\n3. **Проверьте логи**  \n   * Откройте журнал банковских документов и убедитесь, что даты, суммы и номера платежей совпадают с оригинальной выпиской.  \n   * Если есть расхождения или дубли, не удаляйте проведённые операции – сначала сверьте их с банком.  \n\n4. **Если банк не поддерживает прямой обмен**  \n   * С версии 3.0.203 можно загружать выписки из другого банка через банк‑посредник.  \n   * Для этого в настройках банка‑посредника включите нужный банк‑посредник (например, «Точка») и убедитесь, что в списке доступных банков он присутствует.  \n\n5. **Когда нужна помощь специалиста**  \n   * Если автоматическая синхронизация недоступна у банка, или операции появляются дважды, обратитесь к специалисту.  \n   * Не удаляйте проведённые платежи до завершения сверки.  \n\nТаким образом, после включения DirectBank и настройки расписания 1С будет автоматически запрашивать и импортировать выписки в соответствии с заданными интервалами.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 7304,
+        "completion_tokens": 658,
+        "total_tokens": 7962,
+        "reasoning_tokens": 171,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-28e79624-4b4b-4032-ba31-a0af6201ceb0",
+        "finish_reason": "stop",
+        "duration_ms": 2241,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "999",
+          "x-ratelimit-reset-requests": "1m26.4s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "560",
+          "x-ratelimit-reset-tokens": "55.8s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "fn",
+      "turn": 1,
+      "input_sha256": "fd21be448afad058d1bacd2af10b282c24d909a6fc35f259da5c4b510a52189a",
+      "generation": {
+        "text": "Ошибка ФН 234 указывает на проблему с ресурсом фискального накопителя, но это не означает, что накопитель обязательно нужно менять сразу.\n\n1. **Проверьте дату и время**  \n   Неверные дата/время могут вызвать ложный сигнал о завершении срока действия накопителя. Убедитесь, что на кассе установлены правильные дата и время.\n\n2. **Проверьте состояние смены**  \n   Если смена осталась открытой, в накопителе могут быть незавершённые операции. Убедитесь, что смена закрыта и все документы переданы в ОФД.\n\n3. **Проверьте наличие ожидающих документов**  \n   Если в накопителе остались документы, ожидающие передачи в ОФД, это тоже может вызывать ошибку. Попробуйте передать их вручную, если это возможно.\n\n4. **Если ошибка сохраняется**  \n   - Проверьте, не заполнен ли накопитель полностью.  \n   - Если после всех проверок ошибка остаётся, то, скорее всего, требуется замена накопителя. Замена должна проводиться подготовленным специалистом по инструкции производителя.\n\nТаким образом, ошибка ФН 234 сама по себе не гарантирует необходимость замены накопителя. Сначала выполните проверки даты/времени, состояния смены и передачи документов. Если после этого ошибка не исчезнет, тогда можно переходить к замене накопителя.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 1375,
+        "completion_tokens": 406,
+        "total_tokens": 1781,
+        "reasoning_tokens": 97,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-3480ef32-91d6-4e87-8dd7-02b689ef5f96",
+        "finish_reason": "stop",
+        "duration_ms": 1392,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "998",
+          "x-ratelimit-reset-requests": "2m52.8s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "6481",
+          "x-ratelimit-reset-tokens": "11.392s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "fn",
+      "turn": 2,
+      "input_sha256": "769b8741ddf2203a403b2654367cac8fc3a6b036d253cb7ca8b817ee5fdbdd28",
+      "generation": {
+        "text": "Да, неверно выставленное время на кассе может вызвать ошибку ФН 234.  \nПо статье производителя «Эвотор: ошибка ФН 234» указано, что при неправильном времени система может ошибочно считать, что срок фискального накопителя истёк, и выдавать эту ошибку.  \n\n**Что сделать:**\n\n1. Проверьте и при необходимости скорректируйте дату и время на кассе.  \n2. После исправления времени проверьте, исчезла ли ошибка.  \n\nЕсли ошибка сохраняется, стоит проверить состояние смены и наличие документов, ожидающих передачи в ОФД, а при необходимости обратиться в сервисный центр.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 3059,
+        "completion_tokens": 299,
+        "total_tokens": 3358,
+        "reasoning_tokens": 149,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-008895f8-2821-4df1-8eff-352aa48a12bc",
+        "finish_reason": "stop",
+        "duration_ms": 1452,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "997",
+          "x-ratelimit-reset-requests": "4m19.2s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "4535",
+          "x-ratelimit-reset-tokens": "25.987s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "danger",
+      "turn": 1,
+      "input_sha256": "bb1ee4bdb75f0786765c178cc2e14195f148b0ae39ef297d0f4dcde417c4e5cd",
+      "generation": {
+        "text": "К сожалению, отключить фискальный накопитель и просто удалить его данные нельзя – это не предусмотрено в работе кассовой техники.  \nОшибка 18 (срок работы ФН истёк) означает, что накопитель уже не может принимать новые документы. Чтобы продолжить работу:\n\n1. **Закройте текущую смену** и убедитесь, что все документы отправлены в ОФД.  \n2. **Замените фискальный накопитель** на новый.  \n3. **Перерегистрируйте кассу** в ФНС (это делается через сервисный центр или специалиста, который имеет доступ к настройкам ФН).\n\nЛюбые операции с ФН (замена, перерегистрация, изменение времени) являются юридически значимыми и должны выполняться только специалистом, подтверждённым производителем.  \n\nЕсли у вас возникли вопросы или нужна помощь, обратитесь в сервисный центр aQsi или к специалисту, который занимается настройкой и обслуживанием вашей кассы.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 7405,
+        "completion_tokens": 441,
+        "total_tokens": 7846,
+        "reasoning_tokens": 220,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-db6c840e-4caa-4b4f-9f61-71bbbf41ac7a",
+        "finish_reason": "stop",
+        "duration_ms": 1820,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "996",
+          "x-ratelimit-reset-requests": "5m45.6s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "189",
+          "x-ratelimit-reset-tokens": "58.582s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "hub",
+      "turn": 1,
+      "input_sha256": "b07e375678fac1cad8629d5eaa0d3dec57c7ecb97ea39dd1193556c27d36e0db",
+      "generation": {
+        "text": "У меня нет подтверждённой информации о совместимости USB‑хаба с кассой aQsi 5 для одновременного питания и подключения периферии. Чтобы убедиться, что это безопасно и не нарушит работу устройства, рекомендую обратиться к официальной технической поддержке aQsi или к специалисту, который сможет проверить спецификации и требования к питанию.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 2805,
+        "completion_tokens": 233,
+        "total_tokens": 3038,
+        "reasoning_tokens": 144,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-d0828d99-b95c-4e48-8ad4-8e9da8453a7f",
+        "finish_reason": "stop",
+        "duration_ms": 1342,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "995",
+          "x-ratelimit-reset-requests": "7m12s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "4754",
+          "x-ratelimit-reset-tokens": "24.345s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "unknown",
+      "turn": 1,
+      "input_sha256": "da2376f844542f7401994642f13c65be3aedb347eb10819982f6cba8aa3851af",
+      "generation": {
+        "text": "К сожалению, у меня нет конкретной информации о том, как добавить нового сотрудника с правами администратора в кабинет АТОЛ Онлайн. Рекомендую обратиться в службу поддержки АТОЛ Онлайн или к администратору вашей организации, чтобы получить точные инструкции.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 385,
+        "completion_tokens": 108,
+        "total_tokens": 493,
+        "reasoning_tokens": 43,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-fb5e1178-13fd-4ab4-a25e-5482aea16b64",
+        "finish_reason": "stop",
+        "duration_ms": 702,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "994",
+          "x-ratelimit-reset-requests": "8m38.4s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "5876",
+          "x-ratelimit-reset-tokens": "15.93s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "cash",
+      "turn": 1,
+      "input_sha256": "462a6b83e8709c3f3998d665ec2921648c8c06e7783e6f98745d24f0ad023f05",
+      "generation": {
+        "text": "Для повторной печати чека на Эвотор 6 выполните следующие шаги:\n\n1. **Войдите под ролью администратора.**  \n2. Перейдите в меню **«Настройки → Обслуживание кассы → Дополнительные операции → Печать документа по номеру»**.  \n3. Введите номер ФД, который у вас есть, и подтвердите печать.  \n\nОбратите внимание, что повторный отпечаток может не содержать QR‑код. Если вам нужна полная электронная копия, её можно найти в личном кабинете ОФД.  \n\nЕсли номер ФД неизвестен, сначала уточните его в кабинете Эвотора или ОФД, а затем повторите процедуру.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 1423,
+        "completion_tokens": 294,
+        "total_tokens": 1717,
+        "reasoning_tokens": 127,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-b8ba88d1-f0fb-4311-80b5-2e0eb63add17",
+        "finish_reason": "stop",
+        "duration_ms": 1284,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "993",
+          "x-ratelimit-reset-requests": "10m4.8s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "6330",
+          "x-ratelimit-reset-tokens": "12.524s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "ofd",
+      "turn": 1,
+      "input_sha256": "25bb49b446606981936c28acf41a3eedd298019256f5328522465d8c63b05150",
+      "generation": {
+        "text": "Оператор фискальных данных (ОФД) — это сервис, который принимает от вашей кассы все чек‑данные, проверяет их и передаёт в налоговую службу (ФНС).  \n\n* Если касса подключена к ОФД, каждый чек, который вы печатаете, автоматически отправляется в ФНС в нужном формате.  \n* Без ОФД касса не сможет передавать чеки в ФНС, и вы будете нарушать налоговое законодательство.  \n* Для облачных касс, как ATOL Онлайн, нужен действующий договор и тариф ОФД; оплата аренды кассы не заменяет оплату договора с ОФД.  \n\nТаким образом, ОФД обеспечивает надёжную и законную передачу всех фискальных документов от вашей кассы в налоговую службу.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 6284,
+        "completion_tokens": 290,
+        "total_tokens": 6574,
+        "reasoning_tokens": 104,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-c9cef4a0-7b24-40fd-a177-88951b300543",
+        "finish_reason": "stop",
+        "duration_ms": 1672,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "992",
+          "x-ratelimit-reset-requests": "11m31.2s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "1275",
+          "x-ratelimit-reset-tokens": "50.437s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    },
+    {
+      "case": "receipt",
+      "turn": 1,
+      "input_sha256": "81329191f2615cb07c8833ca24ba78d9d46c22df4716b3e523909cdc758b851d",
+      "generation": {
+        "text": "К сожалению, у меня нет подтверждённых сведений о точном расположении ранее выданных чеков в aQsi Online. Рекомендую обратиться к специалисту службы поддержки aQsi или уточнить детали в справке по системе.",
+        "model": "openai/gpt-oss-20b",
+        "prompt_tokens": 387,
+        "completion_tokens": 178,
+        "total_tokens": 565,
+        "reasoning_tokens": 118,
+        "cached_tokens": null,
+        "api_call_id": "chatcmpl-58172457-3dbd-4600-8689-458fbc7fbe57",
+        "finish_reason": "stop",
+        "duration_ms": 1204,
+        "rate_limit_headers": {
+          "x-ratelimit-limit-requests": "1000",
+          "x-ratelimit-remaining-requests": "990",
+          "x-ratelimit-reset-requests": "14m24s",
+          "x-ratelimit-limit-tokens": "8000",
+          "x-ratelimit-remaining-tokens": "7454",
+          "x-ratelimit-reset-tokens": "4.095s"
+        },
+        "retry_count": 0,
+        "retry_wait_seconds": 0.0
+      }
+    }
+  ],
   "errors": [
     {
       "case": "1c",
@@ -9,6 +253,101 @@
       "message": "LLM request failed",
       "status": 429,
       "retry_after_seconds": 1157.0
+    },
+    {
+      "case": "1c",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "LLM request failed",
+      "status": 200,
+      "retry_after_seconds": null
+    },
+    {
+      "case": "fn",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "Groq quota temporarily unavailable",
+      "status": null,
+      "retry_after_seconds": 47.84
+    },
+    {
+      "case": "danger",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "Groq quota temporarily unavailable",
+      "status": null,
+      "retry_after_seconds": 13.97
+    },
+    {
+      "case": "hub",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "Groq quota temporarily unavailable",
+      "status": null,
+      "retry_after_seconds": 46.57
+    },
+    {
+      "case": "edo",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "Groq quota temporarily unavailable",
+      "status": null,
+      "retry_after_seconds": 38.44
+    },
+    {
+      "case": "edo",
+      "turn": 1,
+      "type": "GenerationError",
+      "message": "LLM request failed",
+      "status": 200,
+      "retry_after_seconds": null
     }
-  ]
+  ],
+  "latest_attempt": {
+    "case": "receipt",
+    "turn": 1,
+    "at_utc": "2026-11-07T13:52:51.580720+00:00",
+    "http_status": 200,
+    "client_result": "usable B answer saved",
+    "provider_usage": {
+      "prompt_tokens": 387,
+      "completion_tokens": 178,
+      "total_tokens": 565
+    },
+    "quota_headers": {
+      "x-ratelimit-limit-tokens": "8000",
+      "x-ratelimit-remaining-tokens": "7454",
+      "x-ratelimit-reset-tokens": "4.095s"
+    },
+    "decision": "all remaining eligible frozen input rows had been processed; stopped"
+  },
+  "batch_outcome": {
+    "frozen_input_rows": 10,
+    "usable_b_answers": 9,
+    "rows_without_usable_answer": [
+      {
+        "case": "edo",
+        "turn": 1,
+        "http_status": 200,
+        "client_error": "GenerationError",
+        "retry_performed": false
+      }
+    ],
+    "not_in_frozen_inputs": [
+      {
+        "case": "one_c_edo",
+        "reason": "A was quota-interrupted; no saved row exists in composer_shadow_inputs.json; no replacement input was created"
+      }
+    ],
+    "provider_http_429_during_b_resume": 1,
+    "bounded_retry_after_seconds": 1.0,
+    "automatic_retry_cap": "one provider-directed retry; subsequent client local tpm defer stopped that runner pass",
+    "local_tpm_deferrals": 4,
+    "last_successful_frozen_input": {
+      "case": "receipt",
+      "turn": 1,
+      "at_utc": "2026-11-07T13:52:51.580720+00:00"
+    },
+    "provider_calls_after_last_success": 0
+  }
 }
