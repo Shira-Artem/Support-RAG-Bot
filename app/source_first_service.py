@@ -458,6 +458,20 @@ def _comparison_concepts(question: str) -> tuple[set[str], set[str]] | None:
     return None
 
 
+def _coherent_information_sources(question: str, selected: list):
+    """Keep one ranked source for a single-concept question unless comparing."""
+    sources = list(dict.fromkeys(unit.source for unit in selected))
+    if len(sources) <= 1 or _comparison_concepts(question):
+        return selected, None
+    retained_source = sources[0]
+    retained = [unit for unit in selected if unit.source == retained_source]
+    return retained, {
+        "retained_source": retained_source,
+        "excluded_source_count": len(sources) - 1,
+        "excluded_unit_count": len(selected) - len(retained),
+        "reason": "single_concept_question_uses_one_ranked_source"}
+
+
 def _conceptually_answering_sentence(sentence: str, question: str,
                                      grounded_subject: str | None = None) -> bool:
     """Require a conceptual fact, and both sides of a comparison in that fact."""
@@ -728,6 +742,46 @@ def _technical_section_covers_observed_subject(state: DialogueState,
     if not object_terms:
         return True
     return bool(object_terms & content_terms(selected["text"]))
+
+
+def _source_error_codes(selected: dict | None) -> set[str]:
+    """Return numeric error identifiers from an explicitly error-scoped title."""
+    if not selected:
+        return set()
+    title = str(selected.get("title") or "")
+    if not re.search(r"(?:ошибк\w*|error|код|\bфн\b|\bfn\b)", title, re.I):
+        return set()
+    return {value.lstrip("-") for value in re.findall(r"(?<!\w)-?\d{2,5}(?!\w)", title)}
+
+
+def _source_error_matches_client(state: DialogueState, selected: dict | None) -> bool:
+    """An error-specific article needs the same error code in client facts."""
+    source_codes = _source_error_codes(selected)
+    if not source_codes:
+        return True
+    confirmed = {value.lstrip("-") for value in
+                 re.findall(r"(?<!\w)-?\d{2,5}(?!\w)", state.error.value if state.error else "")}
+    return bool(source_codes & confirmed)
+
+
+def _missing_support_detail(state: DialogueState) -> tuple[str, str] | None:
+    """Choose one intake question from typed task fields when no source fits."""
+    if state.intent == "receipt" and state.operation == "search" and not state.parameters:
+        return "period", "За какой период или дату нужно найти запись?"
+    if state.intent == "device" and not state.task_entity("manufacturer"):
+        return "equipment", "Какой производитель и модель кассы используются?"
+    return None
+
+
+def _bounded_support_intake(state: DialogueState, history: list[dict] | None):
+    detail = _missing_support_detail(state)
+    if not detail:
+        return None
+    if any(item.get("role") == "assistant"
+           and item.get("scenario_reason") == "no_applicable_source_missing_client_detail"
+           for item in (history or [])):
+        return None
+    return detail
 
 
 def _safe_general_knowledge_question(user_message: str, state: DialogueState) -> bool:
@@ -2087,6 +2141,7 @@ class SourceFirstService:
                 "semantic_composer_generation_error", json.dumps(error, ensure_ascii=False), started,
                 **base, generation_status="error", generation_error=error)
 
+        validation_started = perf_counter()
         composer_text = generated.text.strip()
         try:
             structured_composer = json.loads(composer_text)
@@ -2117,6 +2172,8 @@ class SourceFirstService:
         diagnostics = base.setdefault("retrieval_diagnostics", {})
         diagnostics["semantic_composer"] = {
             "model": generated.model,
+            "duration_ms": generated.duration_ms,
+            "validation_ms": round((perf_counter() - validation_started) * 1000),
             "candidate_sha256": sha256(generated.text.encode("utf-8")).hexdigest(),
             "validation": "accepted" if candidate else "rejected",
             "reason": reason,
@@ -2178,6 +2235,7 @@ class SourceFirstService:
                 "Не удалось независимо проверить, отвечает ли найденная информация на вопрос. Запросите специалиста.",
                 "semantic_composer_relevance_check_failed", json.dumps(error, ensure_ascii=False),
                 started, **base, generation_status="error", generation_error=error)
+        relevance_validation_started = perf_counter()
         relevant, relevance_reason, relevance_diagnostics = _parse_information_relevance_judgment(
             relevance_generated.text, relevance_fragments,
             max_evidence_ids=len(relevance_fragments))
@@ -2186,6 +2244,8 @@ class SourceFirstService:
         diagnostics["semantic_answer_relevance"] = {
             **relevance_diagnostics, "validation": "accepted" if relevant else "rejected",
             "reason": relevance_reason,
+            "duration_ms": relevance_generated.duration_ms,
+            "validation_ms": round((perf_counter() - relevance_validation_started) * 1000),
             "candidate_sha256": sha256(candidate.encode("utf-8")).hexdigest(),
         }
         for key in ("prompt_tokens", "completion_tokens", "total_tokens", "reasoning_tokens", "cached_tokens"):
@@ -2195,6 +2255,13 @@ class SourceFirstService:
         base.update(model=relevance_generated.model, used_model=True, llm_call_attempted=True,
             api_call_id=relevance_generated.api_call_id)
         if not relevant:
+            intake = _bounded_support_intake(state, base.get("history"))
+            if intake:
+                slot, question = intake
+                return Answer(question, scenario="clarify",
+                    scenario_reason="no_applicable_source_missing_client_detail",
+                    clarification_slot=slot, generation_status="clarification",
+                    duration_ms=round((perf_counter()-started)*1000), **base)
             return self._escalate(
                 "В approved-источниках не нашёл подтверждённого ответа именно на запрошенную часть вопроса. Запросите специалиста.",
                 "semantic_composer_irrelevant_evidence", relevance_reason, started, **base,
@@ -2328,9 +2395,11 @@ class SourceFirstService:
                 selected_decision, generated = await select_evidence(
                     user_message, state, history, units, self.settings,
                     current_subgoal=focus)
+                selector_validation_started = perf_counter()
                 selected, rejection = validate_selected_units(
                     selected_decision, units, state, self.root, informational=True,
                     reject_confirmed_scope_mismatch=experimental_composer)
+                selector_validation_ms = round((perf_counter() - selector_validation_started) * 1000)
             except Exception as exc:
                 failed_generation = getattr(exc, "generation", None)
                 diagnostics = base.get("retrieval_diagnostics") or {}
@@ -2391,6 +2460,8 @@ class SourceFirstService:
                 "selected_ids_verified": [unit.id for unit in selected],
                 "rejection_reason": rejection,
                 "latency_ms": round((perf_counter() - generated_started) * 1000),
+                "model_duration_ms": generated.duration_ms,
+                "validation_ms": selector_validation_ms,
                 "source_sha_verified": rejection is None and bool(selected),
             }
             base["retrieval_diagnostics"] = diagnostics
@@ -2413,6 +2484,13 @@ class SourceFirstService:
                     scenario_reason="semantic_selector_clarification", clarification_slot=selected_decision.clarification_slot,
                     generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
             if selected_decision.mode == "no_evidence":
+                intake = _bounded_support_intake(state, history)
+                if intake:
+                    slot, question = intake
+                    return Answer(question, scenario="clarify",
+                        scenario_reason="no_applicable_source_missing_client_detail",
+                        clarification_slot=slot, generation_status="clarification",
+                        duration_ms=round((perf_counter()-started)*1000), **base)
                 fallback = (None if experimental_composer else await self._general_knowledge_fallback(
                     user_message, state, started, base))
                 if fallback is not None:
@@ -2439,6 +2517,13 @@ class SourceFirstService:
                 return self._escalate("Выбранный текст не прошёл независимую проверку информационного ответа. Запросите специалиста.",
                     "semantic_selector_safety_rejected", "information_answer_policy_rejected", started, **base)
             if experimental_composer:
+                # One conceptual question should not combine unrelated vendor
+                # workflows just because each selected sentence mentions the
+                # same term. Keep the selector's highest-ranked source unless
+                # the user explicitly asked for a comparison.
+                selected, source_coherence = _coherent_information_sources(user_message, selected)
+                if source_coherence:
+                    diagnostics["semantic_evidence_selector"]["source_coherence"] = source_coherence
                 return await self._semantic_composer_answer(user_message, state, selected, started, base)
             source_labels = list(dict.fromkeys(unit.source for unit in selected))
             source_names = list(dict.fromkeys(f"{unit.section}" for unit in selected))
@@ -2603,6 +2688,17 @@ class SourceFirstService:
         if understanding and turn_kind == "escalation":
             return self._escalate("Не могу подтвердить безопасное решение для этого запроса. Можно оформить обращение специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
                 "understanding_recommends_escalation", "semantic_escalation", started, **base)
+        observation = (understanding or {}).get("observation") or {}
+        if (understanding and turn_kind == "unknown"
+                and not any(observation.get(key) for key in
+                            ("entities", "unknown_facts", "goals", "symptom", "error",
+                             "constraints", "parameters", "details"))):
+            # An uninterpretable turn is not a check result. Keep the current
+            # task and avoid repeating retrieval/planning or advancing Ledger.
+            return Answer("Не понял это сообщение. Напишите, пожалуйста, результат проверки или задайте новый вопрос.",
+                scenario="clarify", scenario_reason="uninterpretable_turn_no_state_change",
+                clarification_slot="details", generation_status="clarification",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         if turn_kind == "greeting":
             text, scenario = "Здравствуйте! Чем могу помочь?", "answer"
             return Answer(text, scenario=scenario, scenario_reason="source_first_social_turn",
@@ -2655,6 +2751,7 @@ class SourceFirstService:
         # applicability gates still run after retrieval.
         incomplete_task = (not coordinator_selected_retrieval and (
                             broad_explanation
+                            or (decision and decision.get("required_action") == "ask_for_missing_problem_detail")
                             or (state.expected and state.expected.slot in {"task", "goal", "details"})
                             or state.analysis_required
                             or state.operation == "unknown"))
@@ -2665,7 +2762,10 @@ class SourceFirstService:
             if prior_clarifications >= 2:
                 return self._escalate("Пока не удалось определить задачу. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
                                       "dialogue_task_remains_undefined", "two_task_clarifications_without_resolved_task", started, **base)
-            question = state.expected.question if state.expected else "Что именно нужно сделать или что сейчас не работает?"
+            question = state.expected.question if state.expected else (
+                "Что именно происходит с кассой? Напишите, пожалуйста, текст ошибки или какой результат вы видите."
+                if decision and decision.get("required_action") == "ask_for_missing_problem_detail"
+                else "Что именно нужно сделать или что сейчас не работает?")
             return Answer(question, scenario="clarify", scenario_reason="dialogue_state_task_incomplete",
                           clarification_slot=state.expected.slot if state.expected else "task",
                           generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
@@ -2811,6 +2911,21 @@ class SourceFirstService:
                 return Answer(question, scenario="clarify", scenario_reason="applicability_context_missing",
                               clarification_slot=slot, generation_status="clarification",
                               duration_ms=round((perf_counter()-started)*1000), **base)
+            # When retrieval finds no applicable article at all, collect one
+            # task-relevant missing detail before closing with a handoff offer.
+            # The typed task and confirmed fields determine the question; a
+            # repeated unanswered prompt is bounded and does not loop.
+            intake = _missing_support_detail(state)
+            if intake:
+                slot, question = intake
+                previous_intake = [item for item in (history or [])[:-1]
+                    if item.get("role") == "assistant"
+                    and item.get("scenario_reason") == "no_applicable_source_missing_client_detail"]
+                if not previous_intake:
+                    return Answer(question, scenario="clarify",
+                        scenario_reason="no_applicable_source_missing_client_detail",
+                        clarification_slot=slot, generation_status="clarification",
+                        duration_ms=round((perf_counter()-started)*1000), **base)
             subject = state.task.value.strip().rstrip(".?!") if state.task else ""
             scope = state.routing_service or state.task_entity("equipment")
             context = f"Для этой задачи в «{scope}» " if scope else "Для этой задачи "
@@ -3090,6 +3205,19 @@ class SourceFirstService:
             return self._escalate("Не удалось проверить источник из-за внутренней ошибки. Повторите позже или запросите специалиста.",
                                   "planner_error", json.dumps(error, ensure_ascii=False), started, **base, generation_status="error",
                                   llm_call_attempted=True, generation_error=error)
+        if (not informational and mode == "select" and selected is not None
+                and not _source_error_matches_client(state, selected)):
+            base.setdefault("retrieval_diagnostics", {})["selected_error_scope_gate"] = {
+                "status": "clarification_required",
+                "reason": "selected_error_code_not_confirmed_by_client",
+                "selected_title": selected.get("title"),
+                "client_error_confirmed": bool(state.error),
+                "procedure_admitted": False}
+            return Answer(
+                "Нашёл инструкцию для другого конкретного кода ошибки, поэтому не буду переносить её на ваш случай. Какой текст или код ошибки отображается на кассе?",
+                scenario="clarify", scenario_reason="selected_error_code_unconfirmed",
+                clarification_slot="details", generation_status="clarification",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         base.update(model=generated.model, used_model=True, llm_call_attempted=True, prompt_tokens=generated.prompt_tokens,
                     completion_tokens=generated.completion_tokens, total_tokens=generated.total_tokens,
                     reasoning_tokens=generated.reasoning_tokens, cached_tokens=generated.cached_tokens,

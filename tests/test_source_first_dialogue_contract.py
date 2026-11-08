@@ -122,7 +122,7 @@ def test_manufacturer_wide_first_check_does_not_require_model(monkeypatch, tmp_p
     fact = Fact.span("Эвотор", 1)
     task = TaskContext(task_id="task:test", intent="unknown", operation="diagnose",
         entities={"manufacturer": [fact]}, active_route=ActiveRoute("manufacturer", fact),
-        task_fact=Fact.span(question, 1))
+        task_fact=Fact.span(question, 1), error=Fact.span("235", 1))
 
     async def select(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])

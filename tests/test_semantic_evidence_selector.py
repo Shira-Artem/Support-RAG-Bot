@@ -14,11 +14,26 @@ from app.semantic_evidence_selector import (build_evidence_units, parse_decision
                                              MAX_EVIDENCE_TOKENS)
 from app.llm_client import Generation
 from app.source_first_service import (SourceFirstService, _focused_approved_sentence,
-                                     _section_has_answer_bearing_content)
+                                     _section_has_answer_bearing_content,
+                                     _coherent_information_sources)
 import app.semantic_evidence_selector as selector_module
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_single_concept_information_keeps_the_best_ranked_source_only():
+    first = SimpleNamespace(source="atol/ofd.md")
+    other = SimpleNamespace(source="aqsi/account.md")
+    same_source = SimpleNamespace(source="atol/ofd.md")
+    selected, diagnostic = _coherent_information_sources(
+        "Зачем нужен ОФД?", [first, other, same_source])
+    assert selected == [first, same_source]
+    assert diagnostic["excluded_source_count"] == 1
+    comparison, diagnostic = _coherent_information_sources(
+        "Сравни ОФД в aQsi и АТОЛ", [first, other])
+    assert comparison == [first, other]
+    assert diagnostic is None
 
 
 def _fixture(tmp_path: Path, text: str, *, service: str = "Платформа ОФД"):
@@ -430,8 +445,9 @@ def test_experimental_composer_escalates_topically_related_but_nonanswering_evid
     result = asyncio.run(service._semantic_composer_answer(question,
         DialogueState(intent="receipt", operation="search"), units, 0.0,
         {"retrieval_diagnostics": {}}))
-    assert result.scenario_reason == "semantic_composer_irrelevant_evidence"
-    assert result.validation_status == "semantic_relevance_rejected"
+    assert result.scenario == "clarify"
+    assert result.scenario_reason == "no_applicable_source_missing_client_detail"
+    assert result.clarification_slot == "period"
     assert "чек" not in result.text.casefold()
 
 

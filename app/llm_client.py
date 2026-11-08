@@ -231,13 +231,18 @@ _MAX_GROQ_RETRY_AFTER_SECONDS = 15.0
 
 async def generate(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
     """Retry one short, provider-directed 429 cooldown; never retry local defers."""
+    call_started = perf_counter()
     retries = 0
     waited = 0.0
     while True:
         try:
             result = await _generate_once(messages, settings, call_stage=call_stage)
             return Generation(**{**result.__dict__, "retry_count": retries,
-                                 "retry_wait_seconds": round(waited, 2)})
+                                 "retry_wait_seconds": round(waited, 2),
+                                 # Include local TPM pacing in the measured
+                                 # stage latency; HTTP-only duration remains in
+                                 # groq-rate-limit.jsonl.
+                                 "duration_ms": round((perf_counter() - call_started) * 1000)})
         except GenerationError as exc:
             delay = exc.retry_after_seconds
             retryable = (settings.llm_provider == "groq"
@@ -247,6 +252,7 @@ async def generate(messages: list[dict], settings: Settings, *, call_stage: str 
             if not retryable:
                 exc.retry_count = retries
                 exc.retry_wait_seconds = round(waited, 2)
+                exc.duration_ms = round((perf_counter() - call_started) * 1000)
                 raise
             groq_rate_limiter.record_bounded_retry(
                 stage=call_stage, retry_number=retries + 1, retry_after_seconds=delay,

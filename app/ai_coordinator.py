@@ -7,6 +7,7 @@ why without promoting coordinator text into state facts.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import re
 from typing import Literal
 
 from app.dialogue_state import DialogueState
@@ -52,6 +53,17 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
                             if isinstance(item, dict) and item.get("value")), None)
 
     operation = frame.operation
+    def specific_enough(value: str | None) -> bool:
+        words = {word.casefold().replace("ё", "е") for word in
+                 re.findall(r"[A-Za-zА-Яа-яЁё0-9]+", value or "")}
+        words -= {"и", "а", "но", "с", "со", "в", "во", "на", "по", "что", "как",
+                  "это", "не", "мне", "помоги", "помогите", "пожалуйста", "ошибка",
+                  "ошибки", "проблема", "проблему", "сбой", "неисправность"}
+        return len(words) >= 2
+
+    has_diagnostic_detail = bool(state.error or
+        (state.symptom and specific_enough(state.symptom.value)) or
+        any(specific_enough(goal.value) for goal in state.goals))
     # An absent enum projection is not an absent client task. A reducer-owned
     # goal/symptom plus its subject is sufficient to search for evidence;
     # it never authorizes a procedure or fills a missing scope fact.
@@ -65,7 +77,14 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
         and (item.get("result_span") or {}).get("message_id") ==
             (observation.get("evidence") or {}).get("message_id")
         for item in state.active_task.checks))
-    if request_type == "resolved":
+    # A diagnosis label and a product name do not identify the failure to
+    # diagnose. Do not let a broad retrieval hit become an answer; ask for an
+    # observable problem first.
+    if operation == "diagnose" and not has_diagnostic_detail:
+        route, action, rationale = (
+            "conversation", "ask_for_missing_problem_detail",
+            "diagnosis_has_no_observed_symptom_or_goal")
+    elif request_type == "resolved":
         route, action, rationale = "conversation", "close_resolved_task", "client_reports_resolution"
     elif request_type in {"greeting", "feedback", "escalation"} and not reports_check:
         route: Route = "conversation"
@@ -78,6 +97,15 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
         route, action, rationale = (
             "technical_action", "continue_verified_check_and_evaluate_source_conditions",
             "reported_result_for_shown_verified_check")
+    elif (relation in {"continue", "answer_to_clarification"}
+          and operation in {"check", "connect", "configure", "diagnose", "transmit", "change"}
+          and (state.goals or state.symptom or state.error)):
+        # A short answer to a clarification keeps the active task's route.
+        # Its surface form may look informational, but it must not turn a
+        # procedural task into a broad Composer search over adjacent articles.
+        route, action, rationale = (
+            "technical_action", "continue_active_technical_task",
+            "clarification_reply_keeps_active_technical_route")
     elif frame.expected_slot in {"task", "goal", "details"}:
         route, action, rationale = "conversation", "ask_for_missing_task_detail", "task_not_ready"
     elif (request_type == "information"
