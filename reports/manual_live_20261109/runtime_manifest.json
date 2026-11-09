@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "test": {
+    "date": "2026-11-09",
+    "timezone": "Europe/Moscow",
+    "window_msk": {
+      "from": "2026-11-09T08:09:00+03:00",
+      "to_exclusive": "2026-11-09T08:31:00+03:00"
+    },
+    "observed_first_message_msk": "2026-11-09T08:09:25.939604+03:00",
+    "observed_last_message_msk": "2026-11-09T08:29:40.894903+03:00",
+    "dialogue_count": 9,
+    "turn_count": 25,
+    "message_count": 50,
+    "distinct_user_ids_in_window": 1,
+    "distinct_chat_ids_in_window": 1
+  },
+  "git": {
+    "branch": "main",
+    "code_baseline": "fce09b45f1264fe3ece56214c127de71365bfb0f",
+    "documentation_head_at_capture": "79ee5597bcc7e13b3e1ba6228073571aa5cb6f22",
+    "origin_main_at_capture": "79ee5597bcc7e13b3e1ba6228073571aa5cb6f22",
+    "runtime_receipt_commit": "79ee5597bcc7e13b3e1ba6228073571aa5cb6f22",
+    "runtime_code_source_files_hash_matched": 35,
+    "runtime_code_source_files_hash_total": 35,
+    "runtime_code_matches_fce09b4": true,
+    "runtime_code_match_evidence": "No bot.py/app/ changes exist between fce09b4 and 79ee559; all 35 receipt source hashes match the checkout at capture.",
+    "manual_test_code_changes_already_present": [
+      "Coordinator requires a meaningful symptom or goal before diagnosis.",
+      "A reply to an active task retains its technical route.",
+      "SourceFirst blocks procedures containing a specific error code not confirmed by the client.",
+      "ProgressLedger does not advance on an empty or unobserved observation.",
+      "Single-concept information answers are limited to the best-ranked article.",
+      "A typed task missing a required parameter asks one bounded clarification question.",
+      "The 429 fallback states that the message was saved and that staff notification is not configured.",
+      "Stage duration includes local quota pacing."
+    ]
+  },
+  "runtime": {
+    "process_status_at_final_read_only_check": "not running; no matching bot.py process was present",
+    "process_termination_time_or_reason": "not_recorded",
+    "agent_stopped_or_restarted_process": false,
+    "python_version": "3.12.2",
+    "receipt_started_at_utc": "2026-11-09T05:04:26.233953+00:00",
+    "receipt_phase": "runtime_initialized_before_polling",
+    "polling_started_at_msk": "2026-11-09T08:04:26.989+03:00",
+    "startup_log_observation": "Application started; no startup error or polling conflict observed in the startup log.",
+    "python_process_entries_observed": 2,
+    "process_note": "The entries were the venv launcher and its child interpreter for one bot invocation.",
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "medium",
+    "rag_engine": "source_first",
+    "backend": "RetrieverRAGAdapter (Qdrant-backed)",
+    "rag_demo_mode": false,
+    "ai_coordinator_enabled": true,
+    "semantic_composer_enabled": true,
+    "semantic_evidence_selector_enabled": false,
+    "semantic_evidence_selector_runtime_note": "The standalone flag was false; the experimental Composer path also invokes semantic evidence selection. That stage is present in saved diagnostics for 8 turns.",
+    "handoff_enabled": false,
+    "source_first_allowlist_count": 3,
+    "source_first_allowlist_ids_or_hash": "not_published",
+    "conversation_db_path_verified_from_live_process_environment": ".local/manual-test/20261108-091843/conversations.sqlite3",
+    "expert_db_path": ".local/manual-test/20261108-091843/expert_reviews.sqlite3",
+    "runtime_receipt_path": ".local/manual-test/20261108-091843/runtime-79ee559.json",
+    "runtime_receipt_pid": "not_published",
+    "observed_running_at_initial_inspection": true
+  },
+  "retrieval": {
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "point_count_in_runtime_receipt": 934,
+    "health_status_at_manual_runtime_preflight": "green per project runtime record dated 2026-11-08; receipt at 2026-11-09 08:04 confirms the Stage3 collection name and 934 points",
+    "retrieval_mode": "dense Qdrant plus local BM25 hybrid ranking with task/source applicability checks",
+    "approved_only": true,
+    "collection_write_performed_by_investigation": false,
+    "code_defaults_from_hash_verified_runtime_sources": {
+      "retriever_default_top_k": 5,
+      "retriever_min_semantic_score": 0.75,
+      "dense_candidates_for_direct_retriever_default_top_k": 40,
+      "retrieval_pipeline_candidate_k": 100,
+      "dense_candidates_for_pipeline_candidate_k_100": 100
+    },
+    "runtime_receipt_does_not_record_per_turn_search_parameters": true,
+    "per_turn_candidate_and_selected_evidence": "recorded when present under pipeline.retrieval_diagnostics in turns.jsonl"
+  },
+  "sqlite": {
+    "live_source_path_verified_from_process_environment": ".local/manual-test/20261108-091843/conversations.sqlite3",
+    "snapshot_path": ".local/manual-test/evidence_20261109_0809/conversations_snapshot.sqlite3",
+    "snapshot_created_at_msk": "2026-11-09T08:36:30+03:00",
+    "snapshot_method": "SQLite Online Backup API from a mode=ro connection while the bot remained running",
+    "snapshot_quick_check": "ok",
+    "snapshot_sha256": "1c732cea3eca9fb4d48c763d0fe01c3b3b74161bf8df407ee76dc8f59c7b9a70",
+    "snapshot_gitignored": true,
+    "snapshot_counts": {
+      "conversations_total": 13,
+      "messages_total": 70,
+      "dialogue_turns_total": 35,
+      "dialogue_states_v2_total": 13,
+      "support_requests_total": 2,
+      "escalation_events_total": 3,
+      "window_messages": 50,
+      "window_dialogue_turns": 25,
+      "window_dialogues": 9,
+      "window_latest_states_v2": 9,
+      "window_support_requests": 1,
+      "window_escalation_events": 2
+    },
+    "status_distribution_in_window": {
+      "user_messages_complete": 25,
+      "assistant_messages_complete": 25
+    }
+  },
+  "diagnostic_sources": {
+    "messages.diagnostics_json": "available per assistant turn; output, retrieval, validation, provider and timing fields vary by stage",
+    "dialogue_turns.state_json": "available for all 25 user turns in the window",
+    "dialogue_states_v2.state_json": "latest state available for 9 test conversations",
+    "support_requests": "one confirmed saved request in D07; no delivery timestamp",
+    "escalation_events": "two records for D07: requested then confirmed",
+    "no_new_live_model_calls_for_this_export": true,
+    "conversational_understanding_jsonl": "26 records in the window, including sanitized request payloads, model structured output, field-level validation, status, tokens, and duration; mapped per turn in turns.jsonl",
+    "groq_rate_limit_jsonl": "68 trace rows in the window: 61 HTTP attempts and 7 non-attempt entries (6 bounded retry scheduling records and 1 local quota deferral); mapped per turn in turns.jsonl",
+    "other_stage_raw_prompts": "not_recorded; Understanding request payload is preserved after recursive identifier scrubbing",
+    "exact_total_groq_http_call_count_per_message": "recorded per turn from the local HTTP attempt trace; scheduled retry events are excluded from attempt count",
+    "groq_http_summary": {
+      "attempts": 61,
+      "http_200": 49,
+      "http_429": 11,
+      "http_400": 1,
+      "successful_prompt_tokens": 80017,
+      "successful_completion_tokens": 31102,
+      "successful_total_tokens": 111119,
+      "attempts_by_stage": {
+        "understanding": 25,
+        "semantic_selector": 11,
+        "semantic_relevance": 10,
+        "planner": 8,
+        "generation": 7
+      }
+    }
+  },
+  "privacy": {
+    "telegram_user_ids_published": false,
+    "telegram_chat_ids_published": false,
+    "internal_user_ids_published": false,
+    "conversation_database_ids_published": false,
+    "secrets_or_env_values_published": false,
+    "raw_sqlite_or_unredacted_logs_published": false,
+    "message_and_task_references_replaced_with": "Dxx-Tnn",
+    "private_messages_from_other_users_included": false
+  },
+  "investigation_boundary": {
+    "hypothesis_a": "Python filters, SourceFirst, Planner and fallback; untested in this package.",
+    "hypothesis_b": "Understanding, task state, retrieval, prompts, evidence selection and component interaction; untested in this package.",
+    "code_changes_made": false,
+    "runtime_or_configuration_changed": false,
+    "qdrant_or_approved_kb_changed": false,
+    "production_sqlite_changed": false
+  }
+}
