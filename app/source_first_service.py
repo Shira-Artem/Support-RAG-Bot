@@ -70,6 +70,7 @@ def _source_order_context(state: DialogueState) -> str:
         "route": [state.routing_slot, state.routing_service],
         "entities": {slot: state.task_entity(slot) for slot in
             ("service", "manufacturer", "equipment", "ofd", "software", "integration")},
+        "error_codes": [fact.value for fact in state.error_codes],
         "constraints": [fact.value for fact in task.constraints] if task else [],
         "unknown_facts": sorted(task.unknown_facts) if task else []}
     return sha256(json.dumps(context, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
@@ -171,6 +172,7 @@ def _planner_task_snapshot(state: DialogueState) -> dict | None:
         "parameters": [value for value in (fact_value(item) for item in task.parameters) if value],
         "details": [value for value in (fact_value(item) for item in task.details) if value],
         "error": fact_value(task.error),
+        "error_codes": [fact_value(item) for item in state.error_codes],
         "expected": ({"slot": expected.slot, "question": clip(expected.question, 240)}
                      if expected else None),
         "relation": task.relation,
@@ -755,13 +757,32 @@ def _source_error_codes(selected: dict | None) -> set[str]:
 
 
 def _source_error_matches_client(state: DialogueState, selected: dict | None) -> bool:
-    """An error-specific article needs the same error code in client facts."""
+    """One applicability contract for error-specific claims and procedures."""
     source_codes = _source_error_codes(selected)
     if not source_codes:
         return True
-    confirmed = {value.lstrip("-") for value in
-                 re.findall(r"(?<!\w)-?\d{2,5}(?!\w)", state.error.value if state.error else "")}
+    incident = (state.operation == "diagnose" or bool(state.error_codes)
+                or bool(state.symptom and state.intent != "general"))
+    if not incident:
+        # A standalone definition such as “What does FN 231 mean?” is not an
+        # assertion that the customer's device is showing that code.
+        return True
+    confirmed = {fact.value.lstrip("-") for fact in state.error_codes}
+    if not confirmed and state.error:
+        confirmed = {value.lstrip("-") for value in
+                     re.findall(r"(?<!\w)-?\d{2,5}(?!\w)", state.error.value)}
     return bool(source_codes & confirmed)
+
+
+def _unconfirmed_error_code_reply(state: DialogueState) -> Answer:
+    unknown = set(state.task_context.unknown_facts if state.task_context else [])
+    question = ("Что именно перестало работать — печать чека, передача данных "
+                "или другое? Если появится точный текст на экране, пришлите его."
+                if "details" in unknown or state.symptom else
+                "Какой текст ошибки отображается на кассе? Если кода нет, опишите, что именно "
+                "не получается — например, печать чека или передача данных.")
+    return Answer(question, scenario="clarify", scenario_reason="error_code_scope_unconfirmed",
+                  clarification_slot="details", generation_status="clarification")
 
 
 def _missing_support_detail(state: DialogueState) -> tuple[str, str] | None:
@@ -2352,6 +2373,22 @@ class SourceFirstService:
                 "Нужна проверка подготовленного специалиста по полной инструкции производителя.",
                 "semantic_composer_unsafe_request",
                 "independent_unsafe_request_gate_before_evidence_selection", started, **base)
+        eligible = [item for item in sections if _source_error_matches_client(state, item)]
+        rejected = len(sections) - len(eligible)
+        if rejected:
+            base.setdefault("retrieval_diagnostics", {})["error_code_applicability"] = {
+                "checked_before_information_and_exact_fallback": True,
+                "rejected_code_specific_sections": rejected,
+                "confirmed_client_codes": sorted(fact.value for fact in state.error_codes),
+            }
+        sections = eligible
+        if rejected and not sections:
+            reply = _unconfirmed_error_code_reply(state)
+            return Answer(reply.text, scenario=reply.scenario,
+                scenario_reason=reply.scenario_reason,
+                clarification_slot=reply.clarification_slot,
+                generation_status=reply.generation_status,
+                duration_ms=round((perf_counter() - started) * 1000), **base)
         conceptual_sections = []
         for item in sections:
             if any(_conceptually_answering_sentence(sentence, user_message, state.object)
@@ -2822,6 +2859,24 @@ class SourceFirstService:
                                   "retrieval_error", type(exc).__name__, started, **base,
                                   generation_status="error",
                                   generation_error={"stage": "qdrant_search", "error_type": type(exc).__name__})
+        code_specific = []
+        for document in retrieval.documents:
+            metadata = normalize_metadata(document.metadata or {})
+            title = metadata.get("title") or Path(document.source).name
+            candidate = {"title": title}
+            if _source_error_codes(candidate) and not _source_error_matches_client(state, candidate):
+                code_specific.append(candidate)
+        if code_specific and len(code_specific) == len(retrieval.documents):
+            base["retrieval_diagnostics"] = {"error_code_applicability": {
+                "checked_before_sufficiency_fallback": True,
+                "rejected_code_specific_documents": [item["title"] for item in code_specific],
+                "confirmed_client_codes": sorted(fact.value for fact in state.error_codes)}}
+            reply = _unconfirmed_error_code_reply(state)
+            return Answer(reply.text, scenario="clarify",
+                scenario_reason="error_code_scope_unconfirmed",
+                clarification_slot=reply.clarification_slot,
+                generation_status="clarification",
+                duration_ms=round((perf_counter() - started) * 1000), **base)
         diagnostics = retrieval.diagnostics()
         diagnostics["timing_ms"] = {"retrieval": retrieval_ms}
         base.update(results=retrieval.documents, rag_query=query, active_request=query,
@@ -3213,10 +3268,11 @@ class SourceFirstService:
                 "selected_title": selected.get("title"),
                 "client_error_confirmed": bool(state.error),
                 "procedure_admitted": False}
-            return Answer(
-                "Нашёл инструкцию для другого конкретного кода ошибки, поэтому не буду переносить её на ваш случай. Какой текст или код ошибки отображается на кассе?",
-                scenario="clarify", scenario_reason="selected_error_code_unconfirmed",
-                clarification_slot="details", generation_status="clarification",
+            reply = _unconfirmed_error_code_reply(state)
+            return Answer(reply.text, scenario="clarify",
+                scenario_reason="selected_error_code_unconfirmed",
+                clarification_slot=reply.clarification_slot,
+                generation_status="clarification",
                 duration_ms=round((perf_counter()-started)*1000), **base)
         base.update(model=generated.model, used_model=True, llm_call_attempted=True, prompt_tokens=generated.prompt_tokens,
                     completion_tokens=generated.completion_tokens, total_tokens=generated.total_tokens,

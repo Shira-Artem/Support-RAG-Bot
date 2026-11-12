@@ -118,11 +118,12 @@ def test_understanding_fault_keeps_only_typed_diagnostics(monkeypatch, tmp_path,
 def payload(text, *, kind="diagnosis", relation="new_task", intent="receipt", operation="diagnose",
             obj="чек", entities=(), unknown=(), specialist=False, specialist_quote=None,
             intent_quote=None, operation_quote=None, object_quote=None, relation_quote=None,
-            goal=None, symptom=None, unknown_quote=None):
+            goal=None, symptom=None, unknown_quote=None, error_codes=()):
     return {"request_type": kind, "relation": relation, "intent": intent, "operation": operation,
         "object": obj, "object_evidence": {"quote": object_quote or text} if obj is not None else None,
         "goal": {"quote": goal} if goal else None,
         "symptom": {"quote": symptom} if symptom else None,
+        "error_codes": [{"quote": quote} for quote in error_codes],
         "entities": [{"slot": slot, "value": value, "evidence": {"quote": quote}}
                      for slot, value, quote in entities],
         "unknown_facts": [{"slot": slot, "evidence": {"quote": unknown_quote or text}}
@@ -164,6 +165,143 @@ def test_information_is_explain_and_separates_ofd_from_manufacturer():
     state = DialogueManager().advance(DialogueState(), text, 77, observation=obs)
     assert kind == "information" and state.intent == "general" and state.operation == "explain"
     assert state.entity("manufacturer") is None and state.entity("ofd") is None
+
+
+def test_confirmed_error_code_exact_span_flows_through_state_and_sqlite(tmp_path):
+    text = "Касса Эвотор пишет ошибку ФН 234, чек не печатается."
+    raw = payload(text, kind="diagnosis", intent="fiscal_drive", operation="diagnose",
+                  obj="ФН", object_quote="ФН", relation="new_task",
+                  error_codes=["ошибку ФН 234"])
+    _, _, _, observation = validate_response(raw, text, "m-1")
+    assert [(fact.value, fact.quote, fact.message_id) for fact in observation.error_codes] == [
+        ("234", "234", "m-1")]
+    manager = DialogueManager()
+    state = manager.advance(DialogueState(), text, "m-1", observation=observation)
+    assert [fact.value for fact in state.error_codes] == ["234"]
+    restored = DialogueState.from_dict(state.to_dict())
+    assert [(fact.value, fact.message_id) for fact in restored.error_codes] == [("234", "m-1")]
+
+    store = ConversationStore(tmp_path / "error-code.sqlite3")
+    cid = store.new(1, 2)
+    record = Understanding("diagnosis", False, (), observation, {}, "test", 1)
+    store.begin(cid, text, semantic_mode=True, understanding=understanding_to_dict(record))
+    persisted = store.dialogue_state(cid)
+    reopened = ConversationStore(tmp_path / "error-code.sqlite3")
+    assert [(fact.value, fact.message_id) for fact in reopened.dialogue_state(cid).error_codes] == [
+        ("234", persisted.error_codes[0].message_id)]
+
+
+def test_frozen_d04_t01_t02_preserve_fn234_across_followup_turns():
+    manager = DialogueManager()
+    first = "На моей кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?"
+    _, _, _, first_obs = validate_response(payload(first, kind="diagnosis", intent="device",
+        operation="diagnose", obj="касса", object_quote="кассе", relation="new_task",
+        entities=[("manufacturer", "Эвотор", "Эвотор")], symptom="ошибка ФН 234",
+        goal="Обязательно менять накопитель?"), first, "D04-T01")
+    state = manager.advance(DialogueState(), first, "D04-T01", observation=first_obs)
+    assert [fact.value for fact in state.error_codes] == ["234"]
+
+    followup = "кассе Эвотор появилась ошибка ФН 234"
+    _, _, _, followup_obs = validate_response(payload(followup, kind="diagnosis", relation="continue",
+        intent="device", operation="diagnose", obj="касса", object_quote="кассе",
+        entities=[("manufacturer", "Эвотор", "Эвотор")], symptom="ошибка ФН 234"),
+        followup, "D04-T02", state)
+    state = manager.advance(state, followup, "D04-T02", observation=followup_obs)
+    assert [(fact.value, fact.message_id) for fact in state.error_codes] == [
+        ("234", "D04-T02")]
+
+
+@pytest.mark.parametrize(("text", "quotes", "expected"), [
+    ("Касса показывает ошибку ФН 231, а не 234", ["ФН 231", "не 234"], ["231"]),
+    ("Не ФН 231, а ФН 234 — касса пишет именно его", ["Не ФН 231, а ФН 234"], ["234"]),
+    ("Нет, я ошибся: не ФН 231, а 234", ["не ФН 231"], ["234"]),
+    ("Бот ранее написал «ФН 231», но касса код не показывает", ["ФН 231"], []),
+    ("Версия ПО 3.234; модель 7.3", ["3.234", "7.3"], []),
+])
+def test_only_positive_client_incident_codes_become_facts(text, quotes, expected):
+    raw = payload(text, kind="diagnosis", intent="device", operation="diagnose",
+                  obj=None, relation="new_task", error_codes=quotes)
+    _, _, _, observation = validate_response(raw, text, 9)
+    assert [fact.value for fact in observation.error_codes] == expected
+
+
+def test_standalone_error_definition_does_not_confirm_an_incident_code():
+    text = "Что означает ФН 231?"
+    raw = payload(text, kind="information", intent="general", operation="explain",
+                  obj="понятие", object_quote="ФН 231", relation="new_task",
+                  goal=text, error_codes=["ФН 231"])
+    _, _, _, observation = validate_response(raw, text, 4)
+    assert observation.error_codes == []
+
+    incident_question = "Касса показывает ФН 234, что означает этот код?"
+    raw = payload(incident_question, kind="information", intent="general", operation="explain",
+        obj="понятие", object_quote="ФН 234", relation="new_task", goal=incident_question,
+        error_codes=[])
+    _, _, _, incident_observation = validate_response(raw, incident_question, 5)
+    assert [fact.value for fact in incident_observation.error_codes] == ["234"]
+
+
+def test_corrected_and_multiple_codes_keep_exact_client_spans_on_active_task():
+    manager = DialogueManager()
+    first = "Касса показывает ошибку ФН 231."
+    _, _, _, first_obs = validate_response(payload(first, kind="diagnosis", intent="fiscal_drive",
+        operation="diagnose", obj="ФН", object_quote="ФН", error_codes=["ФН 231"]), first, 1)
+    state = manager.advance(DialogueState(), first, 1, observation=first_obs)
+    corrected = "Не ФН 231, а ФН 234 — касса пишет именно его."
+    _, _, _, corrected_obs = validate_response(payload(corrected, kind="diagnosis", relation="continue",
+        intent="fiscal_drive", operation="diagnose", obj="ФН", object_quote="ФН",
+        error_codes=["Не ФН 231, а ФН 234"]), corrected, 2, state)
+    state = manager.advance(state, corrected, 2, observation=corrected_obs)
+    assert [(fact.value, fact.message_id) for fact in state.error_codes] == [("234", 2)]
+    assert any(fact.value == "231" for fact in state.active_task.superseded_facts)
+
+    multiple = "Касса попеременно показывает ошибку ФН 234 и код ошибки 235."
+    _, _, _, multiple_obs = validate_response(payload(multiple, kind="diagnosis", relation="continue",
+        intent="fiscal_drive", operation="diagnose", obj="ФН", object_quote="ФН",
+        error_codes=["ФН 234 и код ошибки 235"]), multiple, 3, state)
+    state = manager.advance(state, multiple, 3, observation=multiple_obs)
+    assert [fact.value for fact in state.error_codes] == ["234", "235"]
+    assert all(fact.message_id == 3 for fact in state.error_codes)
+
+
+def test_old_sqlite_state_with_only_error_field_still_loads(tmp_path):
+    import json
+    old = DialogueState(task_id="task:old", intent="fiscal_drive", operation="diagnose",
+        error=Fact("234", 7, "234", 12, 15)).to_dict()
+    old["task_context"].pop("error_codes", None)
+    restored = DialogueState.from_dict(old)
+    assert [(fact.value, fact.message_id) for fact in restored.error_codes] == [("234", 7)]
+    store = ConversationStore(tmp_path / "legacy-error.sqlite3")
+    cid = store.new(3, 4)
+    store.dialogue_state(cid)
+    with store.connect() as db:
+        db.execute("UPDATE dialogue_states_v2 SET state_json=?,processed_message_id=0 WHERE conversation_id=?",
+                   (json.dumps(old, ensure_ascii=False), cid))
+    assert [(fact.value, fact.message_id) for fact in store.dialogue_state(cid).error_codes] == [
+        ("234", 7)]
+
+
+def test_confirmed_codes_do_not_follow_a_new_task_or_cash_register():
+    manager = DialogueManager()
+    first = "На кассе Эвотор появилась ошибка ФН 234."
+    _, _, _, observation = validate_response(payload(first, intent="device", operation="diagnose",
+        obj="касса", object_quote="кассе", entities=[("manufacturer", "Эвотор", "Эвотор")],
+        symptom="ошибка ФН 234", error_codes=["ФН 234"]), first, 1)
+    state = manager.advance(DialogueState(), first, 1, observation=observation)
+    changed_cash = "Теперь касса АТОЛ 30Ф пишет ошибку, код не успел прочитать."
+    _, _, _, observation = validate_response(payload(changed_cash, intent="device", operation="diagnose",
+        obj="касса", object_quote="касса", relation="new_task",
+        entities=[("manufacturer", "АТОЛ", "АТОЛ")], symptom="пишет ошибку"), changed_cash, 2, state)
+    state = manager.advance(state, changed_cash, 2, observation=observation)
+    assert state.error_codes == []
+
+    new_task = "В Диадоке не отображается входящий УПД."
+    _, _, _, observation = validate_response(payload(new_task, kind="diagnosis", intent="integration",
+        operation="diagnose", obj="УПД", object_quote="УПД", relation="new_task",
+        entities=[("service", "Диадок", "Диадок")], symptom="не отображается"), new_task, 3, state)
+    state = manager.advance(state, new_task, 3, observation=observation)
+    assert state.task_context.topic_start_message_id == 3
+    assert state.error_codes == []
 
 
 @pytest.mark.parametrize(("text", "canonical"), [

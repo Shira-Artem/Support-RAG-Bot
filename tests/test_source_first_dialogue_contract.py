@@ -5,7 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from app.config import Settings
-from app.dialogue_state import DialogueManager, DialogueState
+from app.dialogue_state import DialogueManager, DialogueState, Observation
 from app.dialogue_state import ActiveRoute, Fact, TaskContext
 from app.llm_client import Generation
 from app.rag import SearchResult
@@ -481,7 +481,9 @@ def test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only(t
     retrieval = _retrieval(source, doc_id, heading, scope, text)
     question = "На кассе появилась ошибка ФН 234. Что она означает и какие безопасные проверки доступны?"
     state = DialogueState(intent="fiscal_drive", operation="diagnose", object="ФН 234",
-                          task=Fact(question, 1, question, 0, len(question)))
+                          task=Fact(question, 1, question, 0, len(question)),
+                          error=Fact.span(question, 1, question.index("234"),
+                                          question.index("234") + 3, value="234"))
     answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
                          .answer(question, state=state,
                              coordinator_decision={"route": "technical_action", "current_subgoal": question}))
@@ -494,6 +496,105 @@ def test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only(t
     gate = answer.retrieval_diagnostics["source_scope_gate"]
     assert gate["attributed_fact_only"] is True
     assert gate["customer_scope_confirmed"] is False
+
+
+def test_same_error_applicability_gate_covers_incident_information_and_definition_queries(tmp_path):
+    from app.source_first_service import _source_error_matches_client
+    from app.dialogue_state import Fact
+
+    article = {"title": "Эвотор: ошибка ФН 231"}
+    incident = DialogueState(intent="device", operation="diagnose")
+    incident.symptom = Fact("касса иногда ругается", 1, "касса иногда ругается", 0, 23)
+    assert not _source_error_matches_client(incident, article)
+    assert _source_error_matches_client(DialogueState(intent="general", operation="explain"), article)
+    confirmed = DialogueState(intent="device", operation="diagnose",
+        error=Fact("234", 1, "234", 10, 13))
+    assert not _source_error_matches_client(confirmed, article)
+    matching = {"title": "Эвотор: ошибка ФН 234"}
+    assert _source_error_matches_client(confirmed, matching)
+
+    service = SourceFirstService(None, settings(tmp_path), ROOT)
+    answer = asyncio.run(service._coordinated_information_answer(
+        "После продажи касса иногда ругается. Что происходит?", incident,
+        [{**article, "text": "Ошибка -3975 связана с ФН 231.", "section": "Контекст ошибки"}],
+        {"current_subgoal": "Что происходит?"}, 0.0, {"retrieval_diagnostics": {}}))
+    assert answer.scenario == "clarify"
+    assert "ФН 231" not in answer.text
+    assert answer.scenario_reason == "error_code_scope_unconfirmed"
+
+
+def test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction(monkeypatch, tmp_path):
+    import json
+    source = "evotor/fn/fn-234.md"
+    question = "На моей кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?"
+    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    sections = dict(_sections(body))
+    heading = "Первое различение причины"
+    retrieval = _retrieval(source, "evotor-fn-234-360005580254", heading,
+        {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
+         "task_category": "error_diagnosis", "operations": ["diagnose_error"]}, sections[heading])
+    answer_state = DialogueManager().advance(DialogueState(), question, 1,
+        observation=Observation(intent="device", request_type="diagnosis", operation="diagnose",
+            object="касса", evidence=Fact.span(question, 1),
+            entities={"manufacturer": [Fact.span(question, 1, question.index("Эвотор"),
+                                                  question.index("Эвотор") + 6)]},
+            symptom=Fact.span(question, 1, question.index("ошибка ФН 234"),
+                              question.index("ошибка ФН 234") + len("ошибка ФН 234")),
+            goals=[Fact.span(question, 1, question.index("Обязательно"), len(question))],
+            error=Fact.span(question, 1, question.index("234"), question.index("234") + 3,
+                            value="234"),
+            error_codes=[Fact.span(question, 1, question.index("234"), question.index("234") + 3,
+                                   value="234")], relation="new_task"))
+
+    async def select(messages, _settings, *, call_stage="generation"):
+        payload = json.loads(messages[-1]["content"])
+        candidate = next(item for item in payload["candidate_sections"] if item["section"] == heading)
+        return Generation(json.dumps({"mode": "select", "section_id": candidate["id"],
+            "applicability_confirmed": True, "source_order_complete": True,
+            "reason": "frozen D04 matching incident code"}), "offline")
+
+    monkeypatch.setattr("app.source_first_service.generate", select)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=answer_state,
+        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "answer"
+    assert f"Источник: data/knowledge/{source}" in answer.text
+    assert "проверить, правильно ли выставлены дата и время" in answer.text
+    assert "Замените ФН" not in answer.text and "Обязательно менять" not in answer.text
+    followup = "кассе Эвотор появилась ошибка ФН 234"
+    followup_observation = Observation(intent="device", request_type="diagnosis", operation="diagnose",
+        object="касса", evidence=Fact.span(followup, 2),
+        error=Fact.span(followup, 2, followup.index("234"), followup.index("234") + 3,
+                        value="234"),
+        error_codes=[Fact.span(followup, 2, followup.index("234"), followup.index("234") + 3,
+                               value="234")], relation="continue")
+    followup_state = DialogueManager().advance(answer_state, followup, 2,
+                                                observation=followup_observation)
+    repeated_answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        followup, state=followup_state,
+        coordinator_decision={"route": "technical_action", "current_subgoal": followup}))
+    assert repeated_answer.scenario == "answer"
+    assert "проверить, правильно ли выставлены дата и время" in repeated_answer.text
+    assert "Замените ФН" not in repeated_answer.text
+
+
+def test_frozen_d03_unknown_code_never_returns_fn231_fact_or_exact_fallback(tmp_path):
+    source = "evotor/fn/fn-231.md"
+    question = "После продажи касса иногда ругается, но я не успеваю прочитать ошибку."
+    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    heading, text = "Контекст ошибки", dict(_sections(body))["Контекст ошибки"]
+    retrieval = _retrieval(source, "evotor-fn-231", heading,
+        {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
+         "task_category": "error_diagnosis", "operations": ["diagnose_error"]}, text)
+    state = DialogueState(intent="device", operation="diagnose")
+    state.symptom = Fact.span(question, 1, question.index("касса"), len(question))
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=state,
+        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+    assert answer.scenario == "clarify"
+    assert answer.scenario_reason == "error_code_scope_unconfirmed"
+    assert "ФН 231" not in answer.text and "-3975" not in answer.text
+    assert "Что именно перестало работать" in answer.text
 
 
 def test_focus_prefers_supported_fn_fact_over_dangerous_safety_warning():

@@ -1,6 +1,6 @@
 # Support-RAG-Bot — генеральный план
 
-Дата сверки: 2026-11-08. Это **единственная актуальная дорожная карта**; [PROJECT_STATE.md](PROJECT_STATE.md) — хронологический журнал. Таблица ниже фиксирует известное на момент сверки, а не состояние параллельно меняющегося runtime. Обозначения P0.1/P0.2/P1.1/P1.2 здесь — **только внутренние задачи B2.2d**, не одноимённые исторические этапы P0/P1 ниже и в старых планах.
+Дата сверки: 2026-11-12. Это **единственная актуальная дорожная карта**; [PROJECT_STATE.md](PROJECT_STATE.md) — хронологический журнал. Таблица ниже фиксирует известное на момент сверки, а не состояние параллельно меняющегося runtime. Обозначения P0.1/P0.2/P1.1/P1.2 здесь — **только внутренние задачи B2.2d**, не одноимённые исторические этапы P0/P1 ниже и в старых планах.
 
 | Этап | Статус | Доказанный результат | Что осталось | Следующий шаг | Отчёт |
 |---|---|---|---|---|---|
@@ -13,6 +13,7 @@
 | B2.2d / P1.2 | OPEN | LIVE N06/1 остановился при двух сервисах; аудит связывает это с одним route-slot. Для N06/2 ложный отказ не доказан: локальной approved-инструкции не найдено. | Различение ролей сервисов и безопасное переключение задачи. | Проверить представление ролей, перестановку сервисов и неопределённые случаи. | [Аудит](../reports/b2_2d_20261106/live_failures_architecture_audit.md) |
 | Frozen holdout | BLOCKED | Десять отложенных случаев не запускались; готовность кандидата не доказана. | Стабильный кандидат и решение об открытии независимого gate. | Не запускать до стабильного кандидата и выполнения условий gate. | [P0.1 LIVE](../reports/b2_2d_20261106/p01_dialogue_continuation_fix.md) |
 | B2.3 / pilot | NOT STARTED | Текущий quality/production gate не пройден. | Завершение B2.2d и независимый итоговый gate. | Перейти после выполнения критериев B2.2d; pilot только по отдельному решению владельца. | [Expanded LIVE](../reports/b2_2d_20261105/expanded_live_report_20261106.md) |
+| Experiment 1 — incident error-code contract | **IN_PROGRESS; offline PASS; real A/B BLOCKED** | Confirmed error-code spans persist on the active task and legacy SQLite snapshots remain readable. Frozen offline D04-T01/T02 now admit approved FN 234 evidence; D03 cannot emit FN 231 and asks a symptom question. Targeted offline suites: 179 passed. | Real Groq GPT-OSS 20B + Stage3 A/B is not run: Qdrant `127.0.0.1:6333` is unavailable and Docker Desktop failed to start. Historic A rows are not a paired live comparison. | Restore the existing read-only Stage3 runtime; then run identical A=`fce09b4` and B isolated full-pipeline cases before deciding acceptance. Keep production NO-GO. | [Experiment 1 report](../reports/exp1_error_contract_20261112/report.md) |
 
 **Текущая P0.1 проверка:** ограниченный gate GO: оба исходных теста обычные PASS, полный pytest 824 passed / 4 старых xfailed; Groq LIVE — 10 ходов / 10 SQLite reopen, исходные и независимые формулировки, будущая проверка, результат и aQsi. Общий quality/production gate не пройден. [Результаты и ограничения](../reports/b2_2d_20261106/p01_observation_completion.md).
 
