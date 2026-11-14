@@ -1,0 +1,16 @@
+id,url,product_version,confirmed_fact_or_access,safe_procedure,unverified
+S1,https://evotor.ru/manuals/7-3/kak-vosstanovit-chek/,Эвотор 7.3; версия ПО не указана,"Номер ФД, меню, OK",Да для известного ФД,"Права, смена ФН, релиз"
+S2,https://www.diadoc.ru/articles/25195-statusy_v_edo,Диадок; релиз не указан,Парные статусы ожидания и требования,Разъяснение статуса,Стадии и роуминг
+S3,https://www.diadoc.ru/articles/55295-kak_annulirovat_dokument_v_edo,Диадок веб; версия не указана,"Предложение, соглашение, статусы, ограничения роуминга",Да после решения уполномоченных сторон,"Права, текущий интерфейс, обстоятельства УПД"
+S4,https://online.sbis.ru/page/kbase_entity/e0ccd4d9-9159-48a2-9143-3479ea0917b4?folderId=3bf9582e-acfa-4bc6-9b6d-45b738dab6e3,Saby; версия не указана,При текущей проверке содержимое недоступно,Не установлено,Ошибочно отклонённый акт и права
+S5,https://v8.1c.ru/its/services/1c-direktbank/,1С:ДиректБанк; конфигурации зависят от поддержки,Прямой обмен с банком без отдельного клиент-банка,"Определение, не настройка",Операции и условия конкретного банка
+S6,https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zagruzka-bankovskoy-vypiski-iz-fayla-pri-podklyuchennom-1s-direktban.html,1С:Бухгалтерия 8 от 3.0.117,Файловый импорт без отключения ДиректБанка,Частично; сверка дублей,Формат конкретного банка и полные шаги
+S7,https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html,1С:Бухгалтерия 8; ранее 3.0.195,Повторно недоступен; точные настройки не перепроверены,Не подтверждено независимо,"Меню, параметры, дата, права"
+S8,https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zagruzka-vypiski-srazu-po-vsem-schetam-v-banke-cherez-1s-direktbank.html,1С:Бухгалтерия 8; 3.0.148 по approved,Approved карточка: все настроенные счета,Безопасная диагностика в approved,Точный интерфейс для конкретного релиза; повторно не сверялся
+S9,https://support.evotor.ru/article/360005580254,Эвотор; модель в approved не задана,Существующий approved источник диагностики,См. approved,Не новый просмотр страницы
+S10,https://aqsi.ru/support/zakonchilas-chekovaya-lenta-oshibka-pechati/,Физическая aQsi,Существующая инструкция по печати,См. approved,Модельный scope
+S11,https://aqsi.ru/support/rabota-s-vneshnim-skanerom/,Физическая aQsi,Общие проверки сканера и Hub в approved,См. approved,Совместимость конкретных моделей
+S12,https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-uderzhanie-vozvratov-s-raschetnogo-scheta-po-ekvayringu.html,1С:Бухгалтерия 8 3.0.207 по approved,Вид операции списания по тексту approved,Сверка без двойного учёта,Повторная сверка источника и операции
+S13,https://kassa.bifit.com/_files/kassa_roznica_user_manual_Windows.pdf,БИФИТ Касса Розница Windows/Linux; релиз уточнить,Оглавление: возврат прихода и автономный банковский терминал,Для конкретного запроса не установлено,"Столы, интеграция, релиз и точный раздел"
+S14,https://evotor.ru/manuals/power/kak-vosstanovit-chek/,Эвотор Power; релиз не указан,Печать по номеру ФД,Да в описанном scope,Права и заменённый ФН
+S15,https://saby.ru/news/edo/dc49d432-dcfa-4ad0-9df0-61d55cea09df,Saby; версия не указана,Повторная отправка и обработка предыдущей редакции,Для конкретной ситуации после проверки статуса,Не устанавливает восстановление ошибочно отклонённого акта

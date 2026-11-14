@@ -8,7 +8,7 @@ operations: [check_vat_rules]
 manufacturer: ''
 model: ''
 version: ''
-source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
+source_url: https://www.kontur-extern.ru/info/82556-otvechaem_na_voprosy_buhgalterov
 source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
@@ -34,4 +34,4 @@ review_note: "Для налогового вывода требуется све
 ## Эскалация
 Расчёт доходов, корректировка книги учёта доходов и расходов и спорные поступления — бухгалтеру.
 
-Дополнительный экспертный источник: https://www.kontur-extern.ru/info/82556-otvechaem_na_voprosy_buhgalterov
+Дополнительный экспертный источник: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/

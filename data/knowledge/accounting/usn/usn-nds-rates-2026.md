@@ -8,7 +8,7 @@ operations: [check_vat_rules, compare_vat_rates]
 manufacturer: ''
 model: ''
 version: ''
-source_url: https://www.nalog.gov.ru/new2026/
+source_url: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
 source_type: tax_authority
 published_at: ''
 collected_at: '2026-10-13'
@@ -35,4 +35,4 @@ status: approved
 ## Эскалация
 Подбор экономически выгодной ставки и расчёт конкретной декларации — бухгалтеру. Нельзя автоматически рекомендовать ставку только по размеру выручки.
 
-Дополнительный источник: https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/
+Дополнительный источник: https://www.nalog.gov.ru/new2026/
