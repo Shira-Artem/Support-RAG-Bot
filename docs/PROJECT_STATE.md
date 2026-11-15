@@ -2012,7 +2012,7 @@ On `main` at `980f9c1611e3ca8ec97739000e6ca922c3c4b209` (including D03 and D01 o
 
 ## 2026-11-15 — Experiment 2 checkpoint: paused / partial live / not accepted
 
-Owner requested STOP. No new Groq calls, A/B series, code changes, Part B, Hubris integration, or Experiment 3 will be started until a separate owner decision. Current `main`/`origin/main` checkpoint is `ddedc9527d03d0536d7b5e959c5994449bdd11ba`; runtime candidate is `1cb0aadc76a52e12cedda8708327ebd2614c5e38`; baseline is `a006ea65e835e070f183ac25ccd39305c1a0e79d`. **Status: PAUSED / PARTIAL LIVE / NOT ACCEPTED YET.**
+Owner requested STOP. No new Groq calls, A/B series, code changes, Part B, Hubris integration, or Experiment 3 will be started until a separate owner decision. At pause, `main`/`origin/main` was `ddedc9527d03d0536d7b5e959c5994449bdd11ba`; initial checkpoint docs were pushed as `a09c83f9b0fa2a7ae7cf893e27aa1e2bc40fe263`; runtime candidate is `1cb0aadc76a52e12cedda8708327ebd2614c5e38`; baseline is `a006ea65e835e070f183ac25ccd39305c1a0e79d`. **Status: PAUSED / PARTIAL LIVE / NOT ACCEPTED YET.**
 
 Part A contains A1 sparse-symptom search readiness, A2 bounded KB-gap questions, A3 colloquial receipt-transmission routing, A3b cross-phrase source matching, A4 offline unknown-code clarification, and A5 offline acknowledgement of a partial network result while leaving the composite ledger check `asked`. Only D07 exact-source selection/first approved diagnostic step was confirmed in a one-turn A3b live slice; A1/A2 live runs showed limited question improvements for D05/D08 but did not solve the tasks. Current A4/A5 changes have offline-only validation. Part B was not implemented/evaluated.
 

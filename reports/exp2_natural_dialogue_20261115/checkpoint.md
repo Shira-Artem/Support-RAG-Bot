@@ -2,7 +2,7 @@
 
 ## Status
 
-**Experiment 2 — PAUSED / PARTIAL LIVE / NOT ACCEPTED YET.** Development is stopped on the owner’s instruction. Current `main` checkpoint: `ddedc9527d03d0536d7b5e959c5994449bdd11ba`. Runtime code checkpoint: `1cb0aadc76a52e12cedda8708327ebd2614c5e38`; subsequent commits are documentation only. `origin/main` matched local HEAD when checkpointed. Tracked working tree is clean. The pre-existing untracked `.worktrees/` directory is preserved and was not read, changed, or deleted.
+**Experiment 2 — PAUSED / PARTIAL LIVE / NOT ACCEPTED YET.** Development is stopped on the owner’s instruction. Experiment 2 was paused at pre-checkpoint HEAD `ddedc9527d03d0536d7b5e959c5994449bdd11ba`; the initial checkpoint documentation commit is `a09c83f9b0fa2a7ae7cf893e27aa1e2bc40fe263`. Runtime code checkpoint: `1cb0aadc76a52e12cedda8708327ebd2614c5e38`; subsequent commits are documentation only. `origin/main` matched local HEAD when checkpointed. Tracked working tree is clean. The pre-existing untracked `.worktrees/` directory is preserved and was not read, changed, or deleted.
 
 ## Experiment setup
 
@@ -13,6 +13,28 @@
 - Current offline candidates: D03 follow-up in `4902706ca31c6dda1dc9eb8163cc186687059f5d`; D01 partial-network acknowledgement in `1cb0aadc76a52e12cedda8708327ebd2614c5e38`.
 - Full pipeline: `bot.handle_message`, real Groq `openai/gpt-oss-20b`, reasoning effort `medium`, read-only Stage3 Qdrant collection `knowledge_stage3_retrieval_20261022` (green, 934 points at the recorded checks), per-run isolated SQLite, synthetic bounded dialogues. No Telegram traffic, Qdrant mutation, approved-KB change, provider/model/config change, or production rollout.
 - Full-pipeline JSON, HTTP traces, Understanding traces, and SQLite files remain local under ignored `.local/`. No trace/SQLite artifact was staged or published. Retry3’s interrupted local run folder is also preserved; it contains SQLite files but no result JSON/HTTP trace.
+
+
+## Commits published in main through the initial pause checkpoint
+
+| SHA | Change |
+|---|---|
+| `a2100a957feb96bb76403defcf6b30fb33b1abb1` | A1 sparse-symptom retrieval readiness |
+| `81ebdf60038e1c59a059259ea7e67e97f9304c9a` | Frozen Experiment 2 dialogue cases |
+| `7cb82ed92ebff8dacf9bbb1beecaafade62cb02c` | Archived baseline revision labeling |
+| `f5790e6d0654b10dc350faed212e4ed38946f51b` | A1 live baseline comparison report |
+| `7d7ad8505120f59e7c728716a5d4b012149c8112` | A2 bounded search-gap questions |
+| `3e10cf28648ba651f66a263e335b8a4579bb064a` | A2 candidate report |
+| `cb974bce5e6ca914425eb473ea396add8ba072a0` | A3 colloquial receipt-transmission routing |
+| `6728d57c3e50a49f8bf9659387bccd58ed6e9462` | A3b cross-phrase receipt-delivery source anchor |
+| `dc3097224ea21f3e6e63070b18d38d1fee5775f5` | A3b D07 live checkpoint |
+| `4902706ca31c6dda1dc9eb8163cc186687059f5d` | A4 unknown-code focused continuation |
+| `5b9cb2f48c5e4c097d8345c681e75fd27d9da6fa` | Clarified A4 documentation scope |
+| `1cb0aadc76a52e12cedda8708327ebd2614c5e38` | A5 partial network-result acknowledgement |
+| `1e139ff574b7b508da7d9710e98a631a9dad637e` | TPD-limited retry record |
+| `980f9c1611e3ca8ec97739000e6ca922c3c4b209` | Planner timeout record |
+| `ddedc9527d03d0536d7b5e959c5994449bdd11ba` | Full regression record |
+| `a09c83f9b0fa2a7ae7cf893e27aa1e2bc40fe263` | Initial pause checkpoint |
 
 ## What Part A implemented
 
@@ -78,4 +100,4 @@ After Part A and B, continue the approved sequence to Experiment 3 and the commo
 
 ## Recovery pointer
 
-Start from clean tracked `main` at **`ddedc9527d03d0536d7b5e959c5994449bdd11ba`**. The runtime candidate is at **`1cb0aadc76a52e12cedda8708327ebd2614c5e38`**. Keep the existing ignored `.local` artifacts and `.worktrees/` directory. The next action after LLM-provider recovery is a controlled full-pipeline A/B of D01/D03/D05/D07/D08 with SQLite reopen verification—not Part B.
+Start from the clean tracked `main` at the final checkpoint docs commit communicated in the handoff (initial checkpoint commit: **`a09c83f9b0fa2a7ae7cf893e27aa1e2bc40fe263`**). The runtime candidate is at **`1cb0aadc76a52e12cedda8708327ebd2614c5e38`**. Keep the existing ignored `.local` artifacts and `.worktrees/` directory. The next action after LLM-provider recovery is a controlled full-pipeline A/B of D01/D03/D05/D07/D08 with SQLite reopen verification—not Part B.
