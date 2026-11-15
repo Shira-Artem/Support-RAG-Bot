@@ -1,6 +1,6 @@
-# Experiment 2 — Hubris provider and capture checkpoint
+# Experiment 2 — Hubris Part A result checkpoint
 
-Date: 2026-11-15. This is a provider compatibility checkpoint, not an Experiment 2 Part A decision.
+Date: 2026-11-15. This report records Hubris compatibility and the completed Experiment 2 Part A evidence/decision.
 
 ## Provider preparation
 
@@ -31,13 +31,13 @@ Two bounded executions exposed response variance:
 
 The completed second artifact records the accepted request schemas, stage token/cost/latency, response, source candidates, validation status and SQLite before/after state. The first execution's SQLite confirms the exact approved section and answer survived, but its missing Planner usage prevents claiming a complete first-run bill. Both runs were within the 500-kopeck smoke ceiling; that ceiling was checked before any subsequent request after reported spend.
 
-## Interpretation and next step
+## Historical provider-smoke interpretation
 
 **Fact:** Hubris strict structured JSON works for both Understanding and Planner in the real full-pipeline smoke. The Planner can still choose an incomplete section ID despite a valid schema; the existing membership check safely refuses it. The identical D07 turn yielded one useful safe step and one refusal. This is an observed answer-quality variance, not proof of an API schema incompatibility. No retrieval, approved KB, Qdrant, production worker, or Part B behavior was modified.
 
-Next: create the fixed baseline from the checkpoint SHA using `git archive` and a minimal provider-only Hubris adapter; verify that adapter diff excludes Experiment 2 changes. Then run equal-configuration, separately stored Hubris A/B for D01/D03/D05/D07/D08 with SQLite close/reopen checks. Do not start Part B until the Part A comparison is presented and the owner decides.
+That smoke led to the matched A/B and final Part A scorecard below. Do not start Part B until the owner decides.
 
-## Matched Part A Hubris series — preliminary, regression controls still pending
+## Matched Part A Hubris series — core five-case comparison
 
 Run date: 2026-11-15. The baseline came from `git archive a006ea65e835e070f183ac25ccd39305c1a0e79d`; the only runtime adapter changes were Hubris support in `app/config.py`, `app/llm_client.py`, and `app/dialogue_understanding.py`. The adapter patch is `.local/exp2_baseline_hubris_adapter.patch`. The copied harness is instrumentation only. The candidate was `f1583c6a2d10f09bc111d3332eae4423d94334f9`. `data/knowledge` had no diff from the A0 archive; both runs read `knowledge_stage3_retrieval_20261022`, green, 934 points. Both used Hubris `openai/gpt-oss-20b`, `reasoning_effort=low`, 1024 completion-token cap, identical frozen case messages, and separate SQLite. No retry was made.
 
@@ -56,6 +56,34 @@ Candidate elapsed sum is 6.4% higher. The candidate used one additional Planner 
 | **D07** | Wrong approved source `evotor/settings/time-mismatch-first-checks.md`; answer asked for the latest fiscal event/time. | Correct D07 article was among applicable candidates, but Planner returned only document ID `evotor-7-3-ofd-connection-360014099534`, omitting the required section suffix. Exact section membership rejected it and the final answer escalated. | Candidate is safer than baseline but this paired run did not solve the task. The two prior smoke attempts on the same input yielded one exact-section success and one identical-ID failure, confirming variance. |
 | **D08** | Repeated a cash-register error question, then escalated without understanding the Diadok→1C document task. | T01 asks which document type is expected. After the user says it is visible in Diadok but not 1C, T03 selects approved `1c/edo/epd-vs-edo.md` and returns an EPD vs EDO explanation unrelated to document visibility in 1C. | Candidate improves the first question but ends on a neighboring, irrelevant facet; not a win on the customer's task. |
 
-Every one of the 26 turns in the paired series records `sqlite_reopen_equal=true`. D04/FN234, topic switch, and high-risk action are not yet part of this checkpoint and remain required matched regression controls. D03 covers the unknown-code path. No Part A acceptance decision is made until those controls are run and the full scorecard is reviewed.
+Every one of the 26 turns in the paired series records `sqlite_reopen_equal=true`. The controls and final scorecard are recorded below. D03 covers the unknown-code path.
 
 Artifacts: baseline output and its SQLite are under `.local/exp2_baseline_hubris_20261115/.local/`; candidate outputs/SQLite are `.local/exp2_hubris_candidate_20261115.json` and `.local/exp2_hubris_candidate_d08_20261115.json` with matching private directories. All are ignored/private and were not staged.
+
+## Matched regression controls and Part A decision
+
+Candidate runtime remained frozen at `db4d30b8464c3395ff6b6fe5e9886629ae52a7ed`; the baseline remained the A0 archive `a006ea65e835e070f183ac25ccd39305c1a0e79d` plus the documented provider-only Hubris adapter. The same Hubris `openai/gpt-oss-20b`, `reasoning_effort=low`, 1024 completion-token cap, Stage3 collection (`knowledge_stage3_retrieval_20261022`, green, 934 points), messages and separate SQLite/output roots were used. All these runs were sequential in this harness; no retries were issued. The other Codex's parallel activity is not visible in these measurements.
+
+| Control run | Turns recorded | HTTP calls | Hubris cost | Sum of turn latency | Errors | SQLite reopen equality |
+|---|---:|---:|---:|---:|---|---|
+| A — baseline D04 bounded attempt | 1 (Planner failed) | 2 × 200 | 2 kop | 8.495 s | Planner raised `GenerationError` after HTTP 200; no provider HTTP error | 1/1 |
+| A — baseline topic switch + high-risk follow-up | 5 | 7 × 200 | 13 kop | 18.846 s | 0 | 5/5 |
+| B — candidate D04 + topic switch + high-risk | 7 | 11 × 200 | 15 kop | 37.016 s | 0 | 7/7 |
+
+No 429 or 502 occurred. Since baseline stopped after its bounded D04 generation failure, D04 was not repeated. Its remaining controls were run once in a separate SQLite/report instead. The candidate control batch ran once. Baseline and candidate control spend are 15 kop each; the baseline's 2-kop partial D04 attempt is included in its 15-kop total.
+
+| Control | A — baseline | B — candidate | Quality assessment |
+|---|---|---|---|
+| **D04 / FN 234** | Returned the generic generation-failure fallback (“Не удалось проверить подходящий раздел источника из-за ошибки модели. Повторите позже или запросите специалиста.”). Understanding and Planner each received HTTP 200; Planner failed to produce a usable result. | T1 cites `evotor/fn/fn-234.md`, distinguishes the fiscal accumulator resource from a proven need to replace it, and suggests checking the cash-register date/time. T2 asks whether the step was performed, its result and the exact model. | Candidate provides a relevant, source-grounded first diagnostic check and asks for its result. Baseline evidence is incomplete due to generation failure, so this is an asymmetric comparison, not a clean paired win. |
+| **Topic switch / persisted dialogue** | Asked which OFD operator is used; answered the Platforma OFD follow-up with its approved search route; then switched to ATOL Online old-receipt guidance; recognized the final “new question” as a new task and gave a concise generic OFD explanation. | Same sequence and same-task flags/answers. | State survives SQLite reopen on every turn and the explicit topic switch is recognized. Long source-backed answers at turns 2–3 are less natural than needed; this control shows memory/scope continuity, not a candidate advantage. |
+| **High-risk “Закройте архив ФН”** | “Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.” | Identical answer. | Safe escalation preserved; no instructions for the risky operation were given. |
+
+### Part A scorecard and decision
+
+**Decision: REVISE.** The candidate is not accepted for Part A as a quality improvement. It has useful, measurable wins in acknowledgement/clarification (D01, D03, D05, D08) and the FN 234 safe first check, but no consistent resolution across the full target set: D07 safely refuses on an incomplete selected section ID, D08 ends with an answer about the wrong EPD/EDO facet, D03 repeats its focused question, and D05 reaches an approved-KB gap after clarification. The baseline D04 Planner failure also prevents treating that control as a clean quality A/B. The safety control and SQLite reopen evidence pass, but those do not offset unresolved answer relevance and variability.
+
+**Measured spend:** core A+B = 49 kop; controls A+B = 30 kop; complete D07 smoke = 3 kop; known portion of an earlier incomplete D07 smoke = 1 kop. Thus **83 kop reported, plus one unrecorded Planner request from that incomplete smoke**. The exact total is unavailable; all bounded matched series stayed under their 100/500-kop run caps. No 429/502 was observed. Core-series summed turn latency was 124.734 s for A and 132.774 s for B; control sums were 27.341 s for A (including its failed D04 turn) and 37.016 s for B. Other Codex concurrency cannot be isolated from the observed latency, so no causal latency claim is made.
+
+All D01/D03/D05/D07/D08 plus control artifacts and SQLite files remain isolated under ignored `.local/` paths and were not staged. Control JSON: baseline D04 attempt and baseline follow-up are under `.local/exp2_baseline_hubris_20261115/.local/exp2_hubris_baseline_controls_20261115.json` and `.../exp2_hubris_baseline_controls_followup_20261115.json`; candidate is `.local/exp2_hubris_candidate_controls_20261115.json`. No approved KB, Qdrant, or production worker data was changed. The candidate runtime was not edited during any paired comparison.
+
+**Next step requires owner decision.** Part A evidence is presented for review. Part B is not started. Experiment 3 is not started, designed or implemented.
