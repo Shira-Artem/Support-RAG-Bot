@@ -285,6 +285,8 @@ async def run(cli_args):
                 reopened = ConversationStore(store_path)
                 cid = reopened.state(42, 42)["conversation_id"]
                 after = reopened.dialogue_state(cid)
+                reopened_again = ConversationStore(store_path)
+                after_reopen = reopened_again.dialogue_state(cid)
                 history = reopened.history(cid)
                 with reopened.connect() as db:
                     row = db.execute("select diagnostics_json from messages where conversation_id=? and role='assistant' order by id desc limit 1", (cid,)).fetchone()
@@ -293,13 +295,15 @@ async def run(cli_args):
                     "answer": "\n".join(call.args[0] for call in reply.await_args_list),
                     "latency_ms": round((perf_counter()-started)*1000),
                     "state_before": before.to_dict(), "state_after": after.to_dict(),
+                    "sqlite_reopen_equal": after.to_dict() == after_reopen.to_dict(),
                     "same_task": before.task_id == after.task_id,
                     "understanding": [h.get("understanding") for h in history[-2:] if h.get("role") == "user"],
                     "diagnostics": diagnostics, "generation_call_indices": list(range(start_calls, len(calls))),
                     "understanding_call_indices": list(range(start_understanding, len(raw_understanding)))}
                 result["turns"].append(item)
                 save()
-                terminal_record({k: item[k] for k in ("case", "turn", "answer", "latency_ms", "same_task")})
+                terminal_record({k: item[k] for k in ("case", "turn", "answer", "latency_ms",
+                                                       "same_task", "sqlite_reopen_equal")})
                 if diagnostics and diagnostics.get("generation_status") == "error":
                     terminal_record({"status": "provider_or_runtime_error", "action": "stopping bounded batch"})
                     return
