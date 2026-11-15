@@ -2008,3 +2008,14 @@ This is an infrastructure/provider connectivity outcome, not a behavioral pass o
 ## 2026-11-15 — Experiment 2 A5 full offline regression
 
 On `main` at `980f9c1611e3ca8ec97739000e6ca922c3c4b209` (including D03 and D01 offline candidates), the full UTF-8 pytest suite completed: **878 passed, 4 historical xfailed in 245.51s**. This includes the previously reported focused 119-pass/4-xfailed affected suites. No live candidate result changed: latest full-pipeline attempt at D01 T01 ended with Planner `ConnectTimeout` after Understanding HTTP 200; earlier retries were stopped by Groq TPD 429. Frozen D01/D03/D05/D08 candidate comparison remains pending. Part A remains IN PROGRESS, part B NOT STARTED, overall quality/production NO-GO.
+
+
+## 2026-11-15 — Experiment 2 checkpoint: paused / partial live / not accepted
+
+Owner requested STOP. No new Groq calls, A/B series, code changes, Part B, Hubris integration, or Experiment 3 will be started until a separate owner decision. Current `main`/`origin/main` checkpoint is `ddedc9527d03d0536d7b5e959c5994449bdd11ba`; runtime candidate is `1cb0aadc76a52e12cedda8708327ebd2614c5e38`; baseline is `a006ea65e835e070f183ac25ccd39305c1a0e79d`. **Status: PAUSED / PARTIAL LIVE / NOT ACCEPTED YET.**
+
+Part A contains A1 sparse-symptom search readiness, A2 bounded KB-gap questions, A3 colloquial receipt-transmission routing, A3b cross-phrase source matching, A4 offline unknown-code clarification, and A5 offline acknowledgement of a partial network result while leaving the composite ledger check `asked`. Only D07 exact-source selection/first approved diagnostic step was confirmed in a one-turn A3b live slice; A1/A2 live runs showed limited question improvements for D05/D08 but did not solve the tasks. Current A4/A5 changes have offline-only validation. Part B was not implemented/evaluated.
+
+Full pytest on code checkpoint: **878 passed / 4 historical xfailed**. Recorded Experiment 2 Groq traces: 73 HTTP/API attempts (67×200, 1×400, 4×429, one ConnectTimeout without HTTP status), 188,187 reported tokens with usage fields. Failed attempts had no usage. Full live candidate continuation remained blocked at D01; D03/D05/D08 were not revalidated on A4/A5. The stopped in-flight retry3 command created no JSON/HTTP artifact; a local SQLite-only directory is preserved and its provider-side status is unknown.
+
+All recorded JSON traces, HTTP/Understanding logs and isolated SQLite files remain under ignored `.local`; they were not staged. `.worktrees/` remains untracked and untouched. Tracked tree is clean and local `main` equals `origin/main`. See [checkpoint report](../reports/exp2_natural_dialogue_20261115/checkpoint.md) for the commit list, case-by-case evidence, exact run configuration, counts and recovery steps. Resume only after a separate owner decision and LLM-provider recovery.
