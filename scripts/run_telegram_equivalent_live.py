@@ -210,7 +210,7 @@ async def run(args):
             raise
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),
-        "head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "head": args.revision or subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "source_hashes": {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
                           for p in [ROOT / "bot.py", *sorted((ROOT / "app").glob("*.py"))]},
         "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
@@ -285,4 +285,5 @@ if __name__ == "__main__":
     parser.add_argument("--cases", default="saby,diadoc,ofd,evotor6,bifit")
     parser.add_argument("--output", required=True)
     parser.add_argument("--pause", type=float, default=12)
+    parser.add_argument("--revision", help="Source revision label for archived baseline runs")
     asyncio.run(run(parser.parse_args()))

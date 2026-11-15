@@ -21,6 +21,7 @@
 - `.venv\\Scripts\\python.exe -m pytest tests/test_ai_coordinator.py tests/test_source_first_dialogue_contract.py -q` — **59 passed**.
 - `scripts/run_telegram_equivalent_live.py`: `py_compile` и `--help` прошли.
 - В harness добавлены frozen synthetic scenarios: D01 (3 turns), D03 unknown code (4), D05 aQsi old sale (2), D07 Evotor 7.3 receipt transmission (1), D08 Diadok→1C document visibility (3).
+- Добавлен явный `--revision`, чтобы при запуске распакованного baseline снимка результат записывал его реальную source revision, а не SHA родительского checkout. Повторные `py_compile` и `--help` прошли.
 - Groq/Qdrant full-pipeline A/B — **ещё не запускался** для Experiment 2.
 
 ## Доказательства, ограничения и следующий шаг
