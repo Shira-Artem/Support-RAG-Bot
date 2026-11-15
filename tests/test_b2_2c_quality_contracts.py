@@ -116,6 +116,19 @@ def test_receipt_subject_alone_does_not_imply_a_transmission_failure():
     assert _state_task_category(state,state.task.value) != "receipt_transmission"
 
 
+def test_colloquial_receipt_delivery_failure_maps_to_transmission_not_generic_error():
+    question = "Помоги, у меня Эвотор 7.3, продажи проходят, но периодически не уходят чеки."
+    resolved = resolve_task_operation(question, operation="diagnose", intent="device")
+    assert (resolved.task_category, resolved.operation) == ("receipt_transmission", "diagnose")
+    state = state_for(question, intent="device", operation="diagnose",
+                      manufacturer="Эвотор", equipment="Эвотор 7.3")
+    assert _state_task_category(state, question) == "receipt_transmission"
+
+    explicit_error = "После продажи на Эвотор появляется ошибка ФН 235."
+    hard_negative = resolve_task_operation(explicit_error, operation="diagnose", intent="device")
+    assert hard_negative.task_category == "error_diagnosis"
+
+
 def test_simple_creation_goal_is_not_a_request_for_unverified_permissions():
     q="Создать сотруднику новую запись"
     state=state_for(q,intent="access",operation="add_employee",service="aQsi Online")

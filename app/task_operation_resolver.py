@@ -151,7 +151,7 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
                  (operation in {"check", "status", "unknown"} and reported_problem))):
         return result("receipt_transmission", "transmit" if operation == "transmit" else "diagnose",
                       "receipt", "diagnostic", "receipt_at_ofd_diagnostic")
-    if _has(s, r"\b(?:не\s+поступ\w*|не\s+переда\w*|не\s+отправ\w*|перестал\w*\s+переда\w*)") and _has(s, r"\bчек\w*|\bдокумент\w*"):
+    if _has(s, r"\b(?:не\s+поступ\w*|не\s+переда\w*|не\s+отправ\w*|не\s+уход\w*|перестал\w*\s+переда\w*)") and _has(s, r"\bчек\w*|\bдокумент\w*"):
         return result("receipt_transmission", "transmit" if operation == "transmit" else "diagnose",
                       "receipt", "diagnostic", "receipt_transmission_failure")
     if _has(s, r"\b(?:добав\w*|созда\w*)\s+(?:нов\w*\s+)?(?:сотрудник\w*|пользовател\w*)"):
