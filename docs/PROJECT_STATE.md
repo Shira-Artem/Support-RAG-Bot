@@ -2123,3 +2123,20 @@ Across all current iteration LIVE artifacts: **198 kopecks reported, 128 HTTP 20
 **Decision:** A6 **STOP / Part A REVISE; production NO-GO**. The evidence does not justify another phrase/rule iteration. The blocking architecture boundary is the lack of one typed task/evidence contract carrying current task, provenance, confidence and supersession through Understanding→validation→reducer→Coordinator, followed by a verifiable source-section-to-user-goal coverage check. This larger design is outside A6. No A7, Part B, or Experiment 3 began. Full causal chain, answer comparison, scorecard and artifacts are in [A6 checkpoint](../reports/exp2_natural_dialogue_20261115/a6_checkpoint.md).
 
 **Next step:** owner decision on the architecture boundary above; retain Part B/Experiment 3 unstarted. A6 documentation and frozen holdout input harness are being committed to the authorized `main` push.
+
+
+## 2026-11-15 — Architecture decision prepared after A6 STOP; current Telegram manual runbook
+
+**Продуктовая цель:** один универсальный разговорный ИИ-помощник поддержки для справки, диагностики и своевременной эскалации, с общей памятью о текущей цели, фактах, выполненных проверках и смене темы. Подтверждённые технические решения опираются на approved KB.
+
+**Сверка, факт:** HEAD, origin/main и удалённый refs/heads/main совпали на `e004725b3da72fcbaa356b73ef8a84ba680b8f74`. От `c0f0d63` до него изменены только документация и frozen inputs harness; A6 runtime не остался в main. Локальный read-only GET Stage3: green / 934. В исходном checkout сохранилась прежняя untracked `.worktrees/`. Telegram polling, LLM и новые тестовые диалоги не запускались.
+
+**Разбор:** большая проверка Telegram, Experiments 1/2, A6 и первичные A6 JSON разделяют потери span, state merge, readiness и source-to-goal coverage. Опубликованные измерения A6 сохранены; ложное определение ФН зафиксировано в старом QA T02, а не в финальной свежей паре #1. Свежий #9 candidate использовал неподтверждённый fallback с ошибочной расшифровкой ОФД, хотя scorecard засчитал его полезным. #5 требует заранее определённой оценки модельной применимости. Исторический scorecard не пересчитан; решение STOP не меняется.
+
+**Предложение, не результат реализации:** расширить текущие Observation/TaskFrame и использовать единый reducer-owned ввод для Coordinator и поиска; привязать конкретный approved unit к актуальной цели в уже существующих Selector/Relevance/Planner, сохранить независимые scope, code, order и safety проверки. Один будущий кандидат, без новых модельных стадий. [Решение и строгий A/B-протокол](EXP2_TASK_EVIDENCE_DECISION.md) фиксируют новый слепой holdout, требования к разметке, AB/BA, пороги и STOP. Набор должен подготовить независимый хранитель; он не создан и не открыт.
+
+**Ручная проверка текущего бота:** [инструкция Telegram + Hubris](MANUAL_TELEGRAM_HUBRIS.md) описывает обычный bot.py, отдельный тестовый token, свежие SQLite, существующий тестовый Stage3 и отключённую доставку handoff. В текущем startup receipt поля model/effort для Hubris неточны; инструкция различает их и фактическую диагностику хода. Проверены синтаксис PowerShell/Python, preflight с заглушками без сети, локальные ссылки и `git diff --check`. Сам запуск и готовность Telegram/Hubris вживую в этой работе не проверялись.
+
+**Следующий шаг:** решение владельца о реализации одного кандидата и назначение хранителя holdout. Ручной тест текущего checkpoint не является принятием Part A. A6 STOP / Part A REVISE; A7, Part B и Experiment 3 не начаты; production NO-GO. Изменена только документация, без commit/push.
+
+**Разрешение на публикацию:** после подготовки владелец явно разрешил внести четыре файла документации в `main` и отправить их на GitHub. Данное разрешение не меняет статус этапов и не включает реализацию, прогоны или публикацию локальных трасс.
