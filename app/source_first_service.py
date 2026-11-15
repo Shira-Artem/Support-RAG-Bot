@@ -735,18 +735,62 @@ def _observation_explanation(message: str, state: DialogueState, selected: dict)
 
 def _technical_section_covers_observed_subject(state: DialogueState,
                                               selected: dict | None) -> bool:
-    """Reject a broad workflow section that never names the failed object.
+    """Reject workflow evidence that does not cover the customer's target.
 
-    This is a narrow negative check, not proof that a matching section solves
-    the incident. A missing subject cannot be recovered from a title alone.
+    This remains a negative relevance check: a match is not proof the source
+    solves the task. Use the full reducer-owned task evidence when the current
+    turn has no separately extracted object.
     """
-    if (not selected or not state.symptom
-            or selected["scope"].get("task_category") not in {"integration", "peripheral_setup"}):
+    if not selected or not state.symptom:
         return True
-    object_terms = content_terms(state.object or "") - _GENERIC_SCOPE_TERMS
-    if not object_terms:
+    task = state.task_context
+    observed = " ".join(filter(None, [
+        state.object,
+        state.symptom.value if state.symptom else None,
+        task.task_fact.value if task and task.task_fact else None,
+        task.object_reference.value if task and task.object_reference else None,
+        *((fact.value for fact in task.goals) if task else ()),
+    ]))
+    observed_terms = content_terms(observed) - _GENERIC_SCOPE_TERMS
+    # Confirmed system names only establish scope. They cannot by themselves
+    # make an article about a neighboring workflow relevant.
+    for slot in ("service", "software", "integration", "manufacturer", "equipment"):
+        observed_terms -= content_terms(state.task_entity(slot) or "")
+    if not observed_terms:
         return True
-    return bool(object_terms & content_terms(selected["text"]))
+    return bool(observed_terms & content_terms(selected["title"] + " " + selected["section"] + " " + selected["text"]))
+
+
+def _next_unasked_clarification(history: list[dict] | None,
+                                candidates: list[str], *,
+                                expected: str | None = None) -> str | None:
+    """Choose the next saved dialogue prompt that was not already sent."""
+    asked = {str(item.get("content") or "").strip() for item in (history or [])
+             if item.get("role") == "assistant" and item.get("scenario") == "clarify"}
+    if expected:
+        asked.add(expected.strip())
+    return next((question for question in candidates if question and question not in asked), None)
+
+
+def _resolve_planner_section_reference(reference: str, candidates: list[dict],
+                                       eligible_units: list[dict] | None = None
+                                       ) -> tuple[dict | None, str | None]:
+    """Resolve only exact candidate IDs or unique, already-vetted references."""
+    exact = [item for item in candidates if item.get("id") == reference]
+    if len(exact) == 1:
+        return exact[0], "exact_candidate_id"
+    units = [unit for unit in (eligible_units or [])
+             if unit.get("unit_id") == reference]
+    unit_matches = [item for item in candidates if any(
+        unit.get("source") == item.get("source")
+        and unit.get("section") == item.get("section") for unit in units)]
+    if len(unit_matches) == 1:
+        return unit_matches[0], "eligible_unit_exact_identity"
+    document_matches = [item for item in candidates
+                        if item.get("document_id") == reference]
+    if len(document_matches) == 1:
+        return document_matches[0], "unique_candidate_document_id"
+    return None, None
 
 
 def _source_error_codes(selected: dict | None) -> set[str]:
@@ -2706,6 +2750,24 @@ class SourceFirstService:
                      coordinator_decision=None) -> Answer:
         answer = await self._answer(user_message, state=state, history=history,
                                     coordinator_decision=coordinator_decision)
+        expected = state.expected.question if state.expected else None
+        if (answer.scenario == "clarify" and expected
+                and answer.text.strip() == expected.strip()):
+            # The turn reducer can retain ExpectedClarification even when the
+            # message history supplied by a caller is incomplete. Enforce the
+            # no-repeat contract at the final user-facing boundary as well.
+            alternate = _next_unasked_clarification(history, [
+                "Какой результат вы хотите получить?",
+                "Что именно нужно сделать или что сейчас не работает?",
+            ], expected=expected)
+            if alternate:
+                answer.text = alternate
+            else:
+                answer.text = ("Не хватает новых сведений, чтобы безопасно продолжить, а уже заданные уточнения не помогли определить задачу. "
+                               "Запросите специалиста кнопкой ниже.")
+                answer.scenario = "escalate"
+                answer.scenario_reason = "dialogue_clarification_exhausted"
+                answer.generation_status = "no_context"
         answer.text = with_secret_warning(answer.text, user_message)
         return answer
 
@@ -2826,10 +2888,16 @@ class SourceFirstService:
             if prior_clarifications >= 2:
                 return self._escalate("Пока не удалось определить задачу. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
                                       "dialogue_task_remains_undefined", "two_task_clarifications_without_resolved_task", started, **base)
-            question = state.expected.question if state.expected else (
+            question = _next_unasked_clarification(history, [
                 "Что именно происходит с кассой? Напишите, пожалуйста, текст ошибки или какой результат вы видите."
-                if decision and decision.get("required_action") == "ask_for_missing_problem_detail"
-                else "Что именно нужно сделать или что сейчас не работает?")
+                    if decision and decision.get("required_action") == "ask_for_missing_problem_detail" else None,
+                "Какой результат вы хотите получить?",
+                "Что именно нужно сделать или что сейчас не работает?",
+            ], expected=state.expected.question if state.expected else None)
+            if question is None:
+                return self._escalate(
+                    "Не хватает новых сведений, чтобы безопасно продолжить, а уже заданные уточнения не помогли определить задачу. Запросите специалиста кнопкой ниже.",
+                    "dialogue_clarification_exhausted", "no_unasked_task_clarification", started, **base)
             return Answer(question, scenario="clarify", scenario_reason="dialogue_state_task_incomplete",
                           clarification_slot=state.expected.slot if state.expected else "task",
                           generation_status="clarification", duration_ms=round((perf_counter()-started)*1000), **base)
@@ -3260,15 +3328,20 @@ class SourceFirstService:
             mode = plan.get("mode") if isinstance(plan, dict) else None
             selected = next((item for item in planner_sections if item["id"] == plan.get("section_id")), None) if isinstance(plan, dict) else None
             if mode == "select" and selected is None and state.task_context:
-                referenced = [unit for unit in state.task_context.eligible_units
-                              if unit.get("unit_id") == plan.get("section_id")]
-                matches = [item for item in planner_sections if any(
-                    unit.get("source") == item["source"] and unit.get("section") == item["section"]
-                    for unit in referenced)]
-                if len(matches) == 1:
-                    selected = matches[0]
+                reference = plan.get("section_id") if isinstance(plan, dict) else None
+                # A legacy progress-unit reference remains resolvable only by
+                # exact identity. A document ID may resolve to a section only
+                # when exactly one already-vetted planner candidate belongs
+                # to that document; ambiguous IDs remain rejected.
+                if isinstance(reference, str):
+                    selected, resolution = _resolve_planner_section_reference(
+                        reference, planner_sections, state.task_context.eligible_units)
+                else:
+                    resolution = None
+                if selected is not None:
                     base["retrieval_diagnostics"]["planner_reference_resolution"] = {
-                        "check_unit_id": plan["section_id"], "section_id": selected["id"]}
+                        "reference": reference, "resolution": resolution,
+                        "section_id": selected["id"]}
                     plan["section_id"] = selected["id"]
         except GenerationError as exc:
             error = _generation_error(exc)
@@ -4249,6 +4322,20 @@ class SourceFirstService:
         previous_unknown_code_followup = any(item.get("role") == "assistant"
             and item.get("scenario_reason") == "planner_could_not_select_clarification"
             for item in (history or [])[:-1])
+        same_unknown_code_question = bool(state.expected
+            and state.expected.slot == "details"
+            and state.expected.question == _unknown_code_followup_question())
+        if (mode == "clarify" and state.intent == "device" and state.symptom
+                and not state.error_codes and state.task_entity("manufacturer")
+                and same_unknown_code_question):
+            # The customer has already said the code is unknown after this
+            # exact prompt. Preserve that fact and stop cycling on it.
+            return self._escalate(
+                "Понял, код ошибки сейчас неизвестен. Повторять тот же вопрос не буду; "
+                "по имеющимся сведениям следующий подтверждённый безопасный шаг не найден. "
+                "Запросите специалиста кнопкой ниже.",
+                "clarification_exhausted", "unknown_code_followup_already_answered",
+                started, **base)
         if (mode == "clarify" and state.intent == "device" and state.symptom
                 and not state.error_codes and state.task_entity("manufacturer")
                 and not previous_unknown_code_followup):
