@@ -842,3 +842,6 @@ Planner 400 классифицируется как JSON generation failure, а 
 
 
 **A5 connectivity update (2026-11-15):** after the latest 429, a later bounded retry got Understanding HTTP 200 (2,261 tokens) and a Planner `ConnectTimeout` with no HTTP status. The harness stopped at D01 T01. Current A5 D01/D03 candidate has no full-pipeline live result. Resume after both sufficient TPD budget and provider connectivity are available. Part A IN PROGRESS; part B NOT STARTED; quality/production NO-GO.
+
+
+**A5 full regression update (2026-11-15):** full UTF-8 pytest on `main` passed: 878 passed / 4 historical xfailed (245.51s). Candidate remains live-unvalidated on D01/D03/D05/D08 because Groq TPD 429 and a subsequent Planner ConnectTimeout stopped the bounded suite at D01 T01. Part A IN PROGRESS; part B NOT STARTED; quality/production NO-GO.

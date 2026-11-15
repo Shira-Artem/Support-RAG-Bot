@@ -2003,3 +2003,8 @@ The current offline candidate has D01 and D03 targeted regressions and the five 
 A subsequent bounded retry started at 12:43 UTC on revision `1e139ff574b7b508da7d9710e98a631a9dad637e`. Understanding returned HTTP 200 (2,261 reported tokens); the Planner request ended with `ConnectTimeout`, no HTTP status, and no provider-level rate-limit payload. The harness preserved D01 T01 and stopped on the runtime error. D01/D03/D05/D08 therefore remain unvalidated on the current offline candidate. No additional model calls were made after this timeout.
 
 This is an infrastructure/provider connectivity outcome, not a behavioral pass or failure. Existing offline verification remains **119 passed, 4 historical xfailed** across the affected dialogue, routing, retrieval, and SQLite replay suites. The most recent successful live evidence is still the one-turn A3b D07 exact-source result. Part A IN PROGRESS; part B NOT STARTED; overall quality/production NO-GO. Resume only after both adequate provider token budget and connectivity are available.
+
+
+## 2026-11-15 — Experiment 2 A5 full offline regression
+
+On `main` at `980f9c1611e3ca8ec97739000e6ca922c3c4b209` (including D03 and D01 offline candidates), the full UTF-8 pytest suite completed: **878 passed, 4 historical xfailed in 245.51s**. This includes the previously reported focused 119-pass/4-xfailed affected suites. No live candidate result changed: latest full-pipeline attempt at D01 T01 ended with Planner `ConnectTimeout` after Understanding HTTP 200; earlier retries were stopped by Groq TPD 429. Frozen D01/D03/D05/D08 candidate comparison remains pending. Part A remains IN PROGRESS, part B NOT STARTED, overall quality/production NO-GO.
