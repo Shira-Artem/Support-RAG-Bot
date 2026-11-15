@@ -618,6 +618,26 @@ def test_unconfirmed_error_code_followup_uses_known_context_without_repeating_qu
     assert "ФН 231" not in followup.text and "-3975" not in followup.text
 
 
+def test_model_clarification_acknowledges_network_fact_without_completing_compound_check():
+    from app.source_first_service import _model_identity
+
+    network = Fact("В интернет касса выходит. Что ещё можно проверить?", 5,
+                   "В интернет касса выходит. Что ещё можно проверить?", 0, 50)
+    task = TaskContext(intent="device", request_type="diagnosis", operation="diagnose",
+        entities={"manufacturer": [Fact("Эвотор", 3, "Касса Эвотор", 6, 12)],
+                  "equipment": [Fact("интернет касса", 5, "интернет касса", 2, 16)]},
+        details=[network], unknown_facts=["equipment"],
+        checks=[{"unit_id": "composite", "status": "asked"}])
+    state = DialogueState(task_context=task)
+
+    answer = SourceFirstService._model_clarification(state, 0)
+
+    assert _model_identity("интернет касса", "Эвотор") is None
+    assert "доступ к интернету есть" in answer.text
+    assert "точную модель кассы" in answer.text
+    assert state.task_context.checks[0]["status"] == "asked"
+
+
 def test_unknown_code_with_symptom_gets_focused_followup_when_planner_cannot_select(
         monkeypatch, tmp_path):
     import json

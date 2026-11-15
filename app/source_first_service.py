@@ -930,6 +930,8 @@ def _model_identity(equipment: str | None, manufacturer: str | None = None) -> s
         value = re.sub(r"(?<!\w)" + re.escape(brand) + r"(?!\w)", " ", value)
     value = re.sub(r"\b(?:модель|модели|оборудование|касса|терминал)\b", " ", value)
     value = re.sub(r"[^a-zа-я0-9.,]+", " ", value).strip()
+    if value in {"интернет", "сеть", "связь", "онлайн"}:
+        return None
     return value or None
 
 
@@ -4271,6 +4273,18 @@ class SourceFirstService:
     @staticmethod
     def _model_clarification(state, started, **base):
         unknown = bool(state.task_context and "equipment" in state.task_context.unknown_facts)
+        network_reported = any(
+            re.search(r"\b(?:интернет|сеть|соединение|связь)\b", fact.value, re.I)
+            and re.search(r"\b(?:работа\w*|выход\w*|доступ\w*|подключ\w*)\b", fact.value, re.I)
+            and not re.search(r"\b(?:не|нет|без|пропада\w*|нестабил\w*)\b", fact.value, re.I)
+            for fact in (state.task_context.details if state.task_context else []))
+        if network_reported:
+            return Answer(
+                "Понял, доступ к интернету есть — учёл этот результат. "
+                "Чтобы выбрать применимую следующую проверку, уточните точную модель кассы.",
+                scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
+                clarification_slot="equipment", generation_status="clarification",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         return Answer(
             ("Понял, модель сейчас неизвестна. Сохраняю контекст проверки. "
              "Для следующего шага по найденной инструкции нужна модель; применимого шага без неё не нашёл. "
