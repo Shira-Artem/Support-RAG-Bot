@@ -839,3 +839,6 @@ Planner 400 классифицируется как JSON generation failure, а 
 
 
 **A5 live status update (2026-11-15):** another bounded run accepted D01 Understanding (2,041 tokens), then Planner received HTTP 429 (TPD used 197,340/200,000; 2,857 requested; retry estimate 1m25s). The harness stopped at D01 T01. No D03/D05/D08 live results on the D01/D03 candidate. Do not retry until enough quota is available for one full pipeline turn. Part A IN PROGRESS; part B NOT STARTED; quality/production NO-GO.
+
+
+**A5 connectivity update (2026-11-15):** after the latest 429, a later bounded retry got Understanding HTTP 200 (2,261 tokens) and a Planner `ConnectTimeout` with no HTTP status. The harness stopped at D01 T01. Current A5 D01/D03 candidate has no full-pipeline live result. Resume after both sufficient TPD budget and provider connectivity are available. Part A IN PROGRESS; part B NOT STARTED; quality/production NO-GO.
