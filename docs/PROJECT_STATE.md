@@ -1906,3 +1906,9 @@ A: 9 Understanding + 4 Planner calls, 13 HTTP attempts; **30,940 успешны�
 В интеграционном source-order context пустой `error_codes` не сериализуется: старые receipts для задач без подтверждённого кода сохраняют прежний hash; при реальном коде его значение остаётся в подписи. Целевые regressions (Experiment 1, semantic/source checks, B2.2d continuation, HTTP 400/429 и ProgressLedger replay): **166 passed**. Полный pytest в Windows UTF‑8 режиме: **868 passed, 4 historical xfailed** за 256.97 с. Перед commit/push осталась secret/PII/LIVE-trace проверка staged diff и подтверждение актуального remote SHA.
 
 **Статус:** staged-content scan на provider keys, Telegram tokens, bearer credentials, email/phone patterns и длинные numeric identity fields дал 0 matches. Traces прошли этот screening; исходные `.worktrees/` сохранены. Локальный merge проверен, remote ещё не менялся. Следующий шаг — merge commit, push в `origin/main`, затем проверить SHA через GitHub. Experiment 2 не начинать до подтверждения push; качество/production остаётся NO-GO.
+
+## 2026-11-15 — Experiment 1 опубликован в main
+
+После полного регрессионного PASS создан merge commit `12a0a9dced81b9afff58591dcbebfe982df41a6c` (`merge: integrate experiment 1 error contract`) и отправлен в `origin/main`. Push завершился `cd42e62..12a0a9d main -> main`; GitHub API вернул этот же SHA и canonical commit page, а `git ls-remote origin refs/heads/main` подтвердил ref. Перед push `origin/main` был проверен на равенство прежнему HEAD, `git diff --check`/staged diff check прошли, сканирование provider tokens, bearer credentials, email, phone-like и numeric identity fields дало 0 matches. Full pytest: 868 passed / 4 исторических xfailed.
+
+С этого момента Experiment 1 считается интегрированным экспериментальным baseline в `main`; это не production GO. Следующий шаг утверждённой последовательности — Experiment 2, часть A на main; часть B пока не включать. Не создавать feature branch/worktree.
