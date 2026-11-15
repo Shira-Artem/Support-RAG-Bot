@@ -1,4 +1,4 @@
-from app.dialogue_state import DialogueManager, DialogueState
+from app.dialogue_state import DialogueManager, DialogueState, Fact
 from app.dialogue_understanding import validate_response
 from app.rag import SearchResult
 from app.retrieval_pipeline import RetrievalPipeline
@@ -80,6 +80,39 @@ def test_subtask_anchor_rejects_same_family_scales_for_scanner_question():
     result = RetrievalPipeline(Source([scales, scanner])).search(_understood_state(query, intent="device"), query)
     assert [doc.metadata["document_id"] for doc in result.documents] == ["scanner"]
     assert any(item.document_id == "scales" and "subtask_anchor_uncovered" in item.reasons
+               for item in result.rejected)
+
+
+def test_colloquial_receipt_delivery_matches_transmission_source_and_rejects_clock_article():
+    question = "Помоги, у меня Эвотор 7.3, продажи проходят, но периодически не уходят чеки."
+    state = _understood_state(question, operation="diagnose", intent="device")
+    state.task_context.entities = {
+        "manufacturer": [Fact.span("Эвотор", 1)],
+        "equipment": [Fact.span("Эвотор 7.3", 1)],
+    }
+    transmission = SearchResult(
+        "evotor/ofd/evotor-7-3-ofd-connection.md",
+        "Эвотор 7.3 не отправляет чеки в ОФД. Проверьте EoU, интернет и очередь неотправленных документов.",
+        .7,
+        metadata={"document_id": "evotor-7-3", "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД",
+                  "service": "Эвотор", "manufacturer": "Эвотор", "model": "Эвотор 7.3",
+                  "task_category": "receipt_transmission", "operations": ["check_transmission"],
+                  "status": "approved"})
+    clock = SearchResult(
+        "evotor/settings/time-mismatch-first-checks.md",
+        "При несовпадении времени кассы и планшета проверьте синхронизацию часов.",
+        .9,
+        metadata={"document_id": "time-mismatch", "title": "Эвотор: несовпадение времени кассы и планшета",
+                  "service": "Эвотор", "manufacturer": "Эвотор", "model": "Эвотор 7.3",
+                  "task_category": "error_diagnosis", "operations": ["diagnose_error"],
+                  "status": "approved"})
+
+    result = RetrievalPipeline(Source([clock, transmission], {"evotor-7-3": [transmission]})).search(
+        state, question)
+
+    assert [doc.metadata["document_id"] for doc in result.documents] == ["evotor-7-3"]
+    assert any(item.document_id == "time-mismatch"
+               and any(reason.startswith("task_mismatch:") for reason in item.reasons)
                for item in result.rejected)
 
 

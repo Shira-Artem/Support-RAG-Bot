@@ -343,6 +343,18 @@ _SUBTASK_COVERAGE_TASKS = {
 }
 
 
+def _receipt_transmission_subtask_anchor(text: str, expected_task: str | None) -> bool:
+    """Match colloquial delivery failures to approved transmission evidence."""
+    if expected_task != "receipt_transmission":
+        return False
+    folded = str(text or "").casefold().replace("ё", "е")
+    has_receipt_object = bool(re.search(r"\b(?:чек\w*|документ\w*|receipt\w*)\b", folded))
+    has_delivery_failure = bool(re.search(
+        r"\b(?:не\s+(?:уход\w*|поступ\w*|переда\w*|отправ\w*)|"
+        r"не(?:уход|поступ|переда|отправ)\w*)\b", folded))
+    return has_receipt_object and has_delivery_failure
+
+
 def _subtask_signature(query: str, state: DialogueState,
                        expected_task: str | None) -> set[str]:
     """Extract topic anchors and action from the existing task/operation contract."""
@@ -358,6 +370,8 @@ def _subtask_signature(query: str, state: DialogueState,
     topic.difference_update(_SUBTASK_CONTEXT_TERMS)
     topic = {term for term in topic
              if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    if _receipt_transmission_subtask_anchor(query, expected_task):
+        topic.add("receipt_transmission_failure")
     return topic
 
 
@@ -366,8 +380,11 @@ def _subtask_title_terms(title: str, expected_task: str | None) -> set[str]:
     if expected_task == "integration":
         terms.difference_update(content_terms("integration интеграция"))
     terms.difference_update(_SUBTASK_CONTEXT_TERMS)
-    return {term for term in terms
-            if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    terms = {term for term in terms
+             if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    if _receipt_transmission_subtask_anchor(title, expected_task):
+        terms.add("receipt_transmission_failure")
+    return terms
 
 
 def _subtask_question_terms(article_text: str, expected_task: str | None) -> set[str]:
@@ -381,8 +398,11 @@ def _subtask_question_terms(article_text: str, expected_task: str | None) -> set
     if expected_task == "integration":
         terms.difference_update(content_terms("integration интеграция"))
     terms.difference_update(_SUBTASK_CONTEXT_TERMS)
-    return {term for term in terms
-            if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    terms = {term for term in terms
+             if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    if _receipt_transmission_subtask_anchor(" ".join(questions), expected_task):
+        terms.add("receipt_transmission_failure")
+    return terms
 
 
 def _subtask_body_terms(text: str, expected_task: str | None) -> set[str]:
@@ -390,8 +410,11 @@ def _subtask_body_terms(text: str, expected_task: str | None) -> set[str]:
     if expected_task == "integration":
         terms.difference_update(content_terms("integration интеграция"))
     terms.difference_update(_SUBTASK_CONTEXT_TERMS)
-    return {term for term in terms
-            if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    terms = {term for term in terms
+             if not any(term.startswith(prefix) for prefix in _SUBTASK_ACTION_TOKENS)}
+    if _receipt_transmission_subtask_anchor(text, expected_task):
+        terms.add("receipt_transmission_failure")
+    return terms
 
 
 def _state_task_category(state: DialogueState, query: str) -> str | None:
