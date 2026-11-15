@@ -40,6 +40,52 @@ def test_understanding_429_is_bounded_and_provider_body_is_not_persisted(monkeyp
     assert "SENSITIVE_PROVIDER_ECHO" not in str(captured)
 
 
+def test_hubris_understanding_uses_json_schema_and_records_usage_cost(monkeypatch):
+    import json
+    import httpx
+    from types import SimpleNamespace
+    import app.dialogue_understanding as module
+
+    text = "Что такое ОФД?"
+    valid = payload(text, kind="information", intent="general", operation="explain",
+                    obj="понятие", object_quote="ОФД", goal=text)
+    requests, traces = [], []
+
+    class FakeClient:
+        def __init__(self, *_args, **_kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *_args): return False
+        async def post(self, url, *args, **kwargs):
+            requests.append((url, kwargs))
+            return httpx.Response(200, json={"model": "openai/gpt-oss-20b",
+                "usage": {"prompt_tokens": 30, "completion_tokens": 12,
+                          "total_tokens": 42, "cost": 3},
+                "choices": [{"message": {"content": json.dumps(valid, ensure_ascii=False)}}]},
+                request=httpx.Request("POST", url))
+
+    async def forbidden(*_args, **_kwargs):
+        raise AssertionError("Hubris must not use Groq quota controls")
+
+    monkeypatch.setattr(module.httpx, "AsyncClient", FakeClient)
+    monkeypatch.setattr(module.groq_rate_limiter, "before_request", forbidden)
+    monkeypatch.setattr(module.groq_rate_limiter, "observe", forbidden)
+    monkeypatch.setattr(module, "_append_local_trace", lambda **row: traces.append(row))
+    settings = SimpleNamespace(llm_provider="hubris", hubris_api_key="test-hubris-key",
+        hubris_base_url="https://api.hubris.pw/v1/", hubris_model="openai/gpt-oss-20b",
+        hubris_reasoning_effort="low")
+    result = asyncio.run(module.understand_message(text, "current", [], DialogueState(), settings))
+
+    url, kwargs = requests[0]
+    assert url == "https://api.hubris.pw/v1/chat/completions"
+    assert kwargs["headers"]["Authorization"] == "Bearer test-hubris-key"
+    assert kwargs["json"]["response_format"]["type"] == "json_schema"
+    assert kwargs["json"]["response_format"]["json_schema"]["strict"] is True
+    assert kwargs["json"]["max_completion_tokens"] == 1024
+    assert result.request_type == "information"
+    assert traces[-1]["tokens"]["total_tokens"] == 42
+    assert traces[-1]["cost_kopecks"] == 3
+
+
 @pytest.mark.parametrize(('failures', 'expected_calls'), [(1, 2), (2, 2)])
 def test_understanding_retries_only_one_invalid_provider_json(monkeypatch, failures, expected_calls):
     import json

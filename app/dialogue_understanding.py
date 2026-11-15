@@ -204,6 +204,7 @@ def _append_local_trace(*, model: str | None, status: str, structured_output: An
                         field_diagnostics: list[dict[str, Any]], tokens: dict[str, int | None] | None,
                         duration_ms: int | None, error: str | None = None,
                         provider_error: str | None = None,
+                        cost_kopecks: int | None = None,
                         request_payload: dict[str, Any] | None = None,
                         phase: str | None = None, error_code: str | None = None) -> None:
     """Persist provider output and field decisions locally; never include credentials."""
@@ -216,12 +217,13 @@ def _append_local_trace(*, model: str | None, status: str, structured_output: An
         "structured_output_sha256": sha256(json.dumps(structured_output, ensure_ascii=False,
             sort_keys=True, default=str).encode("utf-8")).hexdigest(),
         "request_payload": request_payload, "field_diagnostics": field_diagnostics, "tokens": tokens,
-        "duration_ms": duration_ms, "error": error, "provider_error": provider_error,
+        "duration_ms": duration_ms, "cost_kopecks": cost_kopecks,
+        "error": error, "provider_error": provider_error,
         "phase": phase, "error_code": error_code}
     try:
         with path.open("a", encoding="utf-8") as stream:
             serialized = json.dumps(record, ensure_ascii=False, default=str)
-            for name in ("GROQ_API_KEY", "TELEGRAM_BOT_TOKEN", "OPENROUTER_API_KEY"):
+            for name in ("GROQ_API_KEY", "HUBRIS_API_KEY", "TELEGRAM_BOT_TOKEN", "OPENROUTER_API_KEY"):
                 secret = os.getenv(name, "")
                 if len(secret) >= 8:
                     serialized = serialized.replace(secret, "[REDACTED_SECRET]")
@@ -1070,8 +1072,18 @@ def _state_summary(state: DialogueState) -> dict[str, Any]:
 
 async def understand_message(text: str, message_id: int | str, history: list[dict],
                              state: DialogueState, settings: Settings) -> Understanding:
-    if settings.llm_provider != "groq" or not settings.groq_api_key:
-        raise UnderstandingError("Source-first understanding requires configured Groq")
+    if settings.llm_provider == "groq":
+        provider_key, provider_model = settings.groq_api_key, settings.groq_model
+        provider_effort = settings.groq_reasoning_effort
+        provider_url = "https://api.groq.com/openai/v1/chat/completions"
+    elif settings.llm_provider == "hubris":
+        provider_key, provider_model = settings.hubris_api_key, settings.hubris_model
+        provider_effort = settings.hubris_reasoning_effort
+        provider_url = f"{settings.hubris_base_url.rstrip('/')}/chat/completions"
+    else:
+        raise UnderstandingError("Source-first understanding requires Groq or Hubris")
+    if not provider_key:
+        raise UnderstandingError("Source-first provider API key is not configured")
     from time import perf_counter
     started = perf_counter()
     safe_history = [{"role": item.get("role"), "content": item.get("content", "")}
@@ -1095,29 +1107,30 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
             "entity_slots": sorted(ENTITY_SLOTS)},
         "recent_history": safe_history, "active_task_state": _state_summary(state), "current_message": text}
     schema = response_schema()
-    headers = {"Authorization": f"Bearer {settings.groq_api_key}", "Content-Type": "application/json"}
-    request = {"model": settings.groq_model, "reasoning_effort": settings.groq_reasoning_effort,
-        "temperature": 0, "max_completion_tokens": 4096,
+    headers = {"Authorization": f"Bearer {provider_key}", "Content-Type": "application/json"}
+    request = {"model": provider_model, "reasoning_effort": provider_effort or "low",
+        "temperature": 0, "max_completion_tokens": 1024 if settings.llm_provider == "hubris" else 4096,
         "messages": [{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
         "response_format": {"type": "json_schema", "json_schema": schema}}
     attempt_number = None
     try:
-        attempt_number = await groq_rate_limiter.before_request(
-            estimate_tokens(request), stage="understanding")
+        if settings.llm_provider == "groq":
+            attempt_number = await groq_rate_limiter.before_request(
+                estimate_tokens(request), stage="understanding")
     except GroqQuotaDeferred as exc:
-        _append_local_trace(model=settings.groq_model, status="quota_deferred",
+        _append_local_trace(model=provider_model, status="quota_deferred",
             structured_output=None, field_diagnostics=[{"field": "$", "status": "rejected",
                 "reason": exc.reason}], tokens=None,
             duration_ms=round((perf_counter()-started)*1000),
             request_payload=request, phase="quota", error_code="groq_quota_deferred")
-        raise UnderstandingError("Groq quota temporarily unavailable", model=settings.groq_model,
+        raise UnderstandingError("Groq quota temporarily unavailable", model=provider_model,
             duration_ms=round((perf_counter()-started)*1000), phase="quota",
             code="groq_quota_deferred", retry_after_seconds=exc.retry_after_seconds) from exc
     observed = False
     response = None
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(45, connect=15)) as client:
-            response = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=request)
+            response = await client.post(provider_url, headers=headers, json=request)
             # Groq can reject its own malformed strict-JSON completion with
             # json_validate_failed. Retry that specific provider failure once;
             # never parse or repair the rejected, untrusted completion.
@@ -1126,12 +1139,12 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
                               if response.status_code == 400 else None)
             except (ValueError, AttributeError, TypeError):
                 error_code = None
-            if error_code == "json_validate_failed":
+            if settings.llm_provider == "groq" and error_code == "json_validate_failed":
                 groq_rate_limiter.observe(response.headers, status=400, usage=None,
                     stage="understanding", duration_ms=round((perf_counter()-started)*1000),
                     attempt_number=attempt_number)
                 observed = True
-                _append_local_trace(model=settings.groq_model, status="provider_json_retry",
+                _append_local_trace(model=provider_model, status="provider_json_retry",
                     structured_output=None, field_diagnostics=[{"field": "$", "status": "rejected",
                     "reason": "groq_json_validate_failed"}], tokens=None,
                     duration_ms=round((perf_counter()-started)*1000), request_payload=request,
@@ -1143,105 +1156,109 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
                     attempt_number = await groq_rate_limiter.before_request(
                         estimate_tokens(request), stage="understanding")
                 except GroqQuotaDeferred as exc:
-                    raise UnderstandingError("Groq quota temporarily unavailable", model=settings.groq_model,
+                    raise UnderstandingError("Groq quota temporarily unavailable", model=provider_model,
                         phase="quota", code="groq_quota_deferred",
                         retry_after_seconds=exc.retry_after_seconds) from exc
                 observed = False
-                response = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=request)
+                response = await client.post(provider_url, headers=headers, json=request)
         if response.status_code >= 400:
             rate_headers = groq_rate_limiter.observe(response.headers, status=response.status_code,
                 usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000),
-                attempt_number=attempt_number)
+                attempt_number=attempt_number) if settings.llm_provider == "groq" else None
             observed = True
             # The provider body may echo user input or credentials. Retain only typed status.
             provider_error = f"HTTP {response.status_code}"
             diagnostics = [{"field": "$", "status": "rejected",
                             "reason": f"groq_http_{response.status_code}"}]
-            _append_local_trace(model=settings.groq_model, status="provider_http_error",
+            _append_local_trace(model=provider_model, status="provider_http_error",
                 structured_output=None, field_diagnostics=diagnostics, tokens=None,
                 duration_ms=round((perf_counter()-started)*1000),
-                error=f"Groq HTTP {response.status_code}", provider_error=provider_error,
+                error=f"{settings.llm_provider} HTTP {response.status_code}", provider_error=provider_error,
                 request_payload=request, phase="provider", error_code=f"groq_http_{response.status_code}")
-            raise UnderstandingError(f"Groq HTTP {response.status_code}", duration_ms=round((perf_counter()-started)*1000),
-                                     model=settings.groq_model, http_status=response.status_code,
+            raise UnderstandingError(f"{settings.llm_provider} HTTP {response.status_code}", duration_ms=round((perf_counter()-started)*1000),
+                                     model=provider_model, http_status=response.status_code,
                                      field_diagnostics=diagnostics, provider_error=provider_error,
                                      phase="provider", code=f"groq_http_{response.status_code}",
-                                     retry_after_seconds=retry_after_seconds(rate_headers),
+                                     retry_after_seconds=retry_after_seconds(rate_headers) if rate_headers else None,
                                      rate_limit_headers=rate_headers)
         result = response.json()
         usage = result.get("usage") or {}
-        groq_rate_limiter.observe(response.headers, status=response.status_code,
-            usage=usage if isinstance(usage, dict) else None, stage="understanding",
-            duration_ms=round((perf_counter()-started)*1000), attempt_number=attempt_number)
+        if settings.llm_provider == "groq":
+            groq_rate_limiter.observe(response.headers, status=response.status_code,
+                usage=usage if isinstance(usage, dict) else None, stage="understanding",
+                duration_ms=round((perf_counter()-started)*1000), attempt_number=attempt_number)
         observed = True
         tokens = {key: usage.get(source) for key, source in (("prompt_tokens", "prompt_tokens"),
                   ("completion_tokens", "completion_tokens"), ("total_tokens", "total_tokens"))}
+        cost_kopecks = usage.get("cost") if settings.llm_provider == "hubris" and isinstance(usage.get("cost"), int) else None
         content = result["choices"][0]["message"]["content"]
         try:
             parsed = json.loads(content)
         except (json.JSONDecodeError, TypeError) as exc:
             diagnostics = [{"field": "$", "status": "rejected", "reason": "invalid_json"}]
-            _append_local_trace(model=result.get("model") or settings.groq_model,
+            _append_local_trace(model=result.get("model") or provider_model,
                 status="invalid_json", structured_output=None, field_diagnostics=diagnostics,
                 tokens=tokens, duration_ms=round((perf_counter()-started)*1000), error=type(exc).__name__,
-                request_payload=request, phase="decode", error_code="invalid_json")
-            raise UnderstandingError("Groq returned invalid structured JSON", tokens=tokens,
-                duration_ms=round((perf_counter()-started)*1000), model=result.get("model") or settings.groq_model,
+                request_payload=request, phase="decode", error_code="invalid_json",
+                cost_kopecks=cost_kopecks)
+            raise UnderstandingError(f"{settings.llm_provider} returned invalid structured JSON", tokens=tokens,
+                duration_ms=round((perf_counter()-started)*1000), model=result.get("model") or provider_model,
                 field_diagnostics=diagnostics,
                 phase="decode", code="invalid_json") from exc
         try:
             kind, specialist, unknown, observation = validate_response(parsed, text, message_id, state)
         except UnderstandingError as exc:
             diagnostics = exc.field_diagnostics or [{"field": "$", "status": "rejected", "reason": str(exc)}]
-            _append_local_trace(model=result.get("model") or settings.groq_model,
+            _append_local_trace(model=result.get("model") or provider_model,
                 status="rejected", structured_output=parsed, field_diagnostics=diagnostics,
                 tokens=tokens, duration_ms=round((perf_counter()-started)*1000), error=str(exc),
-                request_payload=request, phase=exc.phase, error_code=exc.code)
+                request_payload=request, phase=exc.phase, error_code=exc.code,
+                cost_kopecks=cost_kopecks)
             raise UnderstandingError(str(exc), tokens=tokens,
-                duration_ms=round((perf_counter()-started)*1000), model=result.get("model") or settings.groq_model,
+                duration_ms=round((perf_counter()-started)*1000), model=result.get("model") or provider_model,
                 structured_response=parsed, field_diagnostics=diagnostics,
                 phase=exc.phase, code=exc.code) from exc
-        _append_local_trace(model=result.get("model") or settings.groq_model,
+        _append_local_trace(model=result.get("model") or provider_model,
             status="validated_with_field_rejections" if any(d["status"] == "rejected" for d in observation.validation_diagnostics) else "validated",
             structured_output=parsed, field_diagnostics=observation.validation_diagnostics,
             tokens=tokens, duration_ms=round((perf_counter()-started)*1000), request_payload=request,
-            phase="complete")
+            phase="complete", cost_kopecks=cost_kopecks)
     except UnderstandingError:
         raise
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
-        if response is not None and not observed:
+        if settings.llm_provider == "groq" and response is not None and not observed:
             groq_rate_limiter.observe(response.headers, status=response.status_code,
                 usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000),
                 attempt_number=attempt_number)
         phase = "transport" if isinstance(exc, httpx.HTTPError) else "provider_response"
         code = "transport_error" if isinstance(exc, httpx.HTTPError) else "provider_response_malformed"
         diagnostics = [{"field": "$", "status": "rejected", "reason": code}]
-        _append_local_trace(model=settings.groq_model, status=code, structured_output=None,
+        _append_local_trace(model=provider_model, status=code, structured_output=None,
             field_diagnostics=diagnostics, tokens=locals().get("tokens"),
             duration_ms=round((perf_counter()-started)*1000), error=type(exc).__name__,
             request_payload=locals().get("request"), phase=phase, error_code=code)
         raise UnderstandingError(f"understanding failed: {type(exc).__name__}",
             tokens=locals().get("tokens"), duration_ms=round((perf_counter()-started)*1000),
-            model=locals().get("result", {}).get("model", settings.groq_model),
+            model=locals().get("result", {}).get("model", provider_model),
             field_diagnostics=diagnostics, phase=phase, code=code) from exc
     except Exception as exc:
-        if response is not None and not observed:
+        if settings.llm_provider == "groq" and response is not None and not observed:
             groq_rate_limiter.observe(response.headers, status=response.status_code,
                 usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000))
         diagnostics = [{"field": "$", "status": "rejected", "reason": "unexpected_internal_exception",
                         "error_type": type(exc).__name__}]
-        _append_local_trace(model=settings.groq_model, status="internal_error",
+        _append_local_trace(model=provider_model, status="internal_error",
             structured_output=locals().get("parsed"), field_diagnostics=diagnostics,
             tokens=locals().get("tokens"), duration_ms=round((perf_counter()-started)*1000),
             error=type(exc).__name__, request_payload=locals().get("request"),
             phase="internal", error_code="unexpected_internal_exception")
         raise UnderstandingError(f"understanding failed: {type(exc).__name__}",
             tokens=locals().get("tokens"), duration_ms=round((perf_counter()-started)*1000),
-            model=locals().get("result", {}).get("model", settings.groq_model),
+            model=locals().get("result", {}).get("model", provider_model),
             structured_response=locals().get("parsed"), field_diagnostics=diagnostics,
             phase="internal", code="unexpected_internal_exception") from exc
     return Understanding(kind, specialist, unknown, observation, tokens,
-                         result.get("model") or settings.groq_model,
+                         result.get("model") or provider_model,
                          round((perf_counter() - started) * 1000), parsed,
                          observation.validation_diagnostics)
 

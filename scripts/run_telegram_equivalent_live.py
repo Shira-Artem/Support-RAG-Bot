@@ -1,4 +1,4 @@
-"""Bounded real-Groq run through bot.handle_message and reopened isolated SQLite.
+"""Bounded real-provider run through bot.handle_message and reopened SQLite.
 
 Only transport/storage boundaries are isolated. Understanding, reducer,
 Coordinator, Stage3 retrieval, Planner and source rendering run unchanged.
@@ -24,6 +24,12 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def terminal_record(record, stream=None):
+    """Emit ASCII-safe JSON so legacy Windows console code pages cannot fail."""
+    target = stream or sys.stdout
+    print(json.dumps(record, ensure_ascii=True, default=str), file=target, flush=True)
 sys.path.insert(0, str(ROOT))
 
 CASES = {
@@ -125,7 +131,7 @@ class ReadOnlyQdrant:
         return self._client.query_points(*args, **kwargs)
 
 
-async def run(args):
+async def run(cli_args):
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env", override=False)
     os.environ.update({"RAG_BACKEND": "qdrant", "QDRANT_COLLECTION": "knowledge_stage3_retrieval_20261022",
@@ -146,7 +152,8 @@ async def run(args):
 
     settings = replace(get_settings(), source_first_telegram_ids=frozenset({42}),
                        telegram_bot_token="isolated-no-telegram-token")
-    assert settings.llm_provider == "groq" and settings.groq_api_key
+    provider_key = settings.groq_api_key if settings.llm_provider == "groq" else settings.hubris_api_key
+    assert settings.llm_provider in {"groq", "hubris"} and provider_key
     assert settings.rag_engine == "source_first" and settings.ai_coordinator_enabled
     client = QdrantClient(url=os.getenv("QDRANT_URL", "http://127.0.0.1:6333"), timeout=20)
     collection = os.environ["QDRANT_COLLECTION"]
@@ -155,7 +162,7 @@ async def run(args):
     embedding = SentenceTransformerEmbedding(os.getenv("EMBEDDING_MODEL",
         "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
     rag = RetrieverRAGAdapter(Retriever(QdrantStore(ReadOnlyQdrant(client), embedding, collection), demo=False))
-    output = ROOT / args.output
+    output = ROOT / cli_args.output
     private = ROOT / ".local" / ("telegram-equivalent-" + output.stem)
     private.mkdir(parents=True, exist_ok=False)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -163,16 +170,38 @@ async def run(args):
     store = ConversationStore(store_path)
     expert = ExpertStore(private / "expert.sqlite3")
     os.environ["HANDOFF_OUTBOX_PATH"] = str(private / "handoff.json")
-    quota_module._TRACE = private / "groq-http.jsonl"
+    quota_module._TRACE = private / f"{settings.llm_provider}-http.jsonl"
     calls = []
     raw_understanding = []
+    provider_http = []
+    spend_kopecks = 0
     original_generate = source_module.generate
     original_post = httpx.AsyncClient.post
     http_errors = []
 
-    async def capture_post(client, url, *args, **kwargs):
-        response = await original_post(client, url, *args, **kwargs)
-        if str(url).startswith("https://api.groq.com/") and response.status_code >= 400:
+    async def capture_post(client, url, *post_args, **kwargs):
+        nonlocal spend_kopecks
+        provider_prefix = ("https://api.groq.com/" if settings.llm_provider == "groq"
+                           else settings.hubris_base_url.rstrip("/") + "/")
+        if str(url).startswith(provider_prefix) and cli_args.max_cost_kopecks is not None:
+            if spend_kopecks >= cli_args.max_cost_kopecks:
+                raise RuntimeError("LIVE cost ceiling reached; stopping before the next provider request")
+        response = await original_post(client, url, *post_args, **kwargs)
+        if str(url).startswith(provider_prefix):
+            usage = {}
+            try:
+                usage = response.json().get("usage") or {}
+            except (ValueError, AttributeError, TypeError):
+                pass
+            reported_cost = usage.get("cost") if isinstance(usage, dict) else None
+            if isinstance(reported_cost, int) and not isinstance(reported_cost, bool):
+                spend_kopecks += reported_cost
+            provider_http.append({"status": response.status_code,
+                "cost_kopecks": reported_cost if isinstance(reported_cost, int) else None,
+                "prompt_tokens": usage.get("prompt_tokens") if isinstance(usage, dict) else None,
+                "completion_tokens": usage.get("completion_tokens") if isinstance(usage, dict) else None,
+                "total_tokens": usage.get("total_tokens") if isinstance(usage, dict) else None})
+        if str(url).startswith(provider_prefix) and response.status_code >= 400:
             # Synthetic harness only: no production requests or auth headers.
             try:
                 error = response.json().get("error") or {}
@@ -210,19 +239,26 @@ async def run(args):
             raise
 
     result = {"created_at": datetime.now(timezone.utc).isoformat(),
-        "head": args.revision or subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "head": cli_args.revision or subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "source_hashes": {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
                           for p in [ROOT / "bot.py", *sorted((ROOT / "app").glob("*.py"))]},
-        "pipeline": "bot.handle_message -> real Groq Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
-        "collection": collection, "points": info.points_count, "model": settings.groq_model,
-        "reasoning_effort": settings.groq_reasoning_effort, "turns": []}
+        "pipeline": f"bot.handle_message -> real {settings.llm_provider} Understanding -> isolated SQLite/reducer -> Coordinator -> Stage3 -> real Planner/Composer if reached",
+        "provider": settings.llm_provider, "collection": collection, "points": info.points_count,
+        "model": (settings.groq_model if settings.llm_provider == "groq" else settings.hubris_model),
+        "reasoning_effort": (settings.groq_reasoning_effort if settings.llm_provider == "groq"
+                             else settings.hubris_reasoning_effort),
+        "max_cost_kopecks": cli_args.max_cost_kopecks, "turns": []}
     def save():
         result["generation_calls"] = calls
         result["understanding_calls"] = raw_understanding
         result["provider_errors"] = http_errors
+        result["provider_http"] = provider_http
+        result["reported_cost_kopecks"] = spend_kopecks
         if quota_module._TRACE.exists():
             result["http_trace"] = [json.loads(line) for line in quota_module._TRACE.read_text(encoding="utf-8").splitlines()]
-        output.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+        temporary = output.with_suffix(output.suffix + ".tmp")
+        temporary.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+        temporary.replace(output)
 
     with patch("app.config.get_settings", return_value=settings), \
          patch("app.compat.build_answer_rag", return_value=rag), \
@@ -233,7 +269,7 @@ async def run(args):
          patch.object(understanding_module, "_append_local_trace", capture_understanding):
         bot = importlib.import_module("bot")
         logging.getLogger().setLevel(logging.WARNING)
-        for case_id in args.cases.split(","):
+        for case_id in cli_args.cases.split(","):
             cid = store.new(42, 42)
             for index, question in enumerate(CASES[case_id], 1):
                 bot.conversations = ConversationStore(store_path)
@@ -263,11 +299,11 @@ async def run(args):
                     "understanding_call_indices": list(range(start_understanding, len(raw_understanding)))}
                 result["turns"].append(item)
                 save()
-                print(json.dumps({k: item[k] for k in ("case", "turn", "answer", "latency_ms", "same_task")}, ensure_ascii=False), flush=True)
+                terminal_record({k: item[k] for k in ("case", "turn", "answer", "latency_ms", "same_task")})
                 if diagnostics and diagnostics.get("generation_status") == "error":
-                    print("Provider/runtime error recorded; stopping bounded batch", flush=True)
+                    terminal_record({"status": "provider_or_runtime_error", "action": "stopping bounded batch"})
                     return
-                pause = args.pause
+                pause = cli_args.pause
                 # Use observed provider TPM headroom between synthetic turns.
                 # This harness scheduling does not alter runtime retry policy.
                 if result.get("http_trace"):
@@ -286,4 +322,6 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True)
     parser.add_argument("--pause", type=float, default=12)
     parser.add_argument("--revision", help="Source revision label for archived baseline runs")
+    parser.add_argument("--max-cost-kopecks", type=int,
+        help="Stop before a later provider call once reported Hubris usage reaches this ceiling")
     asyncio.run(run(parser.parse_args()))
