@@ -2105,4 +2105,4 @@ Across all current iteration LIVE artifacts: **198 kopecks reported, 128 HTTP 20
 
 **Decision: REVISE; Part A not accepted.** D08 relevance and D03 duplicate-question behavior improved, and D07's exact safe step was returned five times. But the 12-scenario QA did not increase useful answers or reduce false refusals, D07 did not succeed through two paraphrase task-readiness paths, and D01 showed one unsupported neighboring detail. Overall quality/production remains NO-GO. See [targeted REVISE checkpoint](../reports/exp2_natural_dialogue_20261115/revise_checkpoint.md) for causal chains, measurements and manual scoring.
 
-**Next concrete step:** owner review of this revised Part A scorecard. Do not start Part B or Experiment 3 before separate owner approval. No commit or push has yet been performed.
+**Next concrete step:** owner review of this revised Part A scorecard. Do not start Part B or Experiment 3 before separate owner approval. Changes and report were committed as `6be5e9b547ef27be42cf4423d9607b2d84dc9b3a` and pushed to `origin/main`.
