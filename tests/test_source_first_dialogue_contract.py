@@ -597,6 +597,61 @@ def test_frozen_d03_unknown_code_never_returns_fn231_fact_or_exact_fallback(tmp_
     assert "Что именно перестало работать" in answer.text
 
 
+def test_unconfirmed_error_code_followup_uses_known_context_without_repeating_question():
+    from app.dialogue_state import Fact
+    from app.source_first_service import _unconfirmed_error_code_reply
+
+    state = DialogueState(intent="device", operation="diagnose")
+    symptom = "касса иногда ругается"
+    state.symptom = Fact(symptom, 1, symptom, 0, len(symptom))
+    first = _unconfirmed_error_code_reply(state)
+    followup = _unconfirmed_error_code_reply(state, history=[{
+        "role": "assistant", "scenario": "clarify",
+        "scenario_reason": "error_code_scope_unconfirmed", "content": first.text,
+    }])
+
+    assert first.scenario_reason == "error_code_scope_unconfirmed"
+    assert "Что именно перестало работать" in first.text
+    assert followup.text != first.text
+    assert "точный код ошибки сейчас неизвестен" in followup.text
+    assert "какое действие не проходит" in followup.text
+    assert "ФН 231" not in followup.text and "-3975" not in followup.text
+
+
+def test_unknown_code_with_symptom_gets_focused_followup_when_planner_cannot_select(
+        monkeypatch, tmp_path):
+    import json
+    from app.dialogue_state import Fact
+    from app.llm_client import Generation
+
+    source = "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
+    heading = "Признаки"
+    body = dict(_sections((ROOT / source).read_text(encoding="utf-8").split("---", 2)[2].strip()))[heading]
+    scope = {"service": "Эвотор", "manufacturer": "Эвотор",
+             "task_category": "receipt_transmission", "operations": ["check_transmission"]}
+    retrieval = _retrieval(source, "evotor-ofd-error-not-connected-20261019", heading, scope, body)
+    question = "После продажи касса иногда ругается."
+    state = DialogueState(task_context=TaskContext(intent="device", request_type="diagnosis",
+        operation="diagnose", symptom=Fact(question, 1, question, 0, len(question)),
+        entities={"manufacturer": [Fact("Эвотор", 1, "Эвотор", 0, 6)],
+                  "equipment": [Fact("Эвотор 7.3", 2, "Это Эвотор 7.3", 4, 14)]}))
+
+    async def planner_clarifies(_messages, _settings, *, call_stage="generation"):
+        return Generation(json.dumps({"mode": "clarify", "question": "",
+            "applicability_confirmed": False, "order_confirmed": False,
+            "reason": "no symptom-specific source"}), "fixture")
+
+    monkeypatch.setattr("app.source_first_service.generate", planner_clarifies)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+        question, state=state,
+        coordinator_decision={"route": "technical_action", "current_subgoal": question}))
+
+    assert answer.scenario == "clarify", answer.scenario_reason
+    assert answer.scenario_reason == "planner_could_not_select_clarification"
+    assert "какое действие не проходит" in answer.text
+    assert "ФН 231" not in answer.text and "-3975" not in answer.text
+
+
 def test_focus_prefers_supported_fn_fact_over_dangerous_safety_warning():
     source = ROOT / "data/knowledge/evotor/fn/fn-234.md"
     body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()

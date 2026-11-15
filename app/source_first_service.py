@@ -777,13 +777,25 @@ def _source_error_matches_client(state: DialogueState, selected: dict | None) ->
     return bool(source_codes & confirmed)
 
 
-def _unconfirmed_error_code_reply(state: DialogueState) -> Answer:
+def _unknown_code_followup_question() -> str:
+    return ("Понял, точный код ошибки сейчас неизвестен. Чтобы продолжить без догадок о коде, "
+            "уточните, какое действие не проходит и какой результат вы видите. "
+            "Если результат меняется от попытки к попытке, опишите оба варианта.")
+
+
+def _unconfirmed_error_code_reply(state: DialogueState,
+                                  history: list[dict] | None = None) -> Answer:
     unknown = set(state.task_context.unknown_facts if state.task_context else [])
-    question = ("Что именно перестало работать — печать чека, передача данных "
-                "или другое? Если появится точный текст на экране, пришлите его."
-                if "details" in unknown or state.symptom else
-                "Какой текст ошибки отображается на кассе? Если кода нет, опишите, что именно "
-                "не получается — например, печать чека или передача данных.")
+    repeated = any(item.get("role") == "assistant" and item.get("scenario_reason") in {
+        "error_code_scope_unconfirmed", "selected_error_code_unconfirmed",
+        "planner_could_not_select_clarification",
+    } for item in (history or []))
+    question = (_unknown_code_followup_question() if repeated else
+        ("Что именно перестало работать — печать чека, передача данных "
+         "или другое? Если появится точный текст на экране, пришлите его."
+         if "details" in unknown or state.symptom else
+         "Какой текст ошибки отображается на кассе? Если кода нет, опишите, что именно "
+         "не получается — например, печать чека или передача данных."))
     return Answer(question, scenario="clarify", scenario_reason="error_code_scope_unconfirmed",
                   clarification_slot="details", generation_status="clarification")
 
@@ -2396,7 +2408,7 @@ class SourceFirstService:
             }
         sections = eligible
         if rejected and not sections:
-            reply = _unconfirmed_error_code_reply(state)
+            reply = _unconfirmed_error_code_reply(state, history)
             return Answer(reply.text, scenario=reply.scenario,
                 scenario_reason=reply.scenario_reason,
                 clarification_slot=reply.clarification_slot,
@@ -2884,7 +2896,7 @@ class SourceFirstService:
                 "checked_before_sufficiency_fallback": True,
                 "rejected_code_specific_documents": [item["title"] for item in code_specific],
                 "confirmed_client_codes": sorted(fact.value for fact in state.error_codes)}}
-            reply = _unconfirmed_error_code_reply(state)
+            reply = _unconfirmed_error_code_reply(state, history)
             return Answer(reply.text, scenario="clarify",
                 scenario_reason="error_code_scope_unconfirmed",
                 clarification_slot=reply.clarification_slot,
@@ -3281,7 +3293,7 @@ class SourceFirstService:
                 "selected_title": selected.get("title"),
                 "client_error_confirmed": bool(state.error),
                 "procedure_admitted": False}
-            reply = _unconfirmed_error_code_reply(state)
+            reply = _unconfirmed_error_code_reply(state, history)
             return Answer(reply.text, scenario="clarify",
                 scenario_reason="selected_error_code_unconfirmed",
                 clarification_slot=reply.clarification_slot,
@@ -4232,6 +4244,16 @@ class SourceFirstService:
                 if item.get("unit_id") == last_shown.get("unit_id")), None)
             if not last_result or last_result.get("status") in {"asked", "unknown", "not_done"}:
                 return self._check_result_clarification(state, last_shown, history, started, **base)
+        previous_unknown_code_followup = any(item.get("role") == "assistant"
+            and item.get("scenario_reason") == "planner_could_not_select_clarification"
+            for item in (history or [])[:-1])
+        if (mode == "clarify" and state.intent == "device" and state.symptom
+                and not state.error_codes and state.task_entity("manufacturer")
+                and not previous_unknown_code_followup):
+            return Answer(_unknown_code_followup_question(), scenario="clarify",
+                scenario_reason="planner_could_not_select_clarification",
+                clarification_slot="details", generation_status="clarification",
+                duration_ms=round((perf_counter()-started)*1000), **base)
         repeated_planner_question = any(item.get("role") == "assistant"
             and item.get("scenario") == "clarify"
             and item.get("scenario_reason") == "planner_clarification"
