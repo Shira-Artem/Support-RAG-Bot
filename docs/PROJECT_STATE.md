@@ -1922,3 +1922,9 @@ A: 9 Understanding + 4 Planner calls, 13 HTTP attempts; **30,940 успешны�
 **Проверки:** `tests/test_ai_coordinator.py` + `tests/test_source_first_dialogue_contract.py`: **59 passed**. Новые pure-coordinator regressions проверяют короткий симптом с подтверждённым subject (допуск поиска) и такой же symptom без subject (по-прежнему clarification). Live Groq/Qdrant A/B ещё не запускался; результат относится только к offline checkpoint.
 
 **Ограничения и следующий шаг:** ещё не проверены реальные Understanding projections для D08 и полный набор D01/D03/D05/D07/D08. До live-кандидатного A/B расширить bounded synthetic scenarios и провести baseline/candidate прогоны с изолированными SQLite на одной read-only Stage3 коллекции. Part B, production configuration, KB и Qdrant не менялись; общий quality/production gate остаётся NO-GO. После этого checkpoint — проверить документацию и Git diff, затем commit/push в `main`.
+
+## 2026-11-15 — Experiment 2 part A: подготовлены frozen LIVE scenarios
+
+В `scripts/run_telegram_equivalent_live.py` добавлены bounded синтетические multi-turn inputs D01 partial internet (3 turns), D03 unknown error code (4), D05 старый чек в aQsi Online (2), D07 Эвотор 7.3/чеки не передаются (1) и D08 документ Диадок→1С (3). Это только подготовка тестового входа; пользовательские сообщения не отправлялись, Groq не вызывался, Qdrant и SQLite runtime не менялись.
+
+**Проверка:** `py_compile` и `--help` для live harness прошли. Следующий шаг — последовательный A/B на baseline `a006ea6` и кандидате после A1, с изолированными БД/выходами; остановиться при первом provider error/429. Результат и сценарные метрики пока отсутствуют.

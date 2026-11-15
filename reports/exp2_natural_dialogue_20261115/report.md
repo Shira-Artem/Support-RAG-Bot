@@ -19,10 +19,12 @@
 
 - `.venv\\Scripts\\python.exe -m pytest tests/test_ai_coordinator.py -q` — **10 passed**.
 - `.venv\\Scripts\\python.exe -m pytest tests/test_ai_coordinator.py tests/test_source_first_dialogue_contract.py -q` — **59 passed**.
+- `scripts/run_telegram_equivalent_live.py`: `py_compile` и `--help` прошли.
+- В harness добавлены frozen synthetic scenarios: D01 (3 turns), D03 unknown code (4), D05 aQsi old sale (2), D07 Evotor 7.3 receipt transmission (1), D08 Diadok→1C document visibility (3).
 - Groq/Qdrant full-pipeline A/B — **ещё не запускался** для Experiment 2.
 
 ## Доказательства, ограничения и следующий шаг
 
-Текущее изменение — ограниченный offline checkpoint. В реальном full pipeline ещё надо проверить, что Understanding приводит D08-like input к reducer state, который использует допуск `semantic_task_ready`; также нужны frozen baseline/candidate сценарии D01, D03-T03, D05, D07 и D08, SQLite reopen, источники, quality/safety, provider usage и latency. Уточнение D01 обязано учитывать «интернет работает» как частичное наблюдение и не помечать составную проверку завершённой. Для D03 неизвестный код должен оставаться неизвестным. Для D05 нельзя выдумывать элементы интерфейса. D07 требует сначала проверить source/task matching. Part B не начинать до измерения/решения по part A.
+Текущее изменение — ограниченный offline checkpoint. В реальном full pipeline ещё надо проверить, что Understanding приводит D08-like input к reducer state, который использует допуск `semantic_task_ready`; затем сравнить frozen baseline/candidate inputs, SQLite reopen, источники, quality/safety, provider usage и latency. Уточнение D01 обязано учитывать «интернет работает» как частичное наблюдение и не помечать составную проверку завершённой. Для D03 неизвестный код должен оставаться неизвестным. Для D05 нельзя выдумывать элементы интерфейса. D07 требует сначала проверить source/task matching. Part B не начинать до измерения/решения по part A.
 
-Следующий шаг: добавить недостающие bounded synthetic scenarios в существующий live harness, не менять модель/коллекцию; затем выполнить последовательные frozen baseline/candidate прогоны с изолированными SQLite и теми же параметрами Groq/Stage3. Результаты и следующий кодовый checkpoint будут добавлены в этот отчёт после проверки.
+Следующий шаг: выполнить последовательные frozen baseline/candidate прогоны с изолированными SQLite и теми же параметрами Groq/Stage3. Запуск ограничить этими пятью сценариями, не менять модель/коллекцию и остановиться при provider error/429. Результаты и следующий кодовый checkpoint будут добавлены в этот отчёт после проверки.
