@@ -316,10 +316,12 @@ def validate_selected_units(decision: EvidenceDecision, units: list[EvidenceUnit
     if instruction_issue(text, evidence):
         return [], "instruction_safety_rejected"
     # If the task has an explicit error code, reject evidence about another code.
-    task_error = state.error.value if state.error else None
-    if task_error:
+    task_errors = {fact.value.lstrip("-") for fact in state.error_codes}
+    if not task_errors and state.error:
+        task_errors = {state.error.value.lstrip("-")}
+    if task_errors:
         cited_codes = set(re.findall(r"\b\d{3,4}\b", text))
-        if cited_codes and str(task_error) not in cited_codes:
+        if cited_codes and not (task_errors & cited_codes):
             return [], "error_code_mismatch"
     return selected, None
 

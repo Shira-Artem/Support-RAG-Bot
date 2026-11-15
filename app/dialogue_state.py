@@ -89,6 +89,7 @@ class TaskContext:
     constraints: list[Fact] = field(default_factory=list)
     details: list[Fact] = field(default_factory=list)
     error: Fact | None = None
+    error_codes: list[Fact] = field(default_factory=list)
     expected: ExpectedClarification | None = None
     relation: str = "new_task"
     confidence: float = 1.0
@@ -162,7 +163,7 @@ def _task_from(value: TaskContext | dict) -> TaskContext:
     raw["entities"] = _facts_by_slot(raw.get("entities", {}))
     raw["unknown_evidence"] = {slot: _fact(fact) for slot, fact in
                                raw.get("unknown_evidence", {}).items()}
-    for key in ("parameters", "goals", "constraints", "details", "superseded_facts"):
+    for key in ("parameters", "goals", "constraints", "details", "superseded_facts", "error_codes"):
         raw[key] = [_fact(f) for f in raw.get(key, [])]
     for key in ("object_reference", "task_fact", "operation_evidence", "symptom", "error", "unresolved", "current_subgoal"):
         raw[key] = _fact(raw.get(key))
@@ -339,6 +340,15 @@ class DialogueState:
     @error.setter
     def error(self, value): self._ensure_task().error = value
     @property
+    def error_codes(self) -> list[Fact]:
+        task = self.task_context
+        if not task:
+            return []
+        values = task.error_codes or ([task.error] if task.error else [])
+        if task.error and all(item.value != task.error.value for item in values):
+            values = [*values, task.error]
+        return values
+    @property
     def expected(self): return self.task_context.expected if self.task_context else None
     @expected.setter
     def expected(self, value): self._ensure_task().expected = value
@@ -444,6 +454,7 @@ class DialogueState:
                 "superseded_facts": [asdict(f) for f in t.superseded_facts],
                 "goals": [asdict(f) for f in t.goals], "constraints": [asdict(f) for f in t.constraints],
                 "details": [asdict(f) for f in t.details], "error": asdict(t.error) if t.error else None,
+                "error_codes": [asdict(f) for f in t.error_codes],
                 "expected": asdict(t.expected) if t.expected else None, "relation": t.relation,
                 "confidence": t.confidence, "transition": t.transition,
                 "analysis_required": t.analysis_required, "unresolved": asdict(t.unresolved) if t.unresolved else None,
@@ -508,7 +519,9 @@ class DialogueState:
             "operation_confidence": raw.get("operation_confidence", 0.0), "symptom": raw.get("symptom"),
             "superseded_facts": raw.get("superseded_facts", []),
             "goals": raw.get("goals", []), "constraints": raw.get("constraints", []),
-            "details": raw.get("details", []), "error": raw.get("error"), "expected": raw.get("expected"),
+            "details": raw.get("details", []), "error": raw.get("error"),
+            "error_codes": raw.get("error_codes", [raw["error"]] if raw.get("error") else []),
+            "expected": raw.get("expected"),
             "relation": "new_task" if raw.get("transition", "new_task") == "new_task" else "continue",
             "confidence": 0.7, "transition": raw.get("transition", "new_task"),
             "analysis_required": raw.get("analysis_required", False), "unresolved": raw.get("unresolved"),
@@ -549,6 +562,7 @@ class Observation:
     constraints: list[Fact] = field(default_factory=list)
     details: list[Fact] = field(default_factory=list)
     error: Fact | None = None
+    error_codes: list[Fact] = field(default_factory=list)
     new_topic: bool = False
     reference: bool = False
     question: bool = False
@@ -1186,6 +1200,7 @@ class DialogueManager:
                   *([obs.relation_evidence] if obs.relation_evidence else []),
                   *([obs.symptom] if obs.symptom else []),
                   *([obs.evidence] if obs.evidence else []), *([obs.error] if obs.error else [])]
+        facts += list(obs.error_codes)
         valid_operations = {name for name, _ in OPERATIONS} | {'unknown', 'explain', 'add_employee', 'assign_role', 'create_role', 'view_reports', 'change_permissions', 'diagnose', 'status', 'fiscalize'}
         if obs.operation not in valid_operations or obs.intent not in {name for name, _, _ in OBJECTS} | {'unknown', 'general'}:
             raise ValueError('Unsupported analyser task; extend the typed vocabulary explicitly')
@@ -1522,10 +1537,23 @@ class DialogueManager:
                 start, end = match.start() + leading, match.start() + trailing
                 if end > start and _informative_detail(text[start:end]):
                     _append_unique(state.details, [Fact.span(text, message_id, start, end)])
-        if obs.error:
-            if previous.error and previous.error.value != obs.error.value:
-                _append_unique(state.superseded_facts, [previous.error])
-            state.error = obs.error
+        observed_codes = obs.error_codes or ([obs.error] if obs.error else [])
+        if observed_codes:
+            previous_codes = state.error_codes
+            new_values = {item.value for item in observed_codes}
+            if previous_codes and not new_values.issubset({item.value for item in previous_codes}):
+                _append_unique(state.superseded_facts, previous_codes)
+                state.task_context.error_codes = []
+            for item in observed_codes:
+                existing_index = next((index for index, fact in enumerate(state.task_context.error_codes)
+                                        if fact.value == item.value), None)
+                if existing_index is None:
+                    state.task_context.error_codes.append(item)
+                else:
+                    # Refresh the exact source span to the latest client
+                    # confirmation of this still-active code.
+                    state.task_context.error_codes[existing_index] = item
+            state.error = observed_codes[-1]
         if relation == "contradiction":
             _append_unique(state.details, [obs.evidence])
         elif (obs.feedback

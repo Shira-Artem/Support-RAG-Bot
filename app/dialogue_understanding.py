@@ -254,6 +254,7 @@ def response_schema() -> dict[str, Any]:
         # required for client facts, not for these labels.
         "object_evidence": _span_schema(),
         "goal": _span_schema(), "symptom": _span_schema(),
+        "error_codes": {"type": "array", "items": _span_schema(False)},
         "entities": {"type": "array", "items": {"type": "object", "properties": {
             "slot": {"type": "string"},
             "value": {"type": "string"}, "evidence": _span_schema(False)},
@@ -289,6 +290,51 @@ def _fact_or_none(text: str, raw: Any, message_id: int | str) -> Fact | None:
     if quote == "":
         return None
     return _find_span(text, quote, message_id)
+
+
+_ERROR_CODE_MENTION = re.compile(r"(?:ФН|FN|код(?:\s+ошибки)?|ошиб\w*(?:\s+ФН)?)\s*[-№#:]?\s*(-?\d{2,5})\b", re.I)
+_RELATED_ERROR_NUMBER = re.compile(r"\b(?:а|и)\s+(-?\d{2,5})\b", re.I)
+_ERROR_REPORT_CUE = re.compile(r"ошиб\w*|код|пишет|показыва\w*|выда[её]т|отобража\w*|высветил\w*", re.I)
+_ERROR_INCIDENT_VERB = re.compile(r"\b(?:пишет|показыва\w*|выда[её]т|отобража\w*|появил\w*|возник\w*|ругает\w*)\b", re.I)
+_ERROR_NEGATION = re.compile(r"(?:не|без|никак не|не было)\s*(?:показыва\w*|выда[её]т|отобража\w*|ошибк\w*|код\w*|ФН)?\s*$", re.I)
+_ERROR_REPORTED_BY_ASSISTANT = re.compile(r"(?:бот|ассистент|ты|вы)\b.{0,20}\b(?:сказал\w*|написал\w*|ответил\w*|указал\w*)|ответ(?:е|ом)\s+бота", re.I)
+
+
+def _confirmed_error_code_spans(text: str, quotes: list[Any], message_id: int | str,
+                                *, informational: bool) -> list[Fact]:
+    """Keep only positive incident codes grounded in the current client turn."""
+    if (informational and _is_conceptual_information_request(text)
+            and not _ERROR_INCIDENT_VERB.search(text)):
+        return []
+    accepted: list[Fact] = []
+    seen: set[str] = set()
+    # Derive candidate offsets from the current user text itself. The model's
+    # quote is advisory only: this preserves exact offsets even when it changes
+    # case, while making articles, bot output, and search queries ineligible.
+    candidates: list[tuple[int, int, str]] = []
+    for match in _ERROR_CODE_MENTION.finditer(text):
+        start, end = match.span(1)
+        candidates.append((start, end, match.group(1)))
+        related = _RELATED_ERROR_NUMBER.search(text[end:min(len(text), end + 20)])
+        if related:
+            candidates.append((end + related.start(1), end + related.end(1), related.group(1)))
+    for absolute_code_start, absolute_code_end, raw_value in candidates:
+        before = text[max(0, absolute_code_start - 52):absolute_code_start]
+        around = text[max(0, absolute_code_start - 42):
+                      min(len(text), absolute_code_end + 28)]
+        # A negated code and a code attributed to the bot are not the client's
+        # observation. Corrections keep only the positive corrected mention.
+        if _ERROR_NEGATION.search(before) or _ERROR_REPORTED_BY_ASSISTANT.search(before):
+            continue
+        if not _ERROR_REPORT_CUE.search(around):
+            continue
+        value = raw_value.lstrip("-")
+        if value in seen:
+            continue
+        seen.add(value)
+        accepted.append(Fact.span(text, message_id, absolute_code_start,
+                                  absolute_code_end, value=value))
+    return accepted
 
 
 def _fold(value: str) -> str:
@@ -593,7 +639,8 @@ def validate_response(data: Any, text: str, message_id: int | str,
                       previous_state: DialogueState | None = None) -> tuple[str, bool, tuple[str, ...], Observation]:
     diagnostics: list[dict[str, Any]] = []
     schema_fields = set(response_schema()["schema"]["required"])
-    if not isinstance(data, dict) or set(data) != schema_fields:
+    if not isinstance(data, dict) or frozenset(data) not in {frozenset(schema_fields),
+            frozenset(schema_fields - {"error_codes"})}:
         _fatal_validation("structured response fields mismatch", diagnostics, "structured_response_shape")
     raw_kind = data["request_type"]
     raw_relation, raw_intent, raw_operation = data["relation"], data["intent"], data["operation"]
@@ -916,6 +963,16 @@ def validate_response(data: Any, text: str, message_id: int | str,
 
     goal = _parse_optional_fact(text, data["goal"], message_id, diagnostics, "goal")
     symptom = _parse_optional_fact(text, data["symptom"], message_id, diagnostics, "symptom")
+    raw_error_codes = data.get("error_codes", [])
+    if not isinstance(raw_error_codes, list):
+        _field_result(diagnostics, "error_codes", "rejected", "expected_array")
+        raw_error_codes = []
+    error_codes = _confirmed_error_code_spans(text, raw_error_codes, message_id,
+        informational=(kind == "information" and operation == "explain"))
+    _field_result(diagnostics, "error_codes", "accepted" if error_codes else
+        ("rejected" if raw_error_codes else "omitted"),
+        "positive_incident_code_exact_client_span" if error_codes else
+        "no_positive_incident_code_confirmed", count=len(error_codes))
     if (kind == "information" and operation == "explain" and goal is not None
             and _PROCEDURE_GOAL.search(goal.quote)):
         # An exact action goal contradicts a generic explanation label. Do not
@@ -974,7 +1031,9 @@ def validate_response(data: Any, text: str, message_id: int | str,
         validation_diagnostics=diagnostics,
         intent=intent, request_type=kind, operation=operation, object=obj, evidence=evidence,
         object_evidence=object_ev, symptom=symptom,
-        goals=[goal] if goal else [], relation=relation, confidence=float(confidence),
+        goals=[goal] if goal else [], error_codes=error_codes,
+        error=error_codes[-1] if error_codes else None,
+        relation=relation, confidence=float(confidence),
         intent_confidence=float(confidence), operation_confidence=float(confidence),
         relation_confidence=float(confidence), feedback=kind in {"feedback", "resolved"},
         question=kind == "information")
@@ -999,6 +1058,7 @@ def _state_summary(state: DialogueState) -> dict[str, Any]:
             "prior_symptom_facts": facts([task.symptom]) if task.symptom else [],
             "goals": facts(task.goals), "constraints": facts(task.constraints),
             "details": facts(task.details),
+            "error_codes": facts(task.error_codes or ([task.error] if task.error else [])),
             "active_route": {"slot": task.active_route.slot, "value": task.active_route.value}
                 if task.active_route else None,
             "progress": {"shown_checks": [{"id": unit.get("unit_id"), "label": unit.get("label")}
@@ -1026,6 +1086,7 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
         "Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.",
             "Set specialist_requested only for a direct, positive request to speak with a human specialist.",
             "Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.",
+            "For a concrete incident, error_codes may cite only exact current_message spans where the client positively reports an error code. Do not cite codes in questions about definitions, bot/assistant quotations, negated codes, model/version numbers, retrieved text, or search queries. Include every positively reported code; corrections replace the negated code.",
             "Choose relation new_task when the client changes topic; otherwise distinguish continuation from clarification answer."],
         # Hints, deliberately not schema enums: unknown labels must not cause
         # Groq to reject an otherwise useful response (historical HTTP 400).
@@ -1199,6 +1260,7 @@ def understanding_to_dict(value: Understanding) -> dict[str, Any]:
             "object_evidence": fact(obs.object_evidence), "relation_evidence": fact(obs.relation_evidence),
             "evidence": fact(obs.evidence),
             "symptom": fact(obs.symptom), "goals": [fact(x) for x in obs.goals],
+            "error_codes": [fact(x) for x in obs.error_codes],
             "unknown_facts": {slot: fact(span) for slot, span in obs.unknown_facts.items()},
             "entities": {slot: [fact(x) for x in values] for slot, values in obs.entities.items()}}}
 
@@ -1230,6 +1292,9 @@ def observation_from_dict(data: dict[str, Any], text: str, message_id: int | str
         intent_evidence=parse(raw.get("intent_evidence")), operation_evidence=parse(raw.get("operation_evidence")),
         object_evidence=parse(raw.get("object_evidence")), relation_evidence=parse(raw.get("relation_evidence")),
         symptom=parse(raw.get("symptom")), goals=[parse(item) for item in raw.get("goals", [])],
+        error_codes=[parse(item) for item in raw.get("error_codes", [])],
+        error=(parse(raw.get("error")) if raw.get("error") else
+               (parse(raw.get("error_codes", [])[-1]) if raw.get("error_codes") else None)),
         relation=raw["relation"], confidence=float(raw["confidence"]),
         intent_confidence=float(raw["confidence"]), operation_confidence=float(raw["confidence"]),
         relation_confidence=float(raw["confidence"]), feedback=data.get("request_type") in {"feedback", "resolved"},

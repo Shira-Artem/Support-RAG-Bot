@@ -51,8 +51,11 @@ def build_rag_query(state: DialogueState, max_chars: int = 500,
         ("ofd", "ОФД"), ("software", "ПО"), ("integration", "интеграция"))
         if frame.entities.get(slot) and state.task_entity(slot)]
     required = [*entities, task]
-    if state.error:
-        required.append("код ошибки " + state.error.value)
+    codes = state.error_codes
+    if not codes and state.error:
+        codes = [state.error]
+    for fact in codes:
+        required.append("код ошибки " + fact.value)
     # Never cut the middle of a fact or drop an exclusion to satisfy the search
     # API limit. Oversized states need a targeted clarification/compression step.
     parts = [*required]

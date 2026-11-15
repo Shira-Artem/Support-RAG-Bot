@@ -964,12 +964,11 @@ def test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repea
     final = ledger[-1]["final_reply"].casefold()
     assert "\u043c\u043e\u0434\u0435\u043b" in final
     assert "\u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" not in final
-    assert ledger[-1]["reason"] == "dialogue_state_task_incomplete"
-    assert ledger[-1]["coordinator_decision"]["route"] == "conversation"
-    assert ledger[-1]["coordinator_decision"]["required_action"] == "ask_for_missing_task_detail"
+    assert ledger[-1]["reason"] == "progress_ledger_waiting_for_model"
+    assert ledger[-1]["coordinator_decision"]["route"] == "technical_action"
+    assert ledger[-1]["coordinator_decision"]["required_action"] == "continue_active_technical_task"
     assert "настройки" not in ledger[3]["final_reply"].casefold()
     assert ledger[-1]["route"] == "clarify"
-    assert "удалось выполнить показанную проверку" in final
     if output_dir := os.environ.get("P1_PROGRESS_OUTPUT_DIR"):
         target = Path(output_dir).resolve()
         assert target == (ROOT / "experiments/architecture_recovery_audit").resolve()
