@@ -792,6 +792,16 @@ def _missing_support_detail(state: DialogueState) -> tuple[str, str] | None:
     """Choose one intake question from typed task fields when no source fits."""
     if state.intent == "receipt" and state.operation == "search" and not state.parameters:
         return "period", "За какой период или дату нужно найти запись?"
+    if (state.operation == "search" and not state.parameters
+            and state.intent in {"report", "general"}
+            and state.task_entities):
+        return "search_scope", "Ищете документ по одной продаже или сводный отчёт за период? Если по продаже — за какую дату?"
+    task_text = state.task.value.casefold() if state.task else ""
+    has_document_subject = bool(re.search(r"\b(?:документ\w*|упд)\b", task_text))
+    if (state.operation in {"diagnose", "search"} and state.symptom
+            and not state.object and has_document_subject
+            and state.task_entity("service") and state.task_entity("software")):
+        return "document_type", "Какой именно документ вы ожидаете увидеть в программе?"
     if state.intent == "device" and not state.task_entity("manufacturer"):
         return "equipment", "Какой производитель и модель кассы используются?"
     return None

@@ -145,3 +145,45 @@ def test_missing_support_detail_is_typed_and_bounded():
         "period", "За какой период или дату нужно найти запись?")
     assert _bounded_support_intake(state, [{"role": "assistant",
         "scenario_reason": "no_applicable_source_missing_client_detail"}]) is None
+
+
+def test_search_without_scope_asks_for_record_or_period_without_ui_claims():
+    state = DialogueState()
+    state.intent = "general"
+    state.operation = "search"
+    state.task = Fact.span("Надо найти старую продажу", 1)
+    state.goals = [state.task]
+    state.task_context.entities = {"service": [Fact.span("aQsi Online", 1)]}
+
+    detail = _bounded_support_intake(state, [])
+
+    assert detail == (
+        "search_scope",
+        "Ищете документ по одной продаже или сводный отчёт за период? Если по продаже — за какую дату?")
+    assert _bounded_support_intake(state, [{"role": "assistant",
+        "scenario_reason": "no_applicable_source_missing_client_detail"}]) is None
+
+
+def test_cross_system_document_gap_asks_only_for_missing_document_type():
+    state = DialogueState()
+    state.intent = "general"
+    state.operation = "diagnose"
+    state.task = Fact.span("Поставщик отправил документ, но я его не вижу", 1)
+    state.symptom = Fact.span("не вижу", 1)
+    state.task_context.entities = {
+        "service": [Fact.span("Сервис отправителя", 1)],
+        "software": [Fact.span("учётная программа", 1)],
+    }
+
+    assert _bounded_support_intake(state, []) == (
+        "document_type", "Какой именно документ вы ожидаете увидеть в программе?")
+
+
+def test_document_type_intake_requires_both_confirmed_system_sides():
+    state = DialogueState()
+    state.operation = "diagnose"
+    state.task = Fact.span("Документ не отображается", 1)
+    state.symptom = Fact.span("не отображается", 1)
+    state.task_context.entities = {"software": [Fact.span("учётная программа", 1)]}
+
+    assert _bounded_support_intake(state, []) is None
