@@ -77,10 +77,11 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
         and (item.get("result_span") or {}).get("message_id") ==
             (observation.get("evidence") or {}).get("message_id")
         for item in state.active_task.checks))
-    # A diagnosis label and a product name do not identify the failure to
-    # diagnose. Do not let a broad retrieval hit become an answer; ask for an
-    # observable problem first.
-    if operation == "diagnose" and not has_diagnostic_detail:
+    # Search readiness and action readiness are separate. A reducer-owned
+    # subject plus an observed goal/symptom can justify a scoped evidence
+    # search even when the symptom is too short for diagnosis. The retrieval
+    # path still applies source applicability and action-safety gates.
+    if operation == "diagnose" and not has_diagnostic_detail and not semantic_task_ready:
         route, action, rationale = (
             "conversation", "ask_for_missing_problem_detail",
             "diagnosis_has_no_observed_symptom_or_goal")

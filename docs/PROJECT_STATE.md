@@ -1912,3 +1912,13 @@ A: 9 Understanding + 4 Planner calls, 13 HTTP attempts; **30,940 успешны�
 После полного регрессионного PASS создан merge commit `12a0a9dced81b9afff58591dcbebfe982df41a6c` (`merge: integrate experiment 1 error contract`) и отправлен в `origin/main`. Push завершился `cd42e62..12a0a9d main -> main`; GitHub API вернул этот же SHA и canonical commit page, а `git ls-remote origin refs/heads/main` подтвердил ref. Перед push `origin/main` был проверен на равенство прежнему HEAD, `git diff --check`/staged diff check прошли, сканирование provider tokens, bearer credentials, email, phone-like и numeric identity fields дало 0 matches. Full pytest: 868 passed / 4 исторических xfailed.
 
 С этого момента Experiment 1 считается интегрированным экспериментальным baseline в `main`; это не production GO. Следующий шаг утверждённой последовательности — Experiment 2, часть A на main; часть B пока не включать. Не создавать feature branch/worktree.
+
+## 2026-11-15 — Experiment 2 part A: разделение допуска к поиску и полноты диагноза
+
+Работа начата непосредственно в `main` после подтверждённой публикации Experiment 1 (`a006ea65e835e070f183ac25ccd39305c1a0e79d`). Локальный `.worktrees/` найден до изменений и оставлен нетронутым.
+
+**Изменение A1:** в `app/ai_coordinator.py` diagnosis больше не блокирует retrieval только потому, что короткая формулировка симптома не проходит лексический порог `specific_enough`. Координатор уже вычислял `semantic_task_ready` из reducer-owned задачи/цели или симптома и подтверждённой темы; этот допуск теперь проверяется до запроса дополнительной детали. Это разрешает поиск evidence, но само по себе не подтверждает применимость источника и не разрешает техническое действие: последующие source, scope и safety gates остаются обязательными. Специальных правил для названий Диадок или 1С нет.
+
+**Проверки:** `tests/test_ai_coordinator.py` + `tests/test_source_first_dialogue_contract.py`: **59 passed**. Новые pure-coordinator regressions проверяют короткий симптом с подтверждённым subject (допуск поиска) и такой же symptom без subject (по-прежнему clarification). Live Groq/Qdrant A/B ещё не запускался; результат относится только к offline checkpoint.
+
+**Ограничения и следующий шаг:** ещё не проверены реальные Understanding projections для D08 и полный набор D01/D03/D05/D07/D08. До live-кандидатного A/B расширить bounded synthetic scenarios и провести baseline/candidate прогоны с изолированными SQLite на одной read-only Stage3 коллекции. Part B, production configuration, KB и Qdrant не менялись; общий quality/production gate остаётся NO-GO. После этого checkpoint — проверить документацию и Git diff, затем commit/push в `main`.

@@ -87,6 +87,37 @@ def test_generic_error_word_does_not_count_as_a_diagnostic_symptom():
     assert decision.required_action == "ask_for_missing_problem_detail"
 
 
+def test_short_observed_symptom_and_confirmed_subject_allow_evidence_search():
+    state = DialogueState()
+    state.task_id = "task:1"
+    state.operation = "diagnose"
+    state.task = Fact.span("не вижу документ в учетной системе", 1)
+    state.symptom = Fact.span("не вижу", 1)
+    state.object = Fact.span("входящий документ", 1)
+    state.task_context.entities = {
+        "service": [Fact.span("Диадок", 1)],
+        "software": [Fact.span("1С", 1)],
+    }
+
+    decision = coordinate({"request_type": "diagnosis", "observation": {}}, state)
+
+    assert decision.route == "technical_action"
+    assert decision.required_action == "retrieve_then_apply_independent_scope_and_safety_gates"
+
+
+def test_diagnosis_without_a_confirmed_subject_still_requests_observable_detail():
+    state = DialogueState()
+    state.task_id = "task:1"
+    state.operation = "diagnose"
+    state.task = Fact.span("не вижу документ", 1)
+    state.symptom = Fact.span("не вижу", 1)
+
+    decision = coordinate({"request_type": "diagnosis", "observation": {}}, state)
+
+    assert decision.route == "conversation"
+    assert decision.required_action == "ask_for_missing_problem_detail"
+
+
 def test_clarification_reply_keeps_the_active_technical_route():
     state = DialogueState()
     state.task_id = "task:1"
