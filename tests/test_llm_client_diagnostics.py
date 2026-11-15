@@ -43,6 +43,12 @@ def _settings():
         groq_model="test-model", groq_reasoning_effort="low")
 
 
+def _hubris_settings():
+    return SimpleNamespace(llm_provider="hubris", hubris_api_key="hubris-test-secret",
+        hubris_base_url="https://api.hubris.pw/v1/", hubris_model="openai/gpt-oss-20b",
+        hubris_reasoning_effort="low")
+
+
 def _response(status: int, payload: dict, headers: dict | None = None):
     return httpx.Response(status, json=payload, headers=headers,
         request=httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions"))
@@ -226,3 +232,66 @@ def test_malformed_provider_payload_has_phase_specific_schema_error(monkeypatch)
     assert raised.value.schema_error == "invalid_provider_json"
     assert raised.value.duration_ms is not None
     assert _Client.requests == 1
+
+
+def test_hubris_openai_compatible_request_parses_usage_cost_and_reasoning(monkeypatch):
+    calls = []
+
+    class CaptureClient(_Client):
+        async def post(self, url, *args, **kwargs):
+            calls.append((url, kwargs))
+            return httpx.Response(200, json={"model": "openai/gpt-oss-20b",
+                "id": "hubris-call-1", "choices": [{"message": {"content": "ОФД — оператор фискальных данных."},
+                "finish_reason": "stop"}], "usage": {"prompt_tokens": 14, "completion_tokens": 22,
+                "total_tokens": 36, "cost": 7, "completion_tokens_details": {"reasoning_tokens": 9}}},
+                request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(client.httpx, "AsyncClient", CaptureClient)
+    result = asyncio.run(client.generate([{"role": "user", "content": "Что такое ОФД?"}],
+                                         _hubris_settings()))
+    url, kwargs = calls[0]
+    assert url == "https://api.hubris.pw/v1/chat/completions"
+    assert kwargs["headers"]["Authorization"] == "Bearer hubris-test-secret"
+    assert kwargs["json"]["model"] == "openai/gpt-oss-20b"
+    assert kwargs["json"]["reasoning_effort"] == "low"
+    assert kwargs["json"]["max_completion_tokens"] == 1024
+    assert result.model == "openai/gpt-oss-20b"
+    assert result.http_status == 200
+    assert (result.prompt_tokens, result.completion_tokens, result.total_tokens) == (14, 22, 36)
+    assert result.reasoning_tokens == 9
+    assert result.cost_kopecks == 7
+    assert result.retry_count == 0
+    assert result.rate_limit_headers is None
+
+
+def test_hubris_planner_keeps_structured_json_and_does_not_use_groq_limiter(monkeypatch):
+    calls = []
+
+    async def forbidden_limiter(*args, **kwargs):
+        raise AssertionError("Hubris must not use the Groq-specific rate limiter")
+
+    class CaptureClient(_Client):
+        async def post(self, url, *args, **kwargs):
+            calls.append(kwargs["json"])
+            return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]},
+                request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(client.httpx, "AsyncClient", CaptureClient)
+    monkeypatch.setattr(client.groq_rate_limiter, "before_request", forbidden_limiter)
+    asyncio.run(client.generate([], _hubris_settings(), call_stage="planner"))
+    assert calls[0]["response_format"]["type"] == "json_schema"
+    assert calls[0]["response_format"]["json_schema"]["strict"] is True
+
+
+def test_hubris_accepts_a_smaller_one_off_completion_budget(monkeypatch):
+    calls = []
+
+    class CaptureClient(_Client):
+        async def post(self, url, *args, **kwargs):
+            calls.append(kwargs["json"])
+            return httpx.Response(200, json={"choices": [{"message": {"content": "ОФД — оператор данных."}}]},
+                request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(client.httpx, "AsyncClient", CaptureClient)
+    asyncio.run(client.generate([], _hubris_settings(), max_completion_tokens=256))
+    assert calls[0]["max_completion_tokens"] == 256

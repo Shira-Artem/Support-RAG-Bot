@@ -1,4 +1,4 @@
-"""One chat-completions interface for the two configured providers."""
+"""One chat-completions interface for the configured providers."""
 from __future__ import annotations
 
 import asyncio
@@ -58,13 +58,16 @@ class Generation:
     rate_limit_headers: dict | None = None
     retry_count: int = 0
     retry_wait_seconds: float = 0.0
+    cost_kopecks: int | None = None
+    http_status: int | None = None
 
 
 def _optional_int(value) -> int | None:
     return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
 
 
-async def _generate_once(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
+async def _generate_once(messages: list[dict], settings: Settings, *, call_stage: str = "generation",
+                         max_completion_tokens: int | None = None) -> Generation:
     if settings.llm_provider == "groq":
         key, model = settings.groq_api_key, settings.groq_model
         url = "https://api.groq.com/openai/v1/chat/completions"
@@ -83,13 +86,20 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
         url = "https://openrouter.ai/api/v1/chat/completions"
         headers = {"HTTP-Referer": settings.app_url, "X-OpenRouter-Title": settings.app_name}
         token_limit = {"max_tokens": 900}
+    elif settings.llm_provider == "hubris":
+        key, model = settings.hubris_api_key, settings.hubris_model
+        url = f"{settings.hubris_base_url.rstrip('/')}/chat/completions"
+        headers = {}
+        completion_budget = max_completion_tokens or 1024
+        token_limit = {"max_completion_tokens": completion_budget,
+                       "reasoning_effort": settings.hubris_reasoning_effort or "low"}
     else:
         raise GenerationError("Unsupported LLM provider")
     if not key:
         raise GenerationError("LLM API key is not configured")
     headers["Authorization"] = f"Bearer {key}"
     request = {"model": model, "messages": messages, "temperature": 0.2, **token_limit}
-    if call_stage == "planner" and settings.llm_provider == "groq":
+    if call_stage == "planner" and settings.llm_provider in {"groq", "hubris"}:
         request["response_format"] = {"type": "json_schema", "json_schema": {
             "name": "source_section_plan", "strict": True,
             "schema": {"type": "object", "additionalProperties": False,
@@ -138,6 +148,9 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
             prompt_details = {}
         if not isinstance(completion_details, dict):
             completion_details = {}
+        reasoning_tokens = _optional_int(completion_details.get("reasoning_tokens"))
+        if reasoning_tokens is None:
+            reasoning_tokens = _optional_int(usage.get("reasoning_tokens"))
         rate_headers = (groq_rate_limiter.observe(getattr(response, "headers", {}),
                         status=getattr(response, "status_code", None),
                         usage=usage, stage=call_stage,
@@ -146,15 +159,18 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
                         if settings.llm_provider == "groq" else None)
         return Generation(
             text=content.strip(), model=data.get("model") or model,
+            http_status=getattr(response, "status_code", None),
             prompt_tokens=_optional_int(usage.get("prompt_tokens")),
             completion_tokens=_optional_int(usage.get("completion_tokens")),
             total_tokens=_optional_int(usage.get("total_tokens")),
-            reasoning_tokens=_optional_int(completion_details.get("reasoning_tokens")),
+            reasoning_tokens=reasoning_tokens,
             cached_tokens=_optional_int(prompt_details.get("cached_tokens")),
             api_call_id=data.get("id") if isinstance(data.get("id"), str) else None,
             finish_reason=choice.get("finish_reason") if isinstance(choice.get("finish_reason"), str) else None,
             duration_ms=round((perf_counter() - started) * 1000),
             rate_limit_headers=rate_headers,
+            cost_kopecks=(_optional_int(usage.get("cost"))
+                          if settings.llm_provider == "hubris" else None),
         )
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
         # Provider response bodies may contain sensitive data; never expose them.
@@ -229,14 +245,16 @@ _MAX_GROQ_429_RETRIES = 1
 _MAX_GROQ_RETRY_AFTER_SECONDS = 15.0
 
 
-async def generate(messages: list[dict], settings: Settings, *, call_stage: str = "generation") -> Generation:
+async def generate(messages: list[dict], settings: Settings, *, call_stage: str = "generation",
+                   max_completion_tokens: int | None = None) -> Generation:
     """Retry one short, provider-directed 429 cooldown; never retry local defers."""
     call_started = perf_counter()
     retries = 0
     waited = 0.0
     while True:
         try:
-            result = await _generate_once(messages, settings, call_stage=call_stage)
+            result = await _generate_once(messages, settings, call_stage=call_stage,
+                                          max_completion_tokens=max_completion_tokens)
             return Generation(**{**result.__dict__, "retry_count": retries,
                                  "retry_wait_seconds": round(waited, 2),
                                  # Include local TPM pacing in the measured

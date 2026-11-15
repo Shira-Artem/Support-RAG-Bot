@@ -25,6 +25,10 @@ class Settings:
     groq_api_key: str = ""
     groq_model: str = "openai/gpt-oss-20b"
     groq_reasoning_effort: str = "low"
+    hubris_api_key: str = ""
+    hubris_base_url: str = "https://api.hubris.pw/v1"
+    hubris_model: str = "openai/gpt-oss-20b"
+    hubris_reasoning_effort: str = "low"
     expert_telegram_ids: frozenset[int] = frozenset()
     rag_engine: str = "legacy"
     source_first_telegram_ids: frozenset[int] = frozenset()
@@ -42,8 +46,8 @@ def _bool_env(name: str, default: bool = False) -> bool:
 
 def get_settings() -> Settings:
     provider = os.getenv("LLM_PROVIDER", "openrouter").strip().lower()
-    if provider not in {"openrouter", "groq"}:
-        raise ValueError("LLM_PROVIDER must be openrouter or groq")
+    if provider not in {"openrouter", "groq", "hubris"}:
+        raise ValueError("LLM_PROVIDER must be openrouter, groq or hubris")
     ids = frozenset(int(item.strip()) for item in os.getenv("EXPERT_TELEGRAM_IDS", "").split(",") if item.strip())
     engine = os.getenv("RAG_ENGINE", "legacy").strip().lower()
     if engine not in {"legacy", "source_first"}:
@@ -69,6 +73,10 @@ def get_settings() -> Settings:
         groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
         groq_model=os.getenv("GROQ_MODEL", "openai/gpt-oss-20b").strip(),
         groq_reasoning_effort=os.getenv("GROQ_REASONING_EFFORT", "low").strip().lower(),
+        hubris_api_key=os.getenv("HUBRIS_API_KEY", "").strip(),
+        hubris_base_url=os.getenv("HUBRIS_BASE_URL", "https://api.hubris.pw/v1").strip().rstrip("/"),
+        hubris_model=os.getenv("HUBRIS_MODEL", "openai/gpt-oss-20b").strip(),
+        hubris_reasoning_effort=os.getenv("HUBRIS_REASONING_EFFORT", "low").strip().lower(),
         expert_telegram_ids=ids,
         rag_engine=engine,
         source_first_telegram_ids=source_first_ids,

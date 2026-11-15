@@ -38,7 +38,7 @@ python -m uvicorn app.api:app --host 127.0.0.1 --port 8000
    EXPERT_TELEGRAM_IDS=ваш_числовой_Telegram_ID
    ```
 
-   Откройте файл командой `notepad .env`. Ключи вставляйте только в локальный `.env`. OpenRouter остаётся доступен через `LLM_PROVIDER=openrouter`, `OPENROUTER_API_KEY` и `OPENROUTER_MODEL`.
+   Откройте файл командой `notepad .env`. Ключи вставляйте только в локальный `.env`. Кроме Groq, доступны OpenRouter (`LLM_PROVIDER=openrouter`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`) и Hubris (`LLM_PROVIDER=hubris`, `HUBRIS_API_KEY`, `HUBRIS_BASE_URL`, `HUBRIS_MODEL`). Инструкция по Hubris: [docs/hubris-provider.md](docs/hubris-provider.md).
 
 3. Проиндексируйте проверенные документы и запустите бота:
 
