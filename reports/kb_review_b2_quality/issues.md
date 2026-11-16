@@ -328,9 +328,9 @@ Approved `evotor/compliance/correction-receipt-scenarios.md` уже содерж
 
 Разделены рекомендации по ошибке 02h и неправильному считыванию; действие с повреждённым кодом ограничено правилами товарной группы. В импорт добавлены предел 10 000 позиций, пропущенные единицы и сохранение; для весов — отключение ручного ввода; для маркированного весового товара — условие количества в упаковке. Источники производителя и оператора указаны по каждому замечанию в `audit_issues.csv`; исправленные approved-карточки требуют повторной экспертизы.
 
-## P0-13: ошибка 403 и срок после замены ФН
+## P1-133: ошибка 403 — границы перерегистрации после замены ФН
 
-Повторное чтение полной статьи [АТОЛ Онлайн #18220](https://help.atol.online/article/18220) подтвердило две причины: подписка ОФД и снятие ККТ с учёта после замены ФН без перерегистрации. В approved-карточке они уже разделены через проверку подписки и статуса ФНС; причина не является доказанно ложной. Риск остаётся в абсолютной формулировке про новый ФН и в сроке «с даты замены»: архивная [публикация ФНС 2023 года](https://www.nalog.gov.ru/rn03/news/activities_fts/13816081/) говорит о следующем рабочем дне, а другая [страница ФНС](https://www.nalog.gov.ru/rn25/news/activities_fts/16571872/) описывает условия/исключения упрощённого порядка. Подготовлен replacement-кандидат `candidates/atol-online-fn-403-reregistration-review.md`; approved не менялся. Нужна сверка актуальной ст.4.2 и фактического статуса специалистом ККТ.
+Полные статьи [АТОЛ #18220](https://help.atol.online/article/18220), [ФНС #13816081](https://www.nalog.gov.ru/rn03/news/activities_fts/13816081/) и [ФНС #16571872](https://www.nalog.gov.ru/rn25/news/activities_fts/16571872/) повторно прочитаны 17.11.2026. ATOL confirms two causes and its vendor flow for a deregistered KKT; the 2023 FNS archive says by no later than the next working day following FN replacement; the 2025 FNS archive describes simplified re-registration and exceptions. Approved card’s deadline wording is less precise, but no current-law contradiction or unsafe false step was established. Reclassified P0-13 as P1-133 applicability/deadline-scope review. Candidate remains external, status-first, and requires KKT specialist confirmation of current Article 4.2 and exact simplified route.
 
 ## P1-90: срок использования ФН
 
