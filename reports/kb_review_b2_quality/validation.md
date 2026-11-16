@@ -1003,3 +1003,8 @@ G3 follow-up: approved `evotor-marked-goods-upd-20261019` exists for Evotor mark
 ### Evotor Power model-specific reprint source check — 17.11.2026
 
 Official [Evotor Power user guide](https://evotor.ru/manuals/power/kak-vosstanovit-chek/) re-read in full. It confirms the documented sequence to reprint a known fiscal document number: cash-service settings, additional operations, print by number, enter number and OK; number may be read from prior receipt or OFD account. It does not specify covered submodels, software release, permissions, copied document contents, or replaced-FN behavior. Updated only source-check metadata in the external draft and evidence ledgers; no approved article or UI step was edited. Candidate remains draft/SME-gated.
+
+
+### Повторная проверка P0-08: физический ФН в АТОЛ Онлайн — 17.11.2026
+
+Полностью перечитаны официальные статьи производителя [об облачной кассе](https://help.atol.online/article/16669) и [о ФН](https://help.atol.online/article/11253). Первая прямо определяет облачную ККТ как физическую кассу с ФН в ЦОД арендодателя; вторая — ФН как отдельное устройство и указывает ограничение «один ФН на одну кассу». Источники не раскрывают модель/состояние конкретного ФН и не обосновывают юридическую применимость сроков 15/36 месяцев к конкретной деятельности. Синхронизированы S84/S98, source review и scoped claim evidence; кандидат P0-08 получил дату повторной проверки. Approved карточка не менялась; P0 остаётся открытым до инженерного/SME утверждения.
