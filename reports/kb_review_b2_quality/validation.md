@@ -1038,7 +1038,7 @@ The approved Evotor card already distinguishes missed checks, erroneous issued r
 
 ### Контрольный срез после повторных P0-08–11 source checks и P1-132 triage — 17.11.2026
 
-Current CSV totals: 269 card reviews; 247 issues (18 P0 / 132 P1 / 97 P2); 47 coverage rows; 296 source register records / 282 unique URLs; 388 source-review rows (188 with a recorded attempt/read date, 200 without a recorded direct-check date, 20 explicit tool errors: 18 unavailable/timeout/unsupported content, 1 HTTP 403, 1 Internal Error); 610 claim-evidence rows. Metadata ledger: 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator: 41/41, 157 chunks, unique IDs/hashes, 0 errors/warnings. Corpus loader/chunker: 269/269, 1168 chunks. P1-132 is an existing-card completeness gap, not a proven false instruction or new topic.
+Current CSV totals: 269 card reviews; 247 issues (18 P0 / 132 P1 / 97 P2); 47 coverage rows; 296 source register records / 282 unique URLs; 388 source-review rows (188 with a recorded attempt/read date, 200 without a recorded direct-check date, 21 explicit access errors (18 unavailable/timeout/unsupported, one HTTP 404, one HTTP 403, one Internal Error): 18 unavailable/timeout/unsupported content, 1 HTTP 403, 1 Internal Error); 610 claim-evidence rows. Metadata ledger: 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator: 41/41, 157 chunks, unique IDs/hashes, 0 errors/warnings. Corpus loader/chunker: 269/269, 1168 chunks. P1-132 is an existing-card completeness gap, not a proven false instruction or new topic.
 
 
 ### P0-13 triage correction: reclassified P1-133 — 17.11.2026
@@ -1048,4 +1048,42 @@ Re-read ATOL #18220 and archived FNS pages #13816081/#16571872 in full. ATOL sup
 
 ### Сводная контрольная точка после P0-13 → P1-133 — 17.11.2026
 
-Текущие ledgers: 269 card reviews; 247 audit issues (17 P0 / 133 P1 / 97 P2); 47 coverage rows; source register 296 записей / 282 unique URLs; source review 388 строк (190 с датой попытки/чтения, 198 без даты прямой проверки, 20 explicit tool errors); claim evidence 610; metadata 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator 41/41, 157 chunks, unique IDs/hash, zero errors/warnings. Corpus DocumentLoader/Chunker 269/269, 1168 chunks; targeted pytest 11 passed; `git diff --check` clean. Последние issue triage: P0-12→P1-132, P0-13→P1-133. Эти triage не означают экспертного закрытия процедур: соответствующие candidates остаются вне KB и ждут SME/owner approval.
+Текущие ledgers: 269 card reviews; 247 audit issues (17 P0 / 133 P1 / 97 P2); 47 coverage rows; source register 296 записей / 282 unique URLs; source review 388 строк (190 с датой попытки/чтения, 198 без даты прямой проверки, 21 explicit access errors (18 unavailable/timeout/unsupported, one HTTP 404, one HTTP 403, one Internal Error)); claim evidence 610; metadata 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator 41/41, 157 chunks, unique IDs/hash, zero errors/warnings. Corpus DocumentLoader/Chunker 269/269, 1168 chunks; targeted pytest 11 passed; `git diff --check` clean. Последние issue triage: P0-12→P1-132, P0-13→P1-133. Эти triage не означают экспертного закрытия процедур: соответствующие candidates остаются вне KB и ждут SME/owner approval.
+
+
+### P0-19 official-source recheck — 17.11.2026
+
+The complete official aQsi Online guide was reopened. Its visible text at lines 33–40 confirms a transition from test to production, generating keys for request signing, sending a key to aQsi and requesting a certificate. It does not identify which public artifact/key component to send, an approved channel, current API release, or endpoint behavior. Source review and claim evidence were updated with this bounded scope; the P0-19 candidate remains outside the KB and gated on confirmation by aQsi/integrator. No approved KB content changed.
+
+
+### Seven-card source follow-up — offline validation 17.11.2026
+
+Direct web review reopened nine evidence URLs (seven article/card sources, the FNS source for P1-128, and current Consenta portal; several URLs were already represented in ledgers). The current source-review index remains 388 URLs: 214 have a recorded attempt/read date, 174 have no recorded direct-check date, and 21 have explicit access errors (18 unavailable/timeout/unsupported, one 404, one 403, one Internal Error). Source register is 297 rows / 283 unique URLs; claim evidence 612. Seven overall `review_result` entries moved from `unverified` to `warning` with field-level limits; the other 262 were already warning. Counts now: metadata 27 pass / 12 warning / 4 fail / 226 unverified; topic 48 pass / 2 warning / 219 unverified; source matching 10 pass / 241 warning / 14 unverified / 1 fail / 3 scoped labels (one pass-release-bounded, one pending-SME partial, one claim-scope warning); freshness 67 warning / 201 unverified; procedure 2 pass / 17 warning / 249 unverified; safety 75 warning / 2 fail / 192 unverified; duplicate review 7 pass / 4 warning / 258 unverified. These fields remain unverified where only specialist/version/legal review can decide.
+
+Ran: `../../.venv/bin/python scripts/validate_kb_review_candidates.py --registry reports/kb_review_b2_quality/candidate_validation.csv` (41/41 candidates, 269 main KB, unique IDs/hashes, 0 errors/warnings); `../../.venv/bin/python scripts/audit_kb_quality.py` (269/269 loaded, 1,168 chunks, 53 mechanical signals); `../../.venv/bin/python -m pytest -q tests/test_knowledge.py tests/test_index_documents.py` (11 passed); `git diff --check` clean. No external LLM, LIVE request, SQLite, Qdrant, index, or `data/knowledge/` write used.
+
+
+### aQsi direct-source pass — 17.11.2026
+
+Opened/attempted 20 aQsi URLs from the source-review list. Eighteen yielded some readable content; the ЖКХ product page returned no extractable text, and the cloud re-registration URL again returned HTTP 404. Source review totals: 388 rows, 225 with a recorded attempt/read date, 163 date unknown, 21 explicit access limitations (18 unavailable/timeout/unsupported, one HTTP 404, one 403, one Internal Error). Source register: 308 rows / 294 unique URLs through S311; claim evidence: 613. The current aQsi Online completion article supports waiting for “Работает”, finding the registration report and checking KKT status; it does not substantiate the separate FN replacement procedure in `reregister-fn.md`. Physical aQsi support fiscalization pages were kept out of cloud aQsi Online evidence. `P1-27` remains open and SME-gated; no KB body was edited.
+
+Latest card-review counts after this source pass: 269 rows, all overall `warning`; metadata 27 pass / 12 warning / 4 fail / 226 unverified; topic 48 pass / 2 warning / 219 unverified; source_access 250 pass / 14 warning / 1 partial alternative / 4 unverified; source matching 10 pass / 240 warning / 14 unverified / 2 fail / 3 scoped labels; freshness 67 warning / 201 unverified; procedure 2 pass / 17 warning / 249 unverified; safety 75 warning / 2 fail / 192 unverified; duplicate review 7 pass / 4 warning / 258 unverified. This is not a completed semantic audit.
+
+
+### aQsi scanner-source mismatch follow-up — 17.11.2026
+
+The official [aQsi external-scanner article](https://aqsi.ru/support/rabota-s-vneshnim-skanerom/) was reopened in full. It assigns error FN 02h to checking the Android physical-keyboard language (English); the separate instruction to configure the scanner at «Честный ЗНАК» is for an incorrectly scanned code. Approved `data/knowledge/aqsi_devices/peripherals/scanner.md` currently attaches the latter action to error 02h. Updated source register S11, the source-review row and claim evidence; issue P1-86 is recorded as a confirmed source mismatch pending aQsi/marking SME review. Existing approved scanner coverage remains present, so this is not a new coverage gap or evidence of a runtime failure. No approved card or UI steps were edited.
+
+Prepared external replacement/review candidate `reports/kb_parallel_review/candidates/aqsi-scanner-data-matrix-error02-review.md`; it keeps the manufacturer’s two scenarios separate and gates model/version and commodity-group questions to specialists. Offline DocumentLoader/Chunker validation: 42/42 candidates loaded, 161 non-empty chunks total, unique document IDs/content hashes, zero errors or warnings. Current source-review total is 388 rows (225 dated direct reads/attempts, 163 without recorded direct-check date); claim evidence 613. No API, LIVE test, SQLite, Qdrant, index, or `data/knowledge/` content was changed.
+
+
+### БИФИТ source follow-up — 17.11.2026
+
+The official [«Карта столов» plugin page](https://kassa.bifit.com/wiki/index.php?title=%D0%9F%D0%BB%D0%B0%D0%B3%D0%B8%D0%BD_%D0%9A%D0%B0%D1%80%D1%82%D0%B0_%D1%81%D1%82%D0%BE%D0%BB%D0%BE%D0%B2) opened directly. It identifies plugin 2.15 (20.12.2022), BIFIT Cash Register 3.0x Desktop, «Общепит» plus «Касса Плюс» licensing, installation steps, and capabilities to edit a table map/create an order for a selected table. It still gives no step-by-step table-map/order workflow. G6 stays partial; the external candidate must not invent the missing steps.
+
+The separate [«Бронирование» plugin page](https://kassa.bifit.com/wiki/index.php?title=%D0%91%D1%80%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5) had a direct retry that returned Cache miss on 17.11. Its earlier official-domain search excerpt remains partial evidence for a distinct Booking plugin only; it cannot fill the Map of Tables gap. Updated S270/S284 evidence, claim/source review dates and scope. No approved KB article changed.
+
+
+### Повторная проверка пяти страниц АТОЛ Онлайн — 17.11.2026
+
+Открыты полные официальные тексты help pages #11052, #11053, #11058, #11059 и #11071. В `source_review.csv` и соответствующих записях source register (S159–S162/S198) отмечены повторное чтение и точные пределы фактов: квартальные акты сверки; доступный/зарезервированный баланс; возврат по шаблону поддержки и срок 7–10 рабочих дней, опубликованный в статье; фактическая оферта; отказ от одной облачной ККТ и получение отчётов. Не переносить договорные/фискальные выводы на конкретного клиента и не смешивать облачную кассу с физической ККТ. Новый технический KB gap не доказан. Source review: 388 URL, 230 с датой чтения/попытки и 158 без неё; основной корпус и approved KB не менялись.

@@ -277,3 +277,13 @@ Full official BUKH.1C article (21.03.2023) read; feature ≥3.0.131, two-file ex
 
 
 17.11.2026: P0-13 переклассифицирован в P1-133 после полного повторного чтения ATOL #18220 и двух архивных разъяснений ФНС. Источник подтверждает причины и vendor flow; действующей ошибочной нормы не доказано. Остались неуточнённый формат срока и применимость упрощённой перерегистрации; candidate уточняет дату и исключения. Approved-карта не менялась; нужен специалист ККТ.
+
+
+### Review-only update 17.11.2026
+
+No files in `data/knowledge/` changed. Seven cards previously carrying overall `unverified` were given bounded review results (`warning`) after full manufacturer/FNS sources were reopened; metadata/source/SME limits are recorded in `card_review.csv`, `claim_evidence.csv`, and `source_review.csv`. Added current partner-portal evidence as S300. Corrected stale observation text in P1-128 because the current draft already reflects the documented `<410`/`≥410` distinction. Official-law direct fetch for FZ №425-ФЗ timed out; contract consequences remain unverified.
+
+
+### aQsi source pass 17.11.2026
+
+Report-only update: directly rechecked 20 aQsi URLs and added bounded S301–S311 entries. The cloud FN re-registration URL returned 404 again; a related current cloud registration-completion page covers only status/report completion. Physical aQsi KKT support pages are not treated as evidence for aQsi Online cloud-FN steps. Updated source and claim ledgers, plus P1-27 evidence; no `data/knowledge/` content or metadata changed.

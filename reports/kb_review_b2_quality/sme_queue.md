@@ -100,7 +100,7 @@
 
 - Специалист aQsi Online: P1-80–P1-85, сверить актуальные формы поддержки, роли, мониторинга, регистрации, восстановления пароля и профиля. P1-80/P1-84: точные страницы подтверждают только тему, но доступный HTML не показывает форму обращения или способ сброса; попросить читаемую процедуру/текст или подтверждение SME. S279 прямо указывает help@aqsi.online для облачных касс. На странице рядом перечислены график поддержки интеграций и общий checklist (модель/серийный номер, ИНН, описание), но не указано, что они применимы к облачной кассе; подтвердить cloud-specific часы и обязательные данные. До этого не повторять неподтверждённые поля, коды и действия; пароль/OTP не передавать. Текст регистрации по email подтверждён отдельно; остальные страницы — по их source records.
 
-- Инженер aQsi и специалист по маркировке: P1-86–P1-89, проверить ошибки сканирования, правила повреждённой маркировки, импорт, весы и параметры упаковки для конкретной версии ПО.
+- Инженер aQsi и специалист по маркировке: P1-86–P1-89, проверить ошибки сканирования, правила повреждённой маркировки, импорт, весы и параметры упаковки для конкретной версии ПО. Для P1-86 точный источник различает ошибку ФН 02h (язык физической клавиатуры Android) и неправильно считанный код (настройка сканера на сайте «Честного ЗНАКа»); текущая approved `scanner.md` смешивает действия. Внешний candidate готов к предметной проверке, но точные модель/релиз и товарно-групповые правила нужно подтвердить до reapproval.
 
 - Инженер АТОЛ Онлайн и специалист по ККТ: P1-133, проверить статусы 403, причины снятия ККТ, сроки и применимость упрощённого порядка при замене ФН.
 
@@ -267,3 +267,14 @@ P1-128: бухгалтер/налоговый специалист подтве�
 ## P1-42 — статусы касс Платформы ОФД
 
 Инженер Платформы ОФД/ККТ: сравните approved `data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md` с точным текущим состоянием кабинета. Официальная страница разделяет «Снята с рег.» и «ФН+РНМ», тогда как карточка присоединяет вторую метку к действию первой. Проверьте предложенный ограниченный replacement-candidate `reports/kb_review_b2_quality/candidates/platformaofd-lkk-cash-monitoring-statuses-review.md`, подтвердите текущие подписи/решения и отдельно разрешите конфликт источника по порогу фильтра (72 часа в заголовке, 48 часов в описании). Не индексировать draft до решения инженера и владельца KB; любые регистрационные действия должны оставаться на специалисте.
+
+
+## Addressed card-review queue items — 17.11.2026
+
+- `accounting/vat_usn/combine-usn-psn.md`: tax specialist to verify the current Article 145 rule for the client’s year/regime combination; FNS webinar #16595939 is archived and only confirms the 2025→2026 example. Do not derive later-year thresholds from it.
+- `aqsi_devices/correction/ffd105-check.md`: accountant/KKT specialist to validate FFD 1.05 correction fields and lawful scenario for the actual original fiscal document; manufacturer page does not specify current app/firmware. Confirm whether `prepare_correction_receipt` is the intended existing operation token with the taxonomy/runtime owner; no runtime failure is established by this review.
+- `atol_online/billing/vat22-supplement.md`: accountant/legal reviewer to confirm named billed services, actual service period, prior payment and contract-specific treatment. Official link to FZ №425-ФЗ timed out on 17.11; ATOL’s service-specific billing statement is not a substitute for contract review.
+- `atol_online/edo/incoming-documents.md` (approved): product/EDO specialist to confirm current UI/contact and client authority; text covers invitation/roaming only and is not an instruction to sign or annul a UPD.
+- `atol_online/law/sugary-drinks-kkt-preparation.md`: tax specialist to classify the exact drink under current law; KKT specialist to confirm the FN date/status and applicable current re-registration process. P1-128’s stale description of the current draft was corrected.
+- `atol_online/partners/referral-program-guide.md`: ATOL/Consenta to confirm live offer terms and eligibility; tax specialist to confirm reward tax handling. The current page confirms 3,000 ₽, monthly rewards and consent-based lead submission only.
+- `atol_online/settings/bso-feature.md` (approved): accountant to determine whether the client’s service qualifies for BSO; ATOL support request details are source-confirmed. No card text/status changed.
