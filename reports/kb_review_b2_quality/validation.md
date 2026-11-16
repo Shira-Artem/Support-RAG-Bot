@@ -1016,3 +1016,26 @@ Official [Evotor Power user guide](https://evotor.ru/manuals/power/kak-vosstanov
 
 
 **Updated source-review counts after P0-08/P0-09 rechecks (17.11.2026):** 388 URLs total; 186 with a recorded check date, 202 without a recorded direct-check date, 19 explicit tool errors. These are attempts/evidence dates, not full claim verification. Audit issue counts remain 247 (19 P0 / 131 P1 / 97 P2); claim evidence 610; source register 296 records / 282 unique URLs.
+
+
+### Повторная проверка P0-10: ОФД и передача чека — 17.11.2026
+
+Повторно прочитаны полные тексты ATOL Online #11256 и ФНС #16652173. ATOL подтверждает обработку/хранение/передачу фискальных документов и содержит широкую формулировку о выборе электронной доставки после услуги. ФНС публикация от 29.09.2026 (обновлена 16.11.2026) явно архивная: она пересказывает общее правило бумажного чека либо электронной отправки при контакте до расчёта и технической возможности; приводит тег 1008 по ФФД 1.05/1.1/1.2, но не разбирает все исключения и не подтверждает пригодность ATOL cloud-KKT для каждого сценария. Source/date/evidence records и candidate source_checked_at обновлены. Approved карта неизменна; P0-10 остаётся на SME/legal review.
+
+
+**Updated source-review counts after P0-10 (17.11.2026):** 388 URLs total; 187 with a recorded check date, 201 without a recorded direct-check date, 19 explicit tool errors. P0-08/P0-09/P0-10 evidence rows carry the reread date. These counts describe evidence attempts, not complete source claim verification.
+
+
+### P0-11 source recheck — conflicting 5%/7% early opt-out guidance — 17.11.2026
+
+Repeatedly read the current displayed Article 145 text (edition 04.08.2026, amendments effective 01.10.2026), FNS Moscow USN VAT FAQ, FNS Kursk archived article #16641622 and FNS archived 20m threshold notice #16635360. Article 145 supports separate prior-year/current-year exemption thresholds and combined income rules; it does not resolve the duration/early opt-out issue under Article 164(9). Kursk describes the limited early opt-out for some 2025 starters; the Moscow FAQ says the 2026 amendment does not apply to those who started before 01.01.2026. The archived FNS pages conflict. A direct retry of the official-hosted Ministry letter PDF returned Internal Error; only its earlier 15.11 reading is retained as bounded evidence, not claimed as reread today. P0 remains unresolved; no approved tax card or calculation changed, and the candidate remains tax-SME/legal-gated.
+
+
+### P0-12 triage correction: reclassified P1-132 — 17.11.2026
+
+The approved Evotor card already distinguishes missed checks, erroneous issued receipts, correction receipts and FFD-specific cases, and includes an FNS/escalation warning. The official article was reread in full and supports the exact FFD 1.2 reverse-pair table proposed in the external candidate. No false/dangerous instruction was established in the existing wording; the verified finding is a material completeness/detail gap in one existing approved document. Reclassified P0-12 to P1-132 in current issue, card and coverage ledgers; no new KB topic or document_id is proposed. The external candidate remains draft/SME-gated. Updated P0/P1 counts: 18 / 132 (P2=97; total 247).
+
+
+### Контрольный срез после повторных P0-08–11 source checks и P1-132 triage — 17.11.2026
+
+Current CSV totals: 269 card reviews; 247 issues (18 P0 / 132 P1 / 97 P2); 47 coverage rows; 296 source register records / 282 unique URLs; 388 source-review rows (188 with a recorded attempt/read date, 200 without a recorded direct-check date, 20 explicit tool errors: 18 unavailable/timeout/unsupported content, 1 HTTP 403, 1 Internal Error); 610 claim-evidence rows. Metadata ledger: 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator: 41/41, 157 chunks, unique IDs/hashes, 0 errors/warnings. Corpus loader/chunker: 269/269, 1168 chunks. P1-132 is an existing-card completeness gap, not a proven false instruction or new topic.
