@@ -1,0 +1,4 @@
+path,explicit_query_operation,example_query,task_category,compatibility,interpretation
+data/knowledge/1c/bank/acquiring-returns.md,load_bank_statements,Как загрузить банковскую выписку?,bank_statement,match,"Синтетическая проверка функции, не утверждение о классификации вопроса или полном retrieval"
+data/knowledge/1c/bank/acquiring-returns.md,list_bank_statements,Как посмотреть банковские выписки?,bank_statement,mismatch,"Синтетическая проверка функции, не утверждение о классификации вопроса или полном retrieval"
+data/knowledge/1c/bank/acquiring-returns.md,return,Как отразить возврат по эквайрингу?,bank_statement,mismatch,"Синтетическая проверка функции, не утверждение о классификации вопроса или полном retrieval"

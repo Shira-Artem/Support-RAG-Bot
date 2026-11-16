@@ -1,17 +1,17 @@
 ---
 document_id: aqsi-online-integration-1c-setup
-title: 'aQsi Online: интеграция с 1С через драйвер ККТ'
+title: 'ККТ aQsi: интеграция с 1С через драйвер ККМ Оффлайн'
 category: 1c
 manufacturer: aQsi
-model: aQsi Online (облачная касса)
-version: ''
+model: null
+version: 'ККМ Оффлайн 3.1; aQsi Интегратор 3.9.0.73'
 source_url: https://aqsi.ru/support/ustanovka-i-nastroyka-programmyi-integratora/
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
-service: aQsi Online
-software: 1С:УНФ
+service: aQsi
+software: 1С:Предприятие 8
 task_category: integration
 operations:
 - configure_integration
@@ -20,16 +20,16 @@ search_fields:
 - release
 - driver
 - ffd
-procedure_service: aQsi Online
-source_checked_at: 2026-10-22
+procedure_service: aQsi
+source_checked_at: 2026-11-15
 status: draft
-review_note: "Первоисточник сейчас возвращает 404; требуется актуальная ссылка и сверка процедуры. Update: указаны новые первоисточники"
+review_note: "Официальные страницы aQsi подтверждают физическую ККТ и обмен через ККМ Оффлайн с программой aQsi Интегратор, не облачную aQsi Online. Исправлена только область применения/metadata; вручную подготовленные шаги интерфейса 1С не редактировались. Версию интегратора, модель, актуальную конфигурацию, права и изображения необходимо утвердить со SME."
 ---
 
-# aQsi Online: интеграция с 1С через драйвер ККТ
+# ККТ aQsi: интеграция с 1С через драйвер ККМ Оффлайн
 
 ## Вопрос клиента
-Как подключить aQsi Online к программе 1С?
+Как подключить кассу aQsi к программе 1С?
 
 ## Проверенная информация и первичная диагностика
 1. Актуальная версия: Aqsi.Integrator-3.9.0.73, скачать: https://aqsi.ru/wp-content/themes/aqsi/files/Aqsi.Integrator-3.9.0.73.msi.
@@ -47,6 +47,6 @@ review_note: "Первоисточник сейчас возвращает 404; 
 Настройка защищённых ключей, сертификатов, адреса API и ошибок драйвера — интегратору. Не запрашивать приватные ключи в переписке.
 
 ## Применимость
-Инструкция описывает интеграцию aQsi с 1С по протоколу ККМ Оффлайн 3.1 через программу «aQsi Интегратор». Поддерживаются все конфигурации 1С с функцией обмена с офлайн-оборудованием, включая облачные версии при работе через тонкий клиент. Названия разделов и версии могут меняться — проверяйте актуальность на дату обращения.
+Официальная инструкция описывает интеграцию физической ККТ aQsi с 1С по протоколу ККМ Оффлайн 3.1 через программу «aQsi Интегратор». Это не инструкция для облачной услуги aQsi Online. Источник допускает конфигурации 1С с функцией обмена с офлайн-оборудованием и облачные варианты 1С через тонкий клиент при поддержке протокола. Версию, модель кассы, тариф и права проверьте у производителя и администратора системы.
 
 Источник: https://aqsi.ru/support/ustanovka-i-nastroyka-programmyi-integratora/, https://aqsi.ru/support/nastroyka-integracii-aqsi-1s/, https://aqsi.ru/tehnicheskaya-podderzhka/integraciya-s-1s/

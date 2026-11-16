@@ -8,16 +8,17 @@ model: null
 version: 'Веб-сервис; релиз не указан источником'
 source_url: https://www.diadoc.ru/articles/25195-statusy_v_edo
 source_type: vendor_support_article
-published_at: null
+published_at: '2022-06-06'
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: 2026-11-04
+source_checked_at: '2026-11-16'
 task_category: edo
 operations: [explain_document_status]
 search_fields: [document_status]
 evidence_coverage:
   explain_document_status: partial
 status: draft
+requires_sme_review: true
 review_note: 'Объяснение статуса; не инструкция юридически значимого подписания. Нужен SME review.'
 ---
 

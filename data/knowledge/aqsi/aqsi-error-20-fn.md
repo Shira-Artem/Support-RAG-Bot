@@ -13,8 +13,9 @@ source_type: vendor_knowledge_base
 published_at:
 collected_at: 2026-10-13
 verified_at:
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-15
 status: draft
+requires_sme_review: true
 review_note: "Причина ошибки ФН 20 зависит от состояния и версии ФН; нужна проверка диагностики конкретной кассы."
 ---
 

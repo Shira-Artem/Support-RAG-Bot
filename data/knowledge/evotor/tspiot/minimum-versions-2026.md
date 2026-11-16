@@ -13,8 +13,9 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: null
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-15
 status: draft
+requires_sme_review: true
 review_note: "Сверка 22.10.2026 обнаружила устаревшие минимальные версии в исходном конспекте; приведены текущие значения страницы Эвотора, но перед применением требуется повторная проверка для модели клиента."
 ---
 

@@ -9,12 +9,13 @@ manufacturer: АТОЛ
 model: АТОЛ Онлайн — облачная ККТ
 version: null
 source_url: https://www.nalog.gov.ru/create_business/ul/in_progress/kkt/#1
-source_type: vendor_support_article
+source_type: tax_authority
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
 source_checked_at: 2026-10-22
 status: draft
+requires_sme_review: true
 review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
 

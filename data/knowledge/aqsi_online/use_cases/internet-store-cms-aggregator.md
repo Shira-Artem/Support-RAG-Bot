@@ -13,8 +13,9 @@ source_type: vendor_product_page
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-15
 status: draft
+requires_sme_review: true
 review_note: "Источник описывает типовой сценарий; конкретная интеграция и применимость для клиента требуют подтверждения у сервиса."
 ---
 

@@ -13,8 +13,9 @@ source_type: manufacturer_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-15
 status: draft
+requires_sme_review: true
 review_note: "Сценарий чека коррекции зависит от ФФД и фискальных обстоятельств; требуется сверка первоисточника и специалиста."
 ---
 

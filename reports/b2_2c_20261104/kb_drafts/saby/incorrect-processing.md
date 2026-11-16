@@ -11,13 +11,14 @@ source_type: vendor_support_article
 published_at: null
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: 2026-11-04
+source_checked_at: '2026-11-15'
 task_category: edo
 operations: [explain_document_status]
 search_fields: [document_status]
 evidence_coverage:
   explain_document_status: partial
 status: draft
+requires_sme_review: true
 review_note: 'Только граница восстановления; не выдавать за полную процедуру возврата отклонённого акта. Требуется SME review.'
 ---
 
