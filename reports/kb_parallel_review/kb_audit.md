@@ -8,7 +8,7 @@
 
 По пяти первоначальным B2 draft официальный материал поддерживает отдельные безопасные/ограниченные процедуры; Диадок и Эвотор кандидаты оставлены вне approved, Saby и aQsi Online процедуры имеют непроверенные границы, DirectBank file/schedule уже имеют approved coverage. Четыре операции в approved 1С-карточках P1-01/P1-02/P1-116/P1-117 подтверждённо не соответствуют содержанию; replacement token не назначен без владельца taxonomy. Физические кассы отделены от облачных сервисов. Все ручные 1С UI-шаги, включая checkbox «установить флажок “Расширенная настройка”», сохранены. Groq, LIVE, production SQLite/Qdrant и основной индекс не использовались.
 
-Рабочая часть аудита передана на review: удалённая ветка `feature/kb-review-b2` обновлена commit `85f765c`, существующий [PR #4](https://github.com/Shira-Artem/Support-RAG-Bot/pull/4) обновлён и переведён в Draft. PR не готов к merge: остались SME/source-access и metadata-owner решения. Runtime, production SQLite/Qdrant и основной индекс не затрагивались. Исторические срезы ниже оставлены как журнал и не заменяют текущую контрольную точку.
+Рабочая часть аудита передана на review: удалённая ветка `feature/kb-review-b2` синхронизирована с локальной, существующий [PR #4](https://github.com/Shira-Artem/Support-RAG-Bot/pull/4) обновлён и переведён в Draft. PR не готов к merge: остались SME/source-access и metadata-owner решения. Проверка только новых review-коммитов чистая; полный PR-diff имеет 24 whitespace/indent warning в 9 ранее изменённых KB-файлах, детали зафиксированы в `validation.md`. Runtime, production SQLite/Qdrant и основной индекс не затрагивались. Исторические срезы ниже оставлены как журнал и не заменяют текущую контрольную точку.
 
 ### Контроль front matter и offline-загрузка — 15.11.2026
 
