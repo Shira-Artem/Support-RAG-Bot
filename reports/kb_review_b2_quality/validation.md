@@ -1008,3 +1008,11 @@ Official [Evotor Power user guide](https://evotor.ru/manuals/power/kak-vosstanov
 ### Повторная проверка P0-08: физический ФН в АТОЛ Онлайн — 17.11.2026
 
 Полностью перечитаны официальные статьи производителя [об облачной кассе](https://help.atol.online/article/16669) и [о ФН](https://help.atol.online/article/11253). Первая прямо определяет облачную ККТ как физическую кассу с ФН в ЦОД арендодателя; вторая — ФН как отдельное устройство и указывает ограничение «один ФН на одну кассу». Источники не раскрывают модель/состояние конкретного ФН и не обосновывают юридическую применимость сроков 15/36 месяцев к конкретной деятельности. Синхронизированы S84/S98, source review и scoped claim evidence; кандидат P0-08 получил дату повторной проверки. Approved карточка не менялась; P0 остаётся открытым до инженерного/SME утверждения.
+
+
+### Повторная сверка P0-09: изменение параметров, перерегистрация, снятие — 17.11.2026
+
+Повторно прочитаны полная инструкция АТОЛ Онлайн #18251, архивные публикации ФНС #16666815 (обновлена 16.11.2026) и #16604747, а также архивная публикация ФНС 2019 года о конкретном случае смены фамилии ИП при том же ИНН. ATOL lists name/requisites/SNO changes among common deregistration reasons and documents closure when service ends; this is vendor guidance, not proof that each routine parameter change requires deregistration. FNS pages distinguish parameter update/re-registration from deregistration, state OFD/FN/attribute conditions, and explicitly carry archival notices. The 2019 example is historical and narrow. Source register, source review, candidate claim evidence and candidate check date refreshed. Current approved article remains unchanged; P0-09 and the draft remain blocked on current-law/accountant/KKT specialist review.
+
+
+**Updated source-review counts after P0-08/P0-09 rechecks (17.11.2026):** 388 URLs total; 186 with a recorded check date, 202 without a recorded direct-check date, 19 explicit tool errors. These are attempts/evidence dates, not full claim verification. Audit issue counts remain 247 (19 P0 / 131 P1 / 97 P2); claim evidence 610; source register 296 records / 282 unique URLs.
