@@ -1039,3 +1039,13 @@ The approved Evotor card already distinguishes missed checks, erroneous issued r
 ### Контрольный срез после повторных P0-08–11 source checks и P1-132 triage — 17.11.2026
 
 Current CSV totals: 269 card reviews; 247 issues (18 P0 / 132 P1 / 97 P2); 47 coverage rows; 296 source register records / 282 unique URLs; 388 source-review rows (188 with a recorded attempt/read date, 200 without a recorded direct-check date, 20 explicit tool errors: 18 unavailable/timeout/unsupported content, 1 HTTP 403, 1 Internal Error); 610 claim-evidence rows. Metadata ledger: 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator: 41/41, 157 chunks, unique IDs/hashes, 0 errors/warnings. Corpus loader/chunker: 269/269, 1168 chunks. P1-132 is an existing-card completeness gap, not a proven false instruction or new topic.
+
+
+### P0-13 triage correction: reclassified P1-133 — 17.11.2026
+
+Re-read ATOL #18220 and archived FNS pages #13816081/#16571872 in full. ATOL supports separate causes and its new-FN path after deregistration; FNS #13816081 phrases the filing deadline as no later than the next working day following FN replacement, while #16571872 describes simplified re-registration with exceptions. Approved article was not proven false or immediately dangerous; the remaining finding is precision/applicability of the deadline and the simplified route. Reclassified P0-13 to P1-133. Candidate updated with exact wording and remains KKT-SME-gated. Current issue counts are 17 P0 / 133 P1 / 97 P2 (247 total).
+
+
+### Сводная контрольная точка после P0-13 → P1-133 — 17.11.2026
+
+Текущие ledgers: 269 card reviews; 247 audit issues (17 P0 / 133 P1 / 97 P2); 47 coverage rows; source register 296 записей / 282 unique URLs; source review 388 строк (190 с датой попытки/чтения, 198 без даты прямой проверки, 20 explicit tool errors); claim evidence 610; metadata 23 pass / 8 warning / 4 fail / 234 unverified. Candidate validator 41/41, 157 chunks, unique IDs/hash, zero errors/warnings. Corpus DocumentLoader/Chunker 269/269, 1168 chunks; targeted pytest 11 passed; `git diff --check` clean. Последние issue triage: P0-12→P1-132, P0-13→P1-133. Эти triage не означают экспертного закрытия процедур: соответствующие candidates остаются вне KB и ждут SME/owner approval.
