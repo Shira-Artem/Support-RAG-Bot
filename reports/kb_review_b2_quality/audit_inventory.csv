@@ -1,4 +1,4 @@
-ըźڨϊⶩಖǵʝ«iڐkǦ*^path,sha256,document_id,status,service,task_category,operations,chunks,yaml_valid,loader,markdown_valid,chunk_review
+path,sha256,document_id,status,service,task_category,operations,chunks,yaml_valid,loader,markdown_valid,chunk_review
 data/knowledge/1c/bank/acquiring-patent-tax.md,e7b445d2a42bb10f5d053b0528f771bf5fcd87a71e29a168ce43d941baac8c7f,batch-20261013-bank-acquiring-patent-tax,approved,1С:Бухгалтерия 8,bank_statement,load_bank_statements,4,pass,pass,warning,warning
 data/knowledge/1c/bank/acquiring-returns.md,4f586ba0ce2ff6c0b1a2e34e22fdf27e4943cacbdd501cf80ad67c1d34fef954,batch-20261013-bank-acquiring-returns,approved,1С:Бухгалтерия 8,bank_statement,load_bank_statements,4,pass,pass,warning,warning
 data/knowledge/1c/bank/directbank-all-accounts.md,5d905e24a2255f08a939efc6e59a2c66d57c2ffd15cd15129d983e9b2fd92e05,batch-20261013-bank-directbank-all-accounts,approved,1С:Бухгалтерия 8,bank_statement,load_bank_statements;list_bank_statements,4,pass,pass,warning,warning
@@ -72,7 +72,7 @@ data/knowledge/aqsi_devices/sales/standard-refund.md,385d7770ed979f107e5233addcd
 data/knowledge/aqsi_devices/settings/android-clock.md,97beff65bb383913b8ef3c7d7e6de498e03b715ebcb207dd618217aaf5f007ec,aqsi-device-android-clock,approved,aQsi,settings,configure_settings,4,pass,pass,warning,warning
 data/knowledge/aqsi_devices/shifts/cash-in-out.md,6fbe4313e4b4c609ae0d4c70351f7ef8264218e4aecf140faecf6a0862347a99,aqsi-device-cash-in-out,approved,aQsi,shift_management,manage_shift;record_cash_in_out,4,pass,pass,warning,warning
 data/knowledge/aqsi_devices/shifts/fiscal-status-report.md,a25cf034dfd580e45e780eeb641d043150b30973f1e622b3944f5fedd1b86dca,aqsi-device-fiscal-status-report,approved,aQsi,shift_management,manage_shift;print_fiscal_status_report,3,pass,pass,warning,warning
-data/knowledge/aqsi_devices/shifts/opening-cըłحyꫢЫǦ*^losing.md,3cd34b404acd955eee8054026496781bba610b9f77986aae4bacf537bdac6747,aqsi-device-opening-closing,approved,aQsi,shift_management,manage_shift;open_close_shift,4,pass,pass,warning,warning
+data/knowledge/aqsi_devices/shifts/opening-closing.md,3cd34b404acd955eee8054026496781bba610b9f77986aae4bacf537bdac6747,aqsi-device-opening-closing,approved,aQsi,shift_management,manage_shift;open_close_shift,4,pass,pass,warning,warning
 data/knowledge/aqsi_devices/shifts/x-report.md,4b5da1afae48c8ccc64410914b948f36ccd4a48784fa5a29ce92573825879ee3,aqsi-device-x-report,approved,aQsi,shift_management,manage_shift;print_x_report,4,pass,pass,warning,warning
 data/knowledge/aqsi_devices/start/first-start-internet.md,d5186b97ea0b3117bcc9536fc2bc9a9de952920808cb4908a938f80ac0f8fcb6,aqsi-device-first-start-internet,approved,aQsi,equipment_setup,setup_cash_register,4,pass,pass,warning,warning
 data/knowledge/aqsi_devices/start/unbox-hardware.md,9f6f84922a1ce83e42814de4bd27798cadb2777783f102043fb7e246e4d48ede,aqsi-device-unbox-hardware,approved,aQsi,equipment_setup,setup_cash_register,5,pass,pass,warning,warning
