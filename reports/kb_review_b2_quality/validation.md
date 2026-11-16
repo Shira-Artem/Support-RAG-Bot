@@ -998,3 +998,8 @@ G3 follow-up: approved `evotor-marked-goods-upd-20261019` exists for Evotor mark
 ### Coverage count reconciliation — 17.11.2026
 
 В `coverage_matrix.csv` подтверждены 6 узких отсутствий точной approved-инструкции (G1–G5 и U2). G3 ограничен Диадок web; отдельный approved `evotor-marked-goods-upd-20261019` покрывает только приёмку маркированных товаров на Эвоторе. R1–R4 указывают на существующие approved документы/дополнение, поэтому не считаются KB gaps; это возможные Retrieval/Runtime follow-ups без доказательства production/runtime ошибки. G6/G7 BIFIT остаются частичными или зависящими от версии и не включены в число подтверждённых пробелов.
+
+
+### Evotor Power model-specific reprint source check — 17.11.2026
+
+Official [Evotor Power user guide](https://evotor.ru/manuals/power/kak-vosstanovit-chek/) re-read in full. It confirms the documented sequence to reprint a known fiscal document number: cash-service settings, additional operations, print by number, enter number and OK; number may be read from prior receipt or OFD account. It does not specify covered submodels, software release, permissions, copied document contents, or replaced-FN behavior. Updated only source-check metadata in the external draft and evidence ledgers; no approved article or UI step was edited. Candidate remains draft/SME-gated.
