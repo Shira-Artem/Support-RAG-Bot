@@ -83,3 +83,8 @@ The exact official pages for [password recovery](https://aqsi.online/instruction
 - Read the current FNS announcement about Order № ЕД-1-20/658@: it says changes start 01.03.2027 and FFD 1.05/1.1 leave circulation 01.09.2027. The linked order itself and model-specific transition procedure were not independently read; retain those as unverified.
 - Re-read FNS articles on the 2025 simplified FN replacement exceptions and unilateral KKT deregistration. Both carry an archival notice; their summaries are limited to the stated exception list, 60-day document handoff and registration-card evidence, not applied as current individualized legal advice.
 - Source-review count is now 397 URLs, 257 with dated attempts/reads and 140 with `checked_at=unverified`. These are attempt-date counts, not claim-completeness counts.
+
+
+### Public endpoint source context — 17.11.2026
+
+Reopened aQsi’s public «Данные ОФД и ОИСМ» help page. The IP/port values flagged by the GitHub payload review are printed by aQsi in its public configuration table alongside named provider endpoints and DNS alternatives. This source check supports classifying them as public service endpoints rather than private/customer network data; it does not prove the values are still operational, so the report retains provider-confirmation warnings. No customer-specific host, credential, secret or local network details are included.

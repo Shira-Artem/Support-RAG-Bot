@@ -794,3 +794,8 @@ Rechecked aQsi sources: the URL titled «Интеграция с 1С» is a help
 
 
 Rechecked on 17.11.2026 three FNS pages about the staged 2027 FFD change, exceptions to simplified FN replacement and one-sided KKT deregistration. The linked order itself was not opened; source text explicitly marked archival remains scoped/partial. Recomputed source review: 397 URLs, 257 dated checks/attempts, 140 `checked_at=unverified`; no source date is inferred from old notes.
+
+
+### Public endpoint source context — 17.11.2026
+
+Reopened aQsi’s public «Данные ОФД и ОИСМ» help page. The IP/port values flagged by the GitHub payload review are printed by aQsi in its public configuration table alongside named provider endpoints and DNS alternatives. This source check supports classifying them as public service endpoints rather than private/customer network data; it does not prove the values are still operational, so the report retains provider-confirmation warnings. No customer-specific host, credential, secret or local network details are included.
