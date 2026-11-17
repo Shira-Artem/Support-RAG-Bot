@@ -13,7 +13,7 @@ source_type: industry_explainer
 published_at: 2026-05-26
 collected_at: 2026-10-13
 verified_at:
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-17
 status: draft
 requires_sme_review: true
 review_note: "Материал является отраслевым объяснением; для точных требований нужна актуальная инструкция оператора или регулятора."

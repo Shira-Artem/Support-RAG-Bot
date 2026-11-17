@@ -287,3 +287,21 @@ No files in `data/knowledge/` changed. Seven cards previously carrying overall `
 ### aQsi source pass 17.11.2026
 
 Report-only update: directly rechecked 20 aQsi URLs and added bounded S301–S311 entries. The cloud FN re-registration URL returned 404 again; a related current cloud registration-completion page covers only status/report completion. Physical aQsi KKT support pages are not treated as evidence for aQsi Online cloud-FN steps. Updated source and claim ledgers, plus P1-27 evidence; no `data/knowledge/` content or metadata changed.
+
+17.11.2026 — в `atol_online/taxes/tax-2026-vat-changes.md` после полного повторного чтения официального источника АТОЛ обновлён `source_checked_at`; краткая формулировка страховых взносов разделена на режим ИТ и отдельную льготу для МСП приоритетных отраслей по первоисточнику ФНС. Налоговая квалификация не дана; добавлен P1-135, draft остаётся SME-gated. Approved content и сервисные шаги не менялись.
+
+
+17.11.2026: повторно открыт официальный источник АТОЛ Онлайн #11052. P2-93 детализирован: quarterly schedule explicitly replaces a monthly reading; `card_review.csv`, `claim_evidence.csv`, `source_review.csv` and branch ledger reconciled. Подготовлен изолированный candidate `reports/kb_parallel_review/candidates/atol-online-reconciliation-quarterly-review.md`; approved article and status were not edited.
+
+
+17.11.2026: P1-16 `aqsi_devices/errors/fn161-document-not-saved.md` повторно сверен с полным официальным источником aQsi. Точное error-161 определение (чек не записан в ФН/не передан в ОФД и ФНС) снимает предположение, что условная проверка ОФД пропускает состояние ФН для этого сценария. Issue закрыт как `closed_no_boundary_defect`; это не разрешение обобщать процедуру на неизвестные сетевые ошибки. Модель, release и customer-specific FFD/correction applicability остаются SME-границей. Approved-карточка не редактировалась.
+
+## Continuation 17.11.2026 — current worktree audit reconciliation
+
+- Перечитана полная видимая официальная справка Эвотора о копии чека. Для P1-58 внесено ограниченное claim evidence и добавлен отдельный section-only candidate `candidates/evotor-6-receipt-copy-adjacent-fd-review.md`; предупреждение о промежуточных ФД помечено как inference, не как факт производителя. Approved article не редактировалась.
+- Для P1-134 добавлено полное описание evidence в `issues.md`: два TSPiOT draft сужены до раздельно подтверждённых шагов 500/514; код 453 и связка/версия остаются unverified. Approved KB не менялась.
+- В `coverage_matrix.csv` исправлены три устаревших `approved_document_id` (M3, M4, P0-09) после сверки с `DocumentLoader` inventory. Branch ledger дополнен отсутствовавшей карточкой 1С:FAQ; теперь 222 строки соответствуют 222 distinct KB paths относительно merge-base.
+- Frozen `baseline_inventory.csv` не перезаписывался. Его commit/time, path/ID/status сравнение и 48 draft-only content hash deltas отражены в текущем checkpoint. Пять текущих dirty KB-файлов имеют `status: draft`.
+- Офлайн-проверки: candidate validator 44/44 (169 chunks, 0 errors/warnings), schema tests 11 passed; дополнительный retrieval/metadata subset — 24 passed/2 failed на устаревшем fixture P1-127. Runtime, tests, approved content и index не менялись.
+
+17.11.2026 follow-up: повторный offline audit подтвердил 269/269 карт и 1,167 chunks; candidate validator 44/44 (169 chunks), schema tests 11 passed; boundary review сообщает 19 возможных разрывов в 19 файлах, каждый требует проверки по фактическому тексту чанков. В `data/knowledge/tspiot/astral-diagnostics.md` удалён дублирующий раздел, который повторно давал общий совет перезапустить службы для 453/500/514 и перечислял не подтверждённые здесь проверки ФФД/лицензии/2D-сканера. Соседняя диагностика уже ограничена source-bounded 500/514; P1-134 остаётся draft/SME-gated, 453 и конкретная совместимость не подтверждены. UI-тексты 1С, approved и runtime не менялись.
