@@ -9,7 +9,7 @@ Audit artifacts for `feature/kb-review-b2`. This handoff does not approve candid
 - Corpus: 269 Markdown cards, 206 approved / 63 draft; all 269 loaded by real `DocumentLoader`/`Chunker` into 1,166 chunks. Frozen baseline has the same paths, IDs and statuses; 48 content hashes changed since the frozen baseline, all from draft cards.
 - Branch delta vs local merge-base: 222 KB paths; `branch_changes.csv` has 222 reconciled rows. Two branch changes remain `branch_diff_semantic_unverified`. Current branch KB edits are limited to five draft cards.
 - `card_review.csv`: 269 rows (all conservatively `warning` overall; individual criteria include pass/fail/unverified). `audit_issues.csv`: 249 (17 P0, 135 P1, 97 P2, 0 P3). By explicit status grouping, 27 are closed/verified/corrected; 222 remain open, partially verified, or gated. 210 rows require SME review. These are audit findings, not 249 proven KB defects.
-- Source evidence: `source_review.csv` has 397 distinct URL rows: 254 have a dated review/attempt and 143 have `checked_at=unverified`. This field count is not a claim-verification count; many dated rows are only partial, so accessibility does not establish all claims. `source_register.csv`: 320 records / 306 unique URLs through S323; `claim_evidence.csv`: 639 rows.
+- Source evidence: `source_review.csv` has 397 distinct URL rows: 257 have a dated review/attempt and 140 have `checked_at=unverified`. This field count is not a claim-verification count; many dated rows are only partial, so accessibility does not establish all claims. `source_register.csv`: 320 records / 306 unique URLs through S323; `claim_evidence.csv`: 639 rows.
 - Mechanical signals: 52 warnings (43 long-paragraph inspection signals, 7 line-reference signals, 2 missing-metadata signals); no mechanical failure. Semantic overlap registry has 16 current pairs, all reviewed; the heuristic does not prove full semantic equivalence.
 - Candidate validation: 44 drafts / 169 chunks, unique IDs and content hashes, no loader errors or warnings. The five initial B2 drafts remain external and unapproved; see `reports/kb_parallel_review/draft_review.md`.
 - Coverage: six narrow approved-coverage gaps are confirmed (G1–G5 and U2). G6/G7 BIFIT remain partial/version questions. DirectBank import and schedule have approved partial coverage; do not duplicate. Physical Evotor 6 coverage does not establish Evotor 7.3/Power model instructions.
@@ -40,7 +40,7 @@ Audit artifacts for `feature/kb-review-b2`. This handoff does not approve candid
 2. EDO SME clarifies the intended Saby state and legal handling; Diadoc expert confirms applicability per document type/roaming/operator.
 3. Metadata/taxonomy owner decides operation labels for 1C informational/accounting articles; no runtime token was added.
 4. Runtime owner reviews the 19 chunk boundaries and R1/R2 retrieval scenarios separately.
-5. Source owner/SMEs must review source rows marked unverified or partial, and unresolved claims in `claim_evidence.csv`, before claiming exhaustive substantive confirmation. Current `source_review.csv` specifically has 143 rows without a dated check/attempt; do not treat that number as the total unresolved-claim count.
+5. Source owner/SMEs must review source rows marked unverified or partial, and unresolved claims in `claim_evidence.csv`, before claiming exhaustive substantive confirmation. Current `source_review.csv` specifically has 140 rows without a dated check/attempt; do not treat that number as the total unresolved-claim count.
 
 The audit stage has produced reviewable artifacts, but the full semantic/SME gate is not passed. During the latest follow-up, a duplicated section in the TSPiOT draft `astral-diagnostics.md` was removed because it reintroduced unsupported generic checks and a shared restart instruction for 453/500/514; the source-bounded 500/514 paths remain and the card stays draft. Offline revalidation after this edit: 269/269 documents, 1,166 chunks; 11 schema tests passed; 15 retrieval/metadata tests passed and 2 failed on the known fixture/service-scope mismatch; candidate validation 44/44, 169 chunks, 0 errors/warnings; boundary checker reports 19 potential cuts for runtime review.
 
@@ -76,3 +76,15 @@ The exact official pages for [password recovery](https://aqsi.online/instruction
 - aQsi's «Интеграция с 1С» URL is a help navigation page, not a procedure. The exact official installer guide confirms KKM Offline 3.1 and Aqsi.Integrator-3.9.0.73 for aQsi's software-hardware complex; cloud 1C is a hosting form with offline-equipment exchange, not aQsi Online. Release currency remains unverified. Manual 1C UI descriptions were left unchanged.
 - The canned-goods marking article's direct open returned Internal Error; the previous bounded evidence is not treated as re-confirmed.
 - Updated source ledger count: 397 review URLs, 254 dated attempts/reads and 143 `checked_at=unverified`; this does not count claim completeness. Source register remains 320 rows / 306 unique URLs through S323.
+
+
+### FNS source follow-up — 17 Nov 2026
+
+- Read the current FNS announcement about Order № ЕД-1-20/658@: it says changes start 01.03.2027 and FFD 1.05/1.1 leave circulation 01.09.2027. The linked order itself and model-specific transition procedure were not independently read; retain those as unverified.
+- Re-read FNS articles on the 2025 simplified FN replacement exceptions and unilateral KKT deregistration. Both carry an archival notice; their summaries are limited to the stated exception list, 60-day document handoff and registration-card evidence, not applied as current individualized legal advice.
+- Source-review count is now 397 URLs, 257 with dated attempts/reads and 140 with `checked_at=unverified`. These are attempt-date counts, not claim-completeness counts.
+
+
+### Public endpoint source context — 17.11.2026
+
+Reopened aQsi’s public «Данные ОФД и ОИСМ» help page. The IP/port values flagged by the GitHub payload review are printed by aQsi in its public configuration table alongside named provider endpoints and DNS alternatives. This source check supports classifying them as public service endpoints rather than private/customer network data; it does not prove the values are still operational, so the report retains provider-confirmation warnings. No customer-specific host, credential, secret or local network details are included.
