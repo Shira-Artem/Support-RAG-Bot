@@ -9,7 +9,7 @@ Audit artifacts for `feature/kb-review-b2`. This handoff does not approve candid
 - Corpus: 269 Markdown cards, 206 approved / 63 draft; all 269 loaded by real `DocumentLoader`/`Chunker` into 1,166 chunks. Frozen baseline has the same paths, IDs and statuses; 48 content hashes changed since the frozen baseline, all from draft cards.
 - Branch delta vs local merge-base: 222 KB paths; `branch_changes.csv` has 222 reconciled rows. Two branch changes remain `branch_diff_semantic_unverified`. Current branch KB edits are limited to five draft cards.
 - `card_review.csv`: 269 rows (all conservatively `warning` overall; individual criteria include pass/fail/unverified). `audit_issues.csv`: 249 (17 P0, 135 P1, 97 P2, 0 P3). By explicit status grouping, 27 are closed/verified/corrected; 222 remain open, partially verified, or gated. 210 rows require SME review. These are audit findings, not 249 proven KB defects.
-- Source evidence: `source_review.csv` has 397 distinct URL rows: 257 have a dated review/attempt and 140 have `checked_at=unverified`. This field count is not a claim-verification count; many dated rows are only partial, so accessibility does not establish all claims. `source_register.csv`: 320 records / 306 unique URLs through S323; `claim_evidence.csv`: 639 rows.
+- Source evidence: `source_review.csv` has 397 distinct URL rows: 259 have a dated review/attempt and 138 have `checked_at=unverified`. This field count is not a claim-verification count; many dated rows are only partial, so accessibility does not establish all claims. `source_register.csv`: 320 records / 306 unique URLs through S323; `claim_evidence.csv`: 639 rows.
 - Mechanical signals: 52 warnings (43 long-paragraph inspection signals, 7 line-reference signals, 2 missing-metadata signals); no mechanical failure. Semantic overlap registry has 16 current pairs, all reviewed; the heuristic does not prove full semantic equivalence.
 - Candidate validation: 44 drafts / 169 chunks, unique IDs and content hashes, no loader errors or warnings. The five initial B2 drafts remain external and unapproved; see `reports/kb_parallel_review/draft_review.md`.
 - Coverage: six narrow approved-coverage gaps are confirmed (G1–G5 and U2). G6/G7 BIFIT remain partial/version questions. DirectBank import and schedule have approved partial coverage; do not duplicate. Physical Evotor 6 coverage does not establish Evotor 7.3/Power model instructions.
@@ -40,7 +40,7 @@ Audit artifacts for `feature/kb-review-b2`. This handoff does not approve candid
 2. EDO SME clarifies the intended Saby state and legal handling; Diadoc expert confirms applicability per document type/roaming/operator.
 3. Metadata/taxonomy owner decides operation labels for 1C informational/accounting articles; no runtime token was added.
 4. Runtime owner reviews the 19 chunk boundaries and R1/R2 retrieval scenarios separately.
-5. Source owner/SMEs must review source rows marked unverified or partial, and unresolved claims in `claim_evidence.csv`, before claiming exhaustive substantive confirmation. Current `source_review.csv` specifically has 140 rows without a dated check/attempt; do not treat that number as the total unresolved-claim count.
+5. Source owner/SMEs must review source rows marked unverified or partial, and unresolved claims in `claim_evidence.csv`, before claiming exhaustive substantive confirmation. Current `source_review.csv` specifically has 138 rows without a dated check/attempt; do not treat that number as the total unresolved-claim count.
 
 The audit stage has produced reviewable artifacts, but the full semantic/SME gate is not passed. During the latest follow-up, a duplicated section in the TSPiOT draft `astral-diagnostics.md` was removed because it reintroduced unsupported generic checks and a shared restart instruction for 453/500/514; the source-bounded 500/514 paths remain and the card stays draft. Offline revalidation after this edit: 269/269 documents, 1,166 chunks; 11 schema tests passed; 15 retrieval/metadata tests passed and 2 failed on the known fixture/service-scope mismatch; candidate validation 44/44, 169 chunks, 0 errors/warnings; boundary checker reports 19 potential cuts for runtime review.
 
@@ -88,3 +88,8 @@ The exact official pages for [password recovery](https://aqsi.online/instruction
 ### Public endpoint source context — 17.11.2026
 
 Reopened aQsi’s public «Данные ОФД и ОИСМ» help page. The IP/port values flagged by the GitHub payload review are printed by aQsi in its public configuration table alongside named provider endpoints and DNS alternatives. This source check supports classifying them as public service endpoints rather than private/customer network data; it does not prove the values are still operational, so the report retains provider-confirmation warnings. No customer-specific host, credential, secret or local network details are included.
+
+
+### DirectBank source rechecks — 17.11.2026
+
+Read the official BUKH.1C articles on file import (publication 11.08.2022) and all-bank-account loading (19.02.2024). They bound features to 3.0.117 and 3.0.148, respectively, and describe conditions at a high level. Exact screen labels are embedded in screenshots and were not transcribed or modified; bank support, user rights and client-specific configuration remain unverified.
