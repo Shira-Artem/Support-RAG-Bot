@@ -13,7 +13,6 @@ data/knowledge/aqsi_devices/marking/permission-setup.md,long_paragraph,1133 char
 data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md,long_paragraph,1004 chars; inspect boundary,warning
 data/knowledge/aqsi_devices/peripherals/scanner.md,long_paragraph,1004 chars; inspect boundary,warning
 data/knowledge/aqsi_devices/sales/marked-beer.md,long_paragraph,1013 chars; inspect boundary,warning
-data/knowledge/aqsi_online/account/edit-user.md,coverage_operation_mismatch,{'change_permissions'},warning
 data/knowledge/aqsi_online/fns/finish-reg.md,long_paragraph,1323 chars; inspect boundary,warning
 data/knowledge/aqsi_online/fns/register-ip.md,long_paragraph,1399 chars; inspect boundary,warning
 data/knowledge/aqsi_online/fns/register-ooo.md,long_paragraph,1267 chars; inspect boundary,warning

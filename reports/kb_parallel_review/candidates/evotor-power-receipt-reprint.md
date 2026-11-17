@@ -10,7 +10,7 @@ source_url: https://evotor.ru/manuals/power/kak-vosstanovit-chek/
 source_type: vendor_user_manual
 published_at: null
 collected_at: '2026-11-14'
-source_checked_at: '2026-11-16'
+source_checked_at: '2026-11-17'
 verified_at: null
 task_category: receipt_print
 operations: [repeat_print]

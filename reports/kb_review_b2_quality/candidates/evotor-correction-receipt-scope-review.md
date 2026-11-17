@@ -13,7 +13,7 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-11-15'
 verified_at: null
-source_checked_at: '2026-11-15'
+source_checked_at: '2026-11-17'
 evidence_coverage:
   correct_receipt: partial
 status: draft

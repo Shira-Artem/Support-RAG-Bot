@@ -52,7 +52,7 @@ P0-07: исправлено ошибочное утверждение о фор�
 
 P1-50: в approved карточке расторжения уточнена сохраняющаяся плата за аренду ККТ и хранение ФН при заморозке и условие отсутствия задолженности. Изменённая редакция требует SME.
 
-P0-08: исправлено определение ФН облачной кассы как физического устройства. P0-09: исключено представление смены СНО и реквизитов как безусловной причины снятия ККТ, уточнена проверка результата. Обе новые редакции требуют SME.
+P0-08/P0-09: историческая формулировка выше ошибочно описывала исправление approved-карточек. В текущем worktree `fn-basics.md` всё ещё называет ФН программным/виртуальным модулем, а `deregister-kkt.md` всё ещё перечисляет смену СНО/реквизитов как причины снятия; обе approved-карточки не исправлялись в этом аудите. Для P0-08 подготовлен узкий replacement candidate; для P0-09 — осторожное отдельное предложение. Оба остаются вне рабочей KB и требуют профильного утверждения.
 
 P1-51/P1-52: в двух approved-карточках о ставках НДС разграничены порог текущего года и необходимость проверки доходов предыдущего года; точную спорную границу проверить по НК РФ со специалистом. P2-68: исправлена дата публикации источника ФНС без изменения даты экспертизы.
 
@@ -76,7 +76,7 @@ P1-63: в карточке выбора ОФД исключено безусло
 
 P1-64/P2-78: уточнена модельная применимость текстовой комплектации aQsi и ограничена запись параметров ОФД при простой диагностике. Новые approved-редакции требуют инженера.
 
-P0-12: официальная статья Эвотора подтверждает основной принцип обратной коррекции в approved-карте; доказанной ложности не найдено. Обнаружена неполнота точных пар типов для ФФД 1.2. Подготовлен replacement-кандидат без изменения approved-карточки; SME подтверждает актуальность.
+P1-132 (ранее P0-12): официальная статья Эвотора подтверждает основной принцип обратной коррекции в approved-карте; доказанной ложности нет. Это неполнота точных пар ФФД 1.2, поэтому приоритет снижен с P0 на P1. Официальный текст перечитан 17.11; подготовлен completeness-candidate для существующей карточки, approved не менялся; SME подтверждает актуальность.
 
 P1-65–P1-68: в четырёх draft ТС ПИоТ уточнены сроки перехода и варианты поведения кассового ПО без обязательной проверки. Нужна экспертиза по маркировке; статус draft сохранён.
 
@@ -146,6 +146,12 @@ P0-19: подготовлен `reports/kb_parallel_review/candidates/aqsi-online
 ## Инструкция владельца по ручным шагам 1С
 
 В текущем состоянии ветки присутствуют более ранние изменения формулировок в нескольких approved статьях 1С, в том числе `data/knowledge/1c/bank/directbank-all-accounts.md` и `directbank-auto-schedule.md`. Они появились до текущего прохода; их исходные шаги получены владельцем из изображений официального руководства и не могут быть независимо проверены текстовым просмотром. В рамках продолжения KB-аудита интерфейсные шаги не менялись и не «нормализовались»; diff остаётся в ручной очереди владельца/эксперта. В частности, `Расширенная настройка` оставлена с описанием чекбокса по указанию владельца.
+
+## 17.11.2026 — кандидат замены раздела статусов Платформы ОФД
+
+Повторно открыт полный текст официальной справки Платформы ОФД по разделу «Кассы». В `approved` карточке `platformaofd-lkk-cash-monitoring.md` фрагмент «ФН+РНМ» присоединён к действиям для статуса «Снята с рег.»; источник показывает это отдельным статусом и отдельной диагностикой пары реквизитов. Ранее написанное в audit handoff «статусы разделены» было неверно: основной файл фактически не исправлен.
+
+Создан внешний draft `reports/kb_review_b2_quality/candidates/platformaofd-lkk-cash-monitoring-statuses-review.md` как точечная замена раздела, а не новая самостоятельная инструкция. Проверка источника выявила внутри самой страницы противоречие «Нет документов более 72 часов» / «48 часов и более»; кандидат не утверждает фактический порог. Кандидат загружен через существующие `DocumentLoader`/`Chunker`: 5 непустых chunks, уникальные ID/content hash, `status: draft`, `requires_sme_review: true`. Approved-карточка, runtime и индекс не изменялись; требуется review инженера и владельца KB.
 
 ## 15.11.2026 — проверка замены ФН АТОЛ Онлайн
 
@@ -263,3 +269,39 @@ Full official BUKH.1C article (21.03.2023) read; feature ≥3.0.131, two-file ex
 Дополнение к source-date checkpoint: 15.11 повторно проверены пять точечных изменений aQsi/Evotor в физической ККТ, облачном сервисе и TS PIoT; updated source_checked_at and requires_sme_review на черновиках. EDO operator-choice source mismatch открыт как P2-92. Изменённые KB файлы остаются draft, approved не менялись.
 
 16.11.2026: в draft `sugary-drinks-classification.md` скорректированы упаковка и список исключений по текущему консолидированному тексту ст.181 НК РФ (S283). Для основной metadata-ссылки сохранена статья АТОЛ #14414 (`source_type: vendor_support_article`); законодательный текст отдельно внесён в источник/claim evidence. Добавлены P1-129 и coverage L1. Официальный publication-portal URL не найден; юридическая квалификация конкретного товара остаётся у SME. Approved/runtime/индекс не менялись.
+
+
+17.11.2026: повторно прочитаны официальные ATOL Online #16669/#11253 для P0-08. Evidence подтверждает только физическую cloud-ККТ с отдельным ФН; сведения о модели/состоянии клиента и процедуре замены остаются непроверенными. Даты проверки и scoped claims обновлены; approved-карточка неизменна, candidate остаётся SME-gated. Исправлена устаревшая формулировка отчётов, которая ошибочно подразумевала внесённую approved-правку.
+
+17.11.2026: повторно прочитаны ATOL Online #11256 и архивная публикация ФНС #16652173 для P0-10. В отчётах сохранено отличие между ролью ОФД и правилами выдачи чека; candidate уточнён, что памятка ФНС — архивная и не охватывает все исключения. Approved-карточка и пользовательские тексты не менялись; юридическая/инженерная проверка остаётся обязательной.
+
+
+17.11.2026: P0-13 переклассифицирован в P1-133 после полного повторного чтения ATOL #18220 и двух архивных разъяснений ФНС. Источник подтверждает причины и vendor flow; действующей ошибочной нормы не доказано. Остались неуточнённый формат срока и применимость упрощённой перерегистрации; candidate уточняет дату и исключения. Approved-карта не менялась; нужен специалист ККТ.
+
+
+### Review-only update 17.11.2026
+
+No files in `data/knowledge/` changed. Seven cards previously carrying overall `unverified` were given bounded review results (`warning`) after full manufacturer/FNS sources were reopened; metadata/source/SME limits are recorded in `card_review.csv`, `claim_evidence.csv`, and `source_review.csv`. Added current partner-portal evidence as S300. Corrected stale observation text in P1-128 because the current draft already reflects the documented `<410`/`≥410` distinction. Official-law direct fetch for FZ №425-ФЗ timed out; contract consequences remain unverified.
+
+
+### aQsi source pass 17.11.2026
+
+Report-only update: directly rechecked 20 aQsi URLs and added bounded S301–S311 entries. The cloud FN re-registration URL returned 404 again; a related current cloud registration-completion page covers only status/report completion. Physical aQsi KKT support pages are not treated as evidence for aQsi Online cloud-FN steps. Updated source and claim ledgers, plus P1-27 evidence; no `data/knowledge/` content or metadata changed.
+
+17.11.2026 — в `atol_online/taxes/tax-2026-vat-changes.md` после полного повторного чтения официального источника АТОЛ обновлён `source_checked_at`; краткая формулировка страховых взносов разделена на режим ИТ и отдельную льготу для МСП приоритетных отраслей по первоисточнику ФНС. Налоговая квалификация не дана; добавлен P1-135, draft остаётся SME-gated. Approved content и сервисные шаги не менялись.
+
+
+17.11.2026: повторно открыт официальный источник АТОЛ Онлайн #11052. P2-93 детализирован: quarterly schedule explicitly replaces a monthly reading; `card_review.csv`, `claim_evidence.csv`, `source_review.csv` and branch ledger reconciled. Подготовлен изолированный candidate `reports/kb_parallel_review/candidates/atol-online-reconciliation-quarterly-review.md`; approved article and status were not edited.
+
+
+17.11.2026: P1-16 `aqsi_devices/errors/fn161-document-not-saved.md` повторно сверен с полным официальным источником aQsi. Точное error-161 определение (чек не записан в ФН/не передан в ОФД и ФНС) снимает предположение, что условная проверка ОФД пропускает состояние ФН для этого сценария. Issue закрыт как `closed_no_boundary_defect`; это не разрешение обобщать процедуру на неизвестные сетевые ошибки. Модель, release и customer-specific FFD/correction applicability остаются SME-границей. Approved-карточка не редактировалась.
+
+## Continuation 17.11.2026 — current worktree audit reconciliation
+
+- Перечитана полная видимая официальная справка Эвотора о копии чека. Для P1-58 внесено ограниченное claim evidence и добавлен отдельный section-only candidate `candidates/evotor-6-receipt-copy-adjacent-fd-review.md`; предупреждение о промежуточных ФД помечено как inference, не как факт производителя. Approved article не редактировалась.
+- Для P1-134 добавлено полное описание evidence в `issues.md`: два TSPiOT draft сужены до раздельно подтверждённых шагов 500/514; код 453 и связка/версия остаются unverified. Approved KB не менялась.
+- В `coverage_matrix.csv` исправлены три устаревших `approved_document_id` (M3, M4, P0-09) после сверки с `DocumentLoader` inventory. Branch ledger дополнен отсутствовавшей карточкой 1С:FAQ; теперь 222 строки соответствуют 222 distinct KB paths относительно merge-base.
+- Frozen `baseline_inventory.csv` не перезаписывался. Его commit/time, path/ID/status сравнение и 48 draft-only content hash deltas отражены в текущем checkpoint. Пять текущих dirty KB-файлов имеют `status: draft`.
+- Офлайн-проверки: candidate validator 44/44 (169 chunks, 0 errors/warnings), schema tests 11 passed; дополнительный retrieval/metadata subset — 24 passed/2 failed на устаревшем fixture P1-127. Runtime, tests, approved content и index не менялись.
+
+17.11.2026 follow-up: повторный offline audit подтвердил 269/269 карт и 1,167 chunks; candidate validator 44/44 (169 chunks), schema tests 11 passed; boundary review сообщает 19 возможных разрывов в 19 файлах, каждый требует проверки по фактическому тексту чанков. В `data/knowledge/tspiot/astral-diagnostics.md` удалён дублирующий раздел, который повторно давал общий совет перезапустить службы для 453/500/514 и перечислял не подтверждённые здесь проверки ФФД/лицензии/2D-сканера. Соседняя диагностика уже ограничена source-bounded 500/514; P1-134 остаётся draft/SME-gated, 453 и конкретная совместимость не подтверждены. UI-тексты 1С, approved и runtime не менялись.
