@@ -51,7 +51,7 @@ Remote PR #4 remains open as Draft at head `0e5cfb59ca5756e73f1fabada5f1702b3c77
 - Local `source_register.csv` has 305 unique URLs versus 294 remotely; all remote URL keys exist locally, and 7 shared rows have locally refreshed/expanded evidence notes.
 - Local `claim_evidence.csv` has 638 keyed rows versus 612 remotely; all remote composite keys (`path`, `claim`, `source_url`) exist locally, and 12 shared records have updated evidence/scope assessments.
 - Local `source_review.csv` has 397 URLs versus 388 remotely; all remote URL keys exist locally, and 14 shared rows have updated access or content-review classification.
-- Markdown ledgers are not simple supersets: `validation.md` has unique material on both sides (remote 1,090 lines, local 778), as do `kb_audit.md` and README. Preserve the remote chronology and add the latest local checkpoint during reconciliation; a whole-file overwrite would lose evidence.
+- Markdown ledgers are not simple supersets: `validation.md` has unique material on both sides (remote 1,090 lines, local 778), as do `kb_audit.md` and README. The extracted remote-only sections are retained in [remote_unique_history_0e5cfb5.md](remote_unique_history_0e5cfb5.md); current reports remain authoritative for counts, while the archive preserves distinct historic evidence from the remote snapshot.
 
 ### aQsi Online source-access follow-up
 
