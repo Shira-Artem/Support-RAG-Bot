@@ -7,9 +7,9 @@ Audit artifacts for `feature/kb-review-b2`. This handoff does not approve candid
 ## Evidence snapshot
 
 - Corpus: 269 Markdown cards, 206 approved / 63 draft; all 269 loaded by real `DocumentLoader`/`Chunker` into 1,166 chunks. Frozen baseline has the same paths, IDs and statuses; 48 content hashes changed since the frozen baseline, all from draft cards.
-- Branch delta vs local merge-base: 222 KB paths; `branch_changes.csv` has 222 reconciled rows. Two branch changes remain `branch_diff_semantic_unverified`. Current uncommitted KB changes are five draft cards only.
+- Branch delta vs local merge-base: 222 KB paths; `branch_changes.csv` has 222 reconciled rows. Two branch changes remain `branch_diff_semantic_unverified`. Current branch KB edits are limited to five draft cards.
 - `card_review.csv`: 269 rows (all conservatively `warning` overall; individual criteria include pass/fail/unverified). `audit_issues.csv`: 249 (17 P0, 135 P1, 97 P2, 0 P3). By explicit status grouping, 27 are closed/verified/corrected; 222 remain open, partially verified, or gated. 210 rows require SME review. These are audit findings, not 249 proven KB defects.
-- Source evidence: `source_review.csv` has 397 distinct URL rows: 243 have a dated review/attempt and 154 have `checked_at=unverified`. This field count is not a claim-verification count; many dated rows are only partial, so accessibility does not establish all claims. `source_register.csv`: 319 records / 305 unique URLs through S322; `claim_evidence.csv`: 639 rows.
+- Source evidence: `source_review.csv` has 397 distinct URL rows: 245 have a dated review/attempt and 152 have `checked_at=unverified`. This field count is not a claim-verification count; many dated rows are only partial, so accessibility does not establish all claims. `source_register.csv`: 320 records / 306 unique URLs through S323; `claim_evidence.csv`: 639 rows.
 - Mechanical signals: 52 warnings (43 long-paragraph inspection signals, 7 line-reference signals, 2 missing-metadata signals); no mechanical failure. Semantic overlap registry has 16 current pairs, all reviewed; the heuristic does not prove full semantic equivalence.
 - Candidate validation: 44 drafts / 169 chunks, unique IDs and content hashes, no loader errors or warnings. The five initial B2 drafts remain external and unapproved; see `reports/kb_parallel_review/draft_review.md`.
 - Coverage: six narrow approved-coverage gaps are confirmed (G1–G5 and U2). G6/G7 BIFIT remain partial/version questions. DirectBank import and schedule have approved partial coverage; do not duplicate. Physical Evotor 6 coverage does not establish Evotor 7.3/Power model instructions.
@@ -40,7 +40,7 @@ Audit artifacts for `feature/kb-review-b2`. This handoff does not approve candid
 2. EDO SME clarifies the intended Saby state and legal handling; Diadoc expert confirms applicability per document type/roaming/operator.
 3. Metadata/taxonomy owner decides operation labels for 1C informational/accounting articles; no runtime token was added.
 4. Runtime owner reviews the 19 chunk boundaries and R1/R2 retrieval scenarios separately.
-5. Source owner/SMEs must review source rows marked unverified or partial, and unresolved claims in `claim_evidence.csv`, before claiming exhaustive substantive confirmation. Current `source_review.csv` specifically has 154 rows without a dated check/attempt; do not treat that number as the total unresolved-claim count.
+5. Source owner/SMEs must review source rows marked unverified or partial, and unresolved claims in `claim_evidence.csv`, before claiming exhaustive substantive confirmation. Current `source_review.csv` specifically has 152 rows without a dated check/attempt; do not treat that number as the total unresolved-claim count.
 
 The audit stage has produced reviewable artifacts, but the full semantic/SME gate is not passed. During the latest follow-up, a duplicated section in the TSPiOT draft `astral-diagnostics.md` was removed because it reintroduced unsupported generic checks and a shared restart instruction for 453/500/514; the source-bounded 500/514 paths remain and the card stays draft. Offline revalidation after this edit: 269/269 documents, 1,166 chunks; 11 schema tests passed; 15 retrieval/metadata tests passed and 2 failed on the known fixture/service-scope mismatch; candidate validation 44/44, 169 chunks, 0 errors/warnings; boundary checker reports 19 potential cuts for runtime review.
 
@@ -48,7 +48,7 @@ Remote PR #4 remains open as Draft at head `0e5cfb59ca5756e73f1fabada5f1702b3c77
 
 ### Read-only ledger comparison against remote PR head
 
-- Local `source_register.csv` has 305 unique URLs versus 294 remotely; all remote URL keys exist locally, and 7 shared rows have locally refreshed/expanded evidence notes.
+- Local `source_register.csv` has 306 unique URLs versus 294 remotely; all remote URL keys exist locally, and 7 shared rows have locally refreshed/expanded evidence notes.
 - Local `claim_evidence.csv` has 638 keyed rows versus 612 remotely; all remote composite keys (`path`, `claim`, `source_url`) exist locally, and 12 shared records have updated evidence/scope assessments.
 - Local `source_review.csv` has 397 URLs versus 388 remotely; all remote URL keys exist locally, and 14 shared rows have updated access or content-review classification.
 - Markdown ledgers are not simple supersets: `validation.md` has unique material on both sides (remote 1,090 lines, local 778), as do `kb_audit.md` and README. The extracted remote-only sections are retained in [remote_unique_history_0e5cfb5.md](remote_unique_history_0e5cfb5.md); current reports remain authoritative for counts, while the archive preserves distinct historic evidence from the remote snapshot.
