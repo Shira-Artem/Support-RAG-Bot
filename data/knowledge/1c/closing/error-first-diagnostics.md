@@ -11,10 +11,10 @@ model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
 source_url: https://buh.ru/articles/sim-sim-zakroysya-ili-neskolko-sekretov-zakrytiya-mesyatsa.html
 source_type: vendor_article
-published_at: '2013-01-01'
+published_at: '2013-10-03'
 collected_at: '2026-10-13'
 verified_at: 2026-10-22
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

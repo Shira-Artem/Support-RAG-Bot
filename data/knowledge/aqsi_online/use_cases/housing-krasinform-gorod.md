@@ -14,6 +14,7 @@ published_at: ''
 collected_at: '2026-10-19'
 verified_at: ''
 source_checked_at: 2026-10-22
+requires_sme_review: true
 status: draft
 review_note: "Источник описывает типовой сценарий; конкретная интеграция и применимость для клиента требуют подтверждения у сервиса."
 ---

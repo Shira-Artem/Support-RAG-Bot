@@ -8,11 +8,11 @@ operations: [check_vat_rules, check_vat_exemption]
 manufacturer: ''
 model: ''
 version: ''
-source_url: https://www.nalog.gov.ru/rn77/news/activities_fts/16635360/
+source_url: https://www.nalog.gov.ru/new2026/
 source_type: tax_authority
-published_at: '2026-11-03'
+published_at: ''
 collected_at: '2026-11-15'
-source_checked_at: '2026-11-15'
+source_checked_at: '2026-11-18'
 verified_at: null
 status: draft
 requires_sme_review: true
@@ -49,6 +49,6 @@ review_note: 'Replacement candidate for acc-usn-nds-exemption-2026. Current Arti
 
 ## Источники и пределы
 
-[Статья 145 НК РФ](https://www.consultant.ru/document/cons_doc_LAW_28165/8f399ec989074fdad875f9a672a1b091ea9bf05c/) и [Федеральный закон № 228-ФЗ](https://www.consultant.ru/document/cons_doc_LAW_538630/) задают пороги и условия; сообщение [ФНС о сохранении порога 20 млн](https://www.nalog.gov.ru/rn77/news/activities_fts/16635360/) подтверждает значение для 2027–2029. Старая справочная страница ФНС содержит блоки с другими значениями и не должна использоваться без сверки с действующим законом.
+Текущая сводка ФНС [«Налоги 2026»](https://www.nalog.gov.ru/new2026/) указывает пороги 20 млн в 2026–2029 годах, 15 млн в 2030 и 10 млн с 2031 года; отдельные блоки описывают порог текущего года. Архивное [сообщение ФНС о сохранении 20 млн до 2029 года](https://www.nalog.gov.ru/rn77/news/activities_fts/16635360/) прямо подтверждает значение для 2027–2029. Ссылки на [статью 145 НК РФ](https://www.consultant.ru/document/cons_doc_LAW_28165/8f399ec989074fdad875f9a672a1b091ea9bf05c/) и [Федеральный закон № 228-ФЗ](https://www.consultant.ru/document/cons_doc_LAW_538630/) сохранены для нормативной сверки: консолидированный текст ст.145 повторно открыт 17.11.2026 в ConsultantPlus; отображается редакция от 04.08.2026 с изменениями, вступившими в силу 01.10.2026. Прямая ссылка на официальный портал публикации ФЗ №228-ФЗ при повторном запросе вернула timeout. Кандидат остаётся draft до налоговой проверки нормы, переходов и индивидуальных условий.
 
 Кандидат исправляет только доказанную последовательность порогов. Он остаётся `draft`, требует налогового SME и владельца KB и не загружается в approved KB.

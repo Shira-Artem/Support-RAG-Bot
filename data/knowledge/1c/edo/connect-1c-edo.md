@@ -11,10 +11,10 @@ model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
 source_url: https://buh.ru/articles/1s-edo-beskontaktnyy-sposob-peredachi-dokumentov-kontragentam.html
 source_type: vendor_article
-published_at: '2020-07-01'
+published_at: '2020-08-14'
 collected_at: '2026-10-13'
 verified_at: 2026-10-22
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

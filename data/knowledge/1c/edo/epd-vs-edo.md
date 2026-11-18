@@ -11,10 +11,10 @@ model: 1С:Бухгалтерия 8, редакция 3.0
 version: null
 source_url: https://buh.ru/articles/tekhpodderzhka-1s-edo-otvetila-na-voprosy-polzovateley-po-primeneniyu-epd-i-rabote-s-1s-epd.html
 source_type: vendor_article
-published_at: '2026-09-01'
+published_at: '2026-09-14'
 collected_at: '2026-10-13'
 verified_at: 2026-10-22
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

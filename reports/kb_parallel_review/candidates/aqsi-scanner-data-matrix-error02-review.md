@@ -14,7 +14,7 @@ source_url: https://aqsi.ru/support/rabota-s-vneshnim-skanerom/
 source_type: manufacturer_support_article
 published_at: null
 collected_at: '2026-11-17'
-source_checked_at: '2026-11-17'
+source_checked_at: '2026-11-18'
 verified_at: null
 status: draft
 requires_sme_review: true

@@ -18,7 +18,7 @@ operations:
 search_fields:
 - configuration_release
 - bank_exchange_settings
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

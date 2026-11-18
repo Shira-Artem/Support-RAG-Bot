@@ -10,7 +10,7 @@ source_url: https://help.atol.online/article/11052
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-11-17'
-source_checked_at: '2026-11-17'
+source_checked_at: '2026-11-18'
 verified_at: null
 task_category: billing
 operations: [manage_billing, get_reconciliation_act]
@@ -35,4 +35,4 @@ review_note: 'Replacement proposal for P2-93. Official ATOL Online article direc
 
 ## Источник
 
-- [Когда приходят акты сверок? — АТОЛ Онлайн](https://help.atol.online/article/11052) — прочитано 17.11.2026.
+- [Когда приходят акты сверок? — АТОЛ Онлайн](https://help.atol.online/article/11052) — напрямую перечитано 18.11.2026.

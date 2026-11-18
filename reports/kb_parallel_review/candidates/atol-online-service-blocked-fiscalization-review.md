@@ -10,7 +10,7 @@ source_url: https://help.atol.online/article/11077
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-11-15'
-source_checked_at: '2026-11-15'
+source_checked_at: '2026-11-18'
 verified_at: null
 task_category: billing
 operations: [manage_billing, diagnose_service_block]

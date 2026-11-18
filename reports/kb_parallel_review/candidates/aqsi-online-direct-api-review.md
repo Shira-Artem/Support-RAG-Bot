@@ -14,7 +14,7 @@ source_url: https://aqsi.online/instructions/getting-started/kak-nastroit-pryamo
 source_type: vendor_support_article
 published_at: null
 collected_at: '2026-11-14'
-source_checked_at: '2026-11-14'
+source_checked_at: '2026-11-18'
 verified_at: null
 status: draft
 requires_sme_review: true

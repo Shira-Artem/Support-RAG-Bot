@@ -1,0 +1,35 @@
+{
+  "artifact": "reports/kb_review_b2_quality/baseline_inventory.csv",
+  "artifact_sha256": "97fe4d475fa3358794d32aef9d77eed2289049c825d36e20b826ff28877038d7",
+  "baseline_row_count": 269,
+  "source_snapshot_commit": "7d2ac5fc2f84659115f875449f5b3dedc899cb52",
+  "source_snapshot_commit_time": "2026-11-14T13:24:10+03:00",
+  "baseline_artifact_introduced_by_commit": "85f765c33c22cfa69e405e6a2f55bc02391220fe",
+  "baseline_artifact_commit_time": "2026-11-16T22:50:27+03:00",
+  "sha256_rows_matching_source_snapshot_commit": 269,
+  "sha256_rows_matching_artifact_commit": 222,
+  "snapshot_identity_conclusion": "All 269 baseline file SHA-256 values match the source_snapshot_commit tree exactly; 222 also match the later artifact-introducing commit, while 47 match only the earlier source tree.",
+  "capture_timestamp": "not separately recorded; the saved tree is proven by content hashes. The inventory was included by baseline_artifact_introduced_by_commit, but repository commit dates do not prove whether capture happened before or after source_snapshot_commit.",
+  "current_validation_date": "2026-11-18",
+  "current_head": "489f13d3540685957791b657f14ea628bbedb72f",
+  "current_card_count": 269,
+  "current_paths_not_in_baseline": 0,
+  "baseline_paths_missing_current": 0,
+  "document_id_changes": 0,
+  "current_sha256_matching_baseline": 200,
+  "current_sha256_differing_from_baseline": 69,
+  "status_transitions": {
+    "approved_to_draft": 2,
+    "draft_to_approved": 0
+  },
+  "baseline_statuses": {
+    "approved": 206,
+    "draft": 63
+  },
+  "current_statuses": {
+    "approved": 204,
+    "draft": 65
+  },
+  "worktree_kb_diff_paths": 24,
+  "worktree_diff_classification": "6 body/list-diff paths (5 substantive KB text updates and one approved 1C list-numbering-only edit); 18 front-matter-only paths. The register-account source_checked_at metadata was updated after direct source reread; verified_at was preserved."
+}

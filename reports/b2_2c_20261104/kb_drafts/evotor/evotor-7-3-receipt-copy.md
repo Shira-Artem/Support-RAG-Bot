@@ -11,7 +11,7 @@ source_type: vendor_user_manual
 published_at: null
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: '2026-11-16'
+source_checked_at: '2026-11-18'
 task_category: receipt_print
 operations: [repeat_print]
 search_fields: [fiscal_document_number]

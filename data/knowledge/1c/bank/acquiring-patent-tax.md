@@ -5,7 +5,7 @@ category: 1c
 service: "1С:Бухгалтерия 8"
 software: "1С:Бухгалтерия 8"
 task_category: bank_statement
-operations: [load_bank_statements]
+operations: []
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.174
@@ -14,7 +14,7 @@ source_type: vendor_article
 published_at: '2025-04-22'
 collected_at: '2026-10-13'
 verified_at: 2026-10-22
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

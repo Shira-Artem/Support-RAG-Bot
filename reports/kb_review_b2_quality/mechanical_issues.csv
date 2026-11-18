@@ -1,9 +1,13 @@
 path,problem_type,observed,state
+data/knowledge/1c/bank/acquiring-patent-tax.md,missing_metadata,operations,warning
+data/knowledge/1c/bank/acquiring-returns.md,missing_metadata,operations,warning
 data/knowledge/1c/bank/directbank-auto-schedule.md,long_paragraph,1364 chars; inspect boundary,warning
 data/knowledge/1c/bank/directbank-other-banks.md,long_paragraph,2051 chars; inspect boundary,warning
 data/knowledge/1c/closing/monthly-schedule.md,long_paragraph,1089 chars; inspect boundary,warning
 data/knowledge/1c/counterparty/reconciliation-act.md,long_paragraph,1190 chars; inspect boundary,warning
 data/knowledge/1c/goods/single-upd-many-warehouses.md,long_paragraph,1151 chars; inspect boundary,warning
+data/knowledge/1c/vat/electronic-upd-2026.md,missing_metadata,operations,warning
+data/knowledge/1c/vat/invoice-forms-april.md,missing_metadata,operations,warning
 data/knowledge/accounting/usn/usn-max-limit.md,missing_metadata,operations,warning
 data/knowledge/aqsi_devices/catalog/excel-import.md,long_paragraph,1392 chars; inspect boundary,warning
 data/knowledge/aqsi_devices/errors/fn18-expired.md,long_paragraph,1650 chars; inspect boundary,warning
@@ -43,6 +47,7 @@ data/knowledge/atol_online/fn/replacement-process.md,long_paragraph,1399 chars; 
 data/knowledge/atol_online/fn/replacement-reasons.md,long_paragraph,1071 chars; inspect boundary,warning
 data/knowledge/atol_online/fns/removed-from-register.md,long_paragraph,1219 chars; inspect boundary,warning
 data/knowledge/atol_online/integration/switch-ffd12.md,long_paragraph,1166 chars; inspect boundary,warning
+data/knowledge/atol_online/law/sugary-drinks-classification.md,long_paragraph,1160 chars; inspect boundary,warning
 data/knowledge/atol_online/receipts/advance-closing.md,line_reference,unresolved L reference,warning
 data/knowledge/atol_online/receipts/correct-ffd105.md,line_reference,unresolved L reference,warning
 data/knowledge/edo/edi-operator-choice.md,missing_metadata,operations,warning

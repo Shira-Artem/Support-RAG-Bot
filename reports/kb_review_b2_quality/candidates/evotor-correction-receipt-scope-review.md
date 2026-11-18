@@ -7,13 +7,13 @@ task_category: kkt_rules
 operations: [correct_receipt]
 manufacturer: Эвотор
 model: ''
-version: 'ФФД 1.05 и 1.2; источник производителя проверен 2026-11-15'
-source_url: https://support.evotor.ru/article/360003363673
+version: 'ФФД 1.05 и 1.2; официальная публикация без указанной версии/даты, повторно прочитана 2026-11-18'
+source_url: https://support.evotor.ru/article/360003363673-%D0%9A%D0%B0%D0%BA-%D0%BE%D1%84%D0%BE%D1%80%D0%BC%D0%B8%D1%82%D1%8C-%D1%87%D0%B5%D0%BA-%D0%BA%D0%BE%D1%80%D1%80%D0%B5%D0%BA%D1%86%D0%B8%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%BD%D0%B0%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D1%85
 source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-11-15'
 verified_at: null
-source_checked_at: '2026-11-17'
+source_checked_at: '2026-11-18'
 evidence_coverage:
   correct_receipt: partial
 status: draft
@@ -53,3 +53,5 @@ requires_sme_review: true
 - При пропуске реквизитов покупателя или агентских реквизитов производитель рекомендует запросить разъяснение ФНС.
 
 Перед выполнением сверьте исходный ФД, версию ФФД, тип операции, сумму, товарные остатки и маркировку. Кандидат заменяет только чрезмерно сжатое описание сценариев в `evotor-correction-receipt-scope-20261019`; сам approved-файл не изменён. Нужны эксперт по ККТ и бухгалтерская/юридическая проверка актуальности процедуры.
+
+Полный текст официальной статьи Эвотора повторно прочитан 18.11.2026 по URL со slug; numeric-only ссылка из metadata карточки при прямом открытии дала timeout. В публикации нет даты выпуска или номера релиза (внизу указан © Эвотор 2023).

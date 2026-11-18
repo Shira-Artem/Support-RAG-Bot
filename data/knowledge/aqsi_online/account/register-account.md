@@ -13,7 +13,7 @@ source_type: vendor_support_article
 published_at: ''
 collected_at: '2026-10-19'
 verified_at: 2026-10-22
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

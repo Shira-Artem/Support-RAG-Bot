@@ -10,10 +10,10 @@ model: null
 version: null
 source_url: https://www.nalog.gov.ru/rn52/ifns/mri15/info/16597003/
 source_type: fns_news
-published_at: '2026-03-01'
+published_at: '2026-02-19'
 collected_at: '2026-10-13'
 verified_at: 2026-10-22
-source_checked_at: 2026-10-22
+source_checked_at: 2026-11-18
 status: approved
 ---
 

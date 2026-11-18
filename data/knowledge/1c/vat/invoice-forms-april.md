@@ -5,7 +5,7 @@ category: 1c
 service: "1С:Бухгалтерия 8"
 software: "1С:Бухгалтерия 8"
 task_category: vat_accounting
-operations: [configure_vat_accounting]
+operations: []
 manufacturer: 1С
 model: 1С:Бухгалтерия 8, редакция 3.0
 version: 3.0.194

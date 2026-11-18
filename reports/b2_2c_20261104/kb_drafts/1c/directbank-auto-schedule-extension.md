@@ -11,7 +11,7 @@ source_type: vendor_article
 published_at: 2026-05-01
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: '2026-11-16'
+source_checked_at: '2026-11-18'
 software: '1С:Бухгалтерия 8'
 task_category: bank_statement
 operations: [schedule_bank_statement_import]

@@ -13,7 +13,7 @@ source_type: vendor_support_article
 published_at: null
 collected_at: '2026-10-19'
 verified_at: null
-source_checked_at: 2026-11-16
+source_checked_at: 2026-11-18
 status: draft
 review_note: "Правовой вывод требует проверки действующей нормы и условий клиента по официальному первоисточнику."
 ---
@@ -54,5 +54,9 @@ review_note: "Правовой вывод требует проверки дей
 ## Источник
 - https://help.atol.online/article/14414
 - https://www.nalog.gov.ru/rn93/news/activities_fts/16508769/
-- https://www.consultant.ru/document/cons_doc_LAW_28165/c4dda76950086823809763473e10fa70d9707463/
+- https://www.consultant.ru/document/cons_doc_LAW_28165/c4dda76950086823809763473e10fa70d9707463/ (консолидированная ст. 181; требуется сверка с официальным текстом)
+- https://www.mos.ru/upload/documents/files/3573/Federalniizakonot21112022N443-FZ.pdf (официальная копия первоначального ФЗ №443-ФЗ, не учитывает последующие изменения 2024 года)
+- https://www.nalog.gov.ru/rn25/ifns/r25_14/info/16243029/ (архивное разъяснение ФНС об изменениях с 01.01.2025)
+- https://www.nalog.gov.ru/rn57/news/seminar/15790930/ (архивное разъяснение УФНС Орловской области об изменениях с 01.01.2025)
+- https://www.nalog.gov.ru/html/sites/www.new.nalog.ru/files/about_fts/docs_fts/14414654.pdf (письмо Минфина от 22.06.2023 № 03-13-06/58072; историческое толкование исключения для напитков на растительной основе по редакции 2023 года, не текущая консолидированная норма)
 > Черновик (`draft`) для тестового RAG. Не подтверждён инженером или юристом. Применение — облачная фискализация АТОЛ Онлайн; законность и актуальность процедур требуют отдельной проверки.

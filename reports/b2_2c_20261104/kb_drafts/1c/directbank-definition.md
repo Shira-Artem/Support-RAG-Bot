@@ -11,7 +11,7 @@ source_type: vendor_service_description
 published_at: null
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: '2026-11-16'
+source_checked_at: '2026-11-18'
 software: '1С:Предприятие'
 task_category: general
 operations: [explain]

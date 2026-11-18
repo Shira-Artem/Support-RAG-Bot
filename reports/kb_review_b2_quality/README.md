@@ -1,12 +1,22 @@
-# KB Quality & Coverage: аудит и handoff — контрольная точка 17.11.2026
+# KB Quality & Coverage: аудит и handoff — контрольная точка 18.11.2026
+
+## Проверка 18.11.2026 — текущий статус
+
+Offline DocumentLoader/Chunker: **269/269** документов, **1,168** чанков, 57 механических сигналов; статусы 204 `approved` / 65 `draft`. Candidate validator: **52/52** внешних кандидатов, **209** чанков, 0 ошибок/предупреждений; пять исходных B2 drafts — 5/5, 19 чанков. Целевые pytest: **25 passed** (`test_knowledge`, `test_index_documents`, `test_b2_2c_quality_contracts`); отдельный metadata/applicability прогон дал **48 passed / 2 failed** из-за устаревших aQsi cloud-scope fixtures, не из-за обнаруженного KB-дефекта. В текущем worktree изменены **24 KB-файла**: 6 имеют body/list diff (5 содержательных изменений и только нумерация списка в одном 1С-файле), 18 — только front matter. Тексты ручных шагов интерфейса 1С не менялись.
+
+Ручная оценка SME-потребности в `card_review.csv`: 267 true / 2 false / 0 unverified; в том числе снят SME-gate с ограниченной регистрации aQsi Online по email после прямой проверки текста. Это не заменяет по-card content/source acceptance.
+
+Происхождение frozen baseline подтверждено побайтно по Git: 269 SHA-256 значений совпадают с исходным commit; детали и окно точного времени — в [baseline_manifest.json](baseline_manifest.json).
+
+Повторная read-only проверка provenance: `../../.venv/bin/python scripts/verify_kb_baseline.py` из корня репозитория. Она сверяет manifest, неизменяемый CSV, Git tree обоих commits и текущий `audit_inventory.csv`; файлы не перезаписывает.
+
+Полный semantic/SME acceptance gate **не пройден**: 269 строк `card_review.csv` имеют итог `warning`; reconciled branch ledger содержит все 235 KB-путей из diff относительно merge-base, 231/235 остаются частично проверенными, ещё четыре имеют незакрытый owner/SME disposition. `audit_issues.csv` содержит 254 записи (17 P0 / 137 P1 / 100 P2), часть — открытые риски и механические сигналы, а не доказанные дефекты. Реестры: 416 уникальных URL в source review, все с датированной попыткой; 662 claim-evidence записи; 393 записи / 376 URL в source register. 28 URL имеют прямые ограничения доступа; множество прочитанных страниц подтверждает только ограниченный scope. Точные ограничения и история срезов — в [validation.md](validation.md).
 
 ## Текущая проверка и границы
 
-- Корпус: DocumentLoader/Chunker загрузили **269/269** Markdown-документов, **1,166** чанков, 52 механических сигнала; 206 approved, 63 draft. Целевые offline pytest: **11 passed**. Отдельный candidate validator: **44/44**, 169 chunks, уникальные IDs/content hashes, 0 errors/warnings. git diff --check clean.
-- Реестры: 269 card_review rows; 249 issues (P0=17/P1=135/P2=97); 397 distinct source-review URLs (259 с датированной проверкой/попыткой, 138 с `checked_at=unverified`); 639 claim-evidence rows; 320 source-register records / 306 unique URLs (S323); 47 coverage rows; 222 KB paths в branch ledger, 2 branch_diff_semantic_unverified.
-- Coverage: 6 узких confirmed gaps по approved coverage (G1–G5, U2); G6 БИФИТ имеет подтверждённый ограниченный Desktop work-order flow, но нет approved article и не подтверждена настройка/редактирование самой карты; G7 остаётся legacy/compatibility review. Источники с недоступным телом оставлены unverified, не объявлены ложными.
-- Полный semantic/SME gate **не пройден**: наличие строки на каждую карточку не означает проверку каждого тезиса. У 138 строк source review нет установленной даты проверки/попытки (`checked_at=unverified`); многие другие строки содержат только ограниченное чтение и не подтверждают все claims. Не считать `source_register_content_reviewed_partial` полной верификацией тезисов. Два незакрытых branch semantic diffs остаются видимыми.
-- Ограничения сохранены: approved-статьи и их статусы не менялись в этой итерации; ручные шаги UI 1С не редактировались; runtime, Groq, LIVE, production SQLite/Qdrant и основной индекс не использовались. PR #4 остаётся Draft и не готов к merge до SME/source/taxonomy review.
+- Покрытие: 6 узких подтверждённых пробелов по approved coverage (G1–G5, U2); G6/G7 БИФИТ — ограниченный/версионный scope. R1/R2/R4 — retrieval/runtime follow-ups на существующие approved-инструкции, не доказанные LIVE-отказы; R3 — source/content review, не установленная runtime-проблема.
+- Два P0 налоговых документа локально исправлены и переведены в `draft` до review; пути/ID сохранены, `verified_at` очищен, требуется SME. Остальные изменённые approved-карточки получили только метаданные/форматирование: четыре operation metadata (два acquiring и два формата электронных документов 1С; в последних снят неподходящий токен, пустой список принят policy как unknown), DirectBank-даты/список, три даты публикаций 1С и дата публикации налогового источника. Среди draft дополнительно поставлен SME marker семи материалов по их существующим review_note; утверждение статей этим не подразумевается.
+- Не запускались Groq/LIVE, production SQLite/Qdrant, переиндексация и runtime; общие `PROJECT_STATE.md` и `RAG_MASTER_PLAN.md` не редактировались. Draft PR #4 остаётся устаревшим и не готов к merge до review оставшихся источников, налоговых/технических вопросов и SME.
 
 ## Последние тематические проверки — 17.11.2026
 
@@ -18,7 +28,6 @@
 - **АТОЛ Онлайн — ошибка 421:** повторно напрямую прочитана официальная статья #22561. Она подтверждает технический результат `ism_optional=true`, но не правомерность продажи без проверки для конкретной маркируемой группы; P0-14 остаётся SME-gated, отдельный кандидат ограничен только разделом 421.
 - **54-ФЗ / исключения ККТ:** текущая справочная страница ФНС подтверждает только общее правило и ссылку на ст. 2; прямая ссылка на текст закона вернула timeout, региональный материал по ПСН архивный. Перечень исключений draft оставлен неподтверждённым; P1-131 требует действующий текст закона и юридический review.
 - **aQsi, ошибка 161:** прямое повторное чтение производителя подтвердило точный error-specific порядок; P1-16 закрыт как неподтверждённый boundary-дефект. Вывод ограничен физической aQsi и кодом 161; модель/версия и применимость коррекции к клиентскому ФФД остаются SME-вопросом. Approved-текст не менялся.
-
 
 ## Контрольная точка текущего worktree — 17.11.2026, продолжение
 
@@ -104,14 +113,11 @@ P1-24: в инструкции aQsi по несинхронизированны�
 
 Дополнение 15.11: P1-115 — до тарифных полей добавлено согласованное с источниками предупреждение; формы UI не изменялись. Реестр источников S1–S71, Loader/Chunker 1184 чанка; SME подтвердит конкретные тариф и договор.
 
-
 ### Последний статус на 15.11.2026
 
 Профильный DocumentLoader/Chunker: 269/269, 1184 чанка, 21 механическое предупреждение; статусы 206 approved и 63 draft. Реестр аудита: 231 замечание (P0=19, P1=127, P2=85); `card_review.csv` покрывает 269 карточек; source review 275, claim evidence 320, официальные/производительские записи source register S1–S71. Новая проверка двух DirectBank источников не обнаружила coverage gap в существующих version-scoped карточках. Offline schema/index: 11 passed; `git diff --check` clean. Полный экспертный и смысловой review источников не завершён; статус не является quality gate/production approval.
 
-
 Текущий staging после P1-49 (15.11.2026): 18 candidates, 62 чанка; материал АТОЛ Онлайн подтверждён DocumentLoader/Chunker и уникален по ID/hash относительно основной KB и других staging drafts. Source register содержит S1–S72; полное SME утверждение не выполнялось.
-
 
 Текущий срез 15.11.2026 после P1-113/114 и P1-60/61: `scripts/audit_kb_quality.py` — 269/269 файлов, 1184 chunks, 21 механический сигнал; 206 approved / 63 draft. `tests/test_knowledge.py tests/test_index_documents.py` — 11 passed; `git diff --check` clean. Реестры: 231 issue (P0=19/P1=127/P2=85), card_review 269, source_review 275, claim_evidence 325, source_register S1–S78. В staging 19 drafts/candidates и 65 chunks; новые P1-49 и P1-61 кандидаты проверены DocumentLoader/Chunker и уникальны по ID/hash относительно KB/остальных кандидатов. P1-60 версионная граница 3.0.191/3.0.200 подтверждена: ручные UI шаги 1С не редактировались. SME decisions, full semantic source audit and retrieval/runtime acceptance remain outstanding.
 
@@ -163,7 +169,7 @@ P1-24: в инструкции aQsi по несинхронизированны�
 
 **Дополнение 15.11.2026 — ст. 145 НК РФ:** сверены действующие периоды порога по ФЗ №228-ФЗ и тексту ст.145. Старый FAQ ФНС противоречит закону в блоках 2027/2028, поэтому в двух карточках `source_url` указывает на более новое сообщение ФНС, а исходный FAQ явно маркирован устаревшим; точная ссылка ст.145 добавлена в карточку. Tax SME gate и прежний `verified_at` сохранены. Реестры: 127 source records (S1–S127), 288 source-review строк, 381 claim-evidence строк.
 
-**Дополнение 15.11.2026 — P0-18 ФФД 1.05:** АТОЛ 11243 и полный 23-страничный документ ФНС открыты повторно. Различие принятого/непринятого ФД подтверждено в границах рекомендаций; существующая карточка уже содержит условие статуса и безопасную эскалацию. `correct-ffd105-review.md` остаётся draft замены; обновлена только дата её source check. `verified_at` approved-карточки не пересматривался, экспертное разрешение на переиндексацию требуется.
+**Дополнение 15.11.2026 — P0-18 ФФД 1.05 (исправлено 17.11):** АТОЛ 11243 и полный 23-страничный документ ФНС перечитаны; источник разделяет принятый/непринятый ФД, но фактическая approved-карточка не содержит статусного условия перед двумя чеками. Ранее записанное утверждение, что gate уже есть, было ошибочным и исправлено в `issues.md`/`validation.md`. Кандидат `correct-ffd105-review.md` остаётся вне KB и не считается исправлением; P0 блокирует повторное утверждение/индексацию до решения владельца и SME.
 
 **Дополнение 15.11.2026 — P1-08:** повторно сверен весь diff карточки перехода с УСН на ОСНО и полный источник БУХ.1С. Версия/функция, типы остатков и условный сценарий повторного заполнения подтверждены; индивидуальные налоговые условия и скриншотные подписи остаются на эксперта 1С/бухгалтера. Обновлён только `source_checked_at`, `verified_at` и UI-тексты сохранены. Реестры: 127 source records, 288 source reviews, 382 claim evidence.
 
@@ -189,17 +195,13 @@ P1-24: в инструкции aQsi по несинхронизированны�
 
 Полный содержательный аудит всех 269 карточек и полное подтверждение каждого утверждения по всем уникальным источникам этим срезом **не завершены**: большинство карточек в `card_review.csv` сохраняют `unverified` по процедурам/claims. Нельзя заявлять полную готовность базы к утверждению или production. Сначала владельцу нужно рассмотреть 19 P0, SME-очередь и кандидаты; затем завершить оставшиеся семантические проверки.
 
-
 В 4 approved 1С карточках доказано ошибочное поле `operations`: P1-01/02 (`load_bank_statements` при сценариях эквайринга) и P1-116/117 (`configure_vat_accounting` при описании форматов УПД/счёта-фактуры). Их значения остаются в карточках, поскольку approved KB нельзя менять в этой работе. Владелец словаря должен определить отсутствие operation или точный поддерживаемый токен; менять runtime-словарь и подставлять похожие действия нельзя. В coverage matrix это M1–M4.
 
-
 Для P0-01/P0-02 подготовлены два отдельных replacement drafts с порогами по ст.145/ФЗ №228-ФЗ и разделением НДС vs лимита ПСН. Оба остаются `draft` и блокируют утверждение соответствующих approved-карточек до решения налогового SME. С учётом этих файлов вне-KB draft inventory теперь 23 документа и 83 чанка.
-
 
 ### Граница подтверждения источников
 
 В актуальном `source_review.csv` 289 уникальных URL: 11 имеют статус `unverified` по доступности, 134 — `accessible_unverified_content` и не подтверждают claims сами по себе. В поле `claims_verified` сейчас 78 строк со статусом `unverified`. Они не объявлены ложными и остаются на ручную проверку. Содержательный аудит всех URL не завершён.
-
 
 Для P1-30 подготовлен отдельный replacement candidate по замене ФН: производитель и ФНС задают разные anchors для своих 30-дневных формулировок. Кандидат не переносит дату физической замены на нормативный deadline; SME должен подтвердить срок действия ключа и действующую норму.
 
@@ -219,34 +221,25 @@ P1-24: в инструкции aQsi по несинхронизированны�
 
 **Checkpoint после Saby update, 16.11.2026:** candidate validator: 40/40 материалов, 148 chunks, unique IDs/content hashes, 0 errors/warnings (предыдущие 147 чанков были до уточнения кандидата Saby). Основной DocumentLoader/Chunker: 269/269, 1168 chunks, 53 mechanical signals. Целевые тесты: 11 passed; `git diff --check` clean.
 
-
 ### Обновление источников aQsi Online account help — 16.11.2026
 
 Повторно открыты обе exact official `aqsi.online` pages: product scope confirmed, relevant body text unavailable in the rendered HTML. Отдельная официальная страница контактов подтверждает `help@aqsi.online` именно для облачных касс. Процедурные claims в contact-support/reset-password остаются unverified; безопасный fallback — связаться с этим адресом, не передавая пароль, OTP или ключи. Это не признано runtime problem, потому что статьи уже существуют и причина пользовательского отказа не тестировалась. См. S30/S68/S279 и P1-80/P1-84.
 
-
 16.11.2026: добавлен P1-129 по критериям/исключениям сахаросодержащих напитков в draft АТОЛ Онлайн. В текущем консолидированном тексте ст.181 подтверждена потребительская или транспортная упаковка и точный список исключений. Draft исправлен; юридическая оценка конкретного товара и применение к ККТ остаются за SME. S283 — Consultant consolidated text, не официальный портал опубликования. Счётчики обновлены: 244 issues, 346 source-review URL, 593 claim evidence, 280 source-register строк, 46 coverage rows.
-
 
 16.11.2026: добавлен P1-130 — в approved карточке XML-import утверждение о per-receipt результатах шире доступного текста статьи АТОЛ #11250. Краткая страница доступна и перепроверена; полный PDF manual недоступен по timeout. Формулировка не объявлена ложной и approved не менялась. Требуется получить manual/vendor confirmation.
 
-
 16.11.2026: для BIFIT G6 добавлен S284 — официальная инструкция плагина Booking отдельно подтверждает создание стола в Desktop. Этого нельзя распространять на Map of Tables; G6 уточнён, внешняя candidate-карточка разделяет два плагина. Прямое открытие источника вернуло Cache miss, извлечённый официальный search-result text зарегистрирован как partial evidence.
-
 
 16.11.2026: S285 — полная текущая страница БИФИТ о PIN/POS совместимости прочитана. G7 уточнён: vendor описывает процедуру Сбербанк 1.0.4 (2022), а общая страница перечисляет модели/ОС, но банк подтверждает эквайринг и совместимость конкретной связки. Новая статья не создаётся, candidate получает ограничение version/bank-specific.
 
-
 16.11.2026: повторная проверка по поисковому тексту официального aQsi help подтвердила ограниченное описание получения/подписания договора; прямой URL всё ещё Cache miss. Публикация БУХ.1С S286 (3.0.144.49) полностью открыта и подтверждает точное условие закрытия нескольких месяцев для одобренной карточки; исходная ссылка остаётся 403, но отдельный официальный релиз-note source доступен. Счётчики текущего source set обновлены, утверждённые тексты не редактировались.
 
-
 **Сводный срез после всех проверок 16.11.2026:** 269/269 KB loaded; 1168 chunks; 53 механических сигнала; 40/40 внешних drafts, 150 chunks; 245 issues (19/130/96); 349 source_review URL (133 с датой прямой проверки, 216 без даты, 7 access errors); 597 claim-evidence; 283 source-register rows/269 unique URLs; 46 coverage rows. BIFIT S284–S285 и release note 1С S286 добавлены после S283.
-
 
 ### Текущий кандидат P0-14 после повторного source pass — 16.11.2026
 
 Официальный API PDF доступен; узкий внешний кандидат обновлён ссылкой, версией источника и ограничениями. Повторная offline-проверка: 40/40 кандидатов, 151 chunk, unique IDs/hash, 0 errors/warnings. Этот счетчик заменяет предыдущие 150 после добавления раздела с источниками; approved-документ и UI не изменялись.
-
 
 - **P1-01 reaffirmed 17.11.2026:** the exact BUKH.1C text says the operation is a write-off in «Списание с расчётного счёта» from 3.0.207 and does not describe statement import. Approved `acquiring-returns.md` still has `task_category: bank_statement` and `operations: [load_bank_statements]`; this is now recorded as `metadata_consistent=fail` in the audit matrix. The article's UI text and approved metadata remain untouched pending accountant/taxonomy owner decision.
 
@@ -254,16 +247,119 @@ P1-24: в инструкции aQsi по несинхронизированны�
 
 - **P1-116/P1-117 reaffirmed 17.11.2026:** exact BUKH.1C pages describe electronic invoice/UPD format changes and forms from specified releases; they do not describe configuring VAT accounting. Both approved cards still say `operations: [configure_vat_accounting]`; `metadata_consistent=fail`. UI screenshots were not interpreted, no text or metadata changed.
 
-
 ## Сверка baseline, ветки и локальных проверок — 17.11.2026
 
-- Зафиксированный baseline `baseline_inventory.csv` принадлежит commit `85f765c33c22cfa69e405e6a2f55bc02391220fe` (2026-11-16 22:50:27 +03:00). Текущий локальный HEAD `4e350552e196fa575d6a9f7eb7a060893d87bd6a`; merge-base с локальной `main` `fb3aa6d922ca5d04f1eae91a5362723b605e692c`. В baseline и текущем inventory по 269 одинаковых путей, `document_id` и статусов; 48 хешей содержимого отличаются от frozen baseline, и все 48 имели статус `draft`. В текущем незафиксированном diff — 5 KB-путей; каждый остаётся `draft`. Идентификаторы/статусы не менялись.
+- Зафиксированный baseline `baseline_inventory.csv` принадлежит commit `85f765c33c22cfa69e405e6a2f55bc02391220fe` (2026-11-16 22:50:27 +03:00). Текущий локальный HEAD `489f13d3540685957791b657f14ea628bbedb72f`; merge-base с локальной `main` `fb3aa6d922ca5d04f1eae91a5362723b605e692c`. В baseline и текущем inventory по 269 одинаковых путей, `document_id` и статусов; 48 хешей содержимого отличаются от frozen baseline, и все 48 имели статус `draft`. В текущем незафиксированном diff — 3 KB-пути; все остаются `draft`. Идентификаторы/статусы не менялись.
 - Пересчитанный branch delta от merge-base содержит 222 KB-пути. `branch_changes.csv` сверён по множеству и дополнен пропущенной `data/knowledge/software/1c/1c-faq-directory.md`; теперь 222 записей. Два `branch_diff_semantic_unverified` остаются открытыми. Никаких изменений в `PROJECT_STATE.md`/`RAG_MASTER_PLAN.md`, runtime, `.env`, production SQLite/Qdrant или approved-текстах в текущем worktree не вносилось.
-- Повторно: `scripts/audit_kb_quality.py` — 269/269 загружено, 1,166 chunks, 52 механических сигнала; `scripts/validate_kb_review_candidates.py` — 44/44 draft, 169 chunks, уникальные ID/hash, 0 errors/warnings; boundary review помечает 19 потенциальных разрезов слова на SME/runtime review.
+- **Свежий локальный контрольный прогон 17.11.2026 (заменяет более ранние числа ниже):** `audit_kb_quality.py` — 269/269, 1,166 chunks, 52 сигнала; candidate validator — 50/50, 192 chunks, 0 errors/warnings; целевые pytest — 11 passed; все CSV имеют одинаковую ширину строк. Реестры: source review 401 URL, source register 379 записей / 362 URL, claim evidence 664, coverage 49, branch changes 222. Рабочий `data/knowledge` diff состоит из трёх draft-файлов; diff по 1С отсутствует. Проверка branch delta от merge-base: 222 пути, нет удалений/добавлений, изменений document_id или status; 170 approved и 52 draft в изменённой истории ветки. `git diff --check` clean. Полный claim-level/SME gate остаётся открытым.
+- Повторно: `scripts/audit_kb_quality.py` — 269/269 загружено, 1,166 chunks, 52 механических сигнала; `scripts/validate_kb_review_candidates.py` — 44/44 draft, 170 chunks, уникальные ID/hash, 0 errors/warnings; boundary review помечает 19 потенциальных разрезов слова на SME/runtime review.
 - `pytest -q tests/test_knowledge.py tests/test_index_documents.py`: **11 passed**. Профильный запуск (`test_metadata_retrieval_routing_v3.py`, `test_retrieval_pipeline.py`): **15 passed, 2 failed**. Оба отказа — assertions теста, который принудительно помечает изменённую draft-карточку физической aQsi как `approved`/`aQsi Online`; фактическая карточка ограничена производителем для физической aQsi / ККМ Оффлайн, что записано как P1-127. Это тестовый конфликт scope, а не воспроизведённый runtime отказ; код runtime и тесты не менялись.
-- Итог проверки не означает полного источникового/SME approval: source_review содержит 397 уникальных URL, из них 259 с датированной проверкой/попыткой и 138 с `checked_at=unverified`; частичный просмотр не подтверждает все claims. P0/P1 решения остаются в `sme_queue.md`.
+- Итог проверки не означает полного источникового/SME approval: source_review содержит 397 уникальных URL, из них 352 с датированной проверкой/попыткой и 45 с `checked_at=unverified`; частичный просмотр не подтверждает все claims. P0/P1 решения остаются в `sme_queue.md`.
 
-- Итоговая целостность: 15 CSV отчёта разбираются без ошибочных ширин; все 229 уникальных card `source_url` имеют source-review строку; source IDs, coverage path/document_id пары и подробные секции всех P0/P1 разрешаются. Issues: 17 P0 / 135 P1 / 97 P2 / 0 P3; по явной группе статусов 27 закрыты/проверены/исправлены, 222 остаются открытыми, частично подтверждёнными или gated; 210 требуют SME.
-- Публикация: GitHub API подтверждает PR #4 open/draft, remote branch SHA `0e5cfb59ca5756e73f1fabada5f1702b3c77b6f9`; локальный HEAD `4e350552e196fa575d6a9f7eb7a060893d87bd6a` не опубликован. `git ls-remote` не смог разрешить github.com, а ветка удалённо продвинулась; PR body содержит предыдущие totals. Перед публикацией нужно синхронизировать remote feature history, не force-push.
+- Итоговая целостность: 15 CSV отчёта разбираются без ошибочных ширин; все 229 уникальных card `source_url` имеют source-review строку; source IDs, coverage path/document_id пары и подробные секции всех P0/P1 разрешаются. Issues: 17 P0 / 137 P1 / 99 P2 / 0 P3; по явной группе статусов 27 закрыты/проверены/исправлены, 222 остаются открытыми, частично подтверждёнными или gated; 210 требуют SME.
+- Исторический remote-снимок из предыдущей проверки: PR #4 был open/draft на SHA `0e5cfb59ca5756e73f1fabada5f1702b3c77b6f9`, тогда локальный HEAD был `4e350552e196fa575d6a9f7eb7a060893d87bd6a`; `git ls-remote` не разрешил github.com. Этот remote-снимок не перепроверялся в текущей итерации и не подтверждает актуальное состояние PR/ветки. Не публиковать текущие изменения без повторной сверки remote history.
 
 - Сверка remote после read-only fetch: PR #4 / `origin/feature/kb-review-b2` = `0e5cfb59ca5756e73f1fabada5f1702b3c77b6f9`; локальный HEAD `4e350552e196fa575d6a9f7eb7a060893d87bd6a`. Общий предок `35c8a8ab5cceb0322e472ffbf64848cefc62da2a`; remote впереди на 125 commits, local — на 2. Dry-run `git merge-tree` выявил 6 конфликтующих report files (kb_audit, source_register, README, claim_evidence, source_review, validation); не выполнялись merge/rebase/push.
+
+## Контрольная точка источников — 17.11.2026, продолжение
+
+- Повторно прочитаны 14 официальных страниц справки АТОЛ Онлайн и восемь связанных с P1 архивных публикаций ФНС. В source review теперь 397 URL: 349 датированных проверок/попыток и 48 `unverified`; попытка или чтение архивного текста не приравнены к подтверждению текущего правового/тарифного положения. Source register — 354 записи / 340 уникальных URL, S357.
+- Повторно проверены опубликованные тестовые endpoints на страницах Платформы ОФД для АТОЛ и Штрих: страницы показывают `ofdt.platformaofd.ru`, `195.3.180.5:19081`, тогда как две approved-карточки сохраняют `185.170.204.85`. P1-39/P1-40 открыты до подтверждения инженером/оператором; DNS и фактическая доступность не проверялись. Утверждённый текст не менялся. Предыдущее предложение в issues.md, будто IP уже исправлен, отозвано как фактически неверное.
+- Offline-проверки в этом worktree повторены: `audit_kb_quality.py` — 269/269, 1,166 chunks, 52 сигнала; candidate validator — 44/44, 170 chunks, 0 errors/warnings; schema/index pytest — 11 passed; `git diff --check` clean. Runtime, Groq, LIVE и production index не затрагивались.
+
+### Повторная проверка источников 1С — 17.11.2026
+
+Повторно прочитаны три официальные статьи БУХ.1С по НДС при переходе с УСН на ОСНО и двум сценариям ЕНС. Источники обновлены в source review/register и P1 evidence. P1-08 подтверждён как продуктовая функция с версионной границей 3.0.202, но право клиента на вычет определяет бухгалтер. P1-60: статья подтверждает новый маршрут простого интерфейса с 3.0.200; старый вручную описанный путь относится к 3.0.191 и не редактировался. P1-61: статья подтверждает удаление прежних проводок при указанном сценарии 3.0.191; сравнение с более поздним выбранным методом ЕНС остаётся экспертным вопросом.
+
+## Дополнительная сверка полноты реестров — 17.11.2026
+
+- В `card_review.csv` сверено 269/269 уникальных путей и IDs; все состояния нормализованы к значениям ТЗ, пустой список `operations: []` явно записан как `[]`. Для ограниченных и частичных проверок используется `warning`, детали сохранены в источниковых реестрах.
+- В `audit_issues.csv` проверены 154 P0/P1: у каждого заполнены файл, место, observed/expected, evidence URL/date, confidence, fix status, SME flag и notes; все IDs описаны в `issues.md`, все пути существуют. Для P1-05 и P1-77 добавлены ссылки с узкой оговоркой, не представляя их как подтверждение непроверенных тезисов.
+- Исправлено описание P0-05 в `issues.md`: текущая веточная статья всё ещё ссылает ненулевой счётчик на шаги 6–8, поэтому формулировка «ошибка исправлена» отозвана. Replacement-кандидат и SME gate указаны явно.
+- Эта структурная сверка не означает, что все 269 карточек прошли содержательную экспертизу: все итоговые строки пока `warning`, значимая часть утверждений требует специалиста или более полного первоисточника.
+
+17.11.2026: для подтверждённого P1-136 подготовлен отдельный 1С supplemental patch-кандидат о файловом режиме расписания. Интерфейсные шаги не менялись и кандидат не предлагается как отдельная индексируемая статья.
+
+17.11.2026: prepared a section-only Platforma OFD conflict candidate for P1-39/P1-40. Official ATOL and Shtrih pages both list test IP 195.3.180.5:19081, while approved articles list 185.170.204.85:19081; no endpoint is recommended before operator confirmation.
+
+### Проверка P1-51/P1-52 — 17.11.2026
+
+ФНС «Налоги 2026» напрямую перечитана по строкам 132–143. Первоначальные сценарии 5% (доход 2025 года >20 млн с соблюдением лимита 2026 либо утрата освобождения в 2026) отделены от порогов дохода текущего 2026 года и перехода к 7%. Подготовлен section-only supplemental candidate `candidates/usn-vat-2026-rate-eligibility-review.md`; он не меняет две approved-карточки и требует бухгалтера/налогового юриста. Добавлены S377, evidence, coverage и SME gate.
+
+### Повторная проверка P0 инструкций — 17.11.2026
+
+- Эвотор #360014099534 и #360010280334 повторно прочитаны: vendor прямо публикует ветку tech reset/команд для EoU «Не найдено» на перечисленных моделях и отдельно указывает последствия обнуления. Источники не предписывают исполнителя; draft квалифицирует передачу специалисту как локальную предосторожность, а не правило производителя.
+- Эвотор #360006708093 повторно подтверждает, что модель 6 не поддерживает низкоуровневые команды; P0-06 остаётся блокирующим из-за противоположного шага в approved статье.
+- АТОЛ Онлайн #11077 повторно подтверждает отключение облачной кассы/API и отсутствие сформированных чеков во время блокировки; кандидат удерживает индивидуальную коррекцию у бухгалтерии/инженера.
+- Эти источниковые перепроверки уточняют доказательства и candidate metadata; approved KB, runtime и индекс не менялись. Все три finding остаются SME/owner-gated.
+
+### P1-103 — граница успешной диагностики Эвотор 6 — 17.11.2026
+
+Повторно прочитана официальная статья Эвотора #360014099534: vendor прямо формулирует успешный ping/отчёт как стабильный интернет и установленное соединение с ОФД. Поэтому finding не трактуется как неверное цитирование производителя. Остаётся ограниченный риск: единичный тест не доказывает доставку конкретных ожидающих документов или дальнейшее уменьшение очереди. Подготовлен section-only кандидат `candidates/evotor-6-ofd-ping-scope-review.md`; он сохраняет vendor attribution и помечает контроль очереди после успешного отчёта как SME-gated diagnostic inference. Approved не менялась.
+
+**P1-131 follow-up (17.11.2026):** 54-ФЗ draft сопоставлен с доступным консолидированным текстом ст. 2 и публикациями ФНС. Выявлены узкие scope mismatches (разносная торговля, питание в образовательных организациях, формулировка B2B-условия и универсальная оговорка по акцизам), а также неполный пример с автоцистернами. Официальная карточка ФНС ссылается на полный первичный текст, но переход на pravo.gov.ru закончился timeout; актуальность права по первоисточнику не установлена. Подготовлен section-only legal SME candidate `candidates/54fz-exemptions-scope-review.md`, исходный draft и approved KB не изменены.
+
+**P1-131 validation snapshot (17.11.2026):** после добавления section-only кандидата DocumentLoader/Chunker: 49/49 candidates, 187 chunks, unique IDs/content hashes, 0 errors/warnings. Полный актуальный официальный текст 54-ФЗ не удалось открыть; кандидат и статья остаются draft, legal SME gate открыт.
+
+**P1-130 follow-up (17.11.2026):** повторно открыта официальная статья АТОЛ #11250; полный PDF снова timeout, ZIP схемы не доступен текстовым способом. Статья #22560 подтверждает просмотр уже зарегистрированных чеков, но не обработку каждого чека в XML. Подготовлен section-only candidate `candidates/atol-xml-import-result-scope-review.md`; approved не изменялась, гранулярность XML-результата требует ответа АТОЛ/владельца.
+
+**Текущий offline snapshot (17.11.2026):** 50/50 review candidates загружены, 192 чанка, уникальные ID и content hashes, 0 ошибок и предупреждений; 269 основных документов загружаются. Проверки CSV: 29 файлов, ширина строк корректна. Целевые тесты схемы: 11 passed. P1-130 остаётся источниковым вопросом и требует подтверждения АТОЛ; P1-131 остаётся открытым до чтения действующего официального текста и юридической сверки.
+
+**P1-01/P1-02 metadata follow-up (17.11.2026):** статически проверены operation resolver и regression test: запрос об учётном списании по эквайрингу намеренно остаётся в bank_statement-домене и не маршрутизируется как возврат фискального чека. Это подтверждает runtime safeguard и исключает трактовку данного сигнала как доказанного ложного отказа, но не исправляет некорректный granular token `load_bank_statements`. Новый токен не предложен; решение оставлено владельцу taxonomy.
+
+**P0-18 corrigendum (17.11.2026):** прямое сравнение approved source file с `HEAD` выявило, что status gate описанный в промежуточной записи не присутствует в рабочем документе. P0 остаётся открытым; handoff-candidate не равен правке KB.
+
+**P1-136 follow-up (18.11.2026):** прочитана официальная методика платформы 1С 8.1 (страница датирована 18.01.2007): файловый автоматический запуск регламентных заданий требует выделенного соединения-планировщика. Источник исторический и не подтверждает работу текущей «1С:Бухгалтерии» или достаточность просто открытого окна. Supplemental candidate и evidence уточнены; approved инструкция и ручные UI-шаги 1С оставлены без изменений. Offline: 50/50 candidates, 192 chunks, 0 errors/warnings; 269/269 main KB, 1,166 chunks; 11 targeted tests passed.
+
+**P1-137 follow-up (18.11.2026):** повторно прочитаны АТОЛ #14419 и архивная ФНС #16508769. Для ФН чуть младше 410 дней АТОЛ даёт более консервативную рекомендацию о замене, тогда как ФНС допускает оставить его до порога. Это не доказанное правовое противоречие; точная применимость зависит от текущей нормы, сервиса и состояния ФН. Draft и реестр исправлены, approved KB не менялась; SME gate сохранён.
+
+**P1-132 follow-up (18.11.2026):** прямое открытие numeric-only URL Эвотора timeout, официальный slug URL открыл полный текст руководства. Подтверждены конкретные обратные пары для ФФД 1.05 и 1.2; опубликованная версия не указана (©2023). Gap — неполнота existing approved-card detail, а не доказанная неверная команда. Кандидат и evidence обновлены; approved не менялась, требует SME review.
+
+### BIFIT follow-up (18.11.2026)
+
+Официальные release notes подтверждают, что Desktop и plugin «Карта столов» фигурируют в исправлениях 2026 года; актуальный опубликованный Desktop build — 2026.09.1-906844. Это уточняет прежнюю устаревшую характеристику, но не закрывает пробел процедуры редактирования карты и не подтверждает совместимость Sberbank plugin 1.0.4 с текущей сборкой. См. дополнение в `../kb_parallel_review/kb_audit.md`, G6/G7 в coverage matrix и источники S392–S395. Offline validator после обновления: 50/50 candidates, 195 chunks, 0 errors/warnings.
+
+Последний offline прогон (18.11.2026): весь корпус — 269/269, 1,166 chunks; механических сигналов 53 (один новый длинный абзац 1,160 символов в draft-карточке о сахаросодержащих напитках, без подтверждённого отдельного chunk cut). Целевые schema/index tests — 11 passed; candidates — 50/50 и 195 chunks, ошибок/предупреждений нет; все 29 CSV имеют корректную ширину.
+
+18.11.2026: новый механический warning `long_paragraph` зарегистрирован как M-061 и проверен через реальный DocumentLoader/Chunker: критерии 1–5 целиком размещены в одном 651-символьном чанке. Это подтверждённый случай без дефекта чанкинга; lint signal не приравнивать к KB gap. P1-129 остаётся на legal SME review. Audit issue ledger теперь 254 строки (17 P0, 137 P1, 100 P2); card_review остаётся 269 строк.
+
+P0-01/P0-02 evidence rechecked 18.11.2026: official FNS thresholds page and archived 20m notice agree with the 2027–2029 threshold; text of FZ 228-FZ and Article 145 was reopened in ConsultantPlus and distinguishes prior-year/current-year schedules and the combined USN+PSN income provisions. The official publication page still timed out, so the exact portal text remains unread. Replacement candidates are refreshed and ready for tax SME review; approved text remains unchanged.
+
+P0-03/P0-04 Evotor follow-up (18.11.2026): reread #360014099534/#360010280334; candidate now reflects exact scope/model split and reset data-retention boundary. The product docs do not impose specialist-only execution; candidate labels that escalation as editorial precaution pending SME. Approved cards remain unchanged.
+
+**Retrieval/metadata test follow-up, 18.11.2026:** локальный изолированный набор из четырёх тестовых модулей дал 26 passed / 2 failed. Оба отказа в `test_metadata_retrieval_routing_v3.py` вызваны cloud-scope ожиданиями для физической инструкции aQsi, исправленной и проверенной в P1-127. Не засчитывать как runtime-дефект; передать владельцу retrieval на актуализацию fixtures. Сводная проверка и ограничения — в `validation.md`.
+
+**Coverage reconciliation, 18.11.2026:** добавлена отсутствовавшая строка G8 в `coverage_matrix.csv` для частичного охвата интеграции aQsi Online по облачному API с 1С. Существующая approved API-карточка и физическая 1С/ККМ Offline статья имеют разные scope; готовый cloud connector для 1С:УНФ официальными прочитанными страницами не подтверждён. Coverage matrix: 50 строк; шесть точных отсутствий инструкций (G1–G5, U2), одна partial/cloud connector review (G8) и две BIFIT scope/compatibility review (G6/G7).
+
+**DirectBank definition G5, 18.11.2026:** официальный текст 1С перечитан; candidate подтверждает назначение (платежи и выписки из 1С без отдельного Клиент-Банка), требование договора ДБО и актуальное заявление 1С о стоимости сервиса. `source_checked_at`, S5, source review и claim evidence обновлены. В approved нет статьи-определения; G5 сохраняется как подтверждённый coverage gap. Цена и доступность для конкретного банка/конфигурации требуют проверки/SME.
+
+**DirectBank import/schedule recheck, 18.11.2026:** официальные статьи БУХ.1С перечитаны: подтверждены ограниченный .txt импорт с 3.0.117+ и расписание с 3.0.195+ при поддержке банка. Existing approved cards remain partial coverage; no duplicate procedure drafted. Only duplicate Markdown list numbering in file-import was corrected; manually written 1C UI descriptions and “установить флажок «Расширенная настройка»” were preserved. Screenshot-only controls and accounting consequences remain SME-gated.
+
+**Evotor 7.3 G1 source recheck, 18.11.2026:** полный текст модельного руководства повторно прочитан и подтверждает повторную печать только при известном номере ФД; версия прошивки, роль, содержимое копии и сценарий после замены ФН не указаны. Source date/evidence обновлены только у внешнего draft. Approved карточка Эвотор 6 не покрывает 7.3; G1 остаётся подтверждённым model-specific gap до SME review.
+
+
+### P1-43 — изолированный replacement candidate, 18.11.2026
+
+Официальная страница aQsi повторно прочитана; она подтверждает действие «Оформить» для записи «ошибка печати» после установки бумаги и заявляет печать чека. Версия/модель и фискальное состояние не описаны; название «Продолжить печать» не подтверждено. Approved карточка не менялась. Отдельный candidate `candidates/aqsi-paper-print-retry-review.md` подготовлен для инженера ККТ и владельца KB: сохраняет только точную формулировку производителя, не утверждает семантику ФН/ОФД и останавливает действие при неясном состоянии. P1-43 теперь candidate-prepared, но не закрыт до SME review. Validator после добавления: **51/51**, 199 chunks, 0 errors/warnings.
+
+
+### Tax-law evidence update — 18.11.2026
+
+The readable full text of Federal Law 228-FZ was opened at Kontur and added as S396. It reproduces the exact changed Art.145 threshold schedules and corroborates the corrected drafts; the source is explicitly classified as a legal-information reproduction, not the official publication portal. The official primary copy remains unverified and SME approval remains mandatory. Current registers: 414/414 source-review URLs have dated attempts, 675 claim-evidence rows, 392 source-register records / 375 unique URLs.
+
+
+### Saby/Diadoc metadata and evidence follow-up — 18.11.2026
+
+The initial Saby draft was rewritten to distinguish rejection, annulment of a signed document, and restoration of a deleted Saby Docs item, using directly readable vendor sources. Its previously cited `online.sbis.ru/page/kbase_entity/...` URL still returned Internal Error on retry and is explicitly not treated as evidence. The Saby B2 draft overlaps the consolidated Saby review candidate; only one should be considered for future KB promotion. In explanatory/revocation EDO drafts, unsupported `explain_document_status` and `request_document_revocation` values were removed; empty operations/evidence coverage is pending taxonomy-owner decision. Official Diadoc statuses rechecked 18.11. Current source evidence: 415 dated source-review URL keys, 393 source-register rows / 376 unique URLs through S397, 639 claim-evidence rows in the recovered current file; candidate validator **52/52**, 207 chunks.
+
+
+**P1-06 follow-up — 18.11.2026:** official ATOL #12161 and #22555 were directly reopened. A separate, 4-chunk candidate confines transition advice to marked-goods use, requires integration readiness and support confirmation, and warns that return to 1.05 needs FN replacement. The risky approved text remains unchanged until engineer/KKT SME and owner review. Current candidate validator: 52/52, 207 chunks.
+
+
+**Реестр claim evidence — контроль целостности 18.11.2026:** при ошибке записи CSV текущая копия была восстановлена из `HEAD`, затем повторно внесены несколько подтверждённых свежих наблюдений. После восстановления файл содержит 658 строк данных, включая 19 новых source-scoped evidence rows по ранее не представленным S378–S397 источникам. Предыдущие 39 незакоммиченных строк точно восстановить не удалось; 19 новых записей не объявляются восстановлением тех же исторических утверждений. Общая acceptance gate остаётся открытой.
+
+
+**Claim-evidence follow-up — 18.11.2026:** добавлены 18 заново сформированных scoped evidence rows для первичных/официальных источников S378–S397, не имевших записи в текущем claim ledger. Каждая привязана к соответствующему candidate/card и сохраняет версионные, архивные, доступные и SME-ограничения. Это повышает текущую трассируемость до 658 записей, но не восстанавливает побайтно 39 утраченных записей прежней незакоммиченной версии.
+
+
+**Маркировка консервов — дополнительный первоисточник, 18.11.2026:** повторно прочитана официальная статья Честного ЗНАКа о возврате консервов по агентскому/комиссионному договору. Она подтверждает ограниченный возвратный УПД и календарь ОСУ/ПЭУ именно для названной товарной группы; добавлены S359 source-review и claim-evidence записи. Это не интерфейсная инструкция и не основание универсализировать операцию.

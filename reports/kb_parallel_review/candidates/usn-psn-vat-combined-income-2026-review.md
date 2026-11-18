@@ -8,11 +8,11 @@ operations: [check_vat_rules]
 manufacturer: ''
 model: ''
 version: ''
-source_url: https://www.consultant.ru/document/cons_doc_LAW_28165/8f399ec989074fdad875f9a672a1b091ea9bf05c/
-source_type: legislation_reference
+source_url: https://www.nalog.gov.ru/new2026/
+source_type: tax_authority
 published_at: null
 collected_at: '2026-11-15'
-source_checked_at: '2026-11-15'
+source_checked_at: '2026-11-18'
 verified_at: null
 status: draft
 requires_sme_review: true
@@ -41,6 +41,6 @@ review_note: 'Replacement candidate for acc-usn-psn-income-2026. Distinguishes V
 
 ## Источники и ограничения
 
-[Статья 145 НК РФ](https://www.consultant.ru/document/cons_doc_LAW_28165/8f399ec989074fdad875f9a672a1b091ea9bf05c/) и [Федеральный закон № 228-ФЗ](https://www.consultant.ru/document/cons_doc_LAW_538630/) подтверждают раздельные пороги и совокупный доход при УСН+ПСН для освобождения от НДС. [Сообщение ФНС](https://www.nalog.gov.ru/rn77/news/activities_fts/16635360/) подтверждает порог 20 млн рублей для 2027–2029 годов. Лимит применения патента здесь не рассчитывается.
+Сводка [ФНС «Налоги 2026»](https://www.nalog.gov.ru/new2026/) подтверждает порог 20 млн рублей для 2027–2029 и отдельно описывает текущегодовые пороги. FAQ ФНС [«НДС при УСН»](https://www.nalog.gov.ru/rn77/taxation/taxes/nds_usn/) иллюстрирует совокупный доход по УСН и ПСН; его пример со значением 15 млн для 2027 устарел и здесь не используется. Консолидированный текст [статьи 145 НК РФ](https://www.consultant.ru/document/cons_doc_LAW_28165/8f399ec989074fdad875f9a672a1b091ea9bf05c/) повторно открыт 17.11.2026 в ConsultantPlus: редакция от 04.08.2026 с изменениями, вступившими в силу 01.10.2026, прямо учитывает доходы УСН и ПСН для применимого порога. Прямая ссылка на официальный портал публикации ФЗ №228-ФЗ при повторной попытке вернула timeout. Бухгалтер/юрист должен сверить действующую норму и состав доходов перед утверждением. Лимит применения патента здесь не рассчитывается.
 
 Кандидат заменяет только ошибочный пример. Он остаётся `draft`, требует налогового SME и не загружается в approved KB.
