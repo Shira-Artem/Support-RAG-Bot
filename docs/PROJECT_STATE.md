@@ -2215,3 +2215,30 @@ Draft/approved сохранены. Проверка продления тари�
 Общий production gate NO-GO, Part A REVISE/A6 STOP сохраняются; новый этап
 не начат. Следующий шаг — публикация проверенного merge и один polling на
 новой KB; затем ручная проверка и точечная диагностика ложных отказов.
+
+
+### 2026-11-19 — KB объединена и опубликована, Telegram переведён на новую KB
+
+Merge `21b5fe9c02ad96a986b3389925d53aaf3d1c25dd` опубликован в origin/main
+обычным push; feature 1b52806 — предок main, KB blobs совпадают с feature.
+Финальный повтор pytest: 923 passed / те же 10 failed / 4 xfailed.
+Сохранена rollback branch на d89d25b и SQLite backups; `.env` неизменён.
+Один polling worker 11872 / launcher 3448, receipt/source hashes совпадают,
+Hubris openai/gpt-oss-20b, новая Qdrant green/833; getMe/getUpdates HTTP200.
+Существующая manual SQLite сохранена; pending перед остановкой 0.
+Handoff delivery off; реальная доставка обращения сотруднику не доказана.
+
+Post-merge handler/API smoke: 2 хода, 4×200, 2 reopen. Обычный вопрос ответил
+за 10.114 s. Точный ФН234 снова отказал за 12.698 s; прежний успешный retest
+не доказывает устойчивость prompt. НЕ объявлять ФН234 исправленным.
+Все серии вместе: 46×200, 87,143 tokens, 55 коп., включая отрицательные
+и невалидный первый control. Не обнаружено исчерпания Hubris квоты;
+ConnectTimeout до HTTP был и восстановился штатным retry.
+
+[Итоговый отчёт](../reports/kb_authoritative_20261119/report.md),
+[runtime](../reports/kb_authoritative_20261119/runtime_status.json),
+[дословные ответы](../reports/kb_authoritative_20261119/answers.md).
+Следующий конкретный шаг — ручной Telegram по 14 сообщениям, затем точечный
+разбор потери симптома/неверного выбора/ложных эскалаций ОФД, Эвотор6, ФН234.
+Новая KB авторитетна; это не снимает дефекты пайплайна. Part A REVISE/A6 STOP,
+общий quality/production NO-GO сохранены; новых этапов и архитектуры нет.

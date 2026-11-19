@@ -1,0 +1,27 @@
+{
+  "pid": 11872,
+  "started_at": "2026-11-19T13:40:34.169267+00:00",
+  "commit": "21b5fe9c02ad96a986b3389925d53aaf3d1c25dd",
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "points": 833,
+  "provider": "hubris",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "rag_engine": "source_first",
+  "ai_coordinator_enabled": true,
+  "semantic_composer_enabled": true,
+  "semantic_evidence_selector_enabled": false,
+  "handoff_enabled": false,
+  "source_first_user_count": 3,
+  "launcher_pid": 3448,
+  "loaded_sources_match": true,
+  "env_unchanged": true,
+  "telegram_http_counts": {
+    "getMe:200": 1,
+    "deleteWebhook:200": 1,
+    "getUpdates:200": 15
+  },
+  "manual_database_preserved": true,
+  "sqlite_backup": ".local/kb-authoritative/backups/pre-21b5fe9",
+  "handoff_delivery": false
+}
