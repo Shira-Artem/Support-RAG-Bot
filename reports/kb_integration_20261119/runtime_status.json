@@ -1,7 +1,7 @@
 {
   "startup_receipt": {
-    "pid": 828,
-    "started_at": "2026-11-19T11:55:34.046783+00:00",
+    "pid": 6764,
+    "started_at": "2026-11-19T12:01:33.721531+00:00",
     "backend": "RetrieverRAGAdapter",
     "collection": "knowledge_stage3_retrieval_20261022",
     "points": 934,
@@ -15,7 +15,7 @@
     "semantic_composer_enabled": true,
     "handoff_enabled": false,
     "source_first_user_count": 3,
-    "commit": "edac2274901e0bc543fb809b01fe4ad7397e1d1c",
+    "commit": "dc57b0364a4c99048d61b7a28ed5b126ecf062ea",
     "source_sha256": {
       "bot.py": "b30951a4dee711ea9efb87de0dc026c84a680935736d8c0314b1180d18f7bd8b",
       "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -55,8 +55,11 @@
     },
     "phase": "runtime_initialized_before_polling"
   },
-  "polling_started": false,
-  "reason": "Both bounded main startups failed getMe with NetworkError before polling",
+  "polling_started": true,
+  "worker_pid": 6764,
+  "launcher_pid": 10444,
+  "real_incoming_answer_verified": false,
+  "reason": "Third ordinary startup reached Application started and consecutive getUpdates HTTP200; retained for manual test",
   "telegram_http": [
     {
       "time": "2026-11-19T11:53:02.653529+00:00",
@@ -67,6 +70,66 @@
       "time": "2026-11-19T11:55:34.051786+00:00",
       "method": "getMe",
       "error": "NetworkError"
+    },
+    {
+      "time": "2026-11-19T12:01:33.723526+00:00",
+      "method": "getMe",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:01:34.388773+00:00",
+      "method": "deleteWebhook",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:01:34.506382+00:00",
+      "method": "getUpdates",
+      "error": "TimedOut"
+    },
+    {
+      "time": "2026-11-19T12:01:39.525069+00:00",
+      "method": "getUpdates",
+      "error": "NetworkError"
+    },
+    {
+      "time": "2026-11-19T12:01:43.386559+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:01:53.786170+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:02:03.987691+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:02:14.159993+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:02:24.334772+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:02:34.506388+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:02:44.678831+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    {
+      "time": "2026-11-19T12:02:54.790064+00:00",
+      "method": "getUpdates",
+      "http_status": 200
     }
   ],
   "initial_preflight": {
