@@ -1,4 +1,5 @@
 """Closed operation bridge, expansion and focused continuation safety contracts."""
+from kb_snapshots import HISTORICAL_KB_ROOT
 import asyncio
 from copy import deepcopy
 import json
@@ -36,7 +37,7 @@ def second_state(cid):
 class ApprovedArticle:
     def __init__(self, source):
         self.source = source
-        _, front, body = (ROOT / 'data/knowledge' / source).read_text(encoding='utf-8').split('---', 2)
+        _, front, body = (HISTORICAL_KB_ROOT / 'data/knowledge' / source).read_text(encoding='utf-8').split('---', 2)
         self.meta = yaml.safe_load(front)
         self.hits = [SearchResult(source, heading + '\n' + text, .9,
             metadata={**self.meta, 'source': source, 'section': heading, 'chunk_index': index})
@@ -90,7 +91,7 @@ def test_b01_real_pipeline_limits_expansion_and_renders_without_planner(monkeypa
     async def no_planner(*args, **kwargs):
         pytest.fail('second turn must select from its proved section contract')
     monkeypatch.setattr('app.source_first_service.generate', no_planner)
-    answer = asyncio.run(SourceFirstService(rag, settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(rag, settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         turn['question'], state=state, history=[{'role': 'assistant', 'content': 'previous response'}],
         coordinator_decision={'route': 'technical_action'}))
     assert answer.scenario == 'answer'
@@ -134,7 +135,7 @@ def test_h08_new_limit_question_reuses_source_without_progress_mutation(monkeypa
     async def no_planner(*args, **kwargs):
         pytest.fail('focused approved limitation requires no Planner answer')
     monkeypatch.setattr('app.source_first_service.generate', no_planner)
-    answer = asyncio.run(SourceFirstService(rag, settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(rag, settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         turn['question'], state=state, history=[{'role': 'assistant', 'content': first['answer']}],
         coordinator_decision={'route': 'technical_action'}))
     assert answer.scenario_reason == 'source_first_focused_shown_limit'

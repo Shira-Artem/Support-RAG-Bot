@@ -47,6 +47,7 @@ ACTION_FAMILIES = {
     "reset": r"сброс\w*|восстанов\w*",
     "click": r"нажм\w*|клик\w*|щелк\w*",
     "choose": r"выбер\w*|отмет\w*",
+    "renew": r"продл\w*|пролонг\w*|renew\w*|extend\w*",
 }
 OPERATION_FAMILY = {
     "add_employee": "create", "add": "create", "assign_role": "assign",

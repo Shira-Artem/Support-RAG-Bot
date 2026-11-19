@@ -1,0 +1,58 @@
+path,problem_type,observed,state
+data/knowledge/1c/bank/acquiring-patent-tax.md,missing_metadata,operations,warning
+data/knowledge/1c/bank/acquiring-returns.md,missing_metadata,operations,warning
+data/knowledge/1c/bank/directbank-auto-schedule.md,long_paragraph,1364 chars; inspect boundary,warning
+data/knowledge/1c/bank/directbank-other-banks.md,long_paragraph,2051 chars; inspect boundary,warning
+data/knowledge/1c/closing/monthly-schedule.md,long_paragraph,1089 chars; inspect boundary,warning
+data/knowledge/1c/counterparty/reconciliation-act.md,long_paragraph,1190 chars; inspect boundary,warning
+data/knowledge/1c/goods/single-upd-many-warehouses.md,long_paragraph,1151 chars; inspect boundary,warning
+data/knowledge/1c/vat/electronic-upd-2026.md,missing_metadata,operations,warning
+data/knowledge/1c/vat/invoice-forms-april.md,missing_metadata,operations,warning
+data/knowledge/accounting/usn/usn-max-limit.md,missing_metadata,operations,warning
+data/knowledge/aqsi_devices/catalog/excel-import.md,long_paragraph,1392 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/errors/fn18-expired.md,long_paragraph,1650 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/errors/goods-not-on-device.md,long_paragraph,1355 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/marking/permission-diagnostics.md,long_paragraph,1640 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/marking/permission-setup.md,long_paragraph,1133 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md,long_paragraph,1004 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/peripherals/scanner.md,long_paragraph,1004 chars; inspect boundary,warning
+data/knowledge/aqsi_devices/sales/marked-beer.md,long_paragraph,1013 chars; inspect boundary,warning
+data/knowledge/aqsi_online/fns/finish-reg.md,long_paragraph,1323 chars; inspect boundary,warning
+data/knowledge/aqsi_online/fns/register-ip.md,long_paragraph,1399 chars; inspect boundary,warning
+data/knowledge/aqsi_online/fns/register-ooo.md,long_paragraph,1267 chars; inspect boundary,warning
+data/knowledge/aqsi_online/integration/1c-setup.md,long_paragraph,1489 chars; inspect boundary,warning
+data/knowledge/aqsi_online/ofd/taxcom-account.md,long_paragraph,1448 chars; inspect boundary,warning
+data/knowledge/aqsi_online/receipts/correction-12.md,long_paragraph,1013 chars; inspect boundary,warning
+data/knowledge/aqsi_online/receipts/incorrect-105.md,long_paragraph,1127 chars; inspect boundary,warning
+data/knowledge/aqsi_online/setup/fiscalize.md,long_paragraph,1004 chars; inspect boundary,warning
+data/knowledge/atol_online/billing/closing-docs.md,long_paragraph,1179 chars; inspect boundary,warning
+data/knowledge/atol_online/billing/debt-payment.md,line_reference,unresolved L reference,warning
+data/knowledge/atol_online/billing/freeze-service.md,line_reference,unresolved L reference,warning
+data/knowledge/atol_online/billing/freeze-service.md,long_paragraph,1011 chars; inspect boundary,warning
+data/knowledge/atol_online/billing/service-blocked.md,line_reference,unresolved L reference,warning
+data/knowledge/atol_online/connection/ffd-choice-step3.md,line_reference,unresolved L reference,warning
+data/knowledge/atol_online/connection/fns-preparation.md,long_paragraph,1447 chars; inspect boundary,warning
+data/knowledge/atol_online/connection/step5-fns-data.md,line_reference,unresolved L reference,warning
+data/knowledge/atol_online/connection/step5-fns-data.md,long_paragraph,1291 chars; inspect boundary,warning
+data/knowledge/atol_online/contracts/terminate-contract.md,long_paragraph,1436 chars; inspect boundary,warning
+data/knowledge/atol_online/equipment/replace-kaznachey.md,long_paragraph,1383 chars; inspect boundary,warning
+data/knowledge/atol_online/errors/fn-and-marking-errors-116-414-421-148.md,long_paragraph,1839 chars; inspect boundary,warning
+data/knowledge/atol_online/errors/gateway-errors-timeout-128-protocol.md,long_paragraph,1482 chars; inspect boundary,warning
+data/knowledge/atol_online/errors/request-errors-26-1008.md,long_paragraph,1181 chars; inspect boundary,warning
+data/knowledge/atol_online/fn/blocked.md,long_paragraph,1079 chars; inspect boundary,warning
+data/knowledge/atol_online/fn/choose-fn-with-excise.md,long_paragraph,1318 chars; inspect boundary,warning
+data/knowledge/atol_online/fn/fns-after-fn-swap.md,long_paragraph,1140 chars; inspect boundary,warning
+data/knowledge/atol_online/fn/receive-old-fn.md,long_paragraph,1403 chars; inspect boundary,warning
+data/knowledge/atol_online/fn/replacement-process.md,long_paragraph,1399 chars; inspect boundary,warning
+data/knowledge/atol_online/fn/replacement-reasons.md,long_paragraph,1071 chars; inspect boundary,warning
+data/knowledge/atol_online/fns/removed-from-register.md,long_paragraph,1219 chars; inspect boundary,warning
+data/knowledge/atol_online/integration/switch-ffd12.md,long_paragraph,1166 chars; inspect boundary,warning
+data/knowledge/atol_online/law/sugary-drinks-classification.md,long_paragraph,1160 chars; inspect boundary,warning
+data/knowledge/atol_online/receipts/advance-closing.md,line_reference,unresolved L reference,warning
+data/knowledge/atol_online/receipts/correct-ffd105.md,line_reference,unresolved L reference,warning
+data/knowledge/edo/edi-operator-choice.md,missing_metadata,operations,warning
+data/knowledge/evotor/network/mobile-internet-first-checks.md,long_paragraph,3136 chars; inspect boundary,warning
+data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md,long_paragraph,1216 chars; inspect boundary,warning
+data/knowledge/evotor/ofd/ofd-settings-check.md,long_paragraph,1765 chars; inspect boundary,warning
+data/knowledge/evotor/ofd/ofd-unable-to-connect.md,long_paragraph,1193 chars; inspect boundary,warning
+data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md,long_paragraph,1277 chars; inspect boundary,warning

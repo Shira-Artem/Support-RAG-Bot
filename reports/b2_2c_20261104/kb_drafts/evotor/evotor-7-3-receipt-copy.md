@@ -11,13 +11,14 @@ source_type: vendor_user_manual
 published_at: null
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: 2026-11-04
+source_checked_at: '2026-11-18'
 task_category: receipt_print
 operations: [repeat_print]
 search_fields: [fiscal_document_number]
 evidence_coverage:
   repeat_print: partial
 status: draft
+requires_sme_review: true
 review_note: 'Локальное предложение вне индексируемой KB. Нужна проверка SME применимости текущему ПО и правам пользователя.'
 ---
 

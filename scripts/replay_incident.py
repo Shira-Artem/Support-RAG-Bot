@@ -26,8 +26,8 @@ from app.retrieval_pipeline import RetrievalPipeline
 
 
 class LocalCards:
-    def __init__(self, *, approved_snapshot_for_test: bool = False):
-        root = ROOT / 'data/knowledge'
+    def __init__(self, *, approved_snapshot_for_test: bool = False, docs_root: Path | None = None):
+        root = docs_root or ROOT / 'data/knowledge'
         loader, chunker = DocumentLoader(root), Chunker()
         self.chunks = [chunk for p in sorted(root.rglob('*.md')) for chunk in chunker.split(loader.load(p))]
         if approved_snapshot_for_test:
@@ -53,13 +53,13 @@ class LocalCards:
         return self.pipeline.search(state, query)
 
 
-async def replay(*, approved_snapshot_for_test: bool = False):
+async def replay(*, approved_snapshot_for_test: bool = False, docs_root: Path | None = None):
     recorded = json.loads((ROOT / 'tests/fixtures/telegram-2026-10-21.json').read_text(encoding='utf-8'))
-    source = LocalCards(approved_snapshot_for_test=approved_snapshot_for_test)
+    source = LocalCards(approved_snapshot_for_test=approved_snapshot_for_test, docs_root=docs_root)
     # Explicit settings with a patched provider; never use configured credentials.
     settings = Settings(telegram_bot_token='', openrouter_api_key='', openrouter_model='offline',
                         app_name='offline', app_url='http://localhost', show_sources=False,
-                        docs_dir=ROOT / 'data/knowledge', groq_api_key='offline-replay', llm_provider='groq')
+                        docs_dir=docs_root or ROOT / 'data/knowledge', groq_api_key='offline-replay', llm_provider='groq')
     service, manager = AnswerService(source, settings), DialogueManager()
     states, rows = {}, []
     for turn in recorded['turns']:

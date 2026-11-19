@@ -45,9 +45,12 @@ def test_rejected_actions_cannot_be_grounded_by_diagnostic_context():
                          task_category=state.intent)
     assert evidence and {item["section"] for item in evidence} == {SAFE_SECTION}
     for claim in ("Повторно импортируйте банковскую выписку.",
-                  "Переподключите 1С:ДиректБанк.",
-                  "Измените настройки банковского обмена."):
+                  "Переподключите 1С:ДиректБанк."):
         assert not claim_supported(claim, result.context, evidence_results=result.documents)
+    # B2 documents the configuration route explicitly. Grounding checks source
+    # support; operation/applicability tests below independently gate its use.
+    assert claim_supported("Измените настройки банковского обмена.",
+                           result.context, evidence_results=result.documents)
     assert claim_supported("Откройте список «Банковские выписки».",
                            result.context, evidence_results=result.documents)
 

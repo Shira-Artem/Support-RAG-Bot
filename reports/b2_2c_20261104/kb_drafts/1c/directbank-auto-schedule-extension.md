@@ -11,7 +11,7 @@ source_type: vendor_article
 published_at: 2026-05-01
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: 2026-11-04
+source_checked_at: '2026-11-18'
 software: '1С:Бухгалтерия 8'
 task_category: bank_statement
 operations: [schedule_bank_statement_import]
@@ -19,6 +19,7 @@ search_fields: [configuration_release, bank_exchange_settings]
 evidence_coverage:
   schedule_bank_statement_import: partial
 status: draft
+requires_sme_review: true
 review_note: 'Предложение расширить существующую approved directbank-auto-schedule.md, а не новый полный KB gap. Проверить настройки банка и полномочия.'
 ---
 

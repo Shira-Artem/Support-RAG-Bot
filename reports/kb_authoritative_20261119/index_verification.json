@@ -1,0 +1,21 @@
+{
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "status": "green",
+  "points": 833,
+  "approved_documents": 204,
+  "draft_documents_excluded": 65,
+  "exact_payload_text_and_metadata_match": true,
+  "duplicate_point_ids": 0,
+  "source_urls_present": true,
+  "collections_preserved": {
+    "knowledge_kb_b2_base_20261119": 672,
+    "knowledge_demo": 928,
+    "knowledge_v1": 0,
+    "knowledge_organized_stage2_20261022": 934,
+    "knowledge_sprint_v1_20261021": 927,
+    "knowledge_kb_b2_integrated_20261119": 833,
+    "knowledge_sprint_v1_20261021_final": 927,
+    "knowledge_sprint_v1_20261022_quality_gate": 927,
+    "knowledge_stage3_retrieval_20261022": 934
+  }
+}

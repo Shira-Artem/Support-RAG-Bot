@@ -1,3 +1,4 @@
+from kb_snapshots import HISTORICAL_KB_ROOT
 from app.dialogue_state import DialogueState, Fact, TaskContext
 from app.rag import SearchResult
 from app.retrieval_pipeline import _document_exchange_scope_conflict, _exact_incident_section_bridge, _scoped_evidence_documents
@@ -45,7 +46,7 @@ def test_saved_u02_information_selection_keeps_client_scope_and_direct_limit():
     root=Path(__file__).resolve().parents[1]
     trace=json.loads((root/'reports/b2_2d_20261105/bounded_live_20261105.json').read_text(encoding='utf8'))
     turn=next(t for t in trace['turns'] if t['case']=='u02')
-    body=(root/'data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md').read_text(encoding='utf8').split('---',2)[2]
+    body=(HISTORICAL_KB_ROOT/'data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md').read_text(encoding='utf8').split('---',2)[2]
     text=dict(_sections(body))['Проверенная информация и первичная диагностика']
     picked=_focused_approved_sentence([{'section':'Проверенная информация и первичная диагностика','text':text}],
         turn['task_frame']['goals'][0]['value'],conceptual_question=turn['question'])

@@ -61,7 +61,7 @@ def chunks_to_results(chunks, parent):
             for chunk in chunks]
 
 
-def test_integration_1c_search_is_scoped_to_selected_cloud_service():
+def test_physical_1c_card_is_rejected_for_cloud_service():
     aqsi, aqsi_chunks = _loaded_hit("aqsi_online/integration/1c-setup.md", approved=True)
     atol, _ = _loaded_hit("atol_online/integration/integration-1c-versions.md", approved=True)
     physical_aqsi = SearchResult("aqsi/aqsi-error-115.md",
@@ -76,7 +76,9 @@ def test_integration_1c_search_is_scoped_to_selected_cloud_service():
         aqsi.metadata["document_id"]: chunks_to_results(aqsi_chunks, aqsi),
     }
     result = RetrievalPipeline(Source(results, articles)).search(state, query)
-    assert result.documents and {doc.metadata["document_id"] for doc in result.documents} == {"aqsi-online-integration-1c-setup"}
+    assert not result.documents
+    assert any(item.document_id == "aqsi-online-integration-1c-setup"
+               and "service_mismatch_or_unlabeled" in item.reasons for item in result.rejected)
     assert any("service_mismatch_or_unlabeled" in item.reasons for item in result.rejected)
     assert any(item.document_id == "physical-aqsi-integration-control"
                and "service_mismatch_or_unlabeled" in item.reasons for item in result.rejected)
@@ -139,8 +141,8 @@ def test_full_audit_csv_covers_every_knowledge_markdown_document():
 
 def test_chunker_preserves_explicit_software_and_routing_metadata():
     hit, _ = _loaded_hit("aqsi_online/integration/1c-setup.md", approved=False)
-    assert hit.metadata["service"] == "aQsi Online"
-    assert hit.metadata["software"] == "1С:УНФ"
+    assert hit.metadata["service"] == "aQsi"
+    assert hit.metadata["software"] == "1С:Предприятие 8"
     assert hit.metadata["task_category"] == "integration"
 
 

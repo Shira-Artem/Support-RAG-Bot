@@ -315,10 +315,11 @@ def _sections(body: str) -> list[tuple[str, str]]:
     heading: str | None = None
     lines: list[str] = []
     for line in body.splitlines():
-        if line.startswith("## "):
+        match = re.match(r"^#{1,6}\s+(.+?)\s*$", line)
+        if match:
             if heading and "\n".join(lines).strip():
                 rows.append((heading, "\n".join(lines).strip()))
-            heading, lines = line[3:].strip(), []
+            heading, lines = match.group(1), []
         elif heading:
             lines.append(line)
     if heading and "\n".join(lines).strip():
@@ -3369,6 +3370,7 @@ class SourceFirstService:
                 and item['source'] == continuation['source']
                 and _SCOPE_OR_SAFETY_HEADING.search(item['section'])]]
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
+                  "Раздел с перечислением сообщений об ошибке описывает симптом, а не рекомендуемое действие. Если клиент спрашивает, обязательна ли ответственная операция, учитывай предварительные безопасные проверки и условия остальных разделов статьи: цитата ошибки сама по себе не подтверждает необходимость операции. "
                   "Ответ должен относиться к текущему сообщению, его предмету, действию и условиям; похожая тема или соседний факт не заменяет ответ. "
                   "Если текущий вопрос состоит из нескольких частей, предпочитай раздел, покрывающий их и необходимые ограничения; не переноси правила другого процесса или устройства. "
                   "Уже показанный раздел можно выбрать снова, если новый вопрос спрашивает о содержащемся в нём ограничении или предварительном условии. Это прямой ответ на новый вопрос, а не следующий выполненный шаг. Раздел передачи специалисту не заменяет доступный полезный ответ, но предупреждения и предварительные условия сохраняй. "
@@ -3756,9 +3758,6 @@ class SourceFirstService:
                     continue
                 rendered_sections.append(f"Дополнительное условие источника ({related['section']}):\n{exact_related}")
             exact_render = "\n\n".join(rendered_sections)
-            if unsafe_operation_issue(exact_render):
-                return self._escalate("В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
-                                      "unsafe_source_section", "unsafe_operation_in_selected_source", started, **base)
             # In a reducer-backed technical task, expose one complete
             # approved check at a time. This keeps preconditions and sentence
             # order intact while allowing the next turn to record the result
@@ -3780,6 +3779,12 @@ class SourceFirstService:
                     return self._escalate("Первый проверочный шаг не прошёл safety gate. Запросите специалиста.",
                         "unsafe_source_check_unit", "first_approved_check_failed_safety", started, **base)
                 exact_render = first_unit["line"]
+            # Validate what will actually be published. Expanded reviewed
+            # sections can contain a safe first check followed by an operation
+            # that must be escalated. The latter is never emitted as that check.
+            if unsafe_operation_issue(exact_render):
+                return self._escalate("В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.",
+                                      "unsafe_source_section", "unsafe_operation_in_selected_source", started, **base)
             if (not informational and not information_list and decision and decision.get("route") == "technical_action"
                     and state.task_context and state.task_context.procedure_id == selected["document_id"]
                     and state.task_context.shown_units):

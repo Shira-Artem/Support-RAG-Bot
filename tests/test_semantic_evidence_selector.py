@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from kb_snapshots import HISTORICAL_KB_ROOT
+
 from hashlib import sha256
 import json
 from itertools import permutations
@@ -274,7 +276,7 @@ def test_saved_dev_cassette_selects_multiple_ids_in_canonical_source_order():
     # or reorder source sentences; IDs are tied to SHA/document/section/source position.
     for ordering in (units, list(reversed(units)), units[2:] + units[:2], units[::2] + units[1::2]):
         decision = EvidenceDecision("select", tuple(reversed(selected_ids)), None, "direct_evidence", "cassette")
-        selected, reason = validate_selected_units(decision, ordering, state, ROOT, informational=False)
+        selected, reason = validate_selected_units(decision, ordering, state, HISTORICAL_KB_ROOT, informational=False)
         assert reason is None
         outputs.append([(u.id, u.text) for u in selected])
     assert outputs.count(outputs[0]) == len(outputs)
@@ -303,7 +305,7 @@ def test_frozen_question_only_selection_is_removed_and_compared_to_source_first(
     eligible_selected = [unit_id for unit_id in old_ids if unit_id not in removed]
     replay = EvidenceDecision("select", tuple(eligible_selected), None, "direct_evidence", "frozen")
     validated, rejection = validate_selected_units(replay, kept,
-        DialogueState.from_dict(case["state_after"]), ROOT, informational=True)
+        DialogueState.from_dict(case["state_after"]), HISTORICAL_KB_ROOT, informational=True)
     assert rejection is None
     assert validated and all(unit.role == "fact" for unit in validated)
 
@@ -325,7 +327,7 @@ def test_saved_procedure_cassette_cannot_detach_route_or_conditions():
     assert "Маршрут:" in procedure.text and "Период задаётся датами пробития" in procedure.text
     decision = EvidenceDecision("select", (detached.id, procedure.id), None, "direct_evidence", "cassette")
     state = DialogueState.from_dict(case["state_after"])
-    selected, reason = validate_selected_units(decision, units, state, ROOT, informational=False)
+    selected, reason = validate_selected_units(decision, units, state, HISTORICAL_KB_ROOT, informational=False)
     assert selected == []
     assert reason == "procedure_block_must_remain_indivisible"
 

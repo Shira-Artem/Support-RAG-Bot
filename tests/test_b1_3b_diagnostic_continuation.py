@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from kb_snapshots import HISTORICAL_KB_ROOT
+
 import json
 
 import pytest
@@ -164,7 +166,7 @@ def test_progress_reducer_uses_exact_shown_components_when_eligible_snapshot_is_
 def test_date_time_source_check_keeps_unreported_date_unknown_when_time_fails():
     source = "data/knowledge/evotor/fn/fn-234.md"
     section = "Первое различение причины"
-    body = (ROOT / "data/knowledge/evotor/fn/fn-234.md").read_text(encoding="utf-8").split("---", 2)[2]
+    body = (HISTORICAL_KB_ROOT / "data/knowledge/evotor/fn/fn-234.md").read_text(encoding="utf-8").split("---", 2)[2]
     text = next(value for heading, value in __import__(
         "app.source_first_service", fromlist=["_sections"])._sections(body.strip())
         if heading == section)

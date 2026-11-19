@@ -1,4 +1,5 @@
 """Safety boundaries for the incomplete-order factual answer."""
+from kb_snapshots import HISTORICAL_KB_ROOT
 from hashlib import sha256
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from app.source_first_service import _incomplete_order_causal_fact
 
 ROOT = Path(__file__).resolve().parents[1]
 QUESTION = "На терминале Эвотор появилась ошибка ФН 234. Это точно означает, что накопитель надо заменить?"
-SOURCE = ROOT / "data/knowledge/evotor/fn/fn-234.md"
+SOURCE = HISTORICAL_KB_ROOT / "data/knowledge/evotor/fn/fn-234.md"
 
 
 def candidate(tmp_path, *, model=None, edit=None):

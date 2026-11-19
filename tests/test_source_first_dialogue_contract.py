@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from kb_snapshots import HISTORICAL_KB_ROOT
+
 import asyncio
 from pathlib import Path
 from types import SimpleNamespace
@@ -113,7 +115,7 @@ def test_manufacturer_wide_first_check_does_not_require_model(monkeypatch, tmp_p
     import json
     source = "evotor/fn/fn-235.md"
     heading = "Смысл и безопасная проверка"
-    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    body = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     text = dict(_sections(body))[heading]
     scope = {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
              "task_category": "error_diagnosis", "operations": ["diagnose_error"]}
@@ -132,7 +134,7 @@ def test_manufacturer_wide_first_check_does_not_require_model(monkeypatch, tmp_p
             "reason": "first check"}), "offline")
 
     monkeypatch.setattr("app.source_first_service.generate", select)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=DialogueState(task_context=task),
         coordinator_decision={"route": "technical_action", "current_subgoal": question}))
     assert answer.scenario == "answer"
@@ -181,7 +183,7 @@ def test_generic_first_check_does_not_expose_later_model_specific_unit(monkeypat
 def test_incomplete_topic_with_domain_word_is_clarified_without_escalation(tmp_path):
     message = "Привет! Помоги с ОФД"
     state = DialogueManager().advance(DialogueState(), message, 1)
-    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT).answer(message, state=state))
+    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), HISTORICAL_KB_ROOT).answer(message, state=state))
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "dialogue_state_task_incomplete"
     assert answer.clarification_slot == "task"
@@ -191,7 +193,7 @@ def test_broad_explanation_request_is_clarified_before_retrieval(tmp_path):
     message = "Привет! Помоги мне разобраться с кассами."
     state = DialogueState(task_id="task:1", intent="general", operation="explain",
                           object="касса")
-    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         message, state=state, history=[{"role": "user", "content": message,
                                        "understanding": {"request_type": "information"},
                                        "semantic_mode": True}]))
@@ -203,7 +205,7 @@ def test_broad_explanation_request_is_clarified_before_retrieval(tmp_path):
 def test_independent_underspecified_paraphrase_is_clarified(tmp_path):
     message = "Подскажите по кассе"
     state = DialogueManager().advance(DialogueState(), message, 1)
-    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT).answer(message, state=state))
+    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), HISTORICAL_KB_ROOT).answer(message, state=state))
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "dialogue_state_task_incomplete"
 
@@ -216,7 +218,7 @@ def test_repeated_unresolved_task_clarification_stops_loop(tmp_path):
         {"role": "assistant", "scenario": "clarify", "scenario_reason": "dialogue_state_task_incomplete"},
         {"role": "user", "text": message},
     ]
-    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(message, state=state, history=history))
     assert answer.scenario == "escalate"
     assert answer.scenario_reason == "dialogue_task_remains_undefined"
@@ -229,7 +231,7 @@ def test_qdrant_failure_fails_closed_without_calling_planner(monkeypatch, tmp_pa
     monkeypatch.setattr("app.source_first_service.generate", unexpected_planner)
     message = "Проверьте передачу чеков в aQsi Online"
     state = DialogueManager().advance(DialogueState(), message, 1)
-    answer = asyncio.run(SourceFirstService(BrokenQdrant(), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(BrokenQdrant(), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(message, state=state))
     assert answer.scenario == "escalate"
     assert answer.scenario_reason == "retrieval_error"
@@ -243,14 +245,14 @@ def test_high_risk_action_is_escalated_before_retrieval_or_planner(monkeypatch, 
     monkeypatch.setattr("app.source_first_service.generate", unexpected_planner)
     message = "Закройте архив ФН"
     state = DialogueManager().advance(DialogueState(), message, 1)
-    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(NoSearch(), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(message, state=state))
     assert answer.scenario == "escalate"
     assert answer.scenario_reason == "unsafe_operation"
 
 
 def test_approved_source_integrity_accepts_v12b_metadata_projection():
-    path = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    path = HISTORICAL_KB_ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
     doc_id = "atol-online-11256-what-is-ofd"
     content = "Что такое ОФД и почему без него касса не передаёт чеки в ФНС?"
     # V1.2-B collection retains the reviewed operation and raw category from
@@ -264,7 +266,7 @@ def test_approved_source_integrity_accepts_v12b_metadata_projection():
                            "Вопрос пользователя", {k: v for k, v in metadata.items()
                                                    if k not in {"source", "document_id", "section"}}, content)
     rag = SimpleNamespace()
-    sections = _source_sections(rag, retrieval, ROOT)
+    sections = _source_sections(rag, retrieval, HISTORICAL_KB_ROOT)
     assert len(sections) == 1
     assert sections[0]["document_id"] == doc_id
     assert sections[0]["scope"]["task_category"] == "ofd_connection"
@@ -278,13 +280,13 @@ def test_stage2_stale_operation_fails_closed_against_approved_front_matter():
                 "model": "АТОЛ Онлайн — облачная ККТ"}
     retrieval = _retrieval(source, doc_id, heading, metadata,
                            "Что такое ОФД и почему без него касса не передаёт чеки в ФНС?")
-    assert _source_sections(SimpleNamespace(), retrieval, ROOT) == []
+    assert _source_sections(SimpleNamespace(), retrieval, HISTORICAL_KB_ROOT) == []
 
 
 def test_selected_document_exposes_its_exact_retrieved_information_sections():
     source = "atol_online/ofd/what-is-ofd.md"
     doc_id = "atol-online-11256-what-is-ofd"
-    raw = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    raw = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     chunks = _sections(raw)
     metadata = {"source": source, "document_id": doc_id, "status": "approved",
                 "service": "АТОЛ Онлайн", "task_category": "ofd_connection",
@@ -295,7 +297,7 @@ def test_selected_document_exposes_its_exact_retrieved_information_sections():
     selected = EvaluatedDocument(source, doc_id, "approved", {**metadata, "section": "Вопрос пользователя"}, {},
                                  Relevance("service", "task", .9), selected=True)
     retrieval = RetrievalResult("query", [selected], [], hits, True, None, "", evidence_status="source_confirmed")
-    verified = _source_sections(SimpleNamespace(), retrieval, ROOT)
+    verified = _source_sections(SimpleNamespace(), retrieval, HISTORICAL_KB_ROOT)
     assert [item["section"] for item in verified] == [heading for heading, _ in chunks]
     assert "получает фискальные документы" in verified[1]["text"]
 
@@ -376,7 +378,7 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
     scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
              "operations": ["explain_ofd"], "manufacturer": "АТОЛ",
              "model": "АТОЛ Онлайн — облачная ККТ"}
-    raw = (ROOT / "data/knowledge" / path).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    raw = (HISTORICAL_KB_ROOT / "data/knowledge" / path).read_text(encoding="utf-8").split("---", 2)[2].strip()
     hits = [SearchResult(path, body, .9 if title == heading else 0,
                          metadata={"source": path, "document_id": doc_id, "section": title,
                                    "status": "approved", **scope})
@@ -410,7 +412,7 @@ def test_definition_uses_scoped_material_with_explicit_attribution(monkeypatch, 
     monkeypatch.setattr("app.source_first_service.generate", planner)
     message = "Что такое ОФД?"
     state = DialogueManager().advance(DialogueState(), message, 1)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(message, state=state))
     assert answer.scenario == "answer"
     assert "По документации для области" in answer.text
@@ -434,7 +436,7 @@ def test_vendor_scoped_procedure_requests_manufacturer_not_ofd_service(monkeypat
     monkeypatch.setattr("app.source_first_service.generate", unexpected_planner)
     message = "ОФД как проверить срок"
     state = DialogueManager().advance(DialogueState(), message, 1)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(message, state=state))
     assert answer.scenario == "clarify"
     assert answer.scenario_reason == "source_scope_context_missing"
@@ -463,7 +465,7 @@ def test_rejected_entity_cannot_satisfy_vendor_scope_gate(monkeypatch, tmp_path)
     async def unexpected_planner(*_args):
         raise AssertionError("unknown service must be clarified before planning")
     monkeypatch.setattr("app.source_first_service.generate", unexpected_planner)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(text, state=DialogueManager().advance(
                              DialogueState(), text, 1, observation=observation)))
     assert answer.scenario == "clarify"
@@ -474,7 +476,7 @@ def test_rejected_entity_cannot_satisfy_vendor_scope_gate(monkeypatch, tmp_path)
 def test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only(tmp_path):
     source = "evotor/fn/fn-234.md"
     doc_id, heading = "evotor-fn-234-360005580254", "Первое различение причины"
-    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    body = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     text = dict(_sections(body))[heading]
     scope = {"service": "Эвотор", "task_category": "error_diagnosis",
              "operations": ["diagnose_error"], "manufacturer": "Эвотор", "model": None}
@@ -484,7 +486,7 @@ def test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only(t
                           task=Fact(question, 1, question, 0, len(question)),
                           error=Fact.span(question, 1, question.index("234"),
                                           question.index("234") + 3, value="234"))
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(question, state=state,
                              coordinator_decision={"route": "technical_action", "current_subgoal": question}))
     assert answer.scenario == "answer"
@@ -513,7 +515,7 @@ def test_same_error_applicability_gate_covers_incident_information_and_definitio
     matching = {"title": "Эвотор: ошибка ФН 234"}
     assert _source_error_matches_client(confirmed, matching)
 
-    service = SourceFirstService(None, settings(tmp_path), ROOT)
+    service = SourceFirstService(None, settings(tmp_path), HISTORICAL_KB_ROOT)
     answer = asyncio.run(service._coordinated_information_answer(
         "После продажи касса иногда ругается. Что происходит?", incident,
         [{**article, "text": "Ошибка -3975 связана с ФН 231.", "section": "Контекст ошибки"}],
@@ -527,7 +529,7 @@ def test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction(monkeypat
     import json
     source = "evotor/fn/fn-234.md"
     question = "На моей кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?"
-    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    body = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     sections = dict(_sections(body))
     heading = "Первое различение причины"
     retrieval = _retrieval(source, "evotor-fn-234-360005580254", heading,
@@ -554,7 +556,7 @@ def test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction(monkeypat
             "reason": "frozen D04 matching incident code"}), "offline")
 
     monkeypatch.setattr("app.source_first_service.generate", select)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=answer_state,
         coordinator_decision={"route": "technical_action", "current_subgoal": question}))
     assert answer.scenario == "answer"
@@ -570,7 +572,7 @@ def test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction(monkeypat
                                value="234")], relation="continue")
     followup_state = DialogueManager().advance(answer_state, followup, 2,
                                                 observation=followup_observation)
-    repeated_answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    repeated_answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         followup, state=followup_state,
         coordinator_decision={"route": "technical_action", "current_subgoal": followup}))
     assert repeated_answer.scenario == "answer"
@@ -581,14 +583,14 @@ def test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction(monkeypat
 def test_frozen_d03_unknown_code_never_returns_fn231_fact_or_exact_fallback(tmp_path):
     source = "evotor/fn/fn-231.md"
     question = "После продажи касса иногда ругается, но я не успеваю прочитать ошибку."
-    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    body = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     heading, text = "Контекст ошибки", dict(_sections(body))["Контекст ошибки"]
     retrieval = _retrieval(source, "evotor-fn-231", heading,
         {"service": "Эвотор", "manufacturer": "Эвотор", "model": None,
          "task_category": "error_diagnosis", "operations": ["diagnose_error"]}, text)
     state = DialogueState(intent="device", operation="diagnose")
     state.symptom = Fact.span(question, 1, question.index("касса"), len(question))
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=state,
         coordinator_decision={"route": "technical_action", "current_subgoal": question}))
     assert answer.scenario == "clarify"
@@ -646,7 +648,7 @@ def test_unknown_code_with_symptom_gets_focused_followup_when_planner_cannot_sel
 
     source = "data/knowledge/evotor/ofd/ofd-unable-to-connect.md"
     heading = "Признаки"
-    body = dict(_sections((ROOT / source).read_text(encoding="utf-8").split("---", 2)[2].strip()))[heading]
+    body = dict(_sections((HISTORICAL_KB_ROOT / source).read_text(encoding="utf-8").split("---", 2)[2].strip()))[heading]
     scope = {"service": "Эвотор", "manufacturer": "Эвотор",
              "task_category": "receipt_transmission", "operations": ["check_transmission"]}
     retrieval = _retrieval(source, "evotor-ofd-error-not-connected-20261019", heading, scope, body)
@@ -662,7 +664,7 @@ def test_unknown_code_with_symptom_gets_focused_followup_when_planner_cannot_sel
             "reason": "no symptom-specific source"}), "fixture")
 
     monkeypatch.setattr("app.source_first_service.generate", planner_clarifies)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=state,
         coordinator_decision={"route": "technical_action", "current_subgoal": question}))
 
@@ -673,7 +675,7 @@ def test_unknown_code_with_symptom_gets_focused_followup_when_planner_cannot_sel
 
 
 def test_focus_prefers_supported_fn_fact_over_dangerous_safety_warning():
-    source = ROOT / "data/knowledge/evotor/fn/fn-234.md"
+    source = HISTORICAL_KB_ROOT / "data/knowledge/evotor/fn/fn-234.md"
     body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
     sections = [{"section": heading, "text": text, "source": "evotor/fn/fn-234.md"}
                 for heading, text in _sections(body)]
@@ -695,7 +697,7 @@ def test_general_knowledge_fallback_is_limited_to_safe_conceptual_explanations(t
     import json
 
     source = "atol_online/fn/fn-basics.md"
-    path = ROOT / "data/knowledge" / source
+    path = HISTORICAL_KB_ROOT / "data/knowledge" / source
     body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
     heading, text = _sections(body)[0]
     scope = {"task_category": "fiscal_drive", "manufacturer": "АТОЛ",
@@ -722,7 +724,7 @@ def test_general_knowledge_fallback_is_limited_to_safe_conceptual_explanations(t
                           total_tokens=38)
 
     monkeypatch.setattr("app.source_first_service.generate", offline_general)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=state, coordinator_decision={"route": "grounded_information",
         "current_subgoal": question}))
     assert answer.scenario == "answer"
@@ -743,7 +745,7 @@ def test_general_knowledge_rejects_unsupported_legal_and_certificate_claims(tmp_
     service = SourceFirstService(OneResult(_retrieval("atol_online/fn/fn-basics.md",
         "atol-online-11253-fn-basics", "Вопрос пользователя",
         {"task_category": "fiscal_drive", "manufacturer": "АТОЛ"},
-        "Что такое фискальный накопитель?")), settings(tmp_path), ROOT)
+        "Что такое фискальный накопитель?")), settings(tmp_path), HISTORICAL_KB_ROOT)
     answer = asyncio.run(service._general_knowledge_fallback(question, state, 0, {}))
     assert answer.scenario_reason == "general_knowledge_output_rejected"
 
@@ -807,7 +809,7 @@ def test_status_reading_does_not_confuse_noun_with_send_operation():
 
 def test_general_knowledge_output_rejects_invented_citations(tmp_path, monkeypatch):
     source = "atol_online/fn/fn-basics.md"
-    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    body = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     heading, text = _sections(body)[0]
     retrieval = _retrieval(source, "atol-online-11253-fn-basics", heading,
         {"task_category": "fiscal_drive", "manufacturer": "АТОЛ"}, text)
@@ -819,7 +821,7 @@ def test_general_knowledge_output_rejects_invented_citations(tmp_path, monkeypat
         return Generation("ОФД передаёт документы. Источник: https://example.invalid", "fixture")
 
     monkeypatch.setattr("app.source_first_service.generate", offline_bad_citation)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=state, coordinator_decision={"route": "grounded_information",
         "current_subgoal": question}))
     assert answer.scenario == "escalate"
@@ -831,7 +833,7 @@ def test_software_integration_scope_does_not_require_hardware_model_or_ofd(tmp_p
 
     source = "1c/bank/directbank-all-accounts.md"
     doc_id, heading = "batch-20261013-bank-directbank-all-accounts", "Безопасная диагностика"
-    body = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    body = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8").split("---", 2)[2].strip()
     text = dict(_sections(body))[heading]
     scope = {"service": "1С:Бухгалтерия 8", "task_category": "bank_statement",
              "operations": ["load_bank_statements"], "manufacturer": "1С",
@@ -854,7 +856,7 @@ def test_software_integration_scope_does_not_require_hardware_model_or_ofd(tmp_p
             "offline-planner")
 
     monkeypatch.setattr("app.source_first_service.generate", select_diagnostic)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
         .answer(question, state=DialogueState(task_context=task),
                 coordinator_decision={"route": "technical_action", "current_subgoal": question}))
     assert answer.scenario == "answer"
@@ -871,7 +873,7 @@ def test_information_list_is_not_truncated_by_prior_diagnosis(tmp_path, monkeypa
 
     source = "1c/edo/connect-1c-edo.md"
     heading = "Что уточнить перед инструкцией"
-    content = (ROOT / "data/knowledge" / source).read_text(encoding="utf-8")
+    content = (HISTORICAL_KB_ROOT / "data/knowledge" / source).read_text(encoding="utf-8")
     body = dict(_sections(content))[heading]
     scope = {"service": "1С:Бухгалтерия 8", "software": "1С:Бухгалтерия 8",
              "task_category": "edo", "operations": ["exchange_edo_documents"],
@@ -889,7 +891,7 @@ def test_information_list_is_not_truncated_by_prior_diagnosis(tmp_path, monkeypa
             "applicability_confirmed": True, "order_confirmed": True, "reason": "information"}), "fixture")
 
     monkeypatch.setattr("app.source_first_service.generate", select_section)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT).answer(
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT).answer(
         question, state=DialogueState(task_context=task),
         coordinator_decision={"route": "technical_action", "current_subgoal": question}))
     assert answer.scenario == "answer"
@@ -905,7 +907,7 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
 
     source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
     doc_id = "atol-online-11256-what-is-ofd"
-    path = ROOT / source
+    path = HISTORICAL_KB_ROOT / source
     body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
     local_sections = {heading: text for heading, text in _sections(body)}
     scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
@@ -979,7 +981,7 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
         return Generation(content, "test-model", 100, 60, 160)
 
     monkeypatch.setattr("app.source_first_service.generate", generate_stub)
-    service = SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    service = SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
     first_answer = asyncio.run(service.answer(first_text, state=first_state))
 
     followup = "А зачем он нужен кассе?"
@@ -1018,7 +1020,7 @@ def test_information_followup_gets_grounded_answer_for_current_question(monkeypa
 
 
 def test_information_composition_rejects_unsupported_claims_and_procedures():
-    source = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    source = HISTORICAL_KB_ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
     body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
     evidence = dict(_sections(body))["Что проверено по инструкции производителя"]
     grounded = ("ОФД нужен кассе как посредник при передаче фискальных документов в ФНС: "
@@ -1049,7 +1051,7 @@ def test_semantic_relevance_replays_saved_composer_answer_with_current_task_and_
     import json
     from app.llm_client import Generation
 
-    source = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    source = HISTORICAL_KB_ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
     body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
     section = "Что проверено по инструкции производителя"
     selected_body = dict(_sections(body))[section]
@@ -1070,7 +1072,7 @@ def test_semantic_relevance_replays_saved_composer_answer_with_current_task_and_
              "goals": [{"value": question}]}
     seen = {}
     source_path = "data/knowledge/atol_online/ofd/what-is-ofd.md"
-    source_sha256 = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
+    source_sha256 = hashlib.sha256((HISTORICAL_KB_ROOT / source_path).read_bytes()).hexdigest()
 
     async def relevant_stub(messages, _settings, *, call_stage="generation"):
         payload = json.loads(messages[-1]["content"])
@@ -1110,7 +1112,7 @@ def test_saved_q1_quote_omitting_the_word_they_is_accepted_by_source_fragment_id
                          .read_text(encoding="utf-8"))
     assert 'обрабатывает и передаёт в ФНС' in fixture["old_judge_output"]
     assert 'обрабатывает и передаёт их в ФНС' not in fixture["old_judge_output"]
-    source_text = (ROOT / fixture["source"]).read_text(encoding="utf-8").split("---", 2)[2].strip()
+    source_text = (HISTORICAL_KB_ROOT / fixture["source"]).read_text(encoding="utf-8").split("---", 2)[2].strip()
     section_body = dict(_sections(source_text))[fixture["section"]]
     evidence = "\n".join(("Для чего АТОЛ Онлайн нужен оператор фискальных данных",
                           fixture["section"], section_body))
@@ -1139,7 +1141,7 @@ def test_saved_q1_quote_omitting_the_word_they_is_accepted_by_source_fragment_id
 
 def test_evidence_fragment_builder_excludes_title_question_and_section_heading():
     import hashlib
-    source = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    source = HISTORICAL_KB_ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
     body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
     section = "Что проверено по инструкции производителя"
     fragments = _information_evidence_fragments(
@@ -1157,7 +1159,7 @@ def test_semantic_relevance_rejects_definition_and_other_fact_from_same_article(
     import json
     from app.llm_client import Generation
 
-    source = ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
+    source = HISTORICAL_KB_ROOT / "data/knowledge/atol_online/ofd/what-is-ofd.md"
     body = source.read_text(encoding="utf-8").split("---", 2)[2].strip()
     section = "Что проверено по инструкции производителя"
     selected_body = dict(_sections(body))[section]
@@ -1177,7 +1179,7 @@ def test_semantic_relevance_rejects_definition_and_other_fact_from_same_article(
 
     import hashlib
     source_path = "data/knowledge/atol_online/ofd/what-is-ofd.md"
-    source_sha256 = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
+    source_sha256 = hashlib.sha256((HISTORICAL_KB_ROOT / source_path).read_bytes()).hexdigest()
     for candidate, judgment in zip(candidates, judgments):
         grounded, _ = _validate_information_composition(candidate, evidence, section)
         assert grounded == candidate  # Same article alone does not make it responsive.
@@ -1244,7 +1246,7 @@ def test_information_composer_repair_rejects_fabricated_claim(monkeypatch, tmp_p
 
     source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
     doc_id = "atol-online-11256-what-is-ofd"
-    path = ROOT / source
+    path = HISTORICAL_KB_ROOT / source
     body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
     sections = {heading: text for heading, text in _sections(body)}
     scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
@@ -1288,7 +1290,7 @@ def test_information_composer_repair_rejects_fabricated_claim(monkeypatch, tmp_p
         return Generation(content, "test-model", 10, 10, 20)
 
     monkeypatch.setattr("app.source_first_service.generate", generate_stub)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
                          .answer(question, state=state))
     assert answer.scenario == "escalate"
     assert answer.scenario_reason == "information_composition_unverified"
@@ -1309,7 +1311,7 @@ def _run_saved_partial_q2(monkeypatch, tmp_path, *, judge_verdict="relevant", re
     fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
     source = "data/knowledge/atol_online/ofd/what-is-ofd.md"
     doc_id = "atol-online-11256-what-is-ofd"
-    path = ROOT / source
+    path = HISTORICAL_KB_ROOT / source
     body = path.read_text(encoding="utf-8").split("---", 2)[2].strip()
     sections = {heading: text for heading, text in _sections(body)}
     scope = {"service": "АТОЛ Онлайн", "task_category": "ofd_connection",
@@ -1373,7 +1375,7 @@ def _run_saved_partial_q2(monkeypatch, tmp_path, *, judge_verdict="relevant", re
         return Generation(content, "offline-replay", 0, 0, 0)
 
     monkeypatch.setattr("app.source_first_service.generate", generate_stub)
-    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), ROOT)
+    answer = asyncio.run(SourceFirstService(OneResult(retrieval), settings(tmp_path), HISTORICAL_KB_ROOT)
         .answer(question, state=state, history=[{"role": "user", "content": first_question},
                                                {"role": "assistant", "content": "ОФД передаёт документы."}]))
     return answer, seen, fixture
@@ -1442,7 +1444,7 @@ def test_named_service_never_uses_unsourced_general_generation(tmp_path, monkeyp
     async def forbidden(*_args, **_kwargs):
         raise AssertionError("named product must not reach unsourced generation")
     monkeypatch.setattr("app.source_first_service.generate", forbidden)
-    answer = asyncio.run(SourceFirstService(None, settings(tmp_path), ROOT)._general_knowledge_fallback(question, state, 0, {}))
+    answer = asyncio.run(SourceFirstService(None, settings(tmp_path), HISTORICAL_KB_ROOT)._general_knowledge_fallback(question, state, 0, {}))
     assert answer is None
 
 

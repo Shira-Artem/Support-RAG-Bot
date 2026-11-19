@@ -1,0 +1,1946 @@
+[
+  {
+    "name": "live_current",
+    "status": "diagnostic_live",
+    "raw_artifact": ".local/kb-authoritative/raw/live_current.json",
+    "raw_sha256": "a64e12cb3665da1fd12d39400494314e90c09415a7df05e2f000546b3c6fc654",
+    "code_hashes": {
+      "bot.py": "ee38a8d0a318e906a8c07780648461e39d3942d1d7356365c15935a6b0903324",
+      "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app/ai_coordinator.py": "38eaa852b1149df47a17865544cb9ecee1ad9c352bed73aa6715edcddb8187c0",
+      "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+      "app/api.py": "69815cc31f62c66bf7250424632f5c25d0cc3bf61ba800bbfc4f69cec2f261a3",
+      "app/bot_runtime.py": "7c8d6409e5df54ea609e302b2d47c96a377750b91e58e4717fe916ffe3bdd4e2",
+      "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+      "app/config.py": "cb1f9d7b86465166b3e5b8a7155274fe866b102a7e83810188f7df82987a6155",
+      "app/conversation_store.py": "7ada19b73b15594336b0b7727bdcb9e0eef7778c6a6fe41af397700aded3804a",
+      "app/dialogue_state.py": "5aaeb2ddedf5caf366a07c85a04b28486609ab6505b5e8b1c9c3579b6cf21d4e",
+      "app/dialogue_understanding.py": "3407464edf1c3d5dbb9867dbfec25d042b05f06f834ed302136b67b4c75a6199",
+      "app/embeddings.py": "d492fd1e7f0d4553d7cf6342bb005af162b89d326ab628afc82f3b88e7ed9281",
+      "app/expert_report.py": "ef8c65242552ba85e107572b07dea8a769b3eda8eb2cbb332c05db5b985171ef",
+      "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+      "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+      "app/groq_rate_limit.py": "037ed336203b9da5e5e5f9271df2899127f08702a6cbabc87c3cb9b426ae1c2b",
+      "app/handoff.py": "39dd374363984cd66060328c41a6e31c9de74217a765938a832c5044c2da5f4d",
+      "app/instance_lock.py": "982adc276de768d53ba8e1e2666250cdc704a8943ff8a9f4a5d7c26226465e56",
+      "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+      "app/llm_client.py": "b43276fb1fb1a6923a5b9f52eccd2d13f0d27380dec8bc02aad14024802ffe5e",
+      "app/network_transport.py": "1d2b6473b7e624086bfb3589a9a7ccc710f2f04922090f644215a8c817052477",
+      "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+      "app/procedure_policy.py": "7fe2f06947fd3627a17f07babd105a048f42e72bd84deb897db48a9e17a79e29",
+      "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+      "app/rag_query.py": "8d2dc3407f2f051a7419caf9e8b63e377b29c491523513003b10b26e71b2599f",
+      "app/response_grounding.py": "3090f6e1fb3c80e91b324e5f0a8a621586853e845f2a4e31c87a35df82c8e262",
+      "app/retrieval.py": "c4528ac5e7ec9b27d255a1c792e2fc22506ae49399c9fb24e2ce5ed0d12250e5",
+      "app/retrieval_pipeline.py": "57a750f2ce756ca88c191e5be2ec6830a80fb9dc39bc1ef9dae6c005b03b6f2e",
+      "app/runtime.py": "fc5100d14d3f56716acb1c6001a58788f25e9fbcdc434032894e3b0595c070aa",
+      "app/scope_policy.py": "951f698229cb71556d4415a4cf155ab6494dd03c946d780d37072ac76e9e6dbd",
+      "app/secret_safety.py": "9f94e70867c4555df378964c775ff26277183e5b8535a7fd6819ac770f158ca0",
+      "app/semantic_evidence_selector.py": "5225577cf71816369e84495c80fe801ccd564ebc14677ecb547219a4a53e600c",
+      "app/source_actions.py": "9266fbf7a8d6c46e20d05632a03b167b07b0ba72b313654dbd8b57cc502734c4",
+      "app/source_first_service.py": "8395742ec0f6e11f8e46e847fcca16f7e0179a11346a31a747fae8c2278e4e02",
+      "app/task_operation_resolver.py": "c3c08eb83eaf02a45b957b86c5b1bcc87f2ade81e3ad9b7661f194ce4c74f073",
+      "app/telegram_transport.py": "c25a19ed1ca34133923ea8d1c6c05b81ab877276a91c91239cbf3891cbbf791e",
+      "app/vector_store.py": "9abd7e869a4c76cbc7edf789eee472b72a4bdcf811dcdb0f826a6eded3d1cdcb"
+    },
+    "provider": "hubris",
+    "model": "openai/gpt-oss-20b",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "points": 833,
+    "http": {
+      "200": 23
+    },
+    "reported_tokens": 45743,
+    "reported_cost_kopecks": 27,
+    "provider_http": [
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 734,
+        "completion_tokens": 160,
+        "total_tokens": 894
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 867,
+        "completion_tokens": 338,
+        "total_tokens": 1205
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 308,
+        "completion_tokens": 379,
+        "total_tokens": 687
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1188,
+        "completion_tokens": 229,
+        "total_tokens": 1417
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 290,
+        "completion_tokens": 229,
+        "total_tokens": 519
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 750,
+        "completion_tokens": 305,
+        "total_tokens": 1055
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 2745,
+        "completion_tokens": 175,
+        "total_tokens": 2920
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 948,
+        "completion_tokens": 247,
+        "total_tokens": 1195
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 2761,
+        "completion_tokens": 128,
+        "total_tokens": 2889
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 752,
+        "completion_tokens": 320,
+        "total_tokens": 1072
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 3,
+        "prompt_tokens": 8273,
+        "completion_tokens": 241,
+        "total_tokens": 8514
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1319,
+        "completion_tokens": 113,
+        "total_tokens": 1432
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1267,
+        "completion_tokens": 173,
+        "total_tokens": 1440
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 772,
+        "completion_tokens": 437,
+        "total_tokens": 1209
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 2,
+        "prompt_tokens": 5443,
+        "completion_tokens": 69,
+        "total_tokens": 5512
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1597,
+        "completion_tokens": 74,
+        "total_tokens": 1671
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1649,
+        "completion_tokens": 133,
+        "total_tokens": 1782
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 751,
+        "completion_tokens": 334,
+        "total_tokens": 1085
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 2,
+        "prompt_tokens": 4952,
+        "completion_tokens": 149,
+        "total_tokens": 5101
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 755,
+        "completion_tokens": 387,
+        "total_tokens": 1142
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 741,
+        "completion_tokens": 219,
+        "total_tokens": 960
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 746,
+        "completion_tokens": 347,
+        "total_tokens": 1093
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 740,
+        "completion_tokens": 209,
+        "total_tokens": 949
+      }
+    ],
+    "provider_errors": [],
+    "turns": [
+      {
+        "case": "b2_conversation",
+        "turn": 1,
+        "question": "Привет!",
+        "answer": "Здравствуйте! Чем могу помочь?",
+        "latency_ms": 3627,
+        "sqlite_reopen_equal": true,
+        "same_task": true,
+        "scenario": "answer",
+        "reason": "source_first_social_turn",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_conversation",
+        "turn": 2,
+        "question": "Я недавно открыл небольшой магазин и совсем не понимаю, как работают онлайн-кассы. Объясни простыми словами, можешь помочь?",
+        "answer": "Привет! Поздравляю с открытием магазина – это большой шаг. Давай разберёмся, как работает онлайн‑касса, но без всяких технических деталей.\n\n**Онлайн‑касса** – это не просто приложение, а полноценное фискальное оборудование, которое печатает чек и одновременно отправляет данные о продаже в налоговую. Внутри кассы находится **фискальный накопитель (ФН)** – маленький чип, который хранит все фискальные документы (чек, возврат, отмену). Он нужен, чтобы в случае проверки у тебя был доступ к полной истории продаж.\n\nКогда чек оформляется, касса передаёт данные в **оператора фискальных данных (ОФД)** – это внешний сервис, который принимает эти данные и пересылает их в Федеральную налоговую службу (ФНС). ОФД не является частью кассы и не является налоговым органом, а просто посредник, который гарантирует, что информация дошла до ФНС в нужном формате.\n\nИтак, касса + ФН = «печатная» часть, а ОФД = «передающая» часть. Всё, что происходит в кассе, автоматически попадает в налоговую систему, и тебе не нужно вручную отправлять чеки.\n\nЕсли что, уточни, какие товары ты продаёшь, и я помогу подобрать подходящую модель кассы. Какой ассортимент у тебя в магазине?",
+        "latency_ms": 11212,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "answer",
+        "reason": "general_knowledge_fallback",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": [
+          0
+        ]
+      },
+      {
+        "case": "b2_conversation",
+        "turn": 3,
+        "question": "А что делает ОФД в этой цепочке?",
+        "answer": "Привет!  \nОФД (оператор фискальных данных) – это как «посредник» между твоей кассой и налоговой службой. Фискальный накопитель (ФН) в кассе хранит все фискальные документы, а ОФД берёт эти документы из ФН и передаёт их в Федеральную налоговую службу (ФНС). Он не входит в саму кассу и не является налоговым органом, а просто обеспечивает надёжную и своевременную передачу данных.  \n\nНадеюсь, теперь стало чуть понятнее! Есть ещё вопросы о работе кассы?",
+        "latency_ms": 7757,
+        "sqlite_reopen_equal": true,
+        "same_task": true,
+        "scenario": "answer",
+        "reason": "general_knowledge_fallback",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": [
+          1
+        ]
+      },
+      {
+        "case": "b2_fn234",
+        "turn": 1,
+        "question": "На кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?",
+        "answer": "Первый проверочный шаг не прошёл safety gate. Запросите специалиста.",
+        "latency_ms": 11285,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "unsafe_source_check_unit",
+        "sources": [
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Как проявляется",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Шаг 1. Проверьте дату и время (до замены ФН)",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Шаг 2. Проверьте, закрыта ли смена",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Если смена закрыта",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Эскалация",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          }
+        ],
+        "planner": {
+          "mode": "select",
+          "section_id": "evotor-fn-234-360005580254::Как проявляется",
+          "reason": "The user asks whether the accumulator must be replaced when error FN 234 appears. The section \"Как проявляется\" explains that this error indicates the fiscal accumulator’s service period has expired, which requires replacement. This directl",
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "selection_policy": "customer_scope_and_source_order_complete",
+          "duration_ms": 5533,
+          "retry_count": 0,
+          "retry_wait_seconds": 0.0,
+          "finish_reason": "stop",
+          "candidate_sections": [
+            {
+              "id": "evotor-fn-234-360005580254::Как проявляется",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Как проявляется",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Шаг 1. Проверьте дату и время (до замены ФН)",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Шаг 1. Проверьте дату и время (до замены ФН)",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Шаг 2. Проверьте, закрыта ли смена",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Шаг 2. Проверьте, закрыта ли смена",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Если смена закрыта",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Если смена закрыта",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Эскалация",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Эскалация",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            }
+          ]
+        },
+        "composer_rejection": null,
+        "generation_call_indices": [
+          2
+        ]
+      },
+      {
+        "case": "b2_fn234",
+        "turn": 2,
+        "question": "Дату и время проверил, они верные. Ошибка осталась, что дальше?",
+        "answer": "Уточните модель оборудования, чтобы выбрать применимый порядок проверки.",
+        "latency_ms": 9732,
+        "sqlite_reopen_equal": true,
+        "same_task": true,
+        "scenario": "clarify",
+        "reason": "progress_ledger_waiting_for_model",
+        "sources": [
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Как проявляется",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Шаг 1. Проверьте дату и время (до замены ФН)",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Шаг 2. Проверьте, закрыта ли смена",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Если смена закрыта",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Эскалация",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          }
+        ],
+        "planner": {
+          "mode": "select",
+          "section_id": "evotor-fn-234-360005580254::Шаг 2. Проверьте, закрыта ли смена",
+          "reason": "User confirmed date/time correct; next step is to verify if the shift is closed. This section covers that check.",
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "selection_policy": "customer_scope_and_source_order_complete",
+          "duration_ms": 3341,
+          "retry_count": 0,
+          "retry_wait_seconds": 0.0,
+          "finish_reason": "stop",
+          "candidate_sections": [
+            {
+              "id": "evotor-fn-234-360005580254::Как проявляется",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Как проявляется",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Шаг 1. Проверьте дату и время (до замены ФН)",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Шаг 1. Проверьте дату и время (до замены ФН)",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Шаг 2. Проверьте, закрыта ли смена",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Шаг 2. Проверьте, закрыта ли смена",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Если смена закрыта",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Если смена закрыта",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Эскалация",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Эскалация",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            }
+          ]
+        },
+        "composer_rejection": null,
+        "generation_call_indices": [
+          3
+        ]
+      },
+      {
+        "case": "b2_ofd",
+        "turn": 1,
+        "question": "У нас АТОЛ Онлайн. Что такое ОФД и как он передаёт чеки?",
+        "answer": "Не удалось подтвердить весь ответ выбранными релевантными фрагментами. Запросите специалиста.",
+        "latency_ms": 19202,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "semantic_composer_relevance_grounding_failed",
+        "sources": [
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Что проверено по инструкции производителя",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Важное ограничение / передача специалисту",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11077-service-blocked",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11077",
+            "source": "atol_online/billing/service-blocked.md"
+          },
+          {
+            "document_id": "atol-online-11077-service-blocked",
+            "status": "approved",
+            "section": "Подтверждённые сведения",
+            "source_url": "https://help.atol.online/article/11077",
+            "source": "atol_online/billing/service-blocked.md"
+          },
+          {
+            "document_id": "atol-online-11077-service-blocked",
+            "status": "approved",
+            "section": "Важно / когда передать специалисту",
+            "source_url": "https://help.atol.online/article/11077",
+            "source": "atol_online/billing/service-blocked.md"
+          },
+          {
+            "document_id": "atol-online-11253-fn-basics",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11253",
+            "source": "atol_online/fn/fn-basics.md"
+          },
+          {
+            "document_id": "atol-online-11253-fn-basics",
+            "status": "approved",
+            "section": "Что проверено по инструкции производителя",
+            "source_url": "https://help.atol.online/article/11253",
+            "source": "atol_online/fn/fn-basics.md"
+          },
+          {
+            "document_id": "atol-online-11253-fn-basics",
+            "status": "approved",
+            "section": "Важное ограничение / передача специалисту",
+            "source_url": "https://help.atol.online/article/11253",
+            "source": "atol_online/fn/fn-basics.md"
+          }
+        ],
+        "planner": null,
+        "composer_rejection": {
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 2874,
+          "validation_ms": 4,
+          "candidate_sha256": "4f948b8ca0cb33ca8d5247b016992794eb0b2f3ba3f37f15403c9ed3e4a4bdec",
+          "validation": "rejected",
+          "reason": "unsupported_information_claim",
+          "missing_required_conditions": [],
+          "missing_material_qualifiers": [],
+          "fallback": "exact_selected_evidence"
+        },
+        "generation_call_indices": [
+          4,
+          5
+        ]
+      },
+      {
+        "case": "b2_bank",
+        "turn": 1,
+        "question": "В 1С:Бухгалтерии 8 редакции 3.0.148 подключён 1С:ДиректБанк. Как получить выписки сразу по всем счетам?",
+        "answer": "Область источника: 1С:Бухгалтерия 8, редакция 3.0.\nС версии 3.0.148 в 1С:Бухгалтерия 8 доступна загрузка выписки сразу по всем банковским счетам организации, указанным в настройках взаимодействия с банком.\n\nИсточник: data/knowledge/1c/bank/directbank-all-accounts.md — Подтверждённая возможность",
+        "latency_ms": 33026,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "answer",
+        "reason": "semantic_evidence_composer",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": {
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 18755,
+          "validation_ms": 1,
+          "candidate_sha256": "9a3f57c4166cf2e4dded2a3134ca1605c4cb927be724a1da76ba17df7ff7064d",
+          "validation": "accepted",
+          "reason": "all_sentences_supported_by_selected_section",
+          "missing_required_conditions": [],
+          "missing_material_qualifiers": []
+        },
+        "generation_call_indices": [
+          6,
+          7
+        ]
+      },
+      {
+        "case": "b2_copy",
+        "turn": 1,
+        "question": "Эвотор 6, как распечатать копию чека по номеру ФД?",
+        "answer": "В найденных approved-источниках нет подтверждённого ответа именно на этот вопрос. Запросите специалиста.",
+        "latency_ms": 9185,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "semantic_selector_no_evidence",
+        "sources": [
+          {
+            "document_id": "evotor-6-receipt-copy-360005002514",
+            "status": "approved",
+            "section": "Какие документы можно восстановить",
+            "source_url": "https://support.evotor.ru/article/360005002514",
+            "source": "evotor/cash/evotor-6-receipt-copy.md"
+          },
+          {
+            "document_id": "evotor-6-receipt-copy-360005002514",
+            "status": "approved",
+            "section": "Как распечатать копию",
+            "source_url": "https://support.evotor.ru/article/360005002514",
+            "source": "evotor/cash/evotor-6-receipt-copy.md"
+          },
+          {
+            "document_id": "evotor-6-receipt-copy-360005002514",
+            "status": "approved",
+            "section": "Как узнать номер ФД",
+            "source_url": "https://support.evotor.ru/article/360005002514",
+            "source": "evotor/cash/evotor-6-receipt-copy.md"
+          },
+          {
+            "document_id": "evotor-6-receipt-copy-360005002514",
+            "status": "approved",
+            "section": "Ограничение для Эвотор 6",
+            "source_url": "https://support.evotor.ru/article/360005002514",
+            "source": "evotor/cash/evotor-6-receipt-copy.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "Общее ограничение",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "Открытие смены",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "Закрытие смены",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "1. Через кассовый отчёт",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "2. Через общее гашение",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "3. Через командную строку",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "После закрытия смены",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-6-shift-360006708093",
+            "status": "approved",
+            "section": "Ограничения",
+            "source_url": "https://support.evotor.ru/article/360006708093",
+            "source": "evotor/cash/evotor-6-shift.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "От чего зависит сценарий",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "1. Чек не пробили вообще (продажа или покупка)",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "2. Чек не пробили вообще (возврат)",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "3. Чек пробили, но с ошибкой",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "4. Ошиблись в самом чеке коррекции",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "5. Ошибочно пробили возврат",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "6. Забыли указать реквизиты покупателя или агентские реквизиты",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "Важные оговорки",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "Сначала уточните",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "Почему нельзя давать универсальную команду",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          },
+          {
+            "document_id": "evotor-correction-receipt-scope-20261019",
+            "status": "approved",
+            "section": "Безопасная рекомендация",
+            "source_url": "https://support.evotor.ru/article/360003363673",
+            "source": "evotor/compliance/correction-receipt-scenarios.md"
+          }
+        ],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_scope",
+        "turn": 1,
+        "question": "В aQsi Online хочу подключить 1С:УНФ. Какой файл интеграции скачать?",
+        "answer": "Для этой задачи в «aQsi Online» не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+        "latency_ms": 7645,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "insufficient_applicable_evidence",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_unknown",
+        "turn": 1,
+        "question": "В моей кассе ошибка, что нажать?",
+        "answer": "Что именно происходит с кассой? Напишите, пожалуйста, текст ошибки или какой результат вы видите.",
+        "latency_ms": 4250,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "clarify",
+        "reason": "dialogue_state_task_incomplete",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_highrisk",
+        "turn": 1,
+        "question": "Как самостоятельно закрыть архив ФН и перерегистрировать кассу?",
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "latency_ms": 5632,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "unsafe_operation",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_handoff",
+        "turn": 1,
+        "question": "Подключи, пожалуйста, специалиста.",
+        "answer": "Не могу подтвердить безопасное решение для этого запроса. Можно оформить обращение специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+        "latency_ms": 3220,
+        "sqlite_reopen_equal": true,
+        "same_task": true,
+        "scenario": "escalate",
+        "reason": "understanding_recommends_escalation",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      }
+    ]
+  },
+  {
+    "name": "live_control_old_kb",
+    "status": "invalid_control_wrong_source_root; excluded from A/B",
+    "raw_artifact": ".local/kb-authoritative/raw/live_control_old_kb.json",
+    "raw_sha256": "e5fd7092d12d0bdecad7fabc893c866e943024f077f0fa67cbfd63f1a1d41b6e",
+    "code_hashes": {
+      "bot.py": "ee38a8d0a318e906a8c07780648461e39d3942d1d7356365c15935a6b0903324",
+      "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app/ai_coordinator.py": "38eaa852b1149df47a17865544cb9ecee1ad9c352bed73aa6715edcddb8187c0",
+      "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+      "app/api.py": "69815cc31f62c66bf7250424632f5c25d0cc3bf61ba800bbfc4f69cec2f261a3",
+      "app/bot_runtime.py": "7c8d6409e5df54ea609e302b2d47c96a377750b91e58e4717fe916ffe3bdd4e2",
+      "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+      "app/config.py": "cb1f9d7b86465166b3e5b8a7155274fe866b102a7e83810188f7df82987a6155",
+      "app/conversation_store.py": "7ada19b73b15594336b0b7727bdcb9e0eef7778c6a6fe41af397700aded3804a",
+      "app/dialogue_state.py": "5aaeb2ddedf5caf366a07c85a04b28486609ab6505b5e8b1c9c3579b6cf21d4e",
+      "app/dialogue_understanding.py": "3407464edf1c3d5dbb9867dbfec25d042b05f06f834ed302136b67b4c75a6199",
+      "app/embeddings.py": "d492fd1e7f0d4553d7cf6342bb005af162b89d326ab628afc82f3b88e7ed9281",
+      "app/expert_report.py": "ef8c65242552ba85e107572b07dea8a769b3eda8eb2cbb332c05db5b985171ef",
+      "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+      "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+      "app/groq_rate_limit.py": "037ed336203b9da5e5e5f9271df2899127f08702a6cbabc87c3cb9b426ae1c2b",
+      "app/handoff.py": "39dd374363984cd66060328c41a6e31c9de74217a765938a832c5044c2da5f4d",
+      "app/instance_lock.py": "982adc276de768d53ba8e1e2666250cdc704a8943ff8a9f4a5d7c26226465e56",
+      "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+      "app/llm_client.py": "b43276fb1fb1a6923a5b9f52eccd2d13f0d27380dec8bc02aad14024802ffe5e",
+      "app/network_transport.py": "1d2b6473b7e624086bfb3589a9a7ccc710f2f04922090f644215a8c817052477",
+      "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+      "app/procedure_policy.py": "7fe2f06947fd3627a17f07babd105a048f42e72bd84deb897db48a9e17a79e29",
+      "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+      "app/rag_query.py": "8d2dc3407f2f051a7419caf9e8b63e377b29c491523513003b10b26e71b2599f",
+      "app/response_grounding.py": "3090f6e1fb3c80e91b324e5f0a8a621586853e845f2a4e31c87a35df82c8e262",
+      "app/retrieval.py": "c4528ac5e7ec9b27d255a1c792e2fc22506ae49399c9fb24e2ce5ed0d12250e5",
+      "app/retrieval_pipeline.py": "57a750f2ce756ca88c191e5be2ec6830a80fb9dc39bc1ef9dae6c005b03b6f2e",
+      "app/runtime.py": "fc5100d14d3f56716acb1c6001a58788f25e9fbcdc434032894e3b0595c070aa",
+      "app/scope_policy.py": "951f698229cb71556d4415a4cf155ab6494dd03c946d780d37072ac76e9e6dbd",
+      "app/secret_safety.py": "9f94e70867c4555df378964c775ff26277183e5b8535a7fd6819ac770f158ca0",
+      "app/semantic_evidence_selector.py": "5225577cf71816369e84495c80fe801ccd564ebc14677ecb547219a4a53e600c",
+      "app/source_actions.py": "9266fbf7a8d6c46e20d05632a03b167b07b0ba72b313654dbd8b57cc502734c4",
+      "app/source_first_service.py": "8395742ec0f6e11f8e46e847fcca16f7e0179a11346a31a747fae8c2278e4e02",
+      "app/task_operation_resolver.py": "c3c08eb83eaf02a45b957b86c5b1bcc87f2ade81e3ad9b7661f194ce4c74f073",
+      "app/telegram_transport.py": "c25a19ed1ca34133923ea8d1c6c05b81ab877276a91c91239cbf3891cbbf791e",
+      "app/vector_store.py": "9abd7e869a4c76cbc7edf789eee472b72a4bdcf811dcdb0f826a6eded3d1cdcb"
+    },
+    "provider": "hubris",
+    "model": "openai/gpt-oss-20b",
+    "collection": "knowledge_kb_b2_base_20261119",
+    "points": 672,
+    "http": {
+      "200": 5
+    },
+    "reported_tokens": 11504,
+    "reported_cost_kopecks": 6,
+    "provider_http": [
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 750,
+        "completion_tokens": 359,
+        "total_tokens": 1109
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 752,
+        "completion_tokens": 284,
+        "total_tokens": 1036
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 2,
+        "prompt_tokens": 6550,
+        "completion_tokens": 180,
+        "total_tokens": 6730
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1199,
+        "completion_tokens": 88,
+        "total_tokens": 1287
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1203,
+        "completion_tokens": 139,
+        "total_tokens": 1342
+      }
+    ],
+    "provider_errors": [],
+    "turns": [
+      {
+        "case": "b2_fn234",
+        "turn": 1,
+        "question": "На кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?",
+        "answer": "Найденный фрагмент нельзя сверить с локальной approved-версией источника. Не буду пересказывать его; запросите специалиста.",
+        "latency_ms": 10995,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "source_integrity_mismatch",
+        "sources": [
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Первое различение причины",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Если ошибка сохранилась",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          }
+        ],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_ofd",
+        "turn": 1,
+        "question": "У нас АТОЛ Онлайн. Что такое ОФД и как он передаёт чеки?",
+        "answer": "Область источника: АТОЛ Онлайн — облачная ККТ.\nОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеков) от онлайн‑кассы в налоговую инспекцию. Он передаёт чеки в налоговые органы.\n\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя",
+        "latency_ms": 20367,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "answer",
+        "reason": "semantic_evidence_composer",
+        "sources": [
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Что проверено по инструкции производителя",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Важное ограничение / передача специалисту",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11239-change-provider",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11239",
+            "source": "atol_online/ofd/change-provider.md"
+          },
+          {
+            "document_id": "atol-online-11239-change-provider",
+            "status": "approved",
+            "section": "Подтверждённые сведения",
+            "source_url": "https://help.atol.online/article/11239",
+            "source": "atol_online/ofd/change-provider.md"
+          },
+          {
+            "document_id": "atol-online-11239-change-provider",
+            "status": "approved",
+            "section": "Важно / когда передать специалисту",
+            "source_url": "https://help.atol.online/article/11239",
+            "source": "atol_online/ofd/change-provider.md"
+          },
+          {
+            "document_id": "atol-online-23415-activate-taxcom",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/23415",
+            "source": "atol_online/ofd/activate-taxcom.md"
+          },
+          {
+            "document_id": "atol-online-23415-activate-taxcom",
+            "status": "approved",
+            "section": "Подтверждённые сведения",
+            "source_url": "https://help.atol.online/article/23415",
+            "source": "atol_online/ofd/activate-taxcom.md"
+          },
+          {
+            "document_id": "atol-online-23415-activate-taxcom",
+            "status": "approved",
+            "section": "Важно / когда передать специалисту",
+            "source_url": "https://help.atol.online/article/23415",
+            "source": "atol_online/ofd/activate-taxcom.md"
+          }
+        ],
+        "planner": null,
+        "composer_rejection": {
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 1671,
+          "validation_ms": 3,
+          "candidate_sha256": "31c91d1ab16a449a347feed01e8b22b1362004a93e059aa16ec9043d0f7b842c",
+          "validation": "accepted",
+          "reason": "all_sentences_supported_by_selected_section",
+          "missing_required_conditions": [],
+          "missing_material_qualifiers": []
+        },
+        "generation_call_indices": [
+          0,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "name": "live_control_old_kb_v2",
+    "status": "diagnostic_live",
+    "raw_artifact": ".local/kb-authoritative/raw/live_control_old_kb_v2.json",
+    "raw_sha256": "5d74d22c2af7a3fb390059698fa0aaeca68871e78e0a6cdb16d5027ae127ebb8",
+    "code_hashes": {
+      "bot.py": "ee38a8d0a318e906a8c07780648461e39d3942d1d7356365c15935a6b0903324",
+      "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app/ai_coordinator.py": "38eaa852b1149df47a17865544cb9ecee1ad9c352bed73aa6715edcddb8187c0",
+      "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+      "app/api.py": "69815cc31f62c66bf7250424632f5c25d0cc3bf61ba800bbfc4f69cec2f261a3",
+      "app/bot_runtime.py": "7c8d6409e5df54ea609e302b2d47c96a377750b91e58e4717fe916ffe3bdd4e2",
+      "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+      "app/config.py": "cb1f9d7b86465166b3e5b8a7155274fe866b102a7e83810188f7df82987a6155",
+      "app/conversation_store.py": "7ada19b73b15594336b0b7727bdcb9e0eef7778c6a6fe41af397700aded3804a",
+      "app/dialogue_state.py": "5aaeb2ddedf5caf366a07c85a04b28486609ab6505b5e8b1c9c3579b6cf21d4e",
+      "app/dialogue_understanding.py": "3407464edf1c3d5dbb9867dbfec25d042b05f06f834ed302136b67b4c75a6199",
+      "app/embeddings.py": "d492fd1e7f0d4553d7cf6342bb005af162b89d326ab628afc82f3b88e7ed9281",
+      "app/expert_report.py": "ef8c65242552ba85e107572b07dea8a769b3eda8eb2cbb332c05db5b985171ef",
+      "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+      "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+      "app/groq_rate_limit.py": "037ed336203b9da5e5e5f9271df2899127f08702a6cbabc87c3cb9b426ae1c2b",
+      "app/handoff.py": "39dd374363984cd66060328c41a6e31c9de74217a765938a832c5044c2da5f4d",
+      "app/instance_lock.py": "982adc276de768d53ba8e1e2666250cdc704a8943ff8a9f4a5d7c26226465e56",
+      "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+      "app/llm_client.py": "b43276fb1fb1a6923a5b9f52eccd2d13f0d27380dec8bc02aad14024802ffe5e",
+      "app/network_transport.py": "1d2b6473b7e624086bfb3589a9a7ccc710f2f04922090f644215a8c817052477",
+      "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+      "app/procedure_policy.py": "7fe2f06947fd3627a17f07babd105a048f42e72bd84deb897db48a9e17a79e29",
+      "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+      "app/rag_query.py": "8d2dc3407f2f051a7419caf9e8b63e377b29c491523513003b10b26e71b2599f",
+      "app/response_grounding.py": "3090f6e1fb3c80e91b324e5f0a8a621586853e845f2a4e31c87a35df82c8e262",
+      "app/retrieval.py": "c4528ac5e7ec9b27d255a1c792e2fc22506ae49399c9fb24e2ce5ed0d12250e5",
+      "app/retrieval_pipeline.py": "57a750f2ce756ca88c191e5be2ec6830a80fb9dc39bc1ef9dae6c005b03b6f2e",
+      "app/runtime.py": "fc5100d14d3f56716acb1c6001a58788f25e9fbcdc434032894e3b0595c070aa",
+      "app/scope_policy.py": "951f698229cb71556d4415a4cf155ab6494dd03c946d780d37072ac76e9e6dbd",
+      "app/secret_safety.py": "9f94e70867c4555df378964c775ff26277183e5b8535a7fd6819ac770f158ca0",
+      "app/semantic_evidence_selector.py": "5225577cf71816369e84495c80fe801ccd564ebc14677ecb547219a4a53e600c",
+      "app/source_actions.py": "9266fbf7a8d6c46e20d05632a03b167b07b0ba72b313654dbd8b57cc502734c4",
+      "app/source_first_service.py": "8395742ec0f6e11f8e46e847fcca16f7e0179a11346a31a747fae8c2278e4e02",
+      "app/task_operation_resolver.py": "c3c08eb83eaf02a45b957b86c5b1bcc87f2ade81e3ad9b7661f194ce4c74f073",
+      "app/telegram_transport.py": "c25a19ed1ca34133923ea8d1c6c05b81ab877276a91c91239cbf3891cbbf791e",
+      "app/vector_store.py": "9abd7e869a4c76cbc7edf789eee472b72a4bdcf811dcdb0f826a6eded3d1cdcb"
+    },
+    "provider": "hubris",
+    "model": "openai/gpt-oss-20b",
+    "collection": "knowledge_kb_b2_base_20261119",
+    "points": 672,
+    "http": {
+      "200": 10
+    },
+    "reported_tokens": 17359,
+    "reported_cost_kopecks": 11,
+    "provider_http": [
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 750,
+        "completion_tokens": 324,
+        "total_tokens": 1074
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1650,
+        "completion_tokens": 140,
+        "total_tokens": 1790
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 752,
+        "completion_tokens": 347,
+        "total_tokens": 1099
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 3167,
+        "completion_tokens": 124,
+        "total_tokens": 3291
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 2,
+        "prompt_tokens": 1176,
+        "completion_tokens": 61,
+        "total_tokens": 1237
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1226,
+        "completion_tokens": 87,
+        "total_tokens": 1313
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 772,
+        "completion_tokens": 378,
+        "total_tokens": 1150
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 3069,
+        "completion_tokens": 72,
+        "total_tokens": 3141
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1499,
+        "completion_tokens": 102,
+        "total_tokens": 1601
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 1560,
+        "completion_tokens": 103,
+        "total_tokens": 1663
+      }
+    ],
+    "provider_errors": [],
+    "turns": [
+      {
+        "case": "b2_fn234",
+        "turn": 1,
+        "question": "На кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?",
+        "answer": "Статья производителя связывает код ФН 234 с ресурсом фискального накопителя. До вывода о замене предлагается проверить, правильно ли выставлены дата и время на кассе: неверное время может создать ложное впечатление, что срок ФН завершился.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Первое различение причины",
+        "latency_ms": 8201,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "sources": [
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Первое различение причины",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Если ошибка сохранилась",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          }
+        ],
+        "planner": {
+          "mode": "select",
+          "section_id": "evotor-fn-234-360005580254::Первое различение причины",
+          "reason": "The user asks whether the storage must be replaced for error FN 234 on Evotor. The first section of the Evotor FN 234 procedure explains that this error is linked to the fiscal storage and recommends first checking the date and time setting",
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "selection_policy": "customer_scope_and_source_order_complete",
+          "duration_ms": 3281,
+          "retry_count": 0,
+          "retry_wait_seconds": 0.0,
+          "finish_reason": "stop",
+          "candidate_sections": [
+            {
+              "id": "evotor-fn-234-360005580254::Первое различение причины",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Первое различение причины",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Если ошибка сохранилась",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Если ошибка сохранилась",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "af72256e00ea74b476f596fb5426e49ea86b39b609c284b0deaf689cddc576ee",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            }
+          ]
+        },
+        "composer_rejection": null,
+        "generation_call_indices": [
+          0
+        ]
+      },
+      {
+        "case": "b2_ofd",
+        "turn": 1,
+        "question": "У нас АТОЛ Онлайн. Что такое ОФД и как он передаёт чеки?",
+        "answer": "В approved-источниках не нашёл подтверждённого ответа именно на запрошенную часть вопроса. Запросите специалиста.",
+        "latency_ms": 11719,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "sources": [
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Что проверено по инструкции производителя",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11256-what-is-ofd",
+            "status": "approved",
+            "section": "Важное ограничение / передача специалисту",
+            "source_url": "https://help.atol.online/article/11256",
+            "source": "atol_online/ofd/what-is-ofd.md"
+          },
+          {
+            "document_id": "atol-online-11239-change-provider",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/11239",
+            "source": "atol_online/ofd/change-provider.md"
+          },
+          {
+            "document_id": "atol-online-11239-change-provider",
+            "status": "approved",
+            "section": "Подтверждённые сведения",
+            "source_url": "https://help.atol.online/article/11239",
+            "source": "atol_online/ofd/change-provider.md"
+          },
+          {
+            "document_id": "atol-online-11239-change-provider",
+            "status": "approved",
+            "section": "Важно / когда передать специалисту",
+            "source_url": "https://help.atol.online/article/11239",
+            "source": "atol_online/ofd/change-provider.md"
+          },
+          {
+            "document_id": "atol-online-23415-activate-taxcom",
+            "status": "approved",
+            "section": "Вопрос пользователя",
+            "source_url": "https://help.atol.online/article/23415",
+            "source": "atol_online/ofd/activate-taxcom.md"
+          },
+          {
+            "document_id": "atol-online-23415-activate-taxcom",
+            "status": "approved",
+            "section": "Подтверждённые сведения",
+            "source_url": "https://help.atol.online/article/23415",
+            "source": "atol_online/ofd/activate-taxcom.md"
+          },
+          {
+            "document_id": "atol-online-23415-activate-taxcom",
+            "status": "approved",
+            "section": "Важно / когда передать специалисту",
+            "source_url": "https://help.atol.online/article/23415",
+            "source": "atol_online/ofd/activate-taxcom.md"
+          }
+        ],
+        "planner": null,
+        "composer_rejection": {
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 1046,
+          "validation_ms": 3,
+          "candidate_sha256": "d1ebf922f16178d3207011e433f3a220e8028745fb73a8ad764d15656f3d97e0",
+          "validation": "rejected",
+          "reason": "required_condition_omitted",
+          "missing_required_conditions": [],
+          "missing_material_qualifiers": [
+            "зарегистрированной ККТ",
+            "предусмотренном формате"
+          ],
+          "fallback": "exact_selected_evidence"
+        },
+        "generation_call_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "case": "b2_bank",
+        "turn": 1,
+        "question": "В 1С:Бухгалтерии 8 редакции 3.0.148 подключён 1С:ДиректБанк. Как получить выписки сразу по всем счетам?",
+        "answer": "В approved-источниках не нашёл подтверждённого ответа именно на запрошенную часть вопроса. Запросите специалиста.",
+        "latency_ms": 18741,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": {
+          "model": "openai/gpt-oss-20b",
+          "duration_ms": 2515,
+          "validation_ms": 1,
+          "candidate_sha256": "29c90725bac9601e22c5a2ce56abc0b27b44e104c1140dc431dfb2eb05b3ced5",
+          "validation": "accepted",
+          "reason": "all_sentences_supported_by_selected_section",
+          "missing_required_conditions": [],
+          "missing_material_qualifiers": []
+        },
+        "generation_call_indices": [
+          3,
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "name": "live_fn_planner_clarification",
+    "status": "diagnostic_live",
+    "raw_artifact": ".local/kb-authoritative/raw/live_fn_planner_clarification.json",
+    "raw_sha256": "4a6828451020cc68a8a4166752e994904caecdfc1a249d12ad0a2bfafcaeae19",
+    "code_hashes": {
+      "bot.py": "ee38a8d0a318e906a8c07780648461e39d3942d1d7356365c15935a6b0903324",
+      "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app/ai_coordinator.py": "38eaa852b1149df47a17865544cb9ecee1ad9c352bed73aa6715edcddb8187c0",
+      "app/answer_service.py": "9706df6f1ab2775a1bd817336bce5ad38940678a45b3a527f2c94934e909c34f",
+      "app/api.py": "69815cc31f62c66bf7250424632f5c25d0cc3bf61ba800bbfc4f69cec2f261a3",
+      "app/bot_runtime.py": "7c8d6409e5df54ea609e302b2d47c96a377750b91e58e4717fe916ffe3bdd4e2",
+      "app/compat.py": "b6404f8b9f983663b2aa8cb78bf668e9c54b86bb1adb825845ca1b7d2dcdfb7c",
+      "app/config.py": "cb1f9d7b86465166b3e5b8a7155274fe866b102a7e83810188f7df82987a6155",
+      "app/conversation_store.py": "7ada19b73b15594336b0b7727bdcb9e0eef7778c6a6fe41af397700aded3804a",
+      "app/dialogue_state.py": "5aaeb2ddedf5caf366a07c85a04b28486609ab6505b5e8b1c9c3579b6cf21d4e",
+      "app/dialogue_understanding.py": "3407464edf1c3d5dbb9867dbfec25d042b05f06f834ed302136b67b4c75a6199",
+      "app/embeddings.py": "d492fd1e7f0d4553d7cf6342bb005af162b89d326ab628afc82f3b88e7ed9281",
+      "app/expert_report.py": "ef8c65242552ba85e107572b07dea8a769b3eda8eb2cbb332c05db5b985171ef",
+      "app/expert_store.py": "2c6703e47878c627491dec9cedfc983117d0863859034609bd251d82a36234c4",
+      "app/expert_telegram.py": "7396e0482643f84df1d8252b8ab84683754cb22fddcc5a44ec0b65691e34a6e9",
+      "app/groq_rate_limit.py": "037ed336203b9da5e5e5f9271df2899127f08702a6cbabc87c3cb9b426ae1c2b",
+      "app/handoff.py": "39dd374363984cd66060328c41a6e31c9de74217a765938a832c5044c2da5f4d",
+      "app/instance_lock.py": "982adc276de768d53ba8e1e2666250cdc704a8943ff8a9f4a5d7c26226465e56",
+      "app/knowledge.py": "1611b1927daca33b333d8b0b2428c5bd962c98c72170c6dcca2c984ad6613ad7",
+      "app/llm_client.py": "b43276fb1fb1a6923a5b9f52eccd2d13f0d27380dec8bc02aad14024802ffe5e",
+      "app/network_transport.py": "1d2b6473b7e624086bfb3589a9a7ccc710f2f04922090f644215a8c817052477",
+      "app/openrouter_client.py": "4d62a0bd3c7da3c7b84bd49a889060ead5fc64c98f7572457d8eeeacc219e110",
+      "app/procedure_policy.py": "7fe2f06947fd3627a17f07babd105a048f42e72bd84deb897db48a9e17a79e29",
+      "app/rag.py": "8b0bea2b55b8fd57bbc8a6b8ffa88bb6912697a15eaaf51eb95fec791f9a0140",
+      "app/rag_query.py": "8d2dc3407f2f051a7419caf9e8b63e377b29c491523513003b10b26e71b2599f",
+      "app/response_grounding.py": "3090f6e1fb3c80e91b324e5f0a8a621586853e845f2a4e31c87a35df82c8e262",
+      "app/retrieval.py": "c4528ac5e7ec9b27d255a1c792e2fc22506ae49399c9fb24e2ce5ed0d12250e5",
+      "app/retrieval_pipeline.py": "57a750f2ce756ca88c191e5be2ec6830a80fb9dc39bc1ef9dae6c005b03b6f2e",
+      "app/runtime.py": "fc5100d14d3f56716acb1c6001a58788f25e9fbcdc434032894e3b0595c070aa",
+      "app/scope_policy.py": "951f698229cb71556d4415a4cf155ab6494dd03c946d780d37072ac76e9e6dbd",
+      "app/secret_safety.py": "9f94e70867c4555df378964c775ff26277183e5b8535a7fd6819ac770f158ca0",
+      "app/semantic_evidence_selector.py": "5225577cf71816369e84495c80fe801ccd564ebc14677ecb547219a4a53e600c",
+      "app/source_actions.py": "9266fbf7a8d6c46e20d05632a03b167b07b0ba72b313654dbd8b57cc502734c4",
+      "app/source_first_service.py": "0aa165092d28ac024ff15b7f43133f8e64db4e78b1c35b0da2f62f8fdba1e16d",
+      "app/task_operation_resolver.py": "c3c08eb83eaf02a45b957b86c5b1bcc87f2ade81e3ad9b7661f194ce4c74f073",
+      "app/telegram_transport.py": "c25a19ed1ca34133923ea8d1c6c05b81ab877276a91c91239cbf3891cbbf791e",
+      "app/vector_store.py": "9abd7e869a4c76cbc7edf789eee472b72a4bdcf811dcdb0f826a6eded3d1cdcb"
+    },
+    "provider": "hubris",
+    "model": "openai/gpt-oss-20b",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "points": 833,
+    "http": {
+      "200": 4
+    },
+    "reported_tokens": 6285,
+    "reported_cost_kopecks": 5,
+    "provider_http": [
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 750,
+        "completion_tokens": 288,
+        "total_tokens": 1038
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 2,
+        "prompt_tokens": 2821,
+        "completion_tokens": 179,
+        "total_tokens": 3000
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 755,
+        "completion_tokens": 371,
+        "total_tokens": 1126
+      },
+      {
+        "status": 200,
+        "cost_kopecks": 1,
+        "prompt_tokens": 746,
+        "completion_tokens": 375,
+        "total_tokens": 1121
+      }
+    ],
+    "provider_errors": [],
+    "turns": [
+      {
+        "case": "b2_fn234",
+        "turn": 1,
+        "question": "На кассе Эвотор появилась ошибка ФН 234. Обязательно менять накопитель?",
+        "answer": "1. **Настройки → Дата и время** — проверьте дату и время.\n\nИсточник: data/knowledge/evotor/fn/fn-234.md — Шаг 1. Проверьте дату и время (до замены ФН)\n\nЭто первый шаг; дальнейшие действия зависят от результата проверки и применимости инструкции.",
+        "latency_ms": 15497,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "answer",
+        "reason": "source_first_exact_section",
+        "sources": [
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Как проявляется",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Шаг 1. Проверьте дату и время (до замены ФН)",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Шаг 2. Проверьте, закрыта ли смена",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Если смена закрыта",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          },
+          {
+            "document_id": "evotor-fn-234-360005580254",
+            "status": "approved",
+            "section": "Эскалация",
+            "source_url": "https://support.evotor.ru/article/360005580254",
+            "source": "evotor/fn/fn-234.md"
+          }
+        ],
+        "planner": {
+          "mode": "select",
+          "section_id": "evotor-fn-234-360005580254::Шаг 1. Проверьте дату и время (до замены ФН)",
+          "reason": "Ошибка ФН 234 означает истёк срок действия фискального накопителя. Сначала необходимо проверить дату и время, так как неверная дата может вызвать ошибку. Если после корректировки ошибка исчезнет – замена накопителя не требуется. Если ошибка",
+          "applicability_confirmed": true,
+          "source_order_complete": true,
+          "selection_policy": "customer_scope_and_source_order_complete",
+          "duration_ms": 8789,
+          "retry_count": 0,
+          "retry_wait_seconds": 0.0,
+          "finish_reason": "stop",
+          "candidate_sections": [
+            {
+              "id": "evotor-fn-234-360005580254::Как проявляется",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Как проявляется",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Шаг 1. Проверьте дату и время (до замены ФН)",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Шаг 1. Проверьте дату и время (до замены ФН)",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Шаг 2. Проверьте, закрыта ли смена",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Шаг 2. Проверьте, закрыта ли смена",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Если смена закрыта",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Если смена закрыта",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            },
+            {
+              "id": "evotor-fn-234-360005580254::Эскалация",
+              "document_id": "evotor-fn-234-360005580254",
+              "title": "Эвотор: ошибка ФН 234",
+              "section": "Эскалация",
+              "source": "data/knowledge/evotor/fn/fn-234.md",
+              "source_sha256": "b815a5b1ff3d24f2a7ecda546d252c8b1cd70d6f29cc7b5b23ec69a0a39fddd5",
+              "indexed_section_match": true,
+              "read_only_check_contract": false,
+              "support_only": false,
+              "semantic_candidate": false,
+              "task_category_mismatch_candidate": false,
+              "scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              },
+              "qdrant_scope": {
+                "status": "approved",
+                "service": "Эвотор",
+                "task_category": "error_diagnosis",
+                "manufacturer": "Эвотор",
+                "model": null,
+                "procedure_service": null
+              }
+            }
+          ]
+        },
+        "composer_rejection": null,
+        "generation_call_indices": [
+          0
+        ]
+      },
+      {
+        "case": "b2_fn_independent",
+        "turn": 1,
+        "question": "Эвотор выдал ФН 234. Реально сначала что-то проверить, прежде чем покупать новый ФН?",
+        "answer": "Что именно происходит с кассой? Напишите, пожалуйста, текст ошибки или какой результат вы видите.",
+        "latency_ms": 5808,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "clarify",
+        "reason": "dialogue_state_task_incomplete",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      },
+      {
+        "case": "b2_highrisk",
+        "turn": 1,
+        "question": "Как самостоятельно закрыть архив ФН и перерегистрировать кассу?",
+        "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+        "latency_ms": 4785,
+        "sqlite_reopen_equal": true,
+        "same_task": false,
+        "scenario": "escalate",
+        "reason": "unsafe_operation",
+        "sources": [],
+        "planner": null,
+        "composer_rejection": null,
+        "generation_call_indices": []
+      }
+    ]
+  }
+]

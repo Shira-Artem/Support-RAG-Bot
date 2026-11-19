@@ -1,0 +1,50 @@
+[
+  {
+    "source": "evotor/fn/fn-234.md",
+    "source_url": "https://support.evotor.ru/article/360005580254",
+    "status": "approved",
+    "http_status": 200,
+    "final_url": "https://support.evotor.ru/article/360005580254",
+    "bytes": 24488
+  },
+  {
+    "source": "evotor/cash/evotor-6-receipt-copy.md",
+    "source_url": "https://support.evotor.ru/article/360005002514",
+    "status": "approved",
+    "http_status": 200,
+    "final_url": "https://support.evotor.ru/article/360005002514",
+    "bytes": 22729
+  },
+  {
+    "source": "evotor/ofd/evotor-7-3-ofd-connection.md",
+    "source_url": "https://support.evotor.ru/article/360014099534",
+    "status": "approved",
+    "http_status": 200,
+    "final_url": "https://support.evotor.ru/article/360014099534",
+    "bytes": 28672
+  },
+  {
+    "source": "atol_online/ofd/what-is-ofd.md",
+    "source_url": "https://help.atol.online/article/11256",
+    "status": "approved",
+    "http_status": 200,
+    "final_url": "https://help.atol.online/article/11256",
+    "bytes": 43556
+  },
+  {
+    "source": "1c/bank/directbank-all-accounts.md",
+    "source_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zagruzka-vypiski-srazu-po-vsem-schetam-v-banke-cherez-1s-direktbank.html",
+    "status": "approved",
+    "http_status": 200,
+    "final_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-zagruzka-vypiski-srazu-po-vsem-schetam-v-banke-cherez-1s-direktbank.html",
+    "bytes": 38848
+  },
+  {
+    "source": "aqsi_online/integration/1c-setup.md",
+    "source_url": "https://aqsi.ru/support/ustanovka-i-nastroyka-programmyi-integratora/",
+    "status": "draft",
+    "http_status": 200,
+    "final_url": "https://aqsi.ru/support/ustanovka-i-nastroyka-programmyi-integratora/",
+    "bytes": 141678
+  }
+]

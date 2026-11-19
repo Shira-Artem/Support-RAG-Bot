@@ -1,4 +1,5 @@
 """Known P0.1 failures: exact saved Groq outputs, local candidates, disposable DB."""
+from kb_snapshots import HISTORICAL_KB_ROOT
 import json
 from unittest.mock import AsyncMock
 import pytest
@@ -90,7 +91,7 @@ def test_saved_groq_clock_observation_is_used(monkeypatch, tmp_path):
     assert 'evotor/fn/fn-234.md — первое различение причины' in reply
 
 
-def _independent_second_turn(monkeypatch, tmp_path, observation, question, *, source_root=ROOT):
+def _independent_second_turn(monkeypatch, tmp_path, observation, question, *, source_root=HISTORICAL_KB_ROOT):
     turns = [item for item in TRACE['turns'] if item['case'] == 'P01_transfer_time']
     first = turns[0]
     second_text = f'{observation}. {question}'
@@ -215,7 +216,7 @@ def test_source_changed_during_semantic_judgment_is_rejected(monkeypatch, tmp_pa
     relative = 'data/knowledge/evotor/fn/fn-234.md'
     source = root / relative
     source.parent.mkdir(parents=True)
-    source.write_bytes((ROOT / relative).read_bytes())
+    source.write_bytes((HISTORICAL_KB_ROOT / relative).read_bytes())
 
     async def change_after_selection(*_args):
         source.write_text(source.read_text(encoding='utf-8') + '\nизменено', encoding='utf-8')

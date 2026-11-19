@@ -8,17 +8,17 @@ model: null
 version: 'Веб-сервис; релиз не указан источником'
 source_url: https://www.diadoc.ru/articles/25195-statusy_v_edo
 source_type: vendor_support_article
-published_at: null
+published_at: '2022-06-06'
 collected_at: 2026-11-04
 verified_at: null
-source_checked_at: 2026-11-04
+source_checked_at: '2026-11-18'
 task_category: edo
-operations: [explain_document_status]
+operations: []
 search_fields: [document_status]
-evidence_coverage:
-  explain_document_status: partial
+evidence_coverage: {}
 status: draft
-review_note: 'Объяснение статуса; не инструкция юридически значимого подписания. Нужен SME review.'
+requires_sme_review: true
+review_note: 'Объяснение статуса; не инструкция юридически значимого подписания. Для status explanation нет отдельного поддерживаемого operation token, operations оставлено пустым до решения taxonomy owner. Нужен SME review.'
 ---
 
 # Почему Диадок ожидает аннулирования

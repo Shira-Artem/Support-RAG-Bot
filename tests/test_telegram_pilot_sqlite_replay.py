@@ -17,6 +17,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
+from kb_snapshots import HISTORICAL_KB_ROOT
 from app.config import Settings
 from app.answer_service import Answer
 from app.conversation_store import ConversationStore
@@ -147,7 +148,7 @@ def _provider_payload(case):
 class LocalApprovedCandidates:
     """Only the external Qdrant candidate boundary is replaced."""
 
-    def __init__(self, sources=SOURCES, injected_candidate=None, root=ROOT):
+    def __init__(self, sources=SOURCES, injected_candidate=None, root=HISTORICAL_KB_ROOT):
         self.root = Path(root)
         loader = DocumentLoader(self.root / "data/knowledge")
         chunker = Chunker()
@@ -175,7 +176,7 @@ class LocalApprovedCandidates:
 class LocalRag:
     retriever = None
 
-    def __init__(self, sources=SOURCES, injected_candidate=None, root=ROOT):
+    def __init__(self, sources=SOURCES, injected_candidate=None, root=HISTORICAL_KB_ROOT):
         self.source = LocalApprovedCandidates(sources, injected_candidate, root=root)
         self.pipeline = RetrievalPipeline(self.source)
 
@@ -219,7 +220,7 @@ def _safe_state(state, prior_task_id):
 
 def _run_replay(monkeypatch, tmp_path, cases, *, save_pilot=False, sources=SOURCES,
                 injected_candidate=None, coordinator_enabled=False, after_dialogue=None,
-                planner_overrides=None, before_turn=None, source_root=ROOT,
+                planner_overrides=None, before_turn=None, source_root=HISTORICAL_KB_ROOT,
                 planner_section_contains=None, validate_with_state=False):
     path = tmp_path / "isolated_pilot.sqlite3"
     store = ConversationStore(path)

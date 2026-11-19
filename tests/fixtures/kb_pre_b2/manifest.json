@@ -1,0 +1,186 @@
+{
+  "source_commit": "57e94e2554f6cfa32aeb4905bf48d3abd80135b5",
+  "purpose": "Historical replay source snapshots, never client ingestion; current KB has separate integration tests",
+  "files": [
+    {
+      "path": "data/knowledge/1c/bank/acquiring-patent-tax.md",
+      "sha256_git_lf": "879148955d12a09e71918827a31eb458f0e538561ab7c54c665fce793b40b761"
+    },
+    {
+      "path": "data/knowledge/1c/bank/acquiring-returns.md",
+      "sha256_git_lf": "4f586ba0ce2ff6c0b1a2e34e22fdf27e4943cacbdd501cf80ad67c1d34fef954"
+    },
+    {
+      "path": "data/knowledge/1c/bank/directbank-all-accounts.md",
+      "sha256_git_lf": "1dad8fbd5fa978754e2aea998e7f12254fda45c3f70fe9a24b376dec496f4a03"
+    },
+    {
+      "path": "data/knowledge/1c/edo/connect-1c-edo.md",
+      "sha256_git_lf": "c0a351e9ed8d8b1aded878923b604aca55a648a55365d31b08dde87c777a3f56"
+    },
+    {
+      "path": "data/knowledge/1c/taxes/ens-automatic-data.md",
+      "sha256_git_lf": "68e44849a609b81e4f70c9cd3bd386d29754b72451ea401be1d93ad5dffa8682"
+    },
+    {
+      "path": "data/knowledge/aqsi/aqsi-error-115.md",
+      "sha256_git_lf": "518561bc45a995e29837797be3d651bf9480fad379bc205ddde5ea71f9a3cb2b"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/errors/fn7-date.md",
+      "sha256_git_lf": "f40dd0ea2a8dde92c2135410e8740c5ba53ff6df8d919eb3b7d9122142aeda40"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/errors/goods-not-on-device.md",
+      "sha256_git_lf": "333d4d4f6014e40afe96ec9d9b2911b52633544957d050fe51bdca63639108dc"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/errors/paper-print-retry.md",
+      "sha256_git_lf": "6f614f3f0ff23c9ad38f949ea8550794676732f1edc3e22555f60a662953a4a4"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/fn/fn-close-safety.md",
+      "sha256_git_lf": "52019e697d61409579499eab094725a83add4ee38ed6a06582a9cfb5655c4e35"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/ofd/connection-fields.md",
+      "sha256_git_lf": "091b499c1a9e01179d56091d2189dc9ea76643ac726fa29cea73ffc95cc55426"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/peripherals/scales.md",
+      "sha256_git_lf": "ec3d10d0260dad8173219c4a8e1c2985b611f9fa6d09def64cdca6c8ec9d9433"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/peripherals/scanner-hub-power.md",
+      "sha256_git_lf": "426f61adad130525de1b31437ba9f89c72e3675c117b1e1548890040cb4ff158"
+    },
+    {
+      "path": "data/knowledge/aqsi_devices/peripherals/scanner.md",
+      "sha256_git_lf": "7a58ebb185844a5ef0874de8c57bb10a5ada3b517ddc05ef6842d446f2c40fb1"
+    },
+    {
+      "path": "data/knowledge/aqsi_online/account/add-user.md",
+      "sha256_git_lf": "5d2637c8d3db7cffb78814f2d95b7fbc8dfb05ee7bea6cfc9210b84a0983524a"
+    },
+    {
+      "path": "data/knowledge/aqsi_online/account/create-role.md",
+      "sha256_git_lf": "7bd92c36bf48c95aed672f67264ff3935509bd7beb6391e23be3081128a84f97"
+    },
+    {
+      "path": "data/knowledge/aqsi_online/account/reset-password.md",
+      "sha256_git_lf": "ecfa87f3dbde0d4db1b10231bd3cde7b2a86837df423ad98ca83980b34efc9b4"
+    },
+    {
+      "path": "data/knowledge/aqsi_online/integration/1c-setup.md",
+      "sha256_git_lf": "c67053101adabf4a4c190f96cb90f2cae192c6e5a1267cdaf184bbc3533d2851"
+    },
+    {
+      "path": "data/knowledge/atol_online/account/cash-reports.md",
+      "sha256_git_lf": "f2e35a1b9a69880e59f809aa739c8ea3b574cc0ab2ce7d9207787d0d6a456bde"
+    },
+    {
+      "path": "data/knowledge/atol_online/billing/change-plan.md",
+      "sha256_git_lf": "58ccca56bd5a2b1194bee8d04931775397b1908672ff0b01e4c11303ec1f2fd1"
+    },
+    {
+      "path": "data/knowledge/atol_online/billing/renewal-invoice.md",
+      "sha256_git_lf": "e1018d78001bea6e166e278eed901efd352b2dd5feb2767c24546f3132cef9b2"
+    },
+    {
+      "path": "data/knowledge/atol_online/edo/incoming-documents.md",
+      "sha256_git_lf": "8262de6dee3a2baca97fc70f24821423a5f7d72fab98625f433e890efa243fe8"
+    },
+    {
+      "path": "data/knowledge/atol_online/fn/fn-basics.md",
+      "sha256_git_lf": "783057776c2c2bd401ef1be7752743babfaed267b309bd959879937405b80b96"
+    },
+    {
+      "path": "data/knowledge/atol_online/fn/monitoring.md",
+      "sha256_git_lf": "06489594c7f55abfd0b3efe67e8aae81fce5bc2fb86da11dff18bb7b3b1e262b"
+    },
+    {
+      "path": "data/knowledge/atol_online/integration/api-test.md",
+      "sha256_git_lf": "a61251454c03e859de5d83aaa03891ee9107d2bca97222c9926679b2ae95b3b8"
+    },
+    {
+      "path": "data/knowledge/atol_online/integration/integration-1c-versions.md",
+      "sha256_git_lf": "318afa911c2f64d0272041c8277d9568a498acf16aa8bba46efe0db259b8789a"
+    },
+    {
+      "path": "data/knowledge/atol_online/law/54fz-when-kkt-needed.md",
+      "sha256_git_lf": "a2aab8a717de7721b0a1cc53a9ef00aa63b2d18ae760084439f4ccabc6835bd8"
+    },
+    {
+      "path": "data/knowledge/atol_online/ofd/what-is-ofd.md",
+      "sha256_git_lf": "d2b8c96a1f32577ebeecea508669fd9b7c05aec418f7b6118975a130941e5958"
+    },
+    {
+      "path": "data/knowledge/evotor/cash/evotor-6-receipt-copy.md",
+      "sha256_git_lf": "eb52691d2d12086c9afbc9db51d44f1a63663b0965136028f32dfe93eac64ad5"
+    },
+    {
+      "path": "data/knowledge/evotor/fn/fn-231.md",
+      "sha256_git_lf": "1ebd00f778617746a5de3717ef146f05578a057ddbadc46600f5a605a30a5259"
+    },
+    {
+      "path": "data/knowledge/evotor/fn/fn-234.md",
+      "sha256_git_lf": "0ed5081aa9be13deb61c770ec04f4c2b8844415e28caac6bd9bc29f2c439d10c"
+    },
+    {
+      "path": "data/knowledge/evotor/fn/fn-235.md",
+      "sha256_git_lf": "1613a4148cfa5fc2d96884ba0263794e0230215e33954bc310f49107474ad77d"
+    },
+    {
+      "path": "data/knowledge/evotor/marking/code-check-error-first-steps.md",
+      "sha256_git_lf": "ed855930608a82269fb5069fadda6128f1d8ede7e426b558704847fd2403b84f"
+    },
+    {
+      "path": "data/knowledge/evotor/marking/receive-marked-upd-prereqs.md",
+      "sha256_git_lf": "76105ce5eedfceccd830cd1d1fd250e836003d8360e29d5eeae64898492457a6"
+    },
+    {
+      "path": "data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md",
+      "sha256_git_lf": "7d240c2364a63b182a750b4332c2051776eb60895846768fb1b2d8438ac16762"
+    },
+    {
+      "path": "data/knowledge/evotor/ofd/ofd-settings-check.md",
+      "sha256_git_lf": "370e63bd74eb0e110a6fd9f14275a9b806cf363629192ec760b522e165743403"
+    },
+    {
+      "path": "data/knowledge/evotor/ofd/ofd-subscription.md",
+      "sha256_git_lf": "ce392da32d220f2079308eab15a3410bb4eeaabf8b8d5bef311a2894e6ba0d95"
+    },
+    {
+      "path": "data/knowledge/evotor/ofd/ofd-unable-to-connect.md",
+      "sha256_git_lf": "81ab8382c1faa1ec6d8de7b2a51cfdeadea1595585069a859d3b71414f0ef3a6"
+    },
+    {
+      "path": "data/knowledge/evotor/settings/time-mismatch-first-checks.md",
+      "sha256_git_lf": "0c786cc4d25eee1d9f60cedb29830712117e5f330cc90c5ad775b0c203855780"
+    },
+    {
+      "path": "data/knowledge/evotor/tspiot/local-module-startup.md",
+      "sha256_git_lf": "c649fe3da4189e6fdf8f15af4bf706e967b5f231167f61990efc9f091fb3419f"
+    },
+    {
+      "path": "data/knowledge/marking/gtin-vs-item-tracking.md",
+      "sha256_git_lf": "a9c685590900469978d755de2cf157e05c107e66f1e6fbf79cb70f4c3f9cd7b9"
+    },
+    {
+      "path": "data/knowledge/platformaofd/ofd/fns-indicators.md",
+      "sha256_git_lf": "914bb936c9633f4f5b57434a3ae00042cfb10dae9d76ac015092a7ad84c11b68"
+    },
+    {
+      "path": "data/knowledge/platformaofd/ofd/lkk-cash-monitoring.md",
+      "sha256_git_lf": "5d9c47f7ada6fd959f1616308cf2c413833dedc0f3506aa7e7c2ed476baf6db1"
+    },
+    {
+      "path": "data/knowledge/platformaofd/ofd/lkk-receipt-search.md",
+      "sha256_git_lf": "2d42d3e85247168ef8fc9a6e47b7a9bec396ccc0cafcdc97f94738a957778650"
+    },
+    {
+      "path": "data/knowledge/platformaofd/ofd/partner-kkt-diagnostics.md",
+      "sha256_git_lf": "2a2a38b357070da740039bd4c66effee8d31d49af88f84523b0ef18926fb50f8"
+    }
+  ]
+}

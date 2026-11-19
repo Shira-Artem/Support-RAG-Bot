@@ -1,4 +1,5 @@
 """Cross-domain contracts, independent of LIVE scenario wording."""
+from kb_snapshots import HISTORICAL_KB_ROOT
 import asyncio
 import json
 from pathlib import Path
@@ -136,8 +137,8 @@ def test_verified_warning_can_answer_followup_without_reasking_completed_check(m
     fixture=json.loads((root/'tests/fixtures/b22d_warning_continuation.json').read_text(encoding='utf-8'))
     state=DialogueState.from_dict(fixture['state'])
     source='evotor/marking/code-check-error-first-steps.md'
-    document=DocumentLoader(root/'data/knowledge').load(root/'data/knowledge'/source)
-    body=(root/'data/knowledge'/source).read_text(encoding='utf-8').split('---',2)[2]
+    document=DocumentLoader(HISTORICAL_KB_ROOT/'data/knowledge').load(HISTORICAL_KB_ROOT/'data/knowledge'/source)
+    body=(HISTORICAL_KB_ROOT/'data/knowledge'/source).read_text(encoding='utf-8').split('---',2)[2]
     chunks=[SearchResult(source,text,.9,metadata={**asdict(document),'section':heading})
             for heading,text in module._sections(body)]
     evaluated=EvaluatedDocument(source,document.document_id,'approved',chunks[0].metadata,{},Relevance('match','match',.9),selected=True)
@@ -152,8 +153,8 @@ def test_verified_warning_can_answer_followup_without_reasking_completed_check(m
         assert all(item['document_id']==document.document_id for item in payload['candidate_sections'])
         return Generation(json.dumps(dict(mode='select',section_id=warnings[0]['id'],applicability_confirmed=True,source_order_complete=True,reason='Source warning answers permission question')),'offline-test')
     monkeypatch.setattr(module,'generate',select_warning)
-    settings=Settings(telegram_bot_token='',openrouter_api_key='',openrouter_model='',app_name='test',app_url='',show_sources=True,docs_dir=root/'data/knowledge',llm_provider='groq',groq_api_key='test',groq_model='openai/gpt-oss-20b',rag_engine='source_first')
-    answer=asyncio.run(module.SourceFirstService(RAG(),settings,root).answer(fixture['question'],state=state,
+    settings=Settings(telegram_bot_token='',openrouter_api_key='',openrouter_model='',app_name='test',app_url='',show_sources=True,docs_dir=HISTORICAL_KB_ROOT/'data/knowledge',llm_provider='groq',groq_api_key='test',groq_model='openai/gpt-oss-20b',rag_engine='source_first')
+    answer=asyncio.run(module.SourceFirstService(RAG(),settings,HISTORICAL_KB_ROOT).answer(fixture['question'],state=state,
         history=[dict(role='user',content=fixture['question'],understanding=fixture['understanding'],semantic_mode=True)],
         coordinator_decision=fixture['coordinator']))
     assert answer.scenario=='answer'

@@ -2184,3 +2184,34 @@ Across all current iteration LIVE artifacts: **198 kopecks reported, 128 HTTP 20
 **Runtime:** перед остановками собственных idle workers сделаны SQLite backup, pending=0; чужие процессы не останавливались, переписка не очищалась и не проигрывалась как новый клиентский event. Финальный единственный worker PID 2868 + venv launcher 7880 стартовал на 0d8ac35; getMe HTTP200 на четвёртой попытке, затем Application started и последовательные getUpdates HTTP200. Receipt source hashes совпали с кодом. .env и коллекции сохранены, Stage3/934, новая KB выключена, specialist delivery off. Startup receipt показывает low базовых settings; conceptual Answer diagnostics отражает medium per-call. Владелец ещё не подтвердил полезный ответ последней версии в Telegram; подтверждение 15:17 относилось к прежнему refusal.
 
 **Следующий шаг:** новый диалог владельца — обычный вопрос, conceptual follow-up, затем model-specific процедура. Сеть всё ещё может давать задержки; ambiguous delivery не повторяется вслепую. Production NO-GO / Part A REVISE / A6 STOP и KB candidate BLOCKED сохраняются. [Отчёт](../reports/telegram_delivery_20261119/report.md), [все диагностические ответы/HTTP/usage](../reports/telegram_delivery_20261119/live_summary.json), [runtime](../reports/telegram_delivery_20261119/runtime_status.json). Private raw traces/backups — .local/telegram_delivery_20261119; ключи/клиентские IDs не экспортированы. Code commits и публикация зафиксированы отдельно.
+
+
+### 2026-11-19 — авторитетная KB коллеги, финальный кандидат интеграции
+
+Владелец подтвердил ручную проверку KB коллегой и явно разрешил merge/push.
+От актуального main d89d25b создана codex/kb-authoritative-20261119; feature
+1b52806 объединена без конфликтов. Все авторские KB blobs сохранены.
+Ранее объявленные 84 новых failures разобраны: исторические cassettes теперь
+читают замороженный pre-B2 snapshot; текущая KB проверяется отдельно.
+Первый полный suite 923 passed / те же 10 main failed / 4 historical xfailed.
+Draft/approved сохранены. Проверка продления тарифа исправляет реальный
+ложный grounding; утверждение о неподдержанной настройке DirectBank было
+устаревшим ожиданием теста, новая карточка явно её описывает.
+
+Индекс green/833 сверён полностью с новой approved KB, дубликатов нет;
+52 draft-candidates валидны, все 6 проверенных vendor links HTTP200.
+12 основных реальных API ходов: 23×200, 12/12 SQLite reopen, 27 коп.
+Обычное объяснение 11.212 s; продолжение 7.757 s. Парный control: DirectBank
+лучше с новой KB, ОФД отказал с обеими, ФН234 сначала хуже с новой.
+После общей правки Planner prompt точный ФН234 дал safe first check, но
+независимый вопрос потерял симптом в Understanding. Копия чека/ОФД остаются
+избыточными эскалациями. Первоначальный неверный control source-root сохранён,
+исключён из A/B. Ни одна неудачная попытка не переименована в PASS.
+
+Полный отчёт, дословные ответы, usage, SHA артефактов и тестов:
+[KB authoritative](../reports/kb_authoritative_20261119/report.md).
+[Ручные 14 сообщений](MANUAL_TELEGRAM_KB_B2_20261119.md).
+Повторный pytest финального prompt и публикация/runtime фиксируются далее.
+Общий production gate NO-GO, Part A REVISE/A6 STOP сохраняются; новый этап
+не начат. Следующий шаг — публикация проверенного merge и один polling на
+новой KB; затем ручная проверка и точечная диагностика ложных отказов.

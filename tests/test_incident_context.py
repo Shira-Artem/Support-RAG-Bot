@@ -1,4 +1,5 @@
 """Small offline regressions for the reported conversations and object binding."""
+from kb_snapshots import HISTORICAL_KB_ROOT
 import asyncio
 
 from app.answer_service import Answer
@@ -11,7 +12,7 @@ from scripts.replay_incident import replay
 def test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output():
     # Exercise the positive retrieval path on an in-memory reviewed snapshot.
     # The repository cards remain draft; a separate test verifies those drafts are blocked.
-    rows = asyncio.run(replay(approved_snapshot_for_test=True))
+    rows = asyncio.run(replay(approved_snapshot_for_test=True, docs_root=HISTORICAL_KB_ROOT / "data/knowledge"))
     assert len(rows) == 7
     states = [row['after_user'] for row in rows]
     assert [s['operation'] for s in states] == [
