@@ -28,15 +28,16 @@ def connection_failed_before_request(error: Exception) -> bool:
     return False
 
 
-async def retry_connection(operation: Callable[[], Awaitable[T]], *, stage: str) -> T:
-    for attempt in range(3):
+async def retry_connection(operation: Callable[[], Awaitable[T]], *, stage: str,
+                           attempts: int = 3) -> T:
+    for attempt in range(attempts):
         try:
             return await operation()
         except Exception as error:
-            if attempt == 2 or not connection_failed_before_request(error):
+            if attempt == attempts - 1 or not connection_failed_before_request(error):
                 raise
             # Never log exception text, URL, credentials, payload or identity.
-            logger.warning("Connection retry stage=%s attempt=%d/3 error=%s",
-                           stage, attempt + 2, type(error).__name__)
-            await asyncio.sleep(attempt + 1)
+            logger.warning("Connection retry stage=%s attempt=%d/%d error=%s",
+                           stage, attempt + 2, attempts, type(error).__name__)
+            await asyncio.sleep(min(attempt + 1, 5))
     raise AssertionError("unreachable")

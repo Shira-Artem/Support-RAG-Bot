@@ -73,6 +73,21 @@ def test_native_telegram_error_chaining_controls_retry(monkeypatch, cause, retri
     assert native.await_count == retries
 
 
+def test_read_only_startup_can_recover_after_regular_delivery_budget(monkeypatch):
+    error = NetworkError("TLS handshake")
+    error.__cause__ = httpx.ConnectError("offline")
+    native = AsyncMock(side_effect=[error, error, error, (200, b'{}')])
+    monkeypatch.setattr(HTTPXRequest, "do_request", native)
+    request = ConnectionRetryHTTPXRequest()
+    async def run():
+        try:
+            return await request.do_request(url="https://example.org/getMe", method="POST")
+        finally:
+            await request.shutdown()
+    assert asyncio.run(run()) == (200, b'{}')
+    assert native.await_count == 4
+
+
 def test_typing_timeout_does_not_discard_question_or_prevent_answer(monkeypatch, tmp_path):
     from app.answer_service import Answer
     from app.config import Settings
