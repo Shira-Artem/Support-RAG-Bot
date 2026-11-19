@@ -2242,3 +2242,23 @@ ConnectTimeout до HTTP был и восстановился штатным ret
 разбор потери симптома/неверного выбора/ложных эскалаций ОФД, Эвотор6, ФН234.
 Новая KB авторитетна; это не снимает дефекты пайплайна. Part A REVISE/A6 STOP,
 общий quality/production NO-GO сохранены; новых этапов и архитектуры нет.
+
+
+### 2026-11-19 — последняя публикационная сверка
+
+Integration merge 21b5fe9 успешно отправлен в origin/main. Финальная
+документация/runtime smoke сохранены в локальном 8302c72; последующие обычные
+push отклонялись TLS handshake/EOF до Git-протокола. Это отдельная проблема
+GitHub transport, не исчерпание Hubris: Telegram getUpdates продолжает HTTP200,
+worker 11872 на опубликованном 21b5fe9 и green/833 остаётся активным.
+Перед окончанием проверять git refs: если docs-only commits ещё впереди origin,
+их можно отправить обычным push после восстановления соединения. Никакой
+force push или отключения проверки TLS не выполнялось; one-off transport
+настройки не записывались в Git config.
+
+Все ignored harness SQLite/Understanding traces скопированы и сверены в
+`.local/kb-authoritative/harness/`; raw API outputs/usage/code hashes —
+`.local/kb-authoritative/raw/`; manual SQLite backup сохранён отдельно.
+Managed worktree оставлен: штатный archive_worktree вернул
+«The task's primary checkout cannot be removed». Защита не обходилась,
+рабочие файлы не удалены. Полный временный кандидат доступен для ревью/отката.
