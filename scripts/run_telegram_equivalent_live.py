@@ -256,7 +256,7 @@ class ReadOnlyQdrant:
 async def run(cli_args):
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env", override=False)
-    os.environ.update({"RAG_BACKEND": "qdrant", "QDRANT_COLLECTION": "knowledge_stage3_retrieval_20261022",
+    os.environ.update({"RAG_BACKEND": "qdrant", "QDRANT_COLLECTION": cli_args.collection,
         "RAG_DEMO_MODE": "0", "RAG_ENGINE": "source_first", "AI_COORDINATOR_ENABLED": "1",
         "SEMANTIC_EVIDENCE_SELECTOR_ENABLED": "0", "HANDOFF_ENABLED": "0", "HF_HUB_OFFLINE": "1"})
     from qdrant_client import QdrantClient
@@ -280,7 +280,7 @@ async def run(cli_args):
     client = QdrantClient(url=os.getenv("QDRANT_URL", "http://127.0.0.1:6333"), timeout=20)
     collection = os.environ["QDRANT_COLLECTION"]
     info = client.get_collection(collection)
-    assert str(info.status) == "green" and info.points_count == 934
+    assert str(info.status) == "green" and info.points_count == cli_args.expected_points
     embedding = SentenceTransformerEmbedding(os.getenv("EMBEDDING_MODEL",
         "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
     rag = RetrieverRAGAdapter(Retriever(QdrantStore(ReadOnlyQdrant(client), embedding, collection), demo=False))
@@ -448,6 +448,9 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True)
     parser.add_argument("--pause", type=float, default=12)
     parser.add_argument("--revision", help="Source revision label for archived baseline runs")
+    parser.add_argument("--collection", default="knowledge_stage3_retrieval_20261022",
+        help="Existing read-only evaluation collection; never indexed by this harness")
+    parser.add_argument("--expected-points", type=int, default=934)
     parser.add_argument("--max-cost-kopecks", type=int,
         help="Stop before a later provider call once reported Hubris usage reaches this ceiling")
     asyncio.run(run(parser.parse_args()))

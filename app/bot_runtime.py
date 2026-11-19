@@ -24,8 +24,10 @@ def write_runtime_receipt(settings, rag, path: Path | None = None) -> dict:
         backend=type(rag).__name__, collection=collection, points=points,
         demo=rag.retriever.demo if store else True,
         provider=settings.llm_provider,
-        model=settings.groq_model if settings.llm_provider == 'groq' else settings.openrouter_model,
-        reasoning_effort=settings.groq_reasoning_effort if settings.llm_provider == 'groq' else None,
+        model=(settings.hubris_model if settings.llm_provider == 'hubris' else
+               settings.groq_model if settings.llm_provider == 'groq' else settings.openrouter_model),
+        reasoning_effort=(settings.hubris_reasoning_effort if settings.llm_provider == 'hubris' else
+                          settings.groq_reasoning_effort if settings.llm_provider == 'groq' else None),
         rag_engine=getattr(settings, 'rag_engine', 'legacy'),
         ai_coordinator_enabled=bool(getattr(settings, 'ai_coordinator_enabled', False)),
         semantic_evidence_selector_enabled=bool(getattr(settings, 'semantic_evidence_selector_enabled', False)),

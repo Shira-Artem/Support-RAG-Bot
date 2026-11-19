@@ -185,3 +185,15 @@ def test_receipt_uses_actual_collection_instead_of_environment(monkeypatch, tmp_
     assert receipt['collection']=='actual_staging' and receipt['points']==927
     assert receipt['reasoning_effort']=='medium' and 'source_sha256' in receipt
     assert not any('key' in key.lower() or 'token' in key.lower() for key in receipt)
+
+
+def test_receipt_records_actual_hubris_model_and_effort(tmp_path):
+    store = SimpleNamespace(collection='hubris_test', client=SimpleNamespace(
+        get_collection=lambda name: SimpleNamespace(points_count=934)))
+    rag = SimpleNamespace(retriever=SimpleNamespace(store=store, demo=False))
+    receipt = write_runtime_receipt(settings(tmp_path, llm_provider='hubris',
+        hubris_model='openai/gpt-oss-20b', hubris_reasoning_effort='low'),
+        rag, tmp_path/'receipt.json')
+    assert receipt['provider'] == 'hubris'
+    assert receipt['model'] == 'openai/gpt-oss-20b'
+    assert receipt['reasoning_effort'] == 'low'
