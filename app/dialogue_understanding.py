@@ -14,6 +14,8 @@ from typing import Any
 
 import httpx
 
+from app.network_transport import retry_connection
+
 from app.dialogue_state import (ENTITY_NAMES, ENTITY_SLOTS, OBJECTS, OPERATIONS, RELATIONS,
                                 DialogueState, Fact, Observation, _explicit_new_topic,
                                 _operation_is_independent, _scope_conflicts,
@@ -513,6 +515,15 @@ def _generic_equipment_value(value: str) -> bool:
     # object vocabulary rather than a product-specific exception; retain
     # numbered or multiword designations for the existing model gates.
     folded = value.casefold().replace("ё", "е").strip()
+    parts = re.findall(r"[а-яa-z]+", folded)
+    if len(parts) > 1 and not re.search(r"\d", folded):
+        # Generic class qualifiers do not establish a manufacturer's model.
+        # Unknown names and numbered designations remain specific.
+        qualifiers = ("онлайн", "электрон", "кассов", "фискальн", "торгов", "платежн")
+        generic = [_generic_equipment_value(part) for part in parts]
+        if any(generic) and all(is_generic or part.startswith(qualifiers)
+                                for part, is_generic in zip(parts, generic)):
+            return True
     if not re.fullmatch(r"[а-яa-z]+", folded):
         return False
     return any((folded.startswith(root.casefold().replace("ё", "е")) if len(root) >= 3
@@ -1130,7 +1141,8 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
     response = None
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(45, connect=15)) as client:
-            response = await client.post(provider_url, headers=headers, json=request)
+            response = await retry_connection(
+                lambda: client.post(provider_url, headers=headers, json=request), stage="understanding")
             # Groq can reject its own malformed strict-JSON completion with
             # json_validate_failed. Retry that specific provider failure once;
             # never parse or repair the rejected, untrusted completion.
@@ -1160,7 +1172,8 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
                         phase="quota", code="groq_quota_deferred",
                         retry_after_seconds=exc.retry_after_seconds) from exc
                 observed = False
-                response = await client.post(provider_url, headers=headers, json=request)
+                response = await retry_connection(
+                    lambda: client.post(provider_url, headers=headers, json=request), stage="understanding")
         if response.status_code >= 400:
             rate_headers = groq_rate_limiter.observe(response.headers, status=response.status_code,
                 usage=None, stage="understanding", duration_ms=round((perf_counter()-started)*1000),

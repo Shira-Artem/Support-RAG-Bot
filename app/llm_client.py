@@ -8,6 +8,8 @@ import traceback
 
 import httpx
 
+from app.network_transport import retry_connection
+
 from app.config import Settings
 from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_limiter,
                                  retry_after_seconds)
@@ -124,7 +126,8 @@ async def _generate_once(messages: list[dict], settings: Settings, *, call_stage
     response = None
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=15)) as client:
-            response = await client.post(url, headers=headers, json=request)
+            response = await retry_connection(
+                lambda: client.post(url, headers=headers, json=request), stage=call_stage)
         stage = "http_status"
         response.raise_for_status()
         stage = "decode_json"

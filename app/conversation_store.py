@@ -399,7 +399,7 @@ class ConversationStore:
                        (answer.text, json.dumps(asdict(answer), ensure_ascii=False), message_id))
             self._sync_state(db, row['conversation_id'])
 
-    def fail_delivery(self, message_id: int) -> None:
+    def fail_delivery(self, message_id: int, answer: Answer | None = None) -> None:
         """Close an undelivered assistant event without creating shown checks."""
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -407,9 +407,12 @@ class ConversationStore:
                              (message_id,)).fetchone()
             if row is None:
                 return
-            db.execute("UPDATE messages SET status='failed', diagnostics_json=? WHERE id=?",
-                       (json.dumps({'generation_status': 'error', 'generation_reason': 'telegram_delivery_failed'},
-                                   ensure_ascii=False), message_id))
+            diagnostics = asdict(answer) if answer is not None else {
+                'generation_status': 'error', 'generation_reason': 'telegram_delivery_failed'}
+            diagnostics['delivery_status'] = 'failed'
+            db.execute("UPDATE messages SET status='failed', content=?, diagnostics_json=? WHERE id=?",
+                       (answer.text if answer is not None else '',
+                        json.dumps(diagnostics, ensure_ascii=False), message_id))
             self._sync_state(db, row['conversation_id'])
 
     def recover_pending(self) -> None:

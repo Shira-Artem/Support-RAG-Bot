@@ -348,11 +348,13 @@ async def run(cli_args):
         with (private / "understanding.jsonl").open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
 
-    async def capture_generation(messages, config, *, call_stage="generation"):
-        record = {"stage": call_stage, "input": messages}
+    async def capture_generation(messages, config, *, call_stage="generation", max_completion_tokens=None):
+        record = {"stage": call_stage, "input": messages,
+                  "max_completion_tokens": max_completion_tokens}
         calls.append(record)
         try:
-            result = await original_generate(messages, config, call_stage=call_stage)
+            result = await original_generate(messages, config, call_stage=call_stage,
+                                             max_completion_tokens=max_completion_tokens)
             record["result"] = asdict(result)
             return result
         except Exception as exc:

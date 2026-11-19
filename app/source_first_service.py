@@ -7,6 +7,7 @@ instructions are copied from that approved source verbatim.
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import replace
 from hashlib import sha256
 from datetime import datetime, timezone
 import json
@@ -23,13 +24,14 @@ from app.secret_safety import with_secret_warning
 from app.config import Settings
 from app.dialogue_state import DialogueState, classify_user_turn, is_resolution_turn
 from app.llm_client import GenerationError, generate
+from app.dialogue_understanding import _generic_equipment_value
 from app.semantic_evidence_selector import (evidence_role, build_causal_fact_bundle,
     EvidenceDecision, validate_selected_units)
 from app.rag_query import QueryNeedsClarification, build_rag_query
 from app.retrieval_pipeline import normalize_metadata
 from app.procedure_policy import read_only_check_section, inspection_prerequisites
 from app.source_actions import (CHECK_ACTION_PATTERN, CHECK_ACTION_ROOTS,
-                                SOURCE_ACTION_PATTERN)
+                                SOURCE_ACTION_PATTERN, SOURCE_ACTION_TEXT)
 from app.scope_policy import (HARDWARE_TASK_CATEGORIES, assess_source_scope,
                               matches_scope_value, generic_physical_model)
 from app.response_grounding import (claim_supported, content_terms, evidence_kind,
@@ -282,12 +284,19 @@ _GENERAL_UNSOURCED_RULE = re.compile(
     r"\b(?:сертификат\w*|подтвержден\w*\s+от\s+налог\w*|"
     r"обязательн\w*|закон\w*|законодательств\w*|требовани\w*|"
     r"должен|должна|должны|необходимо|тариф\w*|договор\w*)\b", re.I)
+_CONCEPTUAL_NORMATIVE_CLAIM = re.compile(
+    r"\b(?:сертификат\w*|подтвержден\w*\s+от\s+налог\w*|"
+    r"обязательн\w*|закон\w*|законодательств\w*|"
+    r"должен|должна|должны|необходимо|тариф\w*|договор\w*|"
+    r"официальн\w*|недействительн\w*|незаконн\w*|правомер\w*)\b", re.I)
 _CONCEPTUAL_ACTION_SENTENCE = re.compile(
     r"^\s*(?:попрос\w*|сопостав\w*|свер\w*|уточн\w*|убед\w*|"
     r"проверь\w*|провер\w*|открой\w*|перейд\w*|нажм\w*|выбер\w*|"
     r"укаж\w*|введ\w*|настро\w*|подключ\w*|измен\w*|замен\w*|"
     r"передай\w*|передайте\w*|выполн\w*|посмотр\w*|обрат\w*|"
     r"позвон\w*|созда\w*|удал\w*|закрой\w*|перерегистр\w*)\b", re.I)
+_CONCEPTUAL_IMPERATIVE = re.compile(r"\b(?:" + "|".join(
+    verb for verb in SOURCE_ACTION_TEXT.split("|") if not verb.endswith(("ть", "ти"))) + r")\b", re.I)
 _MUTATING_REQUEST = re.compile(
     r"\b(?:исправ\w*|измен\w*|перерегистр\w*|переоформ\w*|повтор\w*|"
     r"созда\w*|удал\w*|замен\w*|настро\w*|провест\w*|"
@@ -874,10 +883,11 @@ def _bounded_support_intake(state: DialogueState, history: list[dict] | None):
     return detail
 
 
-def _safe_general_knowledge_question(user_message: str, state: DialogueState) -> bool:
+def _safe_general_knowledge_question(user_message: str, state: DialogueState, *,
+                                     classified_information: bool = False) -> bool:
     """Allow model-only text for low-risk conceptual explanations only."""
     return bool(state.intent == "general" and state.operation == "explain"
-        and _GENERAL_CONCEPTUAL_FORM.search(user_message)
+        and (classified_information or _GENERAL_CONCEPTUAL_FORM.search(user_message))
         and not _GENERAL_KNOWLEDGE_BLOCK.search(user_message)
         and not _has_named_product_context(state)
         and not re.search(r"\b(?:сервис\w*|продукт\w*|платформ\w*|приложени\w*)\s+[«\"A-ZА-ЯЁ]", user_message)
@@ -889,8 +899,10 @@ def _safe_general_knowledge_question(user_message: str, state: DialogueState) ->
 def _has_named_product_context(state: DialogueState) -> bool:
     """Use reducer-owned product scope, not metadata inferred from retrieved hits."""
     task = state.task_context
-    return bool(task and any(task.entities.get(slot) for slot in
-        ("service", "software", "integration", "manufacturer", "equipment")))
+    return bool(task and (
+        any(task.entities.get(slot) for slot in ("service", "software", "integration", "manufacturer"))
+        or any(not _generic_equipment_value(fact.value)
+               for fact in task.entities.get("equipment", []))))
 
 
 def _general_concept_overlap(question_terms: set[str], response_terms: set[str]) -> bool:
@@ -2132,22 +2144,51 @@ class SourceFirstService:
         return unique[0] if len(unique) == 1 else None
 
     async def _general_knowledge_fallback(self, user_message: str, state: DialogueState,
-                                         started: float, base: dict) -> Answer | None:
-        """Answer only a low-risk definition after a successful approved-source lookup."""
-        if not _safe_general_knowledge_question(user_message, state):
+                                         started: float, base: dict, *,
+                                         retrieval_checked: bool = True) -> Answer | None:
+        """Use the existing model-only path for safe conceptual explanations."""
+        if not _safe_general_knowledge_question(
+                user_message, state, classified_information=not retrieval_checked):
             return None
         prompt = [
             {"role": "system", "content": (
-                "Give a concise, plain-language conceptual explanation from general knowledge. "
-                "Approved-source retrieval was already checked and gave no focused answer. "
+                "Give a concise, plain-language conceptual explanation from general knowledge. " +
+                ("Approved-source retrieval was already checked and gave no focused answer. "
+                 if retrieval_checked else
+                 "The user asks for an ordinary conceptual explanation, not a product-specific procedure. ") +
                 "This is not a support procedure. Do not give steps, settings, fiscal or legal "
                 "requirements, current facts, prices, product-specific claims, sources, citations, "
                 "or URLs. Do not mention certificates, legal obligations, or tax-office confirmations. "
-                "If uncertain, say so. Return only 1-3 sentences of answer text.")},
+                "Also omit generic claims about complying with legislation or meeting tax requirements: "
+                "describe what the technology does, not legal compliance. "
+                "Use the user's language and retail-support context; distinguish physical devices, "
+                "software and data-transmission services accurately. "
+                "In Russian retail, онлайн-касса means fiscal cash-register equipment (ККТ), "
+                "including remote equipment used by cloud services, not merely a POS application. "
+                "If uncertain, say so. " +
+                ("Return only 1-3 sentences of answer text." if retrieval_checked else
+                 "Give a clear, natural explanation for a beginner; a greeting and a useful follow-up question are welcome."))},
             {"role": "user", "content": user_message},
         ]
+        if not retrieval_checked:
+            prompt[0]["content"] = (
+                "Ты разговорный помощник первой линии поддержки российских магазинов. "
+                "Ответь новичку простыми словами на его вопрос, в одном-двух небольших абзацах. "
+                "Онлайн-касса здесь — российская ККТ, фискальное оборудование, а не просто приложение продаж. "
+                "Различай кассу, аппаратный фискальный накопитель (ФН) и оператора фискальных данных (ОФД). "
+                "ФН находится в кассе и хранит фискальные документы; ОФД — внешний сервис передачи "
+                "документов в ФНС, а не деталь кассы и не сам налоговый орган. "
+                "Объясняй общую идею, без интерфейсных инструкций, команд, изменения настроек, "
+                "юридических требований, тарифов и выдуманных источников. "
+                "Не пиши о том, какие темы ты не будешь обсуждать. Не перечисляй все возможности. "
+                "Можно тепло поздороваться и закончить одним уместным вопросом. Если не уверен, скажи об этом.")
         try:
-            generated = await generate(prompt, self.settings, call_stage="general_knowledge")
+            if not retrieval_checked and self.settings.llm_provider == "hubris":
+                generated = await generate(prompt, replace(self.settings, hubris_reasoning_effort="medium"),
+                    call_stage="general_knowledge", max_completion_tokens=3072)
+                base["reasoning_effort"] = "medium"
+            else:
+                generated = await generate(prompt, self.settings, call_stage="general_knowledge")
         except GenerationError as exc:
             error = _generation_error(exc)
             error.update(retry_count=exc.retry_count,
@@ -2159,25 +2200,47 @@ class SourceFirstService:
                 generation_error=error)
         text = generated.text.strip()
         claims = statements(text)
+        unsafe_generated = unsafe_operation_issue(text)
+        removed_claims = []
+        if not retrieval_checked:
+            retained = []
+            for claim in claims:
+                if (_GENERAL_UNSOURCED_CITATION.search(claim)
+                        or _CONCEPTUAL_NORMATIVE_CLAIM.search(claim)
+                        or _CONCEPTUAL_IMPERATIVE.search(claim)):
+                    removed_claims.append(claim)
+                else:
+                    retained.append(claim)
+            if removed_claims:
+                # A speculative rule or unrequested action must not erase an
+                # otherwise usable conceptual explanation. Never replace it
+                # with a fabricated fact or treat it as approved evidence.
+                text = "\n\n".join(retained)
+                claims = retained
         question_terms = content_terms(user_message)
         response_terms = content_terms(text)
-        invalid = (not text or len(text) > 1000 or not 1 <= len(claims) <= 3
+        procedural = (bool(instruction_issue(text, "")) if retrieval_checked else
+                      bool(_CONCEPTUAL_IMPERATIVE.search(text)))
+        invalid = (not text
+                   or (retrieval_checked and (len(text) > 1000 or not 1 <= len(claims) <= 3))
                    or bool(_GENERAL_UNSOURCED_CITATION.search(text))
-                   or bool(_GENERAL_UNSOURCED_RULE.search(text))
-                   or bool(unsafe_operation_issue(text))
-                   or bool(instruction_issue(text, ""))
+                   or bool((_GENERAL_UNSOURCED_RULE if retrieval_checked else
+                            _CONCEPTUAL_NORMATIVE_CLAIM).search(text))
+                   or bool(unsafe_generated)
+                   or procedural
                    or not _general_concept_overlap(question_terms, response_terms))
         diagnostics = base.get("retrieval_diagnostics") or {}
         diagnostics["general_knowledge_fallback"] = {
             "eligible": True, "used": not invalid,
             "source_basis": "model_general_knowledge" if not invalid else None,
-            "approved_sources_checked_first": True,
-            "approved_focused_answer_found": False,
+            "approved_sources_checked_first": retrieval_checked,
+            "approved_focused_answer_found": False if retrieval_checked else None,
             "citation_policy": "no_sources_or_urls_claimed",
             "validation": "conceptual_scope_and_safety" if not invalid else "rejected",
             "rejection": "output_out_of_scope_or_not_relevant" if invalid else None,
             "retry_count": generated.retry_count,
             "retry_wait_seconds": generated.retry_wait_seconds,
+            "removed_out_of_scope_claims": removed_claims,
         }
         base["retrieval_diagnostics"] = diagnostics
         base.update(model=generated.model, used_model=True, llm_call_attempted=True,
@@ -2195,7 +2258,8 @@ class SourceFirstService:
                 "Не получилось безопасно проверить общее объяснение. Запросите специалиста.",
                 "general_knowledge_output_rejected", "conceptual_scope_or_safety_gate",
                 started, **base, generation_status="rejected")
-        text += "\n\nПодтверждённого общего источника по этому вопросу в базе пока нет."
+        if retrieval_checked:
+            text += "\n\nПодтверждённого общего источника по этому вопросу в базе пока нет."
         return Answer(text, scenario="answer", scenario_reason="general_knowledge_fallback",
                       generation_status="generated", validation_status="general_knowledge_scope_checked",
                       validation_reason="conceptual question; no actions, current rules, citations or URLs",
@@ -2538,7 +2602,7 @@ class SourceFirstService:
                         reasoning_tokens=failed_generation.reasoning_tokens,
                         cached_tokens=failed_generation.cached_tokens,
                         api_call_id=failed_generation.api_call_id, raw_model_text=failed_generation.text)
-                return self._escalate("Не удалось проверить выбор evidence. Запросите специалиста.",
+                return self._escalate("Не удалось проверить найденные сведения. Попробуйте ещё раз или запросите специалиста.",
                     "semantic_selector_failed_closed", type(exc).__name__, started, **base,
                     generation_status="error", llm_call_attempted=True,
                     generation_error={"stage": getattr(exc, "stage", None) or "semantic_evidence_selector",
@@ -2936,6 +3000,18 @@ class SourceFirstService:
                 scenario="clarify", scenario_reason="progress_ledger_waiting_for_model",
                 clarification_slot="equipment", generation_status="clarification",
                 duration_ms=round((perf_counter()-started)*1000), **base)
+        # In the conversational profile, ordinary conceptual questions can use
+        # the existing general-knowledge generator. Its eligibility and output
+        # checks still exclude procedures, named products, laws and risky acts.
+        if (self.settings.semantic_composer_enabled
+                and coordinator_route == "grounded_information"
+                and understanding and understanding.get("request_type") == "information"
+                and _safe_general_knowledge_question(
+                    user_message, state, classified_information=True)):
+            answer = await self._general_knowledge_fallback(
+                user_message, state, started, base, retrieval_checked=False)
+            if answer is not None:
+                return answer
         try:
             query = build_rag_query(state)
         except QueryNeedsClarification as exc:

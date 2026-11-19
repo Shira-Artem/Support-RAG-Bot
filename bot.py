@@ -7,6 +7,7 @@ from pathlib import Path
 
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ChatAction
+from telegram.error import NetworkError
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
 from app.answer_service import Answer, AnswerService
@@ -19,6 +20,7 @@ from app.expert_store import ExpertStore
 from app.expert_telegram import ExpertTelegram
 from app.source_first_service import SourceFirstService
 from app.secret_safety import redact_client_secrets, with_secret_warning
+from app.telegram_transport import ConnectionRetryHTTPXRequest
 from app.dialogue_understanding import UnderstandingError, understand_message, understanding_to_dict
 from app.handoff import HandoffService, HandoffSettings, TelegramBotApiTransport, specialist_request
 from app.groq_rate_limit import allowlist_local_tpm_bypass
@@ -280,7 +282,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     f"Заявка {bundle['ticket_id']} уже сохранена. Она ещё не отправлялась.", reply_markup=FREE_MENU)
         return
 
-    await update.message.chat.send_action(ChatAction.TYPING)
+    try:
+        await update.message.chat.send_action(ChatAction.TYPING, connect_timeout=1,
+            read_timeout=1, write_timeout=1, pool_timeout=1)
+    except NetworkError as exc:
+        # Typing is cosmetic: its failure must not discard the user's question.
+        logger.warning("Telegram typing unavailable: %s", type(exc).__name__)
 
     conversation_id = state["conversation_id"] or conversations.new(user_id, chat_id)
     use_source_first = should_use_source_first(settings, user_id)
@@ -340,7 +347,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 generation_reason="groq_quota_deferred" if quota_deferred else "understanding_failed",
                 scenario="clarify",
                 scenario_reason="groq_quota_deferred" if quota_deferred else "understanding_failed",
-                provider="groq", model=settings.groq_model,
+                provider=settings.llm_provider,
+                model=(settings.hubris_model if settings.llm_provider == "hubris" else
+                       settings.groq_model if settings.llm_provider == "groq" else settings.openrouter_model),
                 dialogue_state=dialogue_state.to_dict(),
                 generation_error={"stage": "understanding",
                     "http_status": understanding_error.get("http_status"),
@@ -360,7 +369,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                         generation_status="error", generation_reason=f"unexpected_exception:{type(exc).__name__}",
                         scenario="escalate", scenario_reason="unexpected_exception",
                         provider=settings.llm_provider,
-                        model=settings.groq_model if settings.llm_provider == "groq" else settings.openrouter_model)
+                        model=(settings.hubris_model if settings.llm_provider == "hubris" else
+                               settings.groq_model if settings.llm_provider == "groq" else settings.openrouter_model))
     if answer.generation_status == 'no_context' and conversations.previous_unresolved(
             conversation_id, message_id, dialogue_state):
         answer.text = ('Вижу, что переформулировка не помогла. Подтверждённой инструкции '
@@ -377,7 +387,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     except Exception:
         # A generated answer is not a shown check until Telegram accepts it.
         # Preserve the user turn and let the next message proceed normally.
-        conversations.fail_delivery(message_id)
+        conversations.fail_delivery(message_id, answer)
         raise
     conversations.complete(message_id, answer)
 
@@ -406,7 +416,10 @@ def main() -> None:
         raise RuntimeError("TELEGRAM_BOT_TOKEN is empty. Fill .env first.")
 
     # Sequential updates prevent resets/mode changes racing an in-flight answer.
-    app = Application.builder().token(settings.telegram_bot_token).concurrent_updates(False).build()
+    app = (Application.builder().token(settings.telegram_bot_token)
+           .request(ConnectionRetryHTTPXRequest())
+           .get_updates_request(ConnectionRetryHTTPXRequest())
+           .concurrent_updates(False).build())
     expert_store.recover_pending()
     conversations.recover_pending()
 

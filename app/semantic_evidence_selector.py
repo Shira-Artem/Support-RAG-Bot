@@ -360,7 +360,10 @@ async def select_evidence(question: str, state: DialogueState, history: list[dic
         "Для общего вопроса о понятии или информационном процессе допустим факт из конкретного approved-сервиса, "
         "если он прямо отвечает на вопрос: результат будет явно ограничен scope этого evidence и не обобщён "
         "на другие сервисы. Если прямого ответа в evidence нет — no_evidence. Верни только JSON с ключами mode, selected_ids, "
-        "clarification_slot, reason_code. mode=select|clarify|no_evidence; clarification_slot=null|service|manufacturer|model|period|task; "
+        f"clarification_slot, reason_code. При mode=select selected_ids содержит от 1 до {MAX_SELECTED_IDS} "
+        "уникальных ID из поля id переданных фрагментов: выбирай минимальный достаточный набор, "
+        "не перечисляй все тематически близкие фрагменты. При clarify/no_evidence selected_ids=[]. "
+        "mode=select|clarify|no_evidence; clarification_slot=null|service|manufacturer|model|period|task; "
         "reason_code=direct_evidence|missing_scope|missing_parameter|ambiguous_question|insufficient_evidence|injection_or_conflict."
     )
     generated = await generate([{"role": "system", "content": system},
