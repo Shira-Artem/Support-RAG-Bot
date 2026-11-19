@@ -1,0 +1,472 @@
+[
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_date_time_source_check_keeps_unreported_date_unknown_when_time_fails",
+    "message": "StopIteration",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:168: in test_date_time_source_check_keeps_unreported_date_unknown_when_time_fails\n    text = next(value for heading, value in __import__(\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_multiple_component_results_survive_bot_sqlite_reopen",
+    "message": "AssertionError: {\"saved_quotes\": [], \"checks\": [], \"shown\": []}\nassert {'EoU работае...нет работает'} <= set()\n  \n  Extra items in the left set:\n  'интернет работает'\n  'EoU работает'\n  'Очередь неотправленных документов не уменьшается'\n  'адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора'",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:295: in test_multiple_component_results_survive_bot_sqlite_reopen\n    assert {\"EoU работает\", \"интернет работает\",\nE   AssertionError: {\"saved_quotes\": [], \"checks\": [], \"shown\": []}\nE   assert {'EoU работае...нет работает'} <= set()\nE     \nE     Extra items in the left set:\nE     'интернет работает'\nE     'EoU работает'\nE     'Очередь неотправленных документов не уменьшается'\nE     'адрес, порт и ИНН ОФД совпадают с актуальными настройками оператора'"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch[internet_absent-\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043e\\u0442\\u0441\\u0443\\u0442\\u0441\\u0442\\u0432\\u0443\\u0435\\u0442.-\\u0432\\u043e\\u0441\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435 \\u0441\\u0435\\u0442\\u0435\\u0432\\u043e\\u0435 \\u043f\\u043e\\u0434\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u0435-\\u0441\\u043e\\u043f\\u043e\\u0441\\u0442\\u0430\\u0432\\u044c\\u0442\\u0435 \\u0430\\u0434\\u0440\\u0435\\u0441, \\u043f\\u043e\\u0440\\u0442-progress_ledger_next_approved_check]",
+    "message": "AssertionError: internet_absent\nassert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:328: in test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch\n    assert answer[\"reason\"] == reason, case_id\nE   AssertionError: internet_absent\nE   assert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch[internet_works-\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442.-\\u0441\\u043e\\u043f\\u043e\\u0441\\u0442\\u0430\\u0432\\u044c\\u0442\\u0435 \\u0430\\u0434\\u0440\\u0435\\u0441, \\u043f\\u043e\\u0440\\u0442 \\u0438 \\u0418\\u041d\\u041d \\u041e\\u0424\\u0414-\\u0432\\u043e\\u0441\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435 \\u0441\\u0435\\u0442\\u0435\\u0432\\u043e\\u0435 \\u043f\\u043e\\u0434\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u0435-progress_ledger_next_approved_check]",
+    "message": "AssertionError: internet_works\nassert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:328: in test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch\n    assert answer[\"reason\"] == reason, case_id\nE   AssertionError: internet_works\nE   assert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch[eou_failed_internet_works-EoU \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442. \\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442.-\\u0441\\u043e\\u043f\\u043e\\u0441\\u0442\\u0430\\u0432\\u044c\\u0442\\u0435 \\u0430\\u0434\\u0440\\u0435\\u0441, \\u043f\\u043e\\u0440\\u0442 \\u0438 \\u0418\\u041d\\u041d \\u041e\\u0424\\u0414-\\u0432\\u043e\\u0441\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435 \\u0441\\u0435\\u0442\\u0435\\u0432\\u043e\\u0435 \\u043f\\u043e\\u0434\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u0435-progress_ledger_next_approved_check]",
+    "message": "AssertionError: eou_failed_internet_works\nassert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:328: in test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch\n    assert answer[\"reason\"] == reason, case_id\nE   AssertionError: eou_failed_internet_works\nE   assert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch[internet_unknown-\\u041d\\u0435 \\u0437\\u043d\\u0430\\u044e, \\u0435\\u0441\\u0442\\u044c \\u043b\\u0438 \\u0438\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442.-\\u0435\\u0441\\u0442\\u044c \\u0438\\u043b\\u0438 \\u043e\\u0442\\u0441\\u0443\\u0442\\u0441\\u0442\\u0432\\u0443\\u0435\\u0442-\\u0432\\u043e\\u0441\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435 \\u0441\\u0435\\u0442\\u0435\\u0432\\u043e\\u0435 \\u043f\\u043e\\u0434\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u0435-progress_ledger_conditional_context_unknown]",
+    "message": "AssertionError: internet_unknown\nassert 'grounded_sec...wup_exhausted' == 'progress_led...ntext_unknown'\n  \n  - progress_ledger_conditional_context_unknown\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:328: in test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch\n    assert answer[\"reason\"] == reason, case_id\nE   AssertionError: internet_unknown\nE   assert 'grounded_sec...wup_exhausted' == 'progress_led...ntext_unknown'\nE     \nE     - progress_ledger_conditional_context_unknown\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch[internet_contradictory-\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442. \\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043e\\u0442\\u0441\\u0443\\u0442\\u0441\\u0442\\u0432\\u0443\\u0435\\u0442.-\\u0435\\u0441\\u0442\\u044c \\u0438\\u043b\\u0438 \\u043e\\u0442\\u0441\\u0443\\u0442\\u0441\\u0442\\u0432\\u0443\\u0435\\u0442-\\u0432\\u043e\\u0441\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u0438\\u0442\\u0435 \\u0441\\u0435\\u0442\\u0435\\u0432\\u043e\\u0435 \\u043f\\u043e\\u0434\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u0435-progress_ledger_conditional_context_unknown]",
+    "message": "AssertionError: internet_contradictory\nassert 'grounded_sec...wup_exhausted' == 'progress_led...ntext_unknown'\n  \n  - progress_ledger_conditional_context_unknown\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:328: in test_evotor_internet_condition_matrix_uses_only_confirmed_source_branch\n    assert answer[\"reason\"] == reason, case_id\nE   AssertionError: internet_contradictory\nE   assert 'grounded_sec...wup_exhausted' == 'progress_led...ntext_unknown'\nE     \nE     - progress_ledger_conditional_context_unknown\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_evotor_address_mismatch_does_not_claim_support_boundary_or_network_failure",
+    "message": "AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...ved_next_step'\n  \n  - progress_ledger_known_issue_without_approved_next_step\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:346: in test_evotor_address_mismatch_does_not_claim_support_boundary_or_network_failure\n    assert answer[\"reason\"] == \"progress_ledger_known_issue_without_approved_next_step\"\nE   AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...ved_next_step'\nE     \nE     - progress_ledger_known_issue_without_approved_next_step\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable[aqsi-goods-\\u0443\\u0431\\u0435\\u0434\\u0438\\u0442\\u0435\\u0441\\u044c]",
+    "message": "assert False\n +  where False = any(<generator object test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable.<locals>.<genexpr> at 0x000002B38F1B89E0>)",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:423: in test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable\n    assert any(verb in item[\"label\"].casefold() for item in components)\nE   assert False\nE    +  where False = any(<generator object test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable.<locals>.<genexpr> at 0x000002B38F1B89E0>)"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable[aqsi-fn7-\\u0441\\u0440\\u0430\\u0432\\u043d\\u0438\\u0442\\u0435]",
+    "message": "AssertionError: assert 'aqsi_devices/errors/fn7-date.md' in 'В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.'",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:417: in test_real_approved_source_action_components_survive_bot_sqlite_reopen_and_are_stable\n    assert source in first[\"final_reply\"]\nE   AssertionError: assert 'aqsi_devices/errors/fn7-date.md' in 'В подходящем разделе есть ответственная операция. Не буду публиковать её порядок; запросите специалиста.'"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_real_aqsi_result_is_saved_only_on_shown_check_after_sqlite_reopen",
+    "message": "assert []",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:471: in test_real_aqsi_result_is_saved_only_on_shown_check_after_sqlite_reopen\n    assert result_checks\nE   assert []"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_failed_composite_asks_only_unreported_source_components_and_keeps_quotes",
+    "message": "StopIteration",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:485: in test_failed_composite_asks_only_unreported_source_components_and_keeps_quotes\n    check = next(item for item in task[\"checks\"] if item[\"status\"] == \"failed\")\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_b1_3a_legacy_composite_checkpoint_backfills_split_source_components",
+    "message": "RuntimeError: coroutine raised StopIteration",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:542: in restore_legacy_checkpoint\n    old_check = next(item for item in task.checks if item.get(\"status\") == \"asked\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   StopIteration\n\nThe above exception was the direct cause of the following exception:\ntests\\test_b1_3b_diagnostic_continuation.py:563: in test_b1_3a_legacy_composite_checkpoint_backfills_split_source_components\n    trace = _run_replay(monkeypatch, tmp_path, cases,\ntests\\test_telegram_pilot_sqlite_replay.py:390: in _run_replay\n    asyncio.run(run_dialogue())\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:194: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py:685: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\nE   RuntimeError: coroutine raised StopIteration"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_unknown_shown_check_blocks_later_instruction_until_its_result_is_known",
+    "message": "assert None is not None",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:607: in test_unknown_shown_check_blocks_later_instruction_until_its_result_is_known\n    trace = _run_replay(monkeypatch, tmp_path, cases,\ntests\\test_telegram_pilot_sqlite_replay.py:390: in _run_replay\n    asyncio.run(run_dialogue())\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:194: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py:685: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\ntests\\test_telegram_pilot_sqlite_replay.py:329: in run_dialogue\n    before_turn(index, store, cid)\ntests\\test_b1_3b_diagnostic_continuation.py:595: in resume_before_unreached_conditional\n    assert unknown_check is not None\nE   assert None is not None"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_continuation_keeps_model_when_provider_mistypes_eou_and_asks_what_next[request_specialist]",
+    "message": "AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...urce_boundary'\n  \n  - progress_ledger_conditional_source_boundary\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:637: in test_continuation_keeps_model_when_provider_mistypes_eou_and_asks_what_next\n    assert final[\"reason\"] == \"progress_ledger_conditional_source_boundary\"\nE   AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...urce_boundary'\nE     \nE     - progress_ledger_conditional_source_boundary\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_continuation_keeps_model_when_provider_mistypes_eou_and_asks_what_next[explain]",
+    "message": "AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...urce_boundary'\n  \n  - progress_ledger_conditional_source_boundary\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:637: in test_continuation_keeps_model_when_provider_mistypes_eou_and_asks_what_next\n    assert final[\"reason\"] == \"progress_ledger_conditional_source_boundary\"\nE   AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...urce_boundary'\nE     \nE     - progress_ledger_conditional_source_boundary\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_legacy_sqlite_backfills_only_exact_shown_components_and_keeps_results_separate",
+    "message": "StopIteration",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:677: in test_legacy_sqlite_backfills_only_exact_shown_components_and_keeps_results_separate\n    diagnostic_check = next(item for item in backfilled[\"checks\"]\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_composite_failure_without_saved_quote_does_not_invent_one",
+    "message": "RuntimeError: coroutine raised StopIteration",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:802: in clear_failed_result_quote\n    check = next(item for item in state[\"task_context\"][\"checks\"]\nE   StopIteration\n\nThe above exception was the direct cause of the following exception:\ntests\\test_b1_3b_diagnostic_continuation.py:813: in test_composite_failure_without_saved_quote_does_not_invent_one\n    trace = _run_replay(monkeypatch, tmp_path, cases,\ntests\\test_telegram_pilot_sqlite_replay.py:390: in _run_replay\n    asyncio.run(run_dialogue())\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:194: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py:685: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\nE   RuntimeError: coroutine raised StopIteration"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_new_task_does_not_inherit_old_model_or_diagnostic_checks",
+    "message": "assert []",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:854: in test_new_task_does_not_inherit_old_model_or_diagnostic_checks\n    assert before[\"checks\"]\nE   assert []"
+  },
+  {
+    "test": "tests.test_b1_3b_diagnostic_continuation::test_ambiguous_feedback_asks_result_of_current_shown_check",
+    "message": "AssertionError: assert 'Понял. Что и...и изменилось?' == 'Удалось выпо...её результат?'\n  \n  - Удалось выполнить показанную проверку и каков её результат?\n  + Понял. Что именно осталось нерешённым или изменилось?",
+    "trace": "tests\\test_b1_3b_diagnostic_continuation.py:885: in test_ambiguous_feedback_asks_result_of_current_shown_check\n    assert final[\"final_reply\"] == \"Удалось выполнить показанную проверку и каков её результат?\"\nE   AssertionError: assert 'Понял. Что и...и изменилось?' == 'Удалось выпо...её результат?'\nE     \nE     - Удалось выполнить показанную проверку и каков её результат?\nE     + Понял. Что именно осталось нерешённым или изменилось?"
+  },
+  {
+    "test": "tests.test_b22d_applicability_contract::test_saved_u02_information_selection_keeps_client_scope_and_direct_limit",
+    "message": "AssertionError: assert (({'section': 'Проверенная информация и первичная диагностика', 'text': '- Если используется оригинальный aQsi Hub:\\n  ...онних хабов не работают корректно с aQsi; производитель рекомендует приобретать оригинальный aQsi Hub (строки 32–33).') and 'гарантированной совместимости нет' in 'Большинство сторонних хабов не работают корректно с aQsi; производитель рекомендует приобретать оригинальный aQsi Hub (строки 32–33).')",
+    "trace": "tests\\test_b22d_applicability_contract.py:52: in test_saved_u02_information_selection_keeps_client_scope_and_direct_limit\n    assert picked and 'гарантированной совместимости нет' in picked[1]\nE   AssertionError: assert (({'section': 'Проверенная информация и первичная диагностика', 'text': '- Если используется оригинальный aQsi Hub:\\n  ...онних хабов не работают корректно с aQsi; производитель рекомендует приобретать оригинальный aQsi Hub (строки 32–33).') and 'гарантированной совместимости нет' in 'Большинство сторонних хабов не работают корректно с aQsi; производитель рекомендует приобретать оригинальный aQsi Hub (строки 32–33).')"
+  },
+  {
+    "test": "tests.test_b22d_contracts::test_verified_warning_can_answer_followup_without_reasking_completed_check",
+    "message": "AssertionError: assert 'escalate' == 'answer'\n  \n  - answer\n  + escalate",
+    "trace": "tests\\test_b22d_contracts.py:159: in test_verified_warning_can_answer_followup_without_reasking_completed_check\n    assert answer.scenario=='answer'\nE   AssertionError: assert 'escalate' == 'answer'\nE     \nE     - answer\nE     + escalate"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_control_independent_scope_and_exact_evidence",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:43: in test_control_independent_scope_and_exact_evidence\n    section = candidate(tmp_path)\n              ^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_question_about_certainty_without_meaning_verb_is_factual",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:55: in test_question_about_certainty_without_meaning_verb_is_factual\n    assert _incomplete_order_causal_fact(question, state(), candidate(tmp_path), tmp_path) is not None\n                                                            ^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_wrong_model_is_not_transferred",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:59: in test_wrong_model_is_not_transferred\n    section = candidate(tmp_path, model=\"Эвотор 5\")\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_action_request_is_not_fact_only_permission[\\u041d\\u0430 \\u0442\\u0435\\u0440\\u043c\\u0438\\u043d\\u0430\\u043b\\u0435 \\u042d\\u0432\\u043e\\u0442\\u043e\\u0440 \\u043e\\u0448\\u0438\\u0431\\u043a\\u0430 \\u0424\\u041d 234. \\u042d\\u0442\\u043e \\u043e\\u0437\\u043d\\u0430\\u0447\\u0430\\u0435\\u0442, \\u0447\\u0442\\u043e \\u043d\\u0430\\u0434\\u043e \\u0437\\u0430\\u043c\\u0435\\u043d\\u0438\\u0442\\u044c? \\u041f\\u043e\\u043a\\u0430\\u0436\\u0438\\u0442\\u0435 \\u043a\\u0430\\u043a \\u0437\\u0430\\u043c\\u0435\\u043d\\u0438\\u0442\\u044c \\u0424\\u041d?]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:69: in test_action_request_is_not_fact_only_permission\n    assert _incomplete_order_causal_fact(question, state(), candidate(tmp_path), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_action_request_is_not_fact_only_permission[\\u041d\\u0430 \\u0442\\u0435\\u0440\\u043c\\u0438\\u043d\\u0430\\u043b\\u0435 \\u042d\\u0432\\u043e\\u0442\\u043e\\u0440 \\u043e\\u0448\\u0438\\u0431\\u043a\\u0430 \\u0424\\u041d 234. \\u0417\\u0430\\u043c\\u0435\\u043d\\u0438\\u0442\\u0435 \\u0424\\u041d, \\u044d\\u0442\\u043e \\u043e\\u0437\\u043d\\u0430\\u0447\\u0430\\u0435\\u0442 \\u0435\\u0433\\u043e \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u0435?]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:69: in test_action_request_is_not_fact_only_permission\n    assert _incomplete_order_causal_fact(question, state(), candidate(tmp_path), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_action_request_is_not_fact_only_permission[\\u041d\\u0430 \\u0442\\u0435\\u0440\\u043c\\u0438\\u043d\\u0430\\u043b\\u0435 \\u042d\\u0432\\u043e\\u0442\\u043e\\u0440 \\u043e\\u0448\\u0438\\u0431\\u043a\\u0430 \\u0424\\u041d 234. \\u042d\\u0442\\u043e \\u043e\\u0437\\u043d\\u0430\\u0447\\u0430\\u0435\\u0442 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u0435 \\u0441\\u0440\\u043e\\u043a\\u0430, \\u0438 \\u043c\\u043e\\u0436\\u043d\\u043e \\u043b\\u0438 \\u0437\\u0430\\u043c\\u0435\\u043d\\u0438\\u0442\\u044c \\u043d\\u0430\\u043a\\u043e\\u043f\\u0438\\u0442\\u0435\\u043b\\u044c?]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:69: in test_action_request_is_not_fact_only_permission\n    assert _incomplete_order_causal_fact(question, state(), candidate(tmp_path), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_no_fact_or_detached_important_condition_is_rejected[<lambda>0]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:80: in test_no_fact_or_detached_important_condition_is_rejected\n    assert _incomplete_order_causal_fact(QUESTION, state(), candidate(tmp_path, edit=edit), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_no_fact_or_detached_important_condition_is_rejected[<lambda>1]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:80: in test_no_fact_or_detached_important_condition_is_rejected\n    assert _incomplete_order_causal_fact(QUESTION, state(), candidate(tmp_path, edit=edit), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_no_fact_or_detached_important_condition_is_rejected[<lambda>2]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:80: in test_no_fact_or_detached_important_condition_is_rejected\n    assert _incomplete_order_causal_fact(QUESTION, state(), candidate(tmp_path, edit=edit), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_no_fact_or_detached_important_condition_is_rejected[<lambda>3]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:80: in test_no_fact_or_detached_important_condition_is_rejected\n    assert _incomplete_order_causal_fact(QUESTION, state(), candidate(tmp_path, edit=edit), tmp_path) is None\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_causal_fact::test_index_disagreement_and_changed_source_are_rejected",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_causal_fact.py:84: in test_index_disagreement_and_changed_source_are_rejected\n    section = candidate(tmp_path)\n              ^^^^^^^^^^^^^^^^^^^\ntests\\test_b22d_p01_causal_fact.py:26: in candidate\n    section = body.split(\"## Первое различение причины\", 1)[1].split(\"\\n## \", 1)[0].strip()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_saved_groq_replacement_question_receives_fact",
+    "message": "AssertionError: assert ('ложное впечатление' in 'уточните модель оборудования, чтобы выбрать применимый порядок проверки.')",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:26: in test_saved_groq_replacement_question_receives_fact\n    assert 'ложное впечатление' in reply and 'замен' in reply\nE   AssertionError: assert ('ложное впечатление' in 'уточните модель оборудования, чтобы выбрать применимый порядок проверки.')"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_informational_question_does_not_create_check_when_planner_order_is_complete",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first...te_order_fact'\n  \n  - source_first_incomplete_order_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:42: in test_informational_question_does_not_create_check_when_planner_order_is_complete\n    assert first['reason'] == 'source_first_incomplete_order_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first...te_order_fact'\nE     \nE     - source_first_incomplete_order_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_saved_groq_clock_observation_is_used",
+    "message": "AssertionError: assert ('час' in 'какой результат вы хотите получить?')",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:82: in test_saved_groq_clock_observation_is_used\n    assert 'час' in reply and 'ложное впечатление' in reply\nE   AssertionError: assert ('час' in 'какой результат вы хотите получить?')"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_independent_observation_uses_model_selected_source_fact[\\u041d\\u0430 \\u044d\\u043a\\u0440\\u0430\\u043d\\u0435 \\u043a\\u0430\\u0441\\u0441\\u044b \\u0432\\u0440\\u0435\\u043c\\u044f \\u043e\\u0442\\u0441\\u0442\\u0430\\u0451\\u0442 \\u043d\\u0430 \\u043d\\u0435\\u0441\\u043a\\u043e\\u043b\\u044c\\u043a\\u043e \\u0447\\u0430\\u0441\\u043e\\u0432-\\u041c\\u043e\\u0436\\u0435\\u0442 \\u043b\\u0438 \\u044d\\u0442\\u043e \\u0438\\u0441\\u043a\\u0430\\u0437\\u0438\\u0442\\u044c \\u0432\\u044b\\u0432\\u043e\\u0434 \\u043e \\u0441\\u0440\\u043e\\u043a\\u0435 \\u043d\\u0430\\u043a\\u043e\\u043f\\u0438\\u0442\\u0435\\u043b\\u044f?]",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\n  \n  - source_first_observation_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:118: in test_independent_observation_uses_model_selected_source_fact\n    assert second['reason'] == 'source_first_observation_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\nE     \nE     - source_first_observation_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_independent_observation_uses_model_selected_source_fact[\\u0412\\u0440\\u0435\\u043c\\u044f \\u043d\\u0430 \\u0442\\u0435\\u0440\\u043c\\u0438\\u043d\\u0430\\u043b\\u0435 \\u0432\\u044b\\u0441\\u0442\\u0430\\u0432\\u043b\\u0435\\u043d\\u043e \\u043d\\u0435\\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u043e-\\u041a\\u0430\\u043a \\u044d\\u0442\\u043e \\u0441\\u0432\\u044f\\u0437\\u0430\\u043d\\u043e \\u0441 \\u0432\\u044b\\u0432\\u043e\\u0434\\u043e\\u043c \\u043e \\u0441\\u0440\\u043e\\u043a\\u0435 \\u043d\\u0430\\u043a\\u043e\\u043f\\u0438\\u0442\\u0435\\u043b\\u044f?]",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\n  \n  - source_first_observation_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:118: in test_independent_observation_uses_model_selected_source_fact\n    assert second['reason'] == 'source_first_observation_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\nE     \nE     - source_first_observation_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_saved_live_observation_preserves_task_and_current_fact[p01_observation_live_understanding.json]",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\n  \n  - source_first_observation_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:141: in test_saved_live_observation_preserves_task_and_current_fact\n    assert second['reason'] == 'source_first_observation_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\nE     \nE     - source_first_observation_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_saved_live_observation_preserves_task_and_current_fact[p01_observation_live_equipment_error.json]",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\n  \n  - source_first_observation_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:141: in test_saved_live_observation_preserves_task_and_current_fact\n    assert second['reason'] == 'source_first_observation_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\nE     \nE     - source_first_observation_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_unrelated_observation_semantic_rejection_fails_closed",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'observation_...not_confirmed'\n  \n  - observation_fact_not_confirmed\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:156: in test_unrelated_observation_semantic_rejection_fails_closed\n    assert second['reason'] == 'observation_fact_not_confirmed'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'observation_...not_confirmed'\nE     \nE     - observation_fact_not_confirmed\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_saved_live_future_check_gets_factual_answer_without_result",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first_continued_fact'\n  \n  - source_first_continued_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:179: in test_saved_live_future_check_gets_factual_answer_without_result\n    assert second['reason'] == 'source_first_continued_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first_continued_fact'\nE     \nE     - source_first_continued_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_reported_result_without_existing_check_is_quoted_but_not_marked_complete",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\n  \n  - source_first_observation_fact\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:199: in test_reported_result_without_existing_check_is_quoted_but_not_marked_complete\n    assert second['reason'] == 'source_first_observation_fact'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'source_first...ervation_fact'\nE     \nE     - source_first_observation_fact\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_final_baseline::test_source_changed_during_semantic_judgment_is_rejected",
+    "message": "AssertionError: assert 'progress_led...ing_for_model' == 'observation_...ource_changed'\n  \n  - observation_fact_source_changed\n  + progress_ledger_waiting_for_model",
+    "trace": "tests\\test_b22d_p01_final_baseline.py:228: in test_source_changed_during_semantic_judgment_is_rejected\n    assert second['reason'] == 'observation_fact_source_changed'\nE   AssertionError: assert 'progress_led...ing_for_model' == 'observation_...ource_changed'\nE     \nE     - observation_fact_source_changed\nE     + progress_ledger_waiting_for_model"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_n04_reported_observation_explained_without_advancing_check",
+    "message": "AssertionError: assert ('неправильные' in 'какой результат вы хотите получить?')",
+    "trace": "tests\\test_b22d_p01_targeted.py:32: in test_n04_reported_observation_explained_without_advancing_check\n    assert 'неправильные' in answer and 'неверное время может создать ложное впечатление' in answer\nE   AssertionError: assert ('неправильные' in 'какой результат вы хотите получить?')"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_explicit_check_result_keeps_real_ledger_outcome[\\u0414\\u0430\\u0442\\u0430 \\u0438 \\u0432\\u0440\\u0435\\u043c\\u044f \\u0432\\u0435\\u0440\\u043d\\u044b. \\u0427\\u0442\\u043e \\u0442\\u0435\\u043f\\u0435\\u0440\\u044c \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u0442\\u044c?-passed]",
+    "message": "assert False\n +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3CAF2EEA0>)",
+    "trace": "tests\\test_b22d_p01_targeted.py:64: in test_explicit_check_result_keeps_real_ledger_outcome\n    assert any(check['status'] == status and check.get('result_span') for check in checks)\nE   assert False\nE    +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3CAF2EEA0>)"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_explicit_check_result_keeps_real_ledger_outcome[\\u0414\\u0430\\u0442\\u0430 \\u0432\\u0435\\u0440\\u043d\\u0430. \\u0427\\u0442\\u043e \\u0442\\u0435\\u043f\\u0435\\u0440\\u044c \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u0442\\u044c?-unknown]",
+    "message": "assert False\n +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3C0573D80>)",
+    "trace": "tests\\test_b22d_p01_targeted.py:64: in test_explicit_check_result_keeps_real_ledger_outcome\n    assert any(check['status'] == status and check.get('result_span') for check in checks)\nE   assert False\nE    +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3C0573D80>)"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_explicit_check_result_keeps_real_ledger_outcome[\\u0412\\u0440\\u0435\\u043c\\u044f \\u0432\\u0435\\u0440\\u043d\\u043e. \\u0427\\u0442\\u043e \\u0442\\u0435\\u043f\\u0435\\u0440\\u044c \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u0442\\u044c?-unknown]",
+    "message": "assert False\n +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3CAF2EA40>)",
+    "trace": "tests\\test_b22d_p01_targeted.py:64: in test_explicit_check_result_keeps_real_ledger_outcome\n    assert any(check['status'] == status and check.get('result_span') for check in checks)\nE   assert False\nE    +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3CAF2EA40>)"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_explicit_check_result_keeps_real_ledger_outcome[\\u0414\\u0430\\u0442\\u0430 \\u0432\\u0435\\u0440\\u043d\\u0430, \\u0432\\u0440\\u0435\\u043c\\u044f \\u043d\\u0435\\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u043e\\u0435. \\u0427\\u0442\\u043e \\u0442\\u0435\\u043f\\u0435\\u0440\\u044c \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u0442\\u044c?-failed]",
+    "message": "assert False\n +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3CAF2C9E0>)",
+    "trace": "tests\\test_b22d_p01_targeted.py:64: in test_explicit_check_result_keeps_real_ledger_outcome\n    assert any(check['status'] == status and check.get('result_span') for check in checks)\nE   assert False\nE    +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3CAF2C9E0>)"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_explicit_check_result_keeps_real_ledger_outcome[\\u041f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u043b \\u0434\\u0430\\u0442\\u0443 \\u0438 \\u0432\\u0440\\u0435\\u043c\\u044f, \\u043e\\u043d\\u0438 \\u043d\\u0435 \\u0441\\u043e\\u0432\\u043f\\u0430\\u0434\\u0430\\u044e\\u0442. \\u0427\\u0442\\u043e \\u0442\\u0435\\u043f\\u0435\\u0440\\u044c \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u0438\\u0442\\u044c?-failed]",
+    "message": "assert False\n +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3C4EE5A80>)",
+    "trace": "tests\\test_b22d_p01_targeted.py:64: in test_explicit_check_result_keeps_real_ledger_outcome\n    assert any(check['status'] == status and check.get('result_span') for check in checks)\nE   assert False\nE    +  where False = any(<generator object test_explicit_check_result_keeps_real_ledger_outcome.<locals>.<genexpr> at 0x000002B3C4EE5A80>)"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_independent_scanner_diagnosis_first_turn_reaches_approved_evidence",
+    "message": "AssertionError: assert 'aqsi_devices/peripherals/scanner.md' in 'понял, точный код ошибки сейчас неизвестен. чтобы продолжить без догадок о коде, уточните, какое действие не проходит и какой результат вы видите. если результат меняется от попытки к попытке, опишите оба варианта.'",
+    "trace": "tests\\test_b22d_p01_targeted.py:176: in test_independent_scanner_diagnosis_first_turn_reaches_approved_evidence\n    assert 'aqsi_devices/peripherals/scanner.md' in reply\nE   AssertionError: assert 'aqsi_devices/peripherals/scanner.md' in 'понял, точный код ошибки сейчас неизвестен. чтобы продолжить без догадок о коде, уточните, какое действие не проходит и какой результат вы видите. если результат меняется от попытки к попытке, опишите оба варианта.'"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_compound_subjects_accumulate_across_sqlite_reopens[\\u0412\\u0440\\u0435\\u043c\\u044f \\u0432\\u0435\\u0440\\u043d\\u043e.-passed]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_targeted.py:241: in test_compound_subjects_accumulate_across_sqlite_reopens\n    assert checks[0]['status'] == expected\n           ^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_compound_subjects_accumulate_across_sqlite_reopens[\\u0412\\u0440\\u0435\\u043c\\u044f \\u043d\\u0435\\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u043e\\u0435.-failed]",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_targeted.py:241: in test_compound_subjects_accumulate_across_sqlite_reopens\n    assert checks[0]['status'] == expected\n           ^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_ambiguous_mixed_clause_never_attributes_failure_to_both_subjects",
+    "message": "IndexError: list index out of range",
+    "trace": "tests\\test_b22d_p01_targeted.py:247: in test_ambiguous_mixed_clause_never_attributes_failure_to_both_subjects\n    check = turn['state_after_sqlite_reopen']['task_context']['checks'][0]\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   IndexError: list index out of range"
+  },
+  {
+    "test": "tests.test_b22d_p01_targeted::test_n03_initial_turn_shows_a_real_check_not_a_fact",
+    "message": "AssertionError: assert ('если код не читается' in '1. совместимость зависит от модели сканера и интерфейса; для подключения может применяться usb-c переходник или aqsi hub.\\n\\nисточник: data/knowledge/aqsi_devices/peripherals/scanner.md — проверенная информация и первичная диагностика')",
+    "trace": "tests\\test_b22d_p01_targeted.py:256: in test_n03_initial_turn_shows_a_real_check_not_a_fact\n    assert 'если код не читается' in answer and 'проверьте' in answer\nE   AssertionError: assert ('если код не читается' in '1. совместимость зависит от модели сканера и интерфейса; для подключения может применяться usb-c переходник или aqsi hub.\\n\\nисточник: data/knowledge/aqsi_devices/peripherals/scanner.md — проверенная информация и первичная диагностика')"
+  },
+  {
+    "test": "tests.test_b22d_read_only_and_shown_limits::test_b01_real_pipeline_limits_expansion_and_renders_without_planner",
+    "message": "AssertionError: assert False\n +  where False = RetrievalResult(query='ПО: 1С — проверка — запрос клиента: В 1С:Бухгалтерии 3.0.207 банк отдельно списал деньги за воз...iency_reason='no_task_matched_candidates', context='', evidence_status='none', missing_evidence=[], supported_steps=[]).sufficient",
+    "trace": "tests\\test_b22d_read_only_and_shown_limits.py:85: in test_b01_real_pipeline_limits_expansion_and_renders_without_planner\n    assert result.sufficient\nE   AssertionError: assert False\nE    +  where False = RetrievalResult(query='ПО: 1С — проверка — запрос клиента: В 1С:Бухгалтерии 3.0.207 банк отдельно списал деньги за воз...iency_reason='no_task_matched_candidates', context='', evidence_status='none', missing_evidence=[], supported_steps=[]).sufficient"
+  },
+  {
+    "test": "tests.test_b22d_read_only_and_shown_limits::test_read_only_bridge_never_admits_other_operations[change]",
+    "message": "AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\n +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Сверить документ банка с исходной продажей', candidates=[EvaluatedDocument(source='1c/bank/acqu...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents",
+    "trace": "tests\\test_b22d_read_only_and_shown_limits.py:111: in test_read_only_bridge_never_admits_other_operations\n    assert not result.documents\nE   AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\nE    +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Сверить документ банка с исходной продажей', candidates=[EvaluatedDocument(source='1c/bank/acqu...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents"
+  },
+  {
+    "test": "tests.test_b22d_read_only_and_shown_limits::test_read_only_bridge_never_admits_other_operations[import_bank_statement_file]",
+    "message": "AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\n +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Сверить документ банка с исходной продажей', candidates=[EvaluatedDocument(source='1c/bank/acqu...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents",
+    "trace": "tests\\test_b22d_read_only_and_shown_limits.py:111: in test_read_only_bridge_never_admits_other_operations\n    assert not result.documents\nE   AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\nE    +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Сверить документ банка с исходной продажей', candidates=[EvaluatedDocument(source='1c/bank/acqu...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents"
+  },
+  {
+    "test": "tests.test_b22d_read_only_and_shown_limits::test_read_only_bridge_never_admits_other_operations[return]",
+    "message": "AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\n +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Сверить документ банка с исходной продажей', candidates=[EvaluatedDocument(source='1c/bank/acqu...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents",
+    "trace": "tests\\test_b22d_read_only_and_shown_limits.py:111: in test_read_only_bridge_never_admits_other_operations\n    assert not result.documents\nE   AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\nE    +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Диагностика\\n1. Уточнить версию 1С и фактическую схему расч...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Сверить документ банка с исходной продажей', candidates=[EvaluatedDocument(source='1c/bank/acqu...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents"
+  },
+  {
+    "test": "tests.test_b22d_read_only_and_shown_limits::test_foreign_service_draft_and_mutating_request_do_not_use_bridge",
+    "message": "AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Вопрос\\nКак отразить списание денег при возврате по эквайри...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\n +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Вопрос\\nКак отразить списание денег при возврате по эквайри...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Как изменить документ?', candidates=[EvaluatedDocument(source='1c/bank/acquiring-returns.md', d...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents\n +    where RetrievalResult(query='Как изменить документ?', candidates=[EvaluatedDocument(source='1c/bank/acquiring-returns.md', d...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]) = search_for_state(<app.dialogue_state.DialogueState object at 0x000002B3C16B4200>, 'Как изменить документ?')\n +      where search_for_state = <test_b22d_read_only_and_shown_limits.ApprovedArticle object at 0x000002B3C16B7500>.search_for_state",
+    "trace": "tests\\test_b22d_read_only_and_shown_limits.py:126: in test_foreign_service_draft_and_mutating_request_do_not_use_bridge\n    assert not rag.search_for_state(state, 'Как изменить документ?').documents\nE   AssertionError: assert not [SearchResult(source='1c/bank/acquiring-returns.md', text='Вопрос\\nКак отразить списание денег при возврате по эквайри...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})]\nE    +  where [SearchResult(source='1c/bank/acquiring-returns.md', text='Вопрос\\nКак отразить списание денег при возврате по эквайри...ностика', 'chunk_index': 2, '_raw_task_category': 'bank_statement', 'operation': None, '_operations_explicit': False})] = RetrievalResult(query='Как изменить документ?', candidates=[EvaluatedDocument(source='1c/bank/acquiring-returns.md', d...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]).documents\nE    +    where RetrievalResult(query='Как изменить документ?', candidates=[EvaluatedDocument(source='1c/bank/acquiring-returns.md', d...dure', 'text': 'Сверить документ банка с исходной продажей/возвратом; не отражать возврат повторно другим способом.'}]) = search_for_state(<app.dialogue_state.DialogueState object at 0x000002B3C16B4200>, 'Как изменить документ?')\nE    +      where search_for_state = <test_b22d_read_only_and_shown_limits.ApprovedArticle object at 0x000002B3C16B7500>.search_for_state"
+  },
+  {
+    "test": "tests.test_b22d_read_only_and_shown_limits::test_h08_new_limit_question_reuses_source_without_progress_mutation",
+    "message": "Failed: focused approved limitation requires no Planner answer",
+    "trace": "tests\\test_b22d_read_only_and_shown_limits.py:137: in test_h08_new_limit_question_reuses_source_without_progress_mutation\n    answer = asyncio.run(SourceFirstService(rag, settings(tmp_path), ROOT).answer(\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:194: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py:685: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\napp\\source_first_service.py:2751: in answer\n    answer = await self._answer(user_message, state=state, history=history,\napp\\source_first_service.py:3319: in _answer\n    generated = await generate([{\"role\": \"system\", \"content\": system},\ntests\\test_b22d_read_only_and_shown_limits.py:135: in no_planner\n    pytest.fail('focused approved limitation requires no Planner answer')\nE   Failed: focused approved limitation requires no Planner answer"
+  },
+  {
+    "test": "tests.test_incident_context::test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output",
+    "message": "AssertionError: assert -1 >= 0\n +  where -1 = <built-in method find of str object at 0x000002B3BF10F720>('имя и email')\n +    where <built-in method find of str object at 0x000002B3BF10F720> = 'Перейдите в раздел «Пользователи».\\nДля того, чтобы создать Пользователя, который будет пользоваться ЛК aQsi online, ...лее нужно указать почту и имя пользователя, а также присваиваете ему роль ( роль создается заранее во вкладке “Роли”).'.find",
+    "trace": "tests\\test_incident_context.py:20: in test_seven_real_turns_keep_context_gate_knowledge_and_repair_recorded_output\n    assert rows[0]['answer']['text'].find('имя и email') >= 0\nE   AssertionError: assert -1 >= 0\nE    +  where -1 = <built-in method find of str object at 0x000002B3BF10F720>('имя и email')\nE    +    where <built-in method find of str object at 0x000002B3BF10F720> = 'Перейдите в раздел «Пользователи».\\nДля того, чтобы создать Пользователя, который будет пользоваться ЛК aQsi online, ...лее нужно указать почту и имя пользователя, а также присваиваете ему роль ( роль создается заранее во вкладке “Роли”).'.find"
+  },
+  {
+    "test": "tests.test_metadata_retrieval_routing_v3::test_integration_1c_search_is_scoped_to_selected_cloud_service",
+    "message": "AssertionError: assert ([])\n +  where [] = RetrievalResult(query='сервис: aQsi Online — ПО: 1С — подключить aQsi Online к 1С:УНФ', candidates=[], rejected=[Evalu...iency_reason='no_task_matched_candidates', context='', evidence_status='none', missing_evidence=[], supported_steps=[]).documents",
+    "trace": "tests\\test_metadata_retrieval_routing_v3.py:79: in test_integration_1c_search_is_scoped_to_selected_cloud_service\n    assert result.documents and {doc.metadata[\"document_id\"] for doc in result.documents} == {\"aqsi-online-integration-1c-setup\"}\nE   AssertionError: assert ([])\nE    +  where [] = RetrievalResult(query='сервис: aQsi Online — ПО: 1С — подключить aQsi Online к 1С:УНФ', candidates=[], rejected=[Evalu...iency_reason='no_task_matched_candidates', context='', evidence_status='none', missing_evidence=[], supported_steps=[]).documents"
+  },
+  {
+    "test": "tests.test_metadata_retrieval_routing_v3::test_chunker_preserves_explicit_software_and_routing_metadata",
+    "message": "AssertionError: assert 'aQsi' == 'aQsi Online'\n  \n  - aQsi Online\n  + aQsi",
+    "trace": "tests\\test_metadata_retrieval_routing_v3.py:142: in test_chunker_preserves_explicit_software_and_routing_metadata\n    assert hit.metadata[\"service\"] == \"aQsi Online\"\nE   AssertionError: assert 'aQsi' == 'aQsi Online'\nE     \nE     - aQsi Online\nE     + aQsi"
+  },
+  {
+    "test": "tests.test_p02_directbank_diagnostics::test_rejected_actions_cannot_be_grounded_by_diagnostic_context",
+    "message": "assert not True\n +  where True = claim_supported('Измените настройки банковского обмена.', '[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved;...ункции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.', evidence_results=[SearchResult(source='1c/bank/directbank-all-accounts.md', text='Безопасная диагностика\\n1. Уточнить версию «1С:Бухгал...'follows', '_raw_task_category': 'bank_statement', 'operation': 'load_bank_statements', '_operations_explicit': True})])\n +    where '[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved;...ункции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.' = RetrievalResult(query='ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С перестали загружаться бан...ерез 1С:ДиректБанк, нажать \"Еще\" → \"Настроить обмен с банком\" → галочка \"Загружать выписку по всем счетам в банке\".'}]).context\n +    and   [SearchResult(source='1c/bank/directbank-all-accounts.md', text='Безопасная диагностика\\n1. Уточнить версию «1С:Бухгал...'follows', '_raw_task_category': 'bank_statement', 'operation': 'load_bank_statements', '_operations_explicit': True})] = RetrievalResult(query='ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С перестали загружаться бан...ерез 1С:ДиректБанк, нажать \"Еще\" → \"Настроить обмен с банком\" → галочка \"Загружать выписку по всем счетам в банке\".'}]).documents",
+    "trace": "tests\\test_p02_directbank_diagnostics.py:50: in test_rejected_actions_cannot_be_grounded_by_diagnostic_context\n    assert not claim_supported(claim, result.context, evidence_results=result.documents)\nE   assert not True\nE    +  where True = claim_supported('Измените настройки банковского обмена.', '[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved;...ункции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.', evidence_results=[SearchResult(source='1c/bank/directbank-all-accounts.md', text='Безопасная диагностика\\n1. Уточнить версию «1С:Бухгал...'follows', '_raw_task_category': 'bank_statement', 'operation': 'load_bank_statements', '_operations_explicit': True})])\nE    +    where '[Источник: 1c/bank/directbank-all-accounts.md; документ=batch-20261013-bank-directbank-all-accounts; статус=approved;...ункции проверить версию конфигурации и совместимость сервиса с банком; не создавать дубли операций повторным импортом.' = RetrievalResult(query='ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С перестали загружаться бан...ерез 1С:ДиректБанк, нажать \"Еще\" → \"Настроить обмен с банком\" → галочка \"Загружать выписку по всем счетам в банке\".'}]).context\nE    +    and   [SearchResult(source='1c/bank/directbank-all-accounts.md', text='Безопасная диагностика\\n1. Уточнить версию «1С:Бухгал...'follows', '_raw_task_category': 'bank_statement', 'operation': 'load_bank_statements', '_operations_explicit': True})] = RetrievalResult(query='ПО: 1С — диагностика ошибки банковская выписка — запрос клиента: В 1С перестали загружаться бан...ерез 1С:ДиректБанк, нажать \"Еще\" → \"Настроить обмен с банком\" → галочка \"Загружать выписку по всем счетам в банке\".'}]).documents"
+  },
+  {
+    "test": "tests.test_semantic_evidence_selector::test_frozen_question_only_selection_is_removed_and_compared_to_source_first",
+    "message": "AssertionError: assert 'source_sha_mismatch' is None",
+    "trace": "tests\\test_semantic_evidence_selector.py:307: in test_frozen_question_only_selection_is_removed_and_compared_to_source_first\n    assert rejection is None\nE   AssertionError: assert 'source_sha_mismatch' is None"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_selected_document_exposes_its_exact_retrieved_information_sections",
+    "message": "AssertionError: assert 'получает фискальные документы' in '1. ОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеко...а обработку фискальных данных (ч. 1 ст. 4.6 54-ФЗ).\\nПеречень операторов ОФД — на сайте ФНС: https://www.nalog.gov.ru/'",
+    "trace": "tests\\test_source_first_dialogue_contract.py:300: in test_selected_document_exposes_its_exact_retrieved_information_sections\n    assert \"получает фискальные документы\" in verified[1][\"text\"]\nE   AssertionError: assert 'получает фискальные документы' in '1. ОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеко...а обработку фискальных данных (ч. 1 ст. 4.6 54-ФЗ).\\nПеречень операторов ОФД — на сайте ФНС: https://www.nalog.gov.ru/'"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_definition_uses_scoped_material_with_explicit_attribution",
+    "message": "AssertionError: assert 'escalate' == 'answer'\n  \n  - answer\n  + escalate",
+    "trace": "tests\\test_source_first_dialogue_contract.py:415: in test_definition_uses_scoped_material_with_explicit_attribution\n    assert answer.scenario == \"answer\"\nE   AssertionError: assert 'escalate' == 'answer'\nE     \nE     - answer\nE     + escalate"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only",
+    "message": "KeyError: 'Первое различение причины'",
+    "trace": "tests\\test_source_first_dialogue_contract.py:478: in test_error_fact_without_confirmed_manufacturer_is_attributed_and_fact_only\n    text = dict(_sections(body))[heading]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   KeyError: 'Первое различение причины'"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction",
+    "message": "KeyError: 'Первое различение причины'",
+    "trace": "tests\\test_source_first_dialogue_contract.py:535: in test_frozen_d04_confirmed_fn234_reaches_approved_first_distinction\n    \"task_category\": \"error_diagnosis\", \"operations\": [\"diagnose_error\"]}, sections[heading])\n                                                                           ^^^^^^^^^^^^^^^^^\nE   KeyError: 'Первое различение причины'"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_frozen_d03_unknown_code_never_returns_fn231_fact_or_exact_fallback",
+    "message": "KeyError: 'Контекст ошибки'",
+    "trace": "tests\\test_source_first_dialogue_contract.py:585: in test_frozen_d03_unknown_code_never_returns_fn231_fact_or_exact_fallback\n    heading, text = \"Контекст ошибки\", dict(_sections(body))[\"Контекст ошибки\"]\n                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   KeyError: 'Контекст ошибки'"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_focus_prefers_supported_fn_fact_over_dangerous_safety_warning",
+    "message": "AssertionError: assert 'Как проявляется' == 'Первое различение причины'\n  \n  - Первое различение причины\n  + Как проявляется",
+    "trace": "tests\\test_source_first_dialogue_contract.py:684: in test_focus_prefers_supported_fn_fact_over_dangerous_safety_warning\n    assert selected[\"section\"] == \"Первое различение причины\"\nE   AssertionError: assert 'Как проявляется' == 'Первое различение причины'\nE     \nE     - Первое различение причины\nE     + Как проявляется"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_information_followup_gets_grounded_answer_for_current_question",
+    "message": "RuntimeError: coroutine raised StopIteration",
+    "trace": "tests\\test_source_first_dialogue_contract.py:964: in generate_stub\n    evidence_fragment = next(item for item in payload[\"approved_evidence_fragments\"]\nE   StopIteration\n\nThe above exception was the direct cause of the following exception:\ntests\\test_source_first_dialogue_contract.py:992: in test_information_followup_gets_grounded_answer_for_current_question\n    followup_answer = asyncio.run(service.answer(followup, state=followup_state,\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:194: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py:685: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\napp\\source_first_service.py:2751: in answer\n    answer = await self._answer(user_message, state=state, history=history,\napp\\source_first_service.py:4125: in _answer\n    repaired_relevance_generation = await _judge_information_relevance(\napp\\source_first_service.py:1727: in _judge_information_relevance\n    result = await generate([\nE   RuntimeError: coroutine raised StopIteration"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_information_composition_rejects_unsupported_claims_and_procedures",
+    "message": "AssertionError: assert ('ОФД автоматически продлевает тариф кассы.' is None)",
+    "trace": "tests\\test_source_first_dialogue_contract.py:1033: in test_information_composition_rejects_unsupported_claims_and_procedures\n    assert unsupported is None and reason == \"unsupported_information_claim\"\nE   AssertionError: assert ('ОФД автоматически продлевает тариф кассы.' is None)"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_semantic_relevance_replays_saved_composer_answer_with_current_task_and_source",
+    "message": "AssertionError: assert None == 'ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает их и передаёт в ФНС в предусмотренном формате.'",
+    "trace": "tests\\test_source_first_dialogue_contract.py:1064: in test_semantic_relevance_replays_saved_composer_answer_with_current_task_and_source\n    assert supported == saved_composer_output\nE   AssertionError: assert None == 'ОФД получает фискальные документы от зарегистрированной ККТ, обрабатывает их и передаёт в ФНС в предусмотренном формате.'"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_saved_q1_quote_omitting_the_word_they_is_accepted_by_source_fragment_id",
+    "message": "StopIteration",
+    "trace": "tests\\test_source_first_dialogue_contract.py:1119: in test_saved_q1_quote_omitting_the_word_they_is_accepted_by_source_fragment_id\n    exact_fact_id = next(fragment_id for fragment_id, text in fragments.items()\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_semantic_relevance_rejects_definition_and_other_fact_from_same_article",
+    "message": "AssertionError: assert None == 'Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.'",
+    "trace": "tests\\test_source_first_dialogue_contract.py:1183: in test_semantic_relevance_rejects_definition_and_other_fact_from_same_article\n    assert grounded == candidate  # Same article alone does not make it responsive.\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError: assert None == 'Для обычных сценариев облачной кассы требуется корректно оформленный договор и действующий тариф ОФД.'"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_saved_q2_partially_accepts_only_grounded_claim_after_semantic_judge",
+    "message": "AssertionError: assert ['planner', '...er', 'repair'] == ['planner', '...mantic_judge']\n  \n  Right contains one more item: 'semantic_judge'\n  Use -v to get more diff",
+    "trace": "tests\\test_source_first_dialogue_contract.py:1386: in test_saved_q2_partially_accepts_only_grounded_claim_after_semantic_judge\n    assert seen[\"calls\"] == [\"planner\", \"composer\", \"repair\", \"semantic_judge\"]\nE   AssertionError: assert ['planner', '...er', 'repair'] == ['planner', '...mantic_judge']\nE     \nE     Right contains one more item: 'semantic_judge'\nE     Use -v to get more diff"
+  },
+  {
+    "test": "tests.test_source_first_dialogue_contract::test_partial_answer_is_rejected_when_semantic_judge_says_irrelevant",
+    "message": "assert 0 == 1\n +  where 0 = len([])",
+    "trace": "tests\\test_source_first_dialogue_contract.py:1415: in test_partial_answer_is_rejected_when_semantic_judge_says_irrelevant\n    assert len(seen[\"judge_payloads\"]) == 1\nE   assert 0 == 1\nE    +  where 0 = len([])"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_six_turn_pilot_dialogue_and_sqlite",
+    "message": "AssertionError: assert 'source_first_exact_section' == 'source_first_safe_preflight'\n  \n  - source_first_safe_preflight\n  + source_first_exact_section",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:438: in test_six_turn_pilot_dialogue_and_sqlite\n    assert trace[2][\"reason\"] == \"source_first_safe_preflight\"\nE   AssertionError: assert 'source_first_exact_section' == 'source_first_safe_preflight'\nE     \nE     - source_first_safe_preflight\nE     + source_first_exact_section"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_p1_coordinator_d1_grounded_followup_through_bot_sqlite",
+    "message": "AssertionError: assert 'ОФД получает фискальные документы' in 'ОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеков) ...пока не проверен.\\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя'",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:675: in test_p1_coordinator_d1_grounded_followup_through_bot_sqlite\n    assert \"ОФД получает фискальные документы\" in first[\"final_reply\"]\nE   AssertionError: assert 'ОФД получает фискальные документы' in 'ОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеков) ...пока не проверен.\\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя'"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves",
+    "message": "AssertionError: assert 'ОФД получает фискальные документы' in 'ОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеков) ...пока не проверен.\\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя'",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:740: in test_p1_bplus_replays_saved_live_understanding_through_sqlite_and_retrieves\n    assert \"ОФД получает фискальные документы\" in ofd[\"final_reply\"]\nE   AssertionError: assert 'ОФД получает фискальные документы' in 'ОФД (оператор фискальных данных) — это сервис, который обеспечивает передачу зашифрованных фискальных данных (чеков) ...пока не проверен.\\nИсточник: data/knowledge/atol_online/ofd/what-is-ofd.md — Что проверено по инструкции производителя'"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_reported_internet_condition_selects_only_matching_approved_branch",
+    "message": "AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:782: in test_reported_internet_condition_selects_only_matching_approved_branch\n    assert trace[1][\"reason\"] == \"progress_ledger_next_approved_check\"\nE   AssertionError: assert 'grounded_sec...wup_exhausted' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_source_order_survives_sqlite_reopen_without_overriding_current_applicability",
+    "message": "AssertionError: assert 'planner_coul...select_safely' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + planner_could_not_select_safely",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:801: in test_source_order_survives_sqlite_reopen_without_overriding_current_applicability\n    assert trace[1][\"reason\"] == \"progress_ledger_next_approved_check\"\nE   AssertionError: assert 'planner_coul...select_safely' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + planner_could_not_select_safely"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_bplus_semantic_recovery_reaches_local_approved_retrieval",
+    "message": "AssertionError: assert 'Статья производителя связывает код ФН 234' in 'На чеке: **«Ошибка ФН 234»**.\\n\\nОбласть источника: Эвотор. Модель оборудования не подтверждена; привожу только общий факт из источника.\\nИсточник: data/knowledge/evotor/fn/fn-234.md — Как проявляется'",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:891: in test_bplus_semantic_recovery_reaches_local_approved_retrieval\n    assert \"Статья производителя связывает код ФН 234\" in fn[\"final_reply\"]\nE   AssertionError: assert 'Статья производителя связывает код ФН 234' in 'На чеке: **«Ошибка ФН 234»**.\\n\\nОбласть источника: Эвотор. Модель оборудования не подтверждена; привожу только общий факт из источника.\\nИсточник: data/knowledge/evotor/fn/fn-234.md — Как проявляется'"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat",
+    "message": "AssertionError: assert set() == {'asked'}\n  \n  Extra items in the right set:\n  'asked'\n  Use -v to get more diff",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:947: in test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat\n    assert {item[\"status\"] for item in ledger[0][\"state_after_sqlite_reopen\"][\"task_context\"][\"checks\"]} == {\"asked\"}\nE   AssertionError: assert set() == {'asked'}\nE     \nE     Extra items in the right set:\nE     'asked'\nE     Use -v to get more diff"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_accepts_explicit_positive_payment_result",
+    "message": "StopIteration",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:986: in test_progress_ledger_accepts_explicit_positive_payment_result\n    payment_check = next(item for item in task[\"checks\"]\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed]",
+    "message": "StopIteration",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1010: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks\n    internet_id = next(unit[\"unit_id\"] for unit in task[\"eligible_units\"]\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0437\\u043d\\u0430\\u044e-unknown]",
+    "message": "StopIteration",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1010: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks\n    internet_id = next(unit[\"unit_id\"] for unit in task[\"eligible_units\"]\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043f\\u043e\\u043a\\u0430 \\u043d\\u0435 \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u044f\\u043b-not_done]",
+    "message": "StopIteration",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1010: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks\n    internet_id = next(unit[\"unit_id\"] for unit in task[\"eligible_units\"]\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed_with_partial_pass]",
+    "message": "StopIteration",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1010: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks\n    internet_id = next(unit[\"unit_id\"] for unit in task[\"eligible_units\"]\nE   StopIteration"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_handoff_combined_with_progress_ledger_through_real_bot_handler",
+    "message": "AssertionError: assert 'repeated_unresolved_request' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + repeated_unresolved_request",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1249: in test_handoff_combined_with_progress_ledger_through_real_bot_handler\n    trace = _run_replay(monkeypatch, tmp_path, cases,\ntests\\test_telegram_pilot_sqlite_replay.py:393: in _run_replay\n    asyncio.run(after_dialogue(bot, store, conversation_id, message, update, reply,\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:194: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py:685: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\ntests\\test_telegram_pilot_sqlite_replay.py:1079: in request_and_confirm\n    assert next_check[\"reason\"] == \"progress_ledger_next_approved_check\"\nE   AssertionError: assert 'repeated_unresolved_request' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + repeated_unresolved_request"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_blocks_model_scoped_check_for_unlisted_model",
+    "message": "AssertionError: assert 'grounded_sec...wup_exhausted' == 'source_model...ot_applicable'\n  \n  - source_model_scope_not_applicable\n  + grounded_section_followup_exhausted",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1274: in test_progress_ledger_blocks_model_scoped_check_for_unlisted_model\n    assert trace[-2][\"reason\"] == \"source_model_scope_not_applicable\"\nE   AssertionError: assert 'grounded_sec...wup_exhausted' == 'source_model...ot_applicable'\nE     \nE     - source_model_scope_not_applicable\nE     + grounded_section_followup_exhausted"
+  },
+  {
+    "test": "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen",
+    "message": "AssertionError: assert 'repeated_unresolved_request' == 'progress_led...pproved_check'\n  \n  - progress_ledger_next_approved_check\n  + repeated_unresolved_request",
+    "trace": "tests\\test_telegram_pilot_sqlite_replay.py:1307: in test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen\n    assert trace[6][\"reason\"] == \"progress_ledger_next_approved_check\"\nE   AssertionError: assert 'repeated_unresolved_request' == 'progress_led...pproved_check'\nE     \nE     - progress_ledger_next_approved_check\nE     + repeated_unresolved_request"
+  }
+]

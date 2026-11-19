@@ -1,0 +1,51 @@
+[
+  {
+    "path": "1c/bank/directbank-auto-schedule.md",
+    "url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html",
+    "http_status": 200,
+    "final_url": "https://buh.ru/news/samoe-novoe-v-1s-bukhgalterii-8-nastroyki-avtomaticheskogo-polucheniya-bankovskoy-vypiski-cherez-1s-.html",
+    "bytes": 40350
+  },
+  {
+    "path": "aqsi_online/integration/1c-setup.md",
+    "url": "https://aqsi.ru/support/ustanovka-i-nastroyka-programmyi-integratora/",
+    "http_status": 200,
+    "final_url": "https://aqsi.ru/support/ustanovka-i-nastroyka-programmyi-integratora/",
+    "bytes": 141678
+  },
+  {
+    "path": "evotor/cash/evotor-6-receipt-copy.md",
+    "url": "https://support.evotor.ru/article/360005002514",
+    "http_status": 403,
+    "final_url": "https://support.evotor.ru/article/360005002514",
+    "bytes": 1458
+  },
+  {
+    "path": "evotor/fn/fn-234.md",
+    "url": "https://support.evotor.ru/article/360005580254",
+    "http_status": 403,
+    "final_url": "https://support.evotor.ru/article/360005580254",
+    "bytes": 1458
+  },
+  {
+    "path": "evotor/models/evotor-6-lite.md",
+    "url": "https://support.evotor.ru/article/1d8e8869-2290-40f5-9a6a-1123b1877834",
+    "http_status": 403,
+    "final_url": "https://support.evotor.ru/article/1d8e8869-2290-40f5-9a6a-1123b1877834",
+    "bytes": 1458
+  },
+  {
+    "path": "evotor/ofd/evotor-7-3-ofd-connection.md",
+    "url": "https://support.evotor.ru/article/360014099534",
+    "http_status": 403,
+    "final_url": "https://support.evotor.ru/article/360014099534",
+    "bytes": 1458
+  },
+  {
+    "path": "platformaofd/ofd/lkk-receipt-search.md",
+    "url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/",
+    "http_status": 200,
+    "final_url": "https://platformaofd.ru/baza-znaniy/lkk-razdel-cheki/",
+    "bytes": 800981
+  }
+]
