@@ -1,0 +1,11 @@
+FROM python:3.12-slim
+WORKDIR /srv/rag
+COPY requirements.txt requirements-embeddings.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-embeddings.txt
+COPY app ./app
+COPY data/docs ./data/docs
+COPY data/knowledge ./data/knowledge
+RUN useradd --uid 10001 --create-home rag && mkdir -p /state /home/rag/.cache && chown -R rag:rag /state /home/rag/.cache
+USER rag
+ENV RAG_API_DB_PATH=/state/conversations.sqlite3
+CMD ["uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "8091", "--workers", "1", "--no-access-log"]

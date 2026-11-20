@@ -1,0 +1,96 @@
+........................................................................ [  7%]
+........................................................................ [ 15%]
+........................................................................ [ 22%]
+........................................................................ [ 30%]
+........................................................................ [ 38%]
+........................................................................ [ 45%]
+........................................................................ [ 53%]
+........................................................................ [ 60%]
+........................................................................ [ 68%]
+........................................................................ [ 76%]
+........................................................................ [ 83%]
+........................................................................ [ 91%]
+............F.............x.x.xx..........FFFFFF.FFF.................... [ 99%]
+.........                                                                [100%]
+================================== FAILURES ===================================
+___________________ test_six_turn_pilot_dialogue_and_sqlite ___________________
+tests\test_telegram_pilot_sqlite_replay.py:439: in test_six_turn_pilot_dialogue_and_sqlite
+    assert trace[2]["reason"] == "source_first_safe_preflight"
+E   AssertionError: assert 'source_first_exact_section' == 'source_first_safe_preflight'
+E     
+E     - source_first_safe_preflight
+E     + source_first_exact_section
+_ test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat _
+tests\test_telegram_pilot_sqlite_replay.py:948: in test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat
+    assert {item["status"] for item in ledger[0]["state_after_sqlite_reopen"]["task_context"]["checks"]} == {"asked"}
+E   AssertionError: assert set() == {'asked'}
+E     
+E     Extra items in the right set:
+E     'asked'
+E     Use -v to get more diff
+________ test_progress_ledger_accepts_explicit_positive_payment_result ________
+tests\test_telegram_pilot_sqlite_replay.py:987: in test_progress_ledger_accepts_explicit_positive_payment_result
+    payment_check = next(item for item in task["checks"]
+E   StopIteration
+_ test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442-failed] _
+tests\test_telegram_pilot_sqlite_replay.py:1011: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks
+    internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
+E   StopIteration
+_ test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u0437\u043d\u0430\u044e-unknown] _
+tests\test_telegram_pilot_sqlite_replay.py:1011: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks
+    internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
+E   StopIteration
+_ test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u043b-not_done] _
+tests\test_telegram_pilot_sqlite_replay.py:1011: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks
+    internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
+E   StopIteration
+_ test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442-failed_with_partial_pass] _
+tests\test_telegram_pilot_sqlite_replay.py:1011: in test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks
+    internet_id = next(unit["unit_id"] for unit in task["eligible_units"]
+E   StopIteration
+_____ test_handoff_combined_with_progress_ledger_through_real_bot_handler _____
+tests\test_telegram_pilot_sqlite_replay.py:1250: in test_handoff_combined_with_progress_ledger_through_real_bot_handler
+    trace = _run_replay(monkeypatch, tmp_path, cases,
+tests\test_telegram_pilot_sqlite_replay.py:394: in _run_replay
+    asyncio.run(after_dialogue(bot, store, conversation_id, message, update, reply,
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:194: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py:685: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\test_telegram_pilot_sqlite_replay.py:1080: in request_and_confirm
+    assert next_check["reason"] == "progress_ledger_next_approved_check"
+E   AssertionError: assert 'repeated_unresolved_request' == 'progress_led...pproved_check'
+E     
+E     - progress_ledger_next_approved_check
+E     + repeated_unresolved_request
+______ test_progress_ledger_blocks_model_scoped_check_for_unlisted_model ______
+tests\test_telegram_pilot_sqlite_replay.py:1275: in test_progress_ledger_blocks_model_scoped_check_for_unlisted_model
+    assert trace[-2]["reason"] == "source_model_scope_not_applicable"
+E   AssertionError: assert 'grounded_sec...wup_exhausted' == 'source_model...ot_applicable'
+E     
+E     - source_model_scope_not_applicable
+E     + grounded_section_followup_exhausted
+____ test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen _____
+tests\test_telegram_pilot_sqlite_replay.py:1308: in test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen
+    assert trace[6]["reason"] == "progress_ledger_next_approved_check"
+E   AssertionError: assert 'repeated_unresolved_request' == 'progress_led...pproved_check'
+E     
+E     - progress_ledger_next_approved_check
+E     + repeated_unresolved_request
+=========================== short test summary info ===========================
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_six_turn_pilot_dialogue_and_sqlite
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_accepts_explicit_positive_payment_result
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442-failed]
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u0437\u043d\u0430\u044e-unknown]
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u043b-not_done]
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442-failed_with_partial_pass]
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_handoff_combined_with_progress_ledger_through_real_bot_handler
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_blocks_model_scoped_check_for_unlisted_model
+FAILED tests/test_telegram_pilot_sqlite_replay.py::test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen
+10 failed, 931 passed, 4 xfailed in 112.63s (0:01:52)

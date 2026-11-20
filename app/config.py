@@ -44,7 +44,7 @@ def _bool_env(name: str, default: bool = False) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "y", "да"}
 
 
-def get_settings() -> Settings:
+def get_settings(*, require_telegram_allowlist: bool = True) -> Settings:
     provider = os.getenv("LLM_PROVIDER", "openrouter").strip().lower()
     if provider not in {"openrouter", "groq", "hubris"}:
         raise ValueError("LLM_PROVIDER must be openrouter, groq or hubris")
@@ -59,7 +59,7 @@ def get_settings() -> Settings:
     source_id_value = configured_source_ids if configured_source_ids is not None else (
         os.getenv("EXPERT_TELEGRAM_IDS", "") if engine == "source_first" else "")
     source_first_ids = frozenset(int(item.strip()) for item in source_id_value.split(",") if item.strip())
-    if engine == "source_first" and not source_first_ids:
+    if engine == "source_first" and not source_first_ids and require_telegram_allowlist:
         raise ValueError("SOURCE_FIRST_TELEGRAM_IDS is required when RAG_ENGINE=source_first")
     return Settings(
         telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", "").strip(),

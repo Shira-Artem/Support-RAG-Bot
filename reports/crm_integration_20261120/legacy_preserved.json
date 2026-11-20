@@ -1,0 +1,55 @@
+{
+  "all_legacy_tables_equal": true,
+  "tables": {
+    "conversations": {
+      "rows": 16,
+      "equal_to_backup": true
+    },
+    "chat_state": {
+      "rows": 1,
+      "equal_to_backup": true
+    },
+    "messages": {
+      "rows": 48,
+      "equal_to_backup": true
+    },
+    "sqlite_sequence": {
+      "rows": 1,
+      "equal_to_backup": true
+    },
+    "dialogue_states": {
+      "rows": 0,
+      "equal_to_backup": true
+    },
+    "dialogue_turns": {
+      "rows": 23,
+      "equal_to_backup": true
+    },
+    "feedback_events": {
+      "rows": 0,
+      "equal_to_backup": true
+    },
+    "pending_feedback_comments": {
+      "rows": 0,
+      "equal_to_backup": true
+    },
+    "support_requests": {
+      "rows": 0,
+      "equal_to_backup": true
+    },
+    "escalation_events": {
+      "rows": 0,
+      "equal_to_backup": true
+    },
+    "dialogue_states_v2": {
+      "rows": 13,
+      "equal_to_backup": true
+    },
+    "dialogue_state_migration_archive": {
+      "rows": 0,
+      "equal_to_backup": true
+    }
+  },
+  "legacy_app_mismatches": [],
+  "source_count": 37
+}

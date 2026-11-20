@@ -1,0 +1,14 @@
+{
+  "kb": {
+    "status": "green",
+    "points": 833,
+    "approved": 204,
+    "draft": 65,
+    "exact_payload_match": true
+  },
+  "legacy_sqlite_backups": [
+    "conversations.sqlite3",
+    "expert.sqlite3"
+  ],
+  "backup_check": "quick_check ok, no pending user turn before switch"
+}

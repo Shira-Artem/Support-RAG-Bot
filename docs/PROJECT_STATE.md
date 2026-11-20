@@ -2393,3 +2393,70 @@ KB blobs неизменны; .env не редактировалась. Втор�
 Следующий конкретный experiment — approved factual core ОФД/ФН через existing
 Composer с реальными повторными calls; ordinary social без обязательной KB.
 Production, PartA REVISE/A6 STOP сохраняются. A7/PartB/Exp3 не открыты.
+
+
+### 2026-11-20 — CRM integration stage explicitly authorized; implementation checkpoint
+
+Новое прямое задание владельца разрешает отдельный этап CRM / Smart Navigation v4,
+интеграционные ветки и commit/push после проверок; main rollout не разрешён.
+Baseline RAG7eff20d (3 docs/evidence commits ahead), CRM origin/main338f1bb после
+fetch; семь локальных CRM WebApp правок остались в исходном checkout. Candidate
+3aa1f68 не включён. Ужеmerged approved KB B2/833 сохраняется, переиндексации нет.
+Shared app/support_turn.py связывает старый bot и новый authenticated API без
+нового RAG. Durable SQLite idempotency/revision/ack; CRM attempts/native outbox,
+новая migration0008, case+lease fence и безопасный выход в магазин из active chat.
+Первые negative bootstrap/profile/test-isolation попытки, исправления и границы
+доказательства сохранены в [integration report](../reports/crm_integration_20261120/report.md).
+HTTP-backed Hubris API smoke answered13.688s; это не quality GO. CRM native HTTP
+LIVE и чистый MySQL suite ещё выполняются; demo/CI разделены после обнаруженного
+вмешательства background worker в первую synthetic fixture-серию. Рабочие
+Telegram3232/13568 не останавливались. Второго polling нет. Следующий шаг —
+завершить regression/LIVE, подготовить запуск и ручной тест, затем branch publish
+с точными ограничениями. Production NO-GO / PartA REVISE / A6 STOP сохраняются.
+
+
+### 2026-11-20 — CRM integration LIVE complete; owner authorizes same-bot pilot
+
+Факт: full RAG931 passed/те же10 failed/4 xfailed; CRM Windows409 passed/2 прежних
+platform failures/38 subtests; чистая MySQL126 passed/10 subtests. После последнего
+исправления crash-after-publish + human takeover5 targeted MySQL PASS, полный
+повтор идёт отдельно. API8 boundary tests и provider/network profile23 PASS;
+реальный router Telegram/MAX20/20 empty +20/20 seeded test catalog. CRM HTTP6
+ходов записаны, каждый native duplicate key возвращает тот же message_id.
+LIVE follow-up об ОФД ответил про кассу — quality FAIL; первый Эвотор check
+фрагментарен — PARTIAL. Независимый final Эвотор дал1 approved document и
+exact_source_copy. Human request штатноqueue без AI; архив ФН безопасноescalated.
+Клиентский read-timeout восстановлен тем же reply, restart replay равен прежнему.
+Первый contaminated MySQL run и все bootstrap/source/startup ошибки сохранены.
+
+Позднее владелец прямо поручил использовать прежний Telegram token из RAG.env
+для единого CRM пилота. При pending0 сделаны SQLite backups, остановлены старые
+worker3232/launcher13568; вместо них запущен один полный CRM poller с прежним
+private tester allowlist. getMe/deleteWebhook/repeated getUpdates200. Checkout
+пилота отключён, товары явноsynthetic, DBcrm_rag_demo отделена от crm_rag_ci.
+Никакой отдельный token не требуется для этого явно разрешённого локального
+переключения; production rollout этим не разрешён. Main37/37 bytes неизменны;
+все таблицы старой SQLite равныbackup,48 messages сохранены. Исходные семь
+локальных CRM WebApp edits остались нетронуты. Кандидат3aa1f68 не включён.
+
+[Финальные факты/отрицательные результаты](../reports/crm_integration_20261120/report.md),
+[дословные ответы](../reports/crm_integration_20261120/answers.md),
+[запуск/API/rollback/14 сообщений](CRM_INTEGRATION.md). Непредвиденная остановка
+одного промежуточного API наблюдалась без установленной причины; рестарт и
+readyz200/replay проверены, причина не придумана. Native polling startup не
+равен подтверждённому ручному Telegram ответу. Следующий шаг — владелец тестирует
+пилот; специалист реально не принял кейс, MAX transport не проверен. Overall
+production NO-GO / PartA REVISE / A6 STOP сохраняются. Commit/push только
+integration branches разрешены исходным новым заданием; готовый PR без полного
+зелёного gate не открывается. Publication/runtime SHA будут зафиксированы далее.
+
+
+### 2026-11-20 — final clean CRM MySQL repeat and publication preparation
+
+Финальный чистый full MySQL на crm_rag_ci:127 passed/10 subtests, включая новый
+post-publish-crash + human-takeover ack regression. CRM Windows409/2 прежних
+platform failures/38 subtests; RAG final931/те же10/4. Source filter подтверждён
+независимым реальным ответом с1 approved doc, без повторного quality GO. Compose
+config--quiet PASS; Dockerbuild/serverrollout не выполнялись. Startup-конфигурация
+полного CRM bot проверена без polling, затем getMe/deleteWebhook/getUpdates200;
+точные runtime SHA и branch publication фиксируются финальным appendix.

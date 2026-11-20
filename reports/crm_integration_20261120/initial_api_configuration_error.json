@@ -1,0 +1,32 @@
+{
+  "http_status": 200,
+  "elapsed_seconds": 0.375,
+  "request": {
+    "ticket_id": "integration:api:smoke1",
+    "message_id": "m1",
+    "text": "Что такое ОФД?",
+    "expected_revision": 0,
+    "context": {
+      "channel": "test"
+    }
+  },
+  "response": {
+    "contract_version": "1",
+    "ticket_id": "integration:api:smoke1",
+    "message_id": "m1",
+    "revision": 1,
+    "reply_id": "dc727fd08bed42468e793f98b618b60b",
+    "answer": "Сервис временно недоступен. Вопрос можно передать специалисту.",
+    "status": "error",
+    "sources": [],
+    "escalation_reason": "service_unavailable",
+    "diagnostics": {
+      "provider": null,
+      "model": null,
+      "generation_status": "error",
+      "validation_status": "not_run",
+      "duration_ms": null,
+      "collection": null
+    }
+  }
+}
