@@ -216,8 +216,10 @@ Markdown fence при finish_reason=stop, а не нехватке token budget.
 подтверждено для каждого сохранённого completed attempt.
 
 KB comparison контролирует37/37 app hashes, Hubris model/effort, вопросы,
-изоляцию SQLite и корректный source root. Различаются только corpus/index
-и неизбежная наблюдаемая вариативность API. Оба corpus полностью совпадают со
+изоляцию SQLite и корректный source root. Различаются corpus/index и наблюдаемые ответы API. Изоляция и сегментация дают
+разные непрозрачные task/message IDs; сетевые условия не фиксированы,
+побайтовая идентичность provider payload не утверждается. Промежуточное
+понимание и память отличаются как реальные результаты тракта. Оба corpus полностью совпадают со
 своими approved-only payload: [current](runtime_before.json),
 [pre-B2](pre_b2_index_verification.json). У обычных model-only ходов KB вообще
 не вызывалась; их разницу нельзя приписать корпусу.

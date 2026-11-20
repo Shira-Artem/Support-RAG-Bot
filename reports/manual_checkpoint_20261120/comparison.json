@@ -1821,6 +1821,7 @@
     "KB A/B uses identical 37 app hashes, provider/model/effort and inputs; model-only turns do not depend on KB.",
     "Single pass is confounded by provider/semantic variance; no general improvement inferred.",
     "Final safety patch is a later phase; do not assign pre-safety 65-turn score to it.",
-    "Missing baseline per-turn cost/HTTP indices remain null. All costs are reported usage, not an invoice."
+    "Missing baseline per-turn cost/HTTP indices remain null. All costs are reported usage, not an invoice.",
+    "Separate SQLite files and segmented runs produce different opaque task/message IDs; exact provider payload bytes are not claimed identical. Intermediate model decisions and states vary. This is a bounded end-to-end comparison, not a deterministic causal estimate of all output differences."
   ]
 }
