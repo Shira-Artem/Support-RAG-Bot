@@ -1,0 +1,146 @@
+[
+  {
+    "turn": "M01",
+    "grade": "FAIL",
+    "component": "Transport",
+    "reason": "Empty pending answer; telegram_delivery_failed. Delivery timing is not recoverable."
+  },
+  {
+    "turn": "M02",
+    "grade": "FAIL",
+    "component": "Selector",
+    "reason": "semantic_selector_failed_closed; SelectorDecisionError. No useful answer."
+  },
+  {
+    "turn": "M03",
+    "grade": "PARTIAL",
+    "component": "General conversation",
+    "reason": "Core explanation useful, but unsupported onboarding sufficiency claim (all that is needed) and unsolicited connection advice."
+  },
+  {
+    "turn": "M04",
+    "grade": "PASS",
+    "component": "General conversation",
+    "reason": "Direct explanation of cash register/FN/OFD; no technical procedure."
+  },
+  {
+    "turn": "M05",
+    "grade": "FAIL",
+    "component": "Conversation context/output validation",
+    "reason": "Useful raw explanation rejected by current-turn lexical relevance; active subject absent from model prompt."
+  },
+  {
+    "turn": "M06",
+    "grade": "PASS",
+    "component": "General conversation",
+    "reason": "Explains OFD and payment purpose. Additional generic service claims are not independently verified."
+  },
+  {
+    "turn": "M07",
+    "grade": "PARTIAL",
+    "component": "General conversation",
+    "reason": "Answers the repeated user message; guarantees about avoiding accounting errors are unsupported."
+  },
+  {
+    "turn": "M08",
+    "grade": "FAIL",
+    "component": "General knowledge grounding",
+    "reason": "Published unsupported claim that receipts lose legal force. One sentence removed but equivalent claim retained."
+  },
+  {
+    "turn": "M09",
+    "grade": "FAIL",
+    "component": "Planner/source order",
+    "reason": "Approved diagnostic section found; Planner source_order_complete=False; fail-closed refusal."
+  },
+  {
+    "turn": "M10",
+    "grade": "FAIL",
+    "component": "Task/retrieval projection",
+    "reason": "Payment-mentioned receipt incident projected to billing; receipt/integration evidence rejected as task mismatch."
+  },
+  {
+    "turn": "M11",
+    "grade": "FAIL",
+    "component": "Task/retrieval projection",
+    "reason": "Same request still projected to billing; no_task_matched_candidates."
+  },
+  {
+    "turn": "M12",
+    "grade": "FAIL",
+    "component": "Understanding/resolver",
+    "reason": "Raw operation=status; resolver reported_error from bare FN number overrides to diagnose; no symptom triggers clarification."
+  },
+  {
+    "turn": "M13",
+    "grade": "FAIL",
+    "component": "DialogueState/readiness",
+    "reason": "Expiry question does not advance; equipment clarification, prior goal not fulfilled."
+  },
+  {
+    "turn": "M14",
+    "grade": "PARTIAL",
+    "component": "Scope clarification",
+    "reason": "Manufacturer/model clarification is safe, but no explanation of expiry."
+  },
+  {
+    "turn": "M15",
+    "grade": "FAIL",
+    "component": "Selector/scope",
+    "reason": "Asks service for FN expiry conversation; semantic_selector_clarification."
+  },
+  {
+    "turn": "M16",
+    "grade": "FAIL",
+    "component": "Composer/relevance",
+    "reason": "Approved bank evidence retrieved; composer unsupported_information_claim, exact fallback then semantic relevance rejected."
+  },
+  {
+    "turn": "M17",
+    "grade": "PARTIAL",
+    "component": "SourceFirst unit rendering",
+    "reason": "Only menu path emitted; diagnostic report action in following numbered item withheld."
+  },
+  {
+    "turn": "M18",
+    "grade": "FAIL",
+    "component": "Progress ledger",
+    "reason": "Unrelated reported checks retained but expected result of menu-navigation unit unresolved; asks for completion."
+  },
+  {
+    "turn": "M19",
+    "grade": "FAIL",
+    "component": "Continuation/intake",
+    "reason": "Request to explain current action becomes progress_result_unresolved escalation; no helpful re-explanation."
+  },
+  {
+    "turn": "M20",
+    "grade": "PARTIAL",
+    "component": "General conversation",
+    "reason": "Core OFD explanation present; wording that OFD takes documents from FN is imprecise; no source validation."
+  },
+  {
+    "turn": "M21",
+    "grade": "FAIL",
+    "component": "General knowledge grounding",
+    "reason": "Published unsupported equivalence: unpaid OFD makes receipts nonfiscal; unsupported penalty claim."
+  },
+  {
+    "turn": "M22",
+    "grade": "PASS",
+    "component": "Intake",
+    "reason": "Reasonable manufacturer clarification for vague register malfunction; no invented instruction."
+  },
+  {
+    "turn": "M23",
+    "grade": "PARTIAL",
+    "component": "Intake",
+    "reason": "Asks model/error safely; references missing service despite unresolved symptom."
+  },
+  {
+    "turn": "M24",
+    "grade": "FAIL",
+    "component": "Error-code applicability/intake",
+    "reason": "Explicit printing symptom saved, but unknown-code template asks again whether printing or transmission failed."
+  }
+]

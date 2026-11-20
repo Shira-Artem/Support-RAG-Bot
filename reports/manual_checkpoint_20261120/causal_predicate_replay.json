@@ -1,0 +1,13 @@
+{
+  "case": "M05",
+  "source": "saved raw_model_text; exact current output predicates replayed before app changes",
+  "checks": {
+    "citation": false,
+    "normative": false,
+    "imperative": false,
+    "unsafe": false,
+    "current_turn_overlap": false,
+    "task_subject_overlap": true
+  },
+  "conclusion": "Only relevance to last-turn wording fails; existing active subject resolves the missing reference. This is offline causal replay, not LIVE quality evidence."
+}

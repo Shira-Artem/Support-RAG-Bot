@@ -1,0 +1,77 @@
+{
+  "before": {
+    "tests": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "10",
+      "skipped": "4",
+      "tests": "937",
+      "time": "135.447",
+      "timestamp": "2026-11-20T10:49:51.276298+03:00"
+    },
+    "failed": [
+      "tests.test_telegram_pilot_sqlite_replay::test_six_turn_pilot_dialogue_and_sqlite",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_accepts_explicit_positive_payment_result",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0437\\u043d\\u0430\\u044e-unknown]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043f\\u043e\\u043a\\u0430 \\u043d\\u0435 \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u044f\\u043b-not_done]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed_with_partial_pass]",
+      "tests.test_telegram_pilot_sqlite_replay::test_handoff_combined_with_progress_ledger_through_real_bot_handler",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_blocks_model_scoped_check_for_unlisted_model",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen"
+    ]
+  },
+  "first_candidate": {
+    "tests": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "12",
+      "skipped": "4",
+      "tests": "951",
+      "time": "100.069",
+      "timestamp": "2026-11-20T10:53:17.841815+03:00"
+    },
+    "failed": [
+      "tests.test_source_first_dialogue_contract::test_frozen_d03_unknown_code_never_returns_fn231_fact_or_exact_fallback",
+      "tests.test_source_first_dialogue_contract::test_unconfirmed_error_code_followup_uses_known_context_without_repeating_question",
+      "tests.test_telegram_pilot_sqlite_replay::test_six_turn_pilot_dialogue_and_sqlite",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_accepts_explicit_positive_payment_result",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0437\\u043d\\u0430\\u044e-unknown]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043f\\u043e\\u043a\\u0430 \\u043d\\u0435 \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u044f\\u043b-not_done]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed_with_partial_pass]",
+      "tests.test_telegram_pilot_sqlite_replay::test_handoff_combined_with_progress_ledger_through_real_bot_handler",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_blocks_model_scoped_check_for_unlisted_model",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen"
+    ]
+  },
+  "final_candidate": {
+    "tests": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "10",
+      "skipped": "4",
+      "tests": "951",
+      "time": "102.396",
+      "timestamp": "2026-11-20T10:56:14.488194+03:00"
+    },
+    "failed": [
+      "tests.test_telegram_pilot_sqlite_replay::test_six_turn_pilot_dialogue_and_sqlite",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_e2e_persists_only_client_check_results_and_avoids_repeat",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_accepts_explicit_positive_payment_result",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0437\\u043d\\u0430\\u044e-unknown]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043f\\u043e\\u043a\\u0430 \\u043d\\u0435 \\u043f\\u0440\\u043e\\u0432\\u0435\\u0440\\u044f\\u043b-not_done]",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_does_not_apply_outcomes_to_unshown_source_checks[\\u0418\\u043d\\u0442\\u0435\\u0440\\u043d\\u0435\\u0442 \\u043d\\u0435 \\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0435\\u0442-failed_with_partial_pass]",
+      "tests.test_telegram_pilot_sqlite_replay::test_handoff_combined_with_progress_ledger_through_real_bot_handler",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_blocks_model_scoped_check_for_unlisted_model",
+      "tests.test_telegram_pilot_sqlite_replay::test_progress_ledger_model_switch_rechecks_scope_after_sqlite_reopen"
+    ]
+  },
+  "new_final_failures": [],
+  "fixed_previous_failures": [],
+  "targeted": "197 passed; includes source-first dialogue contracts",
+  "negative_experiment": "First intake change treated every symptom as concrete. Two existing vague-symptom regressions failed. Require both grounded object and symptom; existing tests restored without changing their expectations."
+}

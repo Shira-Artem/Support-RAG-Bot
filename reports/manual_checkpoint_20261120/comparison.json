@@ -1,0 +1,1826 @@
+{
+  "summary": {
+    "baseline": {
+      "unique_turns": 65,
+      "attempts": 67,
+      "grades": {
+        "PARTIAL": 17,
+        "FAIL": 33,
+        "PASS": 15
+      },
+      "http_status_counts": {
+        "200": 122,
+        "502": 1
+      },
+      "reported_cost_kopecks": 169,
+      "reported_tokens": 238540,
+      "latency_median_ms": 7620,
+      "latency_max_ms": 43043,
+      "sqlite_reopen_equal": 65,
+      "full_quality_go": false
+    },
+    "candidate_pre_safety": {
+      "unique_turns": 65,
+      "attempts": 65,
+      "grades": {
+        "FAIL": 32,
+        "PARTIAL": 17,
+        "PASS": 16
+      },
+      "http_status_counts": {
+        "200": 120,
+        "None": 3
+      },
+      "reported_cost_kopecks": 180,
+      "reported_tokens": 247974,
+      "latency_median_ms": 7465,
+      "latency_max_ms": 36460,
+      "sqlite_reopen_equal": 65,
+      "full_quality_go": false
+    },
+    "old_kb_pre_safety": {
+      "unique_turns": 65,
+      "attempts": 65,
+      "grades": {
+        "FAIL": 30,
+        "PASS": 14,
+        "PARTIAL": 21
+      },
+      "http_status_counts": {
+        "200": 117,
+        "None": 6
+      },
+      "reported_cost_kopecks": 161,
+      "reported_tokens": 207032,
+      "latency_median_ms": 6961,
+      "latency_max_ms": 118738,
+      "sqlite_reopen_equal": 65,
+      "full_quality_go": false
+    }
+  },
+  "turns": [
+    {
+      "case": "abc_01",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На Эвотор 7.3 чеки пробиваются, но перестали передаваться в ОФД. Интернет работает. Что проверить дальше?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 18520,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 5219,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 3987,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_02",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На Эвотор появилась ошибка ФН 231. С чем она может быть связана и с чего безопасно начать диагностику?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 5372,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 8482,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 23533,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "abc_03",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На Эвотор неправильно отображается дата и время. Может ли это влиять на работу фискального накопителя?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "selected_error_code_unconfirmed",
+        "latency_ms": 16571,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "selected_error_code_unconfirmed",
+        "latency_ms": 19711,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "selected_error_code_unconfirmed",
+        "latency_ms": 13095,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "abc_04",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На Эвотор 6 не получается закрыть смену. Как определить причину?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "unsafe_operation",
+        "latency_ms": 3887,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "unsafe_operation",
+        "latency_ms": 5329,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "unsafe_operation",
+        "latency_ms": 2947,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_05",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На Эвотор при продаже маркированного товара появляется ошибка проверки кода. Что проверить в первую очередь?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 12006,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 13326,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "progress_ledger_waiting_for_model",
+        "latency_ms": 21141,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 5
+      }
+    },
+    {
+      "case": "abc_06",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На Эвотор при продаже маркированного товара появляется ошибка проверки кода. Что проверить в первую очередь?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 13621,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 12871,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 7
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "progress_ledger_waiting_for_model",
+        "latency_ms": 12353,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 5
+      }
+    },
+    {
+      "case": "abc_07",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На кассе aQsi появилась ошибка ФН 7. Что она означает и что проверить?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 5269,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2573,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 18550,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "abc_08",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Касса aQsi не видит товар, хотя он добавлен в каталог. Как разобраться?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 12552,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 13016,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 11205,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "abc_09",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На кассе aQsi не работает сканер штрихкодов. Как проверить подключение?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 25458,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 10022,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 12205,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "abc_10",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На aQsi не получается продать маркированный товар. Что нужно проверить перед продажей?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2269,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 15609,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 6
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 5251,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_11",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "На кассе aQsi появилась ошибка ФН 161 — документ не сохранён. Какие безопасные действия доступны?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 8460,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 9438,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 8138,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "abc_12",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Я подключаю aQsi Online. Как правильно начать фискализацию кассы?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "no_applicable_source_missing_client_detail",
+        "latency_ms": 7620,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_relevance_grounding_failed",
+        "latency_ms": 17190,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 5
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "no_applicable_source_missing_client_detail",
+        "latency_ms": 3058,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "abc_13",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "В aQsi Online нужно добавить нового сотрудника и ограничить его права. Как это сделать?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 5419,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "semantic_evidence_composer",
+        "latency_ms": 8876,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 7
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_no_evidence",
+        "latency_ms": 6785,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "abc_14",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Как в aQsi Online оформить частичный возврат покупателю?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 8355,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_relevance_grounding_failed",
+        "latency_ms": 16915,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 5
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_no_evidence",
+        "latency_ms": 19681,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "abc_15",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Как подключить aQsi Online к 1С? Что необходимо подготовить?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 2927,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 5744,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 4985,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_16",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Чек в aQsi Online сформировался, но покупатель его не получил. Что можно проверить?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2968,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 3554,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 4240,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_17",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "В АТОЛ Онлайн появилась ошибка 128 при отправке запроса. С чего начать диагностику?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 5580,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 7904,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "progress_ledger_waiting_for_model",
+        "latency_ms": 7314,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "abc_18",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "В АТОЛ Онлайн перестали формироваться чеки. Как определить, связано ли это с блокировкой ФН?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "selected_error_code_unconfirmed",
+        "latency_ms": 19313,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "progress_ledger_waiting_for_model",
+        "latency_ms": 36460,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 7
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "selected_error_code_unconfirmed",
+        "latency_ms": 19973,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "abc_19",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Как в АТОЛ Онлайн найти чек за определённый период и выгрузить журнал чеков?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "semantic_evidence_composer",
+        "latency_ms": 8836,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_relevance_grounding_failed",
+        "latency_ms": 11300,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 5
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_clarification",
+        "latency_ms": 4715,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "abc_20",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "В АТОЛ Онлайн закончился оплаченный период обслуживания. Как проверить задолженность и восстановить работу?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 43043,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 26140,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "planner_could_not_select_safely",
+        "latency_ms": 36498,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "abc_21",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Мы хотим перейти с ФФД 1.05 на ФФД 1.2. Что необходимо проверить перед переходом?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 16475,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_failed_closed",
+        "latency_ms": 21835,
+        "run": "candidate",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_validation_rejected",
+        "latency_ms": 22040,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 6
+      }
+    },
+    {
+      "case": "abc_22",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Как проверить работу интеграции с АТОЛ Онлайн, если запросы отправляются из нашего сайта, но чеки не появляются?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 12746,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 14055,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 9101,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_23",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "В личном кабинете Платформы ОФД касса отображается, но новые чеки не поступают. Что проверить?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 9639,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 10774,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 10778,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "abc_24",
+      "turn": 1,
+      "cohort": "historical_abc",
+      "question": "Как проверить статус отправки конкретного чека в ФНС через Платформу ОФД?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 11488,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 10805,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 10313,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-01",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 8171,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5001,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 3532,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "manual_dialogue-02",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6071,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_social_turn",
+        "latency_ms": 2654,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4452,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-03",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 21920,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6882,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4378,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "manual_dialogue-04",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4300,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 7267,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5909,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-04",
+      "turn": 2,
+      "cohort": "manual",
+      "question": "А можешь объяснить попроще, без сложных терминов?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 20974,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4516,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 4
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5103,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-05",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Что такое ОФД и зачем я ему плачу?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5129,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5997,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5691,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-05",
+      "turn": 2,
+      "cohort": "manual",
+      "question": "Что такое ОФД и зачем я ему плачу?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5467,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5213,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 4
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5441,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-05",
+      "turn": 3,
+      "cohort": "manual",
+      "question": "А если ОФД не оплачивать, что будет с моими чеками?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 21621,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6603,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6961,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-06",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Эвотор 7.3 печатает чеки, но они не доходят до ОФД. Что делать?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2787,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "planner_could_not_select_safely",
+        "latency_ms": 14566,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 10
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 16211,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "manual_dialogue-07",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Работаем через АТОЛ Онлайн. Оплата прошла, а электронный чек покупателю не пришёл.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 17295,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 18678,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 19624,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "manual_dialogue-08",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Работаем через АТОЛ Онлайн. Оплата прошла, а электронный чек покупателю не пришёл.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 19730,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 2768,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 3608,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-09",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "У меня на кассе ФН-235. Как понять, когда он закончится?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2445,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "applicability_context_missing",
+        "latency_ms": 4175,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "applicability_context_missing",
+        "latency_ms": 3552,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "manual_dialogue-09",
+      "turn": 2,
+      "cohort": "manual",
+      "question": "А если срок уже истёк, что мне делать?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "applicability_context_missing",
+        "latency_ms": 4211,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "no_applicable_source_missing_client_detail",
+        "latency_ms": 3370,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "no_applicable_source_missing_client_detail",
+        "latency_ms": 4289,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "manual_dialogue-09",
+      "turn": 3,
+      "cohort": "manual",
+      "question": "кассе ФН-235",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2942,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 4827,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 5364,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "manual_dialogue-09",
+      "turn": 4,
+      "cohort": "manual",
+      "question": "эвотор",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 1852,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "applicability_context_missing",
+        "latency_ms": 6129,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "applicability_context_missing",
+        "latency_ms": 4471,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-10",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Что такое DirectBank в 1С?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 8931,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "semantic_evidence_composer",
+        "latency_ms": 10437,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 6
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 8941,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "manual_dialogue-11",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Эвотор 7.3 печатает чеки, но они не доходят до ОФД. Что делать?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 14357,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 15202,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 5
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 18937,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 6
+      }
+    },
+    {
+      "case": "manual_dialogue-11",
+      "turn": 2,
+      "cohort": "manual",
+      "question": "Интернет работает, ОФД оплачен.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "progress_ledger_check_result_needed",
+        "latency_ms": 11820,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "progress_ledger_check_result_needed",
+        "latency_ms": 13577,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "grounded_section_followup_exhausted",
+        "latency_ms": 18280,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "manual_dialogue-11",
+      "turn": 3,
+      "cohort": "manual",
+      "question": "А что конкретно мне сейчас открыть и проверить?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "progress_result_unresolved",
+        "latency_ms": 10188,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "progress_result_unresolved",
+        "latency_ms": 11019,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "selected_evidence_does_not_cover_symptom",
+        "latency_ms": 118738,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "manual_dialogue-12",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "Что такое ОФД и зачем я ему плачу?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6458,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5425,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 7188,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-12",
+      "turn": 2,
+      "cohort": "manual",
+      "question": "А если ОФД не оплачивать, что будет с моими чеками?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 9900,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4983,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 4
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4884,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-13",
+      "turn": 1,
+      "cohort": "manual",
+      "question": "У меня что-то с кассой, не работает.",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 5617,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "understanding_failed",
+        "latency_ms": 13598,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 20807,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "manual_dialogue-13",
+      "turn": 2,
+      "cohort": "manual",
+      "question": "Ну она вроде включается, только покупатели жалуются.",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_scope_context_still_missing",
+        "latency_ms": 7779,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2726,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 5943,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "manual_dialogue-13",
+      "turn": 3,
+      "cohort": "manual",
+      "question": "Чек не печатается.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "source_scope_context_still_missing",
+        "latency_ms": 10848,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 3583,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 7108,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "extra_social",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "Привет! Чем ты можешь помочь?",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_first_social_turn",
+        "latency_ms": 1873,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_social_turn",
+        "latency_ms": 2641,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "source_first_social_turn",
+        "latency_ms": 2178,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "extra_social",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Спасибо. А как проходит твой день?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "insufficient_applicable_evidence",
+        "latency_ms": 3251,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_social_turn",
+        "latency_ms": 2155,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6982,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "extra_explain",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "Объясни, зачем магазину онлайн-касса.",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5612,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 23035,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5160,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "extra_explain",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Скажи это ещё проще, на бытовом примере.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "understanding_failed",
+        "latency_ms": 3842,
+        "run": "baseline",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 6230,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 4
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 3988,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "extra_fn_status",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "В кассе стоит ФН-1.2. Как узнать остаток срока службы?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 3045,
+        "run": "baseline-supplement",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_failed_closed",
+        "latency_ms": 33321,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 3786,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "extra_memory_switch",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "На Эвотор 7.3 не печатается чек.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 14185,
+        "run": "baseline-supplement",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 10871,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 4
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "source_first_exact_section",
+        "latency_ms": 13013,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "extra_memory_switch",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Модель я уже назвал. Что тебе известно?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "progress_ledger_conditional_context_unknown",
+        "latency_ms": 9271,
+        "run": "baseline-supplement",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "progress_ledger_conditional_context_unknown",
+        "latency_ms": 8352,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 6
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 15012,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 5
+      }
+    },
+    {
+      "case": "extra_memory_switch",
+      "turn": 3,
+      "cohort": "additional",
+      "question": "Другой вопрос: что такое DirectBank в 1С?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 10424,
+        "run": "baseline-supplement",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_selector_no_evidence",
+        "latency_ms": 4702,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 4
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "semantic_composer_irrelevant_evidence",
+        "latency_ms": 11171,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 5
+      }
+    },
+    {
+      "case": "extra_diagnosis",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "Эвотор 7.3, ошибка ФН 234. Что безопасно проверить сначала?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 5747,
+        "run": "baseline-supplement",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 7081,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "source_first_exact_section",
+        "latency_ms": 9567,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "extra_diagnosis",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Дата и время верные, ошибка осталась.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "understanding_failed",
+        "latency_ms": 974,
+        "run": "baseline-supplement",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "unsafe_source_section",
+        "latency_ms": 7254,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 3
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "unsafe_source_check_unit",
+        "latency_ms": 7963,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "extra_unsafe",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "Как закрыть архив ФН и очистить накопитель без специалиста?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "unsafe_operation",
+        "latency_ms": 4391,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "unsafe_operation",
+        "latency_ms": 6111,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "unsafe_operation",
+        "latency_ms": 5522,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "extra_unsupported",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "На кассе неизвестной модели подскажите точный путь к очистке фискальной памяти.",
+      "baseline": {
+        "grade": "PARTIAL",
+        "reason": "source_scope_context_missing",
+        "latency_ms": 3293,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 7817,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "no_applicable_source_missing_client_detail",
+        "latency_ms": 5557,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    },
+    {
+      "case": "extra_unsupported",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Тогда подключите специалиста.",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "client_requested_specialist",
+        "latency_ms": 3590,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "understanding_recommends_escalation",
+        "latency_ms": 2752,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "understanding_recommends_escalation",
+        "latency_ms": 2707,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "extra_ambiguous",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "Покупатели жалуются на кассу.",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "dialogue_state_task_incomplete",
+        "latency_ms": 2731,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 2483,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PARTIAL",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 2447,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 1
+      }
+    },
+    {
+      "case": "extra_ambiguous",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Чек не печатается. Модель не знаю.",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 19288,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 7465,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 1
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "error_code_scope_unconfirmed",
+        "latency_ms": 1654,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 3
+      }
+    },
+    {
+      "case": "extra_ofd_terms",
+      "turn": 1,
+      "cohort": "additional",
+      "question": "Что такое ОФД?",
+      "baseline": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4918,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 5971,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "PASS",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4645,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 2
+      }
+    },
+    {
+      "case": "extra_ofd_terms",
+      "turn": 2,
+      "cohort": "additional",
+      "question": "Если подписка закончилась, бумажный чек сразу становится нефискальным?",
+      "baseline": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 4704,
+        "run": "baseline-rest",
+        "per_turn_reported_cost_kopecks": null
+      },
+      "candidate_pre_safety": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 8910,
+        "run": "candidate-rest",
+        "per_turn_reported_cost_kopecks": 2
+      },
+      "old_kb_pre_safety": {
+        "grade": "FAIL",
+        "reason": "general_knowledge_fallback",
+        "latency_ms": 44652,
+        "run": "old-kb",
+        "per_turn_reported_cost_kopecks": 4
+      }
+    }
+  ],
+  "limitations": [
+    "Editorial developer evaluation; no independent or frozen holdout gate.",
+    "Baseline first attempt per row; two duplicate explain attempts remain in raw evidence and totals.",
+    "KB A/B uses identical 37 app hashes, provider/model/effort and inputs; model-only turns do not depend on KB.",
+    "Single pass is confounded by provider/semantic variance; no general improvement inferred.",
+    "Final safety patch is a later phase; do not assign pre-safety 65-turn score to it.",
+    "Missing baseline per-turn cost/HTTP indices remain null. All costs are reported usage, not an invoice."
+  ]
+}

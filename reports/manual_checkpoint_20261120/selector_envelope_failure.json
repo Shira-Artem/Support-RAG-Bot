@@ -1,0 +1,22 @@
+{
+  "case": "abc_21",
+  "turn": 1,
+  "error": {
+    "stage": "validate_selector_response",
+    "error_type": "SelectorDecisionError",
+    "http_status": null,
+    "provider_error_code": null,
+    "provider_error_param": null,
+    "duration_ms": 12286,
+    "schema_error": "invalid_selector_json",
+    "provider_error_category": null,
+    "provider_usage": null,
+    "retry_after_seconds": null
+  },
+  "http_status": 200,
+  "finish_reason": "stop",
+  "content": "```json\n{\n  \"mode\": \"select\",\n  \"selected_ids\": [\n    \"ev-0b385a361f93552268b912f2\",\n    \"ev-589cc323d97f7f5bf58c01f5\",\n    \"ev-2ffbd7f8da515ba5fcac94c5\",\n    \"ev-bb1923d50fa5c44ce377328c\",\n    \"ev-e3b0f2399b222054de643252\",\n    \"ev-d4a5ca36d4301ed92796834a\",\n    \"ev-cb27af62a1fb2cfccba63e2d\",\n    \"ev-86baa565c5df5416480a01e3\",\n    \"ev-e253e77e1a54fdef287c1554\"\n  ],\n  \"clarification_slot\": null,\n  \"reason_code\": \"direct_evidence\"\n}\n```",
+  "completion_tokens": 383,
+  "max_completion_tokens": 1024,
+  "interpretation": "Complete JSON enclosed in a Markdown fence is rejected by selector JSON parsing. IDs and semantic adequacy are not revalidated by this diagnostic; stripping a fence alone would not prove applicability."
+}

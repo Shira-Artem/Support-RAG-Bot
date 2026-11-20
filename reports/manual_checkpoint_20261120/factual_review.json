@@ -1,0 +1,10 @@
+{
+  "case": "extra_ofd_terms/2",
+  "delivered_answer": "Привет!\n\nЭто происходит потому, что в чек не попадает фискальный номер и подпись, которые выдаёт сервис ОФД.\n\nЕсть ли у тебя ещё вопросы по работе кассы?",
+  "assessment": "FAIL: attributes fiscal number/signature generation to OFD. Official FNS definition assigns fiscal-sign formation/verification to the fiscal drive (FN). Normative-word filtering is not factual grounding.",
+  "source_title": "Реестр фискальных накопителей — ФНС России",
+  "source_url": "https://www.nalog.gov.ru/rn77/related_activities/registries/reestr_fiscal/",
+  "source_page_updated": "2024-04-11",
+  "checked_in_cycle": "2026-11-20",
+  "scope": "Checks actor/function attribution only; does not determine legal consequences of unpaid subscriptions or individual tax sanctions. No KB promotion or KB editing."
+}

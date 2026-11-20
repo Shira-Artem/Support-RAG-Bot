@@ -1,0 +1,18 @@
+{
+  "name": "excluded-resume-extra",
+  "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "turns": 2,
+  "http_status_counts": {
+    "200": 5
+  },
+  "reported_cost_kopecks": 7,
+  "reported_total_tokens": 17279,
+  "sqlite_reopen_equal": 2,
+  "error_turns": [],
+  "trace_file": "excluded-resume-extra.json.gz",
+  "trace_sha256": "0c0632965bcc0bc9ad6f51f03ee401acba2d8ff998de0ac0d0158b9d6030cdca",
+  "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+}

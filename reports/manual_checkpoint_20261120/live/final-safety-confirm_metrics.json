@@ -1,0 +1,18 @@
+{
+  "name": "final-safety-confirm",
+  "head": "d5ae08b473104d5e1a6a2716ead760a091c52b85",
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "turns": 9,
+  "http_status_counts": {
+    "200": 13
+  },
+  "reported_cost_kopecks": 17,
+  "reported_total_tokens": 24372,
+  "sqlite_reopen_equal": 9,
+  "error_turns": [],
+  "trace_file": "final-safety-confirm.json.gz",
+  "trace_sha256": "0d88a39448ce0ea0bb6021ab08d6a568bce430f32d76d3823c1eae91c3b0ca49",
+  "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+}

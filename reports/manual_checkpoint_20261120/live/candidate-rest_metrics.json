@@ -1,0 +1,30 @@
+{
+  "name": "candidate-rest",
+  "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "turns": 44,
+  "http_status_counts": {
+    "200": 75,
+    "None": 2
+  },
+  "reported_cost_kopecks": 107,
+  "reported_total_tokens": 133237,
+  "sqlite_reopen_equal": 44,
+  "error_turns": [
+    {
+      "case": "manual_dialogue-13",
+      "turn": 1,
+      "reason": "understanding_failed"
+    },
+    {
+      "case": "extra_fn_status",
+      "turn": 1,
+      "reason": "semantic_selector_failed_closed"
+    }
+  ],
+  "trace_file": "candidate-rest.json.gz",
+  "trace_sha256": "604ba25eff717e5a7d74372bd6b6819677c60dc6facc73a19fcad15baedfe2ed",
+  "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+}

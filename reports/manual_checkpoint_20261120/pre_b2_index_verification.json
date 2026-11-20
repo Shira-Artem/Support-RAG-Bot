@@ -1,0 +1,9 @@
+{
+  "collection": "knowledge_kb_b2_base_20261119",
+  "expected": 672,
+  "actual": 672,
+  "exact_payload_match": true,
+  "source_root": "private pre-B2 snapshot at .local/kb-integration-20261119/baseline",
+  "approved": 206,
+  "draft": 63
+}

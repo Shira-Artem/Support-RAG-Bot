@@ -286,20 +286,26 @@ async def run(cli_args):
     rag = RetrieverRAGAdapter(Retriever(QdrantStore(ReadOnlyQdrant(client), embedding, collection), demo=False))
     output = ROOT / cli_args.output
     private = ROOT / ".local" / ("telegram-equivalent-" + output.stem)
-    private.mkdir(parents=True, exist_ok=False)
+    previous = json.loads(output.read_text(encoding="utf-8")) if getattr(cli_args, "resume", False) else None
+    private.mkdir(parents=True, exist_ok=previous is not None)
     output.parent.mkdir(parents=True, exist_ok=True)
     store_path = private / "conversations.sqlite3"
     store = ConversationStore(store_path)
     expert = ExpertStore(private / "expert.sqlite3")
     os.environ["HANDOFF_OUTBOX_PATH"] = str(private / "handoff.json")
     quota_module._TRACE = private / f"{settings.llm_provider}-http.jsonl"
-    calls = []
-    raw_understanding = []
-    provider_http = []
-    spend_kopecks = 0
+    calls = list(previous.get("generation_calls", [])) if previous else []
+    raw_understanding = list(previous.get("understanding_calls", [])) if previous else []
+    provider_http = list(previous.get("provider_http", [])) if previous else []
+    spend_kopecks = previous.get("reported_cost_kopecks", 0) if previous else 0
     original_generate = source_module.generate
     original_post = httpx.AsyncClient.post
-    http_errors = []
+    http_errors = list(previous.get("provider_errors", [])) if previous else []
+
+    def capture_http_record(record):
+        provider_http.append(record)
+        with (private / "provider-http.jsonl").open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
 
     async def capture_post(client, url, *post_args, **kwargs):
         nonlocal spend_kopecks
@@ -308,7 +314,23 @@ async def run(cli_args):
         if str(url).startswith(provider_prefix) and cli_args.max_cost_kopecks is not None:
             if spend_kopecks >= cli_args.max_cost_kopecks:
                 raise RuntimeError("LIVE cost ceiling reached; stopping before the next provider request")
-        response = await original_post(client, url, *post_args, **kwargs)
+        http_started = perf_counter()
+        request_payload = kwargs.get("json")
+        if request_payload is None:
+            content = kwargs.get("content")
+            try:
+                request_payload = json.loads(content) if content else None
+            except (TypeError, ValueError):
+                request_payload = None
+        try:
+            response = await original_post(client, url, *post_args, **kwargs)
+        except Exception as exc:
+            if str(url).startswith(provider_prefix):
+                capture_http_record({"status": None, "transport_error": type(exc).__name__,
+                    "at_utc": datetime.now(timezone.utc).isoformat(),
+                    "duration_ms": round((perf_counter()-http_started)*1000),
+                    "request_payload": request_payload})
+            raise
         if str(url).startswith(provider_prefix):
             usage = {}
             try:
@@ -318,7 +340,15 @@ async def run(cli_args):
             reported_cost = usage.get("cost") if isinstance(usage, dict) else None
             if isinstance(reported_cost, int) and not isinstance(reported_cost, bool):
                 spend_kopecks += reported_cost
-            provider_http.append({"status": response.status_code,
+            try:
+                response_payload = response.json()
+            except ValueError:
+                response_payload = None
+            capture_http_record({"status": response.status_code,
+                "at_utc": datetime.now(timezone.utc).isoformat(),
+                "duration_ms": round((perf_counter() - http_started) * 1000),
+                "request_payload": request_payload,
+                "response_payload": response_payload,
                 "cost_kopecks": reported_cost if isinstance(reported_cost, int) else None,
                 "prompt_tokens": usage.get("prompt_tokens") if isinstance(usage, dict) else None,
                 "completion_tokens": usage.get("completion_tokens") if isinstance(usage, dict) else None,
@@ -372,6 +402,15 @@ async def run(cli_args):
         "reasoning_effort": (settings.groq_reasoning_effort if settings.llm_provider == "groq"
                              else settings.hubris_reasoning_effort),
         "max_cost_kopecks": cli_args.max_cost_kopecks, "turns": []}
+    if previous:
+        assert previous["source_hashes"] == result["source_hashes"], "Cannot resume on changed app code"
+        assert (previous["collection"], previous["model"], previous["reasoning_effort"]) == (
+            result["collection"], result["model"], result["reasoning_effort"]), "Cannot resume with changed profile"
+        started_cases = list(dict.fromkeys(t["case"] for t in previous["turns"]))
+        assert cli_args.cases.split(",")[:len(started_cases)] == started_cases, "Resume must preserve the original scenario order"
+        assert all(CASES[t["case"]][t["turn"]-1] == t["question"] for t in previous["turns"]), "Resume inputs changed"
+        result = previous
+        result.setdefault("resumptions", []).append(datetime.now(timezone.utc).isoformat())
     def save():
         result["generation_calls"] = calls
         result["understanding_calls"] = raw_understanding
@@ -394,11 +433,22 @@ async def run(cli_args):
         bot = importlib.import_module("bot")
         logging.getLogger().setLevel(logging.WARNING)
         for case_id in cli_args.cases.split(","):
-            cid = store.new(42, 42)
+            completed = [t for t in result["turns"] if t["case"] == case_id]
+            if len(completed) == len(CASES[case_id]):
+                continue
+            if completed:
+                assert result["turns"][-1]["case"] == case_id, "Partial case must be the latest saved conversation"
+                cid = store.state(42, 42)["conversation_id"]
+                assert store.dialogue_state(cid).to_dict() == completed[-1]["state_after"], "Saved state changed"
+            else:
+                cid = store.new(42, 42)
             for index, question in enumerate(CASES[case_id], 1):
+                if any(t["turn"] == index for t in completed):
+                    continue
                 bot.conversations = ConversationStore(store_path)
                 before = bot.conversations.dialogue_state(cid)
                 start_calls, start_understanding = len(calls), len(raw_understanding)
+                start_http = len(provider_http)
                 reply = AsyncMock()
                 message = SimpleNamespace(text=question, reply_text=reply,
                     chat=SimpleNamespace(send_action=AsyncMock()))
@@ -423,14 +473,21 @@ async def run(cli_args):
                     "same_task": before.task_id == after.task_id,
                     "understanding": [h.get("understanding") for h in history[-2:] if h.get("role") == "user"],
                     "diagnostics": diagnostics, "generation_call_indices": list(range(start_calls, len(calls))),
-                    "understanding_call_indices": list(range(start_understanding, len(raw_understanding)))}
+                    "understanding_call_indices": list(range(start_understanding, len(raw_understanding))),
+                    "provider_http_indices": list(range(start_http, len(provider_http)))}
                 result["turns"].append(item)
                 save()
                 terminal_record({k: item[k] for k in ("case", "turn", "answer", "latency_ms",
                                                        "same_task", "sqlite_reopen_equal")})
                 if diagnostics and diagnostics.get("generation_status") == "error":
-                    terminal_record({"status": "provider_or_runtime_error", "action": "stopping bounded batch"})
-                    return
+                    shape_error = (raw_understanding and raw_understanding[-1].get("error_code")
+                                   in {"structured_response_shape", "invalid_json"})
+                    schema_error = shape_error or bool((diagnostics.get("generation_error") or {}).get("schema_error"))
+                    if not (schema_error and getattr(cli_args, "continue_after_understanding_shape_error", False)):
+                        terminal_record({"status": "provider_or_runtime_error", "action": "stopping bounded batch"})
+                        return
+                    terminal_record({"status": "recorded_model_schema_error",
+                        "action": "continue with next planned user message; no retry"})
                 pause = cli_args.pause
                 # Use observed provider TPM headroom between synthetic turns.
                 # This harness scheduling does not alter runtime retry policy.

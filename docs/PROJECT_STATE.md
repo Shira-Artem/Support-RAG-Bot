@@ -2278,3 +2278,118 @@ getMe/deleteWebhook и два последовательных getUpdates HTTP20
 владельца. Известные quality ограничения и прежний production NO-GO сохраняются.
 Эта запись и обновление runtime-статуса дорожной карты — только документация,
 повторного старта бота не требуют. Актуальный tip определяется Git.
+
+
+### 2026-11-20 — контрольная точка ручных диалогов и начало парной диагностики
+
+Входной main/remote main 44763e0; feature 1b52806 уже объединена через 21b5fe9.
+Это противоречит предпосылке нового задания о неслитой KB; реальное состояние
+проверено Git remote refs, receipt и полным payload Qdrant: green/833 exact
+соответствует 204 approved, 65 draft. Worker 3232/launcher13568 на 1d88b42;
+все source hashes совпадают, getUpdates HTTP200. Polling/коллекции/.env не менялись.
+SQLite quick_check=ok; private backup и обезличенный экспорт 24 ходов/13 диалогов,
+24 raw Understanding сохранены. Редакционная матрица: 3 PASS/6 PARTIAL/15 FAIL.
+Причины отделены от гипотез: потеря контекста в general prompt/relevance; bare
+ФН-number → reported_error; повтор intake при известном symptom; фрагментация
+проверки Эвотор; billing projection АТОЛ; Composer/relevance DirectBank;
+неподтверждённые normative claims ОФД. Два одинаковых входных сообщения ОФД
+не доказывают два ответа на один update. Отсутствующие trace не восстановлены.
+[Отчёт](../reports/manual_checkpoint_20261120/report.md),
+[матрица](../reports/manual_checkpoint_20261120/manual_matrix.md),
+[65 замороженных ходов](../reports/manual_checkpoint_20261120/scenarios.json).
+По прямому заданию владельца разрешён локальный checkpoint commit; push не
+выполняется. Baseline Hubris на текущей approved KB начат до app-изменений.
+Следующий шаг: закончить baseline, реализовать максимум три точечных механизма
+из отчёта и выполнить парный replay. Общий production NO-GO; A7/PartB/Exp3
+не открываются; новая архитектура не начинается.
+
+
+### 2026-11-20 — ограниченный candidate после диагностической контрольной точки
+
+Checkpoint9119f04 создан локально по явному заданию владельца; push нет.
+M05 output predicates воспроизведены: единственный отказ — relevance к последней
+реплике, saved subject overlap проходит. Исправлены три механизма в прежнем
+тракте: task context обычного ответа; различение FN equipment/status и incident
+с учётом object/symptom при intake; полнота существующего normative output gate.
+Без новой архитектуры/model stages/отключения grounding. Первое слишком широкое
+intake правило дало2 новых старых-test failures; сужено до object+symptom,
+expectations сохранены. Итоговый full pytest937 passed/те же10 failed/4 xfailed;
+targeted197 passed. Baseline LIVE52 ходов остановился на реальном HTTP200 с
+неверной structured shape Understanding; завершение идёт на immutable44763e0
+с37/37 canonical source match. Ошибка и первый raw-byte newline mismatch
+сохранены как отрицательные результаты, не заменены успешным retest.
+[Отчёт и сравнение](../reports/manual_checkpoint_20261120/report.md).
+Следующий шаг: завершение baseline и последовательные candidate/oldKB LIVE
+на том же65-turn manifest. Рабочий worker3232 не перезапускается.
+
+
+### 2026-11-20 — candidate65 выявил критическую утечку; существующий safety guard дополнен
+
+Полный повтор65 исходных planned rows:16 PASS/17 PARTIAL/32 FAIL против
+baseline65 15/17/33; это НЕ улучшение quality gate. На extra_unsupported1
+модель выдала выдуманные меню очистки фискальной памяти без approved evidence.
+Understanding information/general/explain ошибочен; shared unsafe_operation_issue
+не содержал этого destructive action family. Candidate NO-GO, не развёрнут.
+В existing third safety mechanism добавлена привязка erase/reset/clear к
+fiscal storage независимо от LLM labels, без новой стадии/ограничений prompt.
+116 targeted passed;950 full passed/те же10 failed/4 xfailed.
+Factual OFD/FN error (подпись якобы от ОФД) подтверждена официальным FNS source
+и остаётся открытой. Нормативный lexical filter не даёт factual safety.
+Selector JSON в Markdown fence и Understanding invalid_json сохранены отдельно
+от HTTP200 structural shape и Hubris HTTP502. Коррекция прежнего общего
+сообщения: второй baseline stop был HTTP502, не structured shape.
+При resume helper ошибочно выбрал общий фильтр;2 лишних turns сохранены отдельно
+и исключены из A/B. Тестовый pointer восстановлен с state equality, manual
+SQLite/worker не тронуты. In-flight billing неизвестен. Добавлена resume
+проверка порядка/входов/кода/профиля и запись каждого HTTP на диск.
+[Полные причины/артефакты](../reports/manual_checkpoint_20261120/report.md).
+Следующий шаг: закончить одинаковый KB A/B на pre-safety app (его процесс
+запущен до правки и не reload), затем26 LIVE turns final safety patch.
+Ни общего GO, ни перехода к новому этапу, ни merge/push в main нет.
+
+
+### 2026-11-20 — LIVE завершены; общий candidate NO-GO, ограниченный safety gate подтверждён
+
+Исходный app+B2:65 unique/67 attempts,15 PASS/17 PARTIAL/33 FAIL; первый
+candidate+B2:65,16/17/32, но1 критическое invented erasure menu — NO-GO.
+Тот же candidate/pre-B2:65,14/21/30;37/37 app hashes идентичны, обе approved-only
+коллекции совпадают с source roots. Нельзя объявить KB победителя по model-only
+разнице или одному проходу. B2 уже merged до этой задачи, повторного merge нет.
+26-turn safety round дал0 dangerous menus, но2 сброса попали в intake раньше
+safety; existing raw-operation guard поднят перед incomplete-task branch.
+Финальные9:6/6 dangerous requests эскалированы, truthful local handoff и два
+other-target controls сохранены. Это узкий gate, не acceptance65/factual quality.
+Последний full952 passed/те же10 failed/4 xfailed. Новый broad quality GO нет.
+Всего234 completed attempts,412 HTTP200/1 HTTP502/9 без HTTP status,
+777537 reported tokens,572 reported коп.; in-flight/неполученный usage неизвестен.
+Все ошибки/повторы/исключённые2 turns сохранены, raw не переименованы в PASS.
+[Таблица](../reports/manual_checkpoint_20261120/comparison.md),
+[компоненты](../reports/manual_checkpoint_20261120/component_distribution.md),
+[итог](../reports/manual_checkpoint_20261120/report.md).
+Следующий experiment: existing grounded Composer + approved factual core для
+ОФД/ФН с повторами; ordinary social без обязательной KB. Эвотор atomic unit,
+DirectBank selector/relevance variance и payment→billing АТОЛ остаются открыты.
+Кандидат сохраняется для ревью, рабочий bot не обновляется. Следующая запись
+зафиксирует окончательное состояние checkout/процесса и контрольные SHA.
+
+
+### 2026-11-20 — итоговая изоляция candidate и сохранность рабочего Telegram
+
+App/safety code зафиксирован3aa1f68d94d2256c8d58e7bfdd71a5cfe55c9551,
+исходный checkpoint9119f04122f090a69c3fc9e5ced0351e022f0024 сохранён.
+Candidate находится в managed worktree manual-conversation-review, ветка
+codex/manual-conversation-20261120; broad quality NO-GO, не интегрирован.
+Основной checkout возвращён на main с прежним app-кодом: git diff app/bot.py
+со startup1d88b42 пуст, все37 source bytes receipt восстановлены (в resolver
+только исходные line endings). Там сохраняются docs/evidence и QA tooling.
+Worker3232/launcher13568 продолжают polling без restart; свежий getUpdates200.
+SQLite quick_check=ok,48 messages и state/feedback/request таблицы совпадают
+с начальным snapshot. Qdrant green/833 exact payload; feature ужеmerged,
+KB blobs неизменны; .env не редактировалась. Второго polling не было.
+952/те же10/4 — candidate full suite;27 passed — QA helpers возвращённого main.
+Реальная доставка specialist не проверена и остаётсяoff. Push не выполнялся.
+[Финальный отчёт](../reports/manual_checkpoint_20261120/report.md),
+[runtime_after](../reports/manual_checkpoint_20261120/runtime_after.json).
+Следующий конкретный experiment — approved factual core ОФД/ФН через existing
+Composer с реальными повторными calls; ordinary social без обязательной KB.
+Production, PartA REVISE/A6 STOP сохраняются. A7/PartB/Exp3 не открыты.

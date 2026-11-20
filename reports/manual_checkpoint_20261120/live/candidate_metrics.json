@@ -1,0 +1,25 @@
+{
+  "name": "candidate",
+  "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "turns": 21,
+  "http_status_counts": {
+    "200": 45,
+    "None": 1
+  },
+  "reported_cost_kopecks": 73,
+  "reported_total_tokens": 114737,
+  "sqlite_reopen_equal": 21,
+  "error_turns": [
+    {
+      "case": "abc_21",
+      "turn": 1,
+      "reason": "semantic_selector_failed_closed"
+    }
+  ],
+  "trace_file": "candidate.json.gz",
+  "trace_sha256": "75d3868ba5b52d15d11bd848e5fe2d3e08a3bb1351929d4458cc3aa134b7cbdd",
+  "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+}

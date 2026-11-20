@@ -1,0 +1,18 @@
+{
+  "name": "baseline-rest",
+  "head": "44763e0aecb23f5fc4e702617f47f1b6230d7ec5",
+  "collection": "knowledge_kb_b2_integrated_20261119",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "turns": 7,
+  "http_status_counts": {
+    "200": 9
+  },
+  "reported_cost_kopecks": 11,
+  "reported_total_tokens": 9751,
+  "sqlite_reopen_equal": 7,
+  "error_turns": [],
+  "trace_file": "baseline-rest.json.gz",
+  "trace_sha256": "5f0283f4cfb30bbcfde85a650e0b2d856228d420dd5504bb5b41f9f2931b6e1b",
+  "raw_trace_completeness": "Initial baseline harness did not save every HTTP request/response or per-turn HTTP indices; no missing trace reconstructed."
+}

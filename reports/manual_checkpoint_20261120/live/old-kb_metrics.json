@@ -1,0 +1,19 @@
+{
+  "name": "old-kb",
+  "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+  "collection": "knowledge_kb_b2_base_20261119",
+  "model": "openai/gpt-oss-20b",
+  "reasoning_effort": "low",
+  "turns": 65,
+  "http_status_counts": {
+    "200": 117,
+    "None": 6
+  },
+  "reported_cost_kopecks": 161,
+  "reported_total_tokens": 207032,
+  "sqlite_reopen_equal": 65,
+  "error_turns": [],
+  "trace_file": "old-kb.json.gz",
+  "trace_sha256": "09d5e99a8e85de0abc482e38853949e5e17ce23ee26cb85f5b63a5e97747d0fd",
+  "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+}

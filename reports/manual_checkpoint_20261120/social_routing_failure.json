@@ -1,0 +1,116 @@
+[
+  {
+    "variant": "baseline",
+    "question": "Спасибо. А как проходит твой день?",
+    "answer": "Для этой задачи не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+    "state": {
+      "intent": "general",
+      "operation": "unknown",
+      "object": null,
+      "request_type": "information"
+    },
+    "coordinator": {
+      "request_type": "information",
+      "route": "grounded_information",
+      "task_relation": "new_task",
+      "current_subgoal": null,
+      "required_action": "retrieve_and_quote_focused_approved_evidence",
+      "rationale": "information_request_requires_grounded_evidence"
+    },
+    "raw_understanding": [
+      {
+        "request_type": "information",
+        "relation": "new_task",
+        "intent": "general",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "error_codes": [],
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      }
+    ],
+    "reason": "insufficient_applicable_evidence"
+  },
+  {
+    "variant": "candidate",
+    "question": "Спасибо. А как проходит твой день?",
+    "answer": "Здравствуйте! Чем могу помочь?",
+    "state": {
+      "intent": "unknown",
+      "operation": "unknown",
+      "object": null,
+      "request_type": "unknown"
+    },
+    "coordinator": {
+      "request_type": "greeting",
+      "route": "conversation",
+      "task_relation": "new_task",
+      "current_subgoal": null,
+      "required_action": "respond_or_handoff",
+      "rationale": "social_or_handoff_turn"
+    },
+    "raw_understanding": [
+      {
+        "request_type": "greeting",
+        "relation": "new_task",
+        "intent": "general",
+        "operation": "unknown",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "error_codes": [],
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0
+      }
+    ],
+    "reason": "source_first_social_turn"
+  },
+  {
+    "variant": "pre_b2",
+    "question": "Спасибо. А как проходит твой день?",
+    "answer": "Привет! Спасибо, что спросил. Мой день проходит в основном в том, чтобы помогать владельцам магазинов разобраться с их кассами, фискальными накопителями и оператором фискальных данных, чтобы всё работало без сбоев. Я отвечаю на вопросы, разъясняю, как правильно подключать оборудование и какие документы нужно отправлять в ФНС.\n\nКак я могу помочь тебе сегодня?",
+    "state": {
+      "intent": "general",
+      "operation": "explain",
+      "object": null,
+      "request_type": "information"
+    },
+    "coordinator": {
+      "request_type": "information",
+      "route": "grounded_information",
+      "task_relation": "new_task",
+      "current_subgoal": null,
+      "required_action": "retrieve_and_quote_focused_approved_evidence",
+      "rationale": "information_request_requires_grounded_evidence"
+    },
+    "raw_understanding": [
+      {
+        "request_type": "information",
+        "relation": "new_task",
+        "intent": "general",
+        "operation": "explain",
+        "object": null,
+        "object_evidence": null,
+        "goal": null,
+        "symptom": null,
+        "error_codes": [],
+        "entities": [],
+        "unknown_facts": [],
+        "specialist_requested": false,
+        "specialist_evidence": null,
+        "confidence": 0.9
+      }
+    ],
+    "reason": "general_knowledge_fallback"
+  }
+]

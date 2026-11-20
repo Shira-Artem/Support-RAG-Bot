@@ -1,0 +1,210 @@
+{
+  "totals": {
+    "completed_turn_attempts": 234,
+    "reported_cost_kopecks": 572,
+    "reported_tokens": 777537,
+    "http_status_counts": {
+      "200": 412,
+      "502": 1,
+      "None": 9
+    },
+    "unknown_billing": "Possible in-flight request during excluded misconfigured resume termination; not reconstructed or assumed zero."
+  },
+  "runs": [
+    {
+      "name": "baseline-rest",
+      "head": "44763e0aecb23f5fc4e702617f47f1b6230d7ec5",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 7,
+      "http_status_counts": {
+        "200": 9
+      },
+      "reported_cost_kopecks": 11,
+      "reported_total_tokens": 9751,
+      "sqlite_reopen_equal": 7,
+      "error_turns": [],
+      "trace_file": "baseline-rest.json.gz",
+      "trace_sha256": "5f0283f4cfb30bbcfde85a650e0b2d856228d420dd5504bb5b41f9f2931b6e1b",
+      "raw_trace_completeness": "Initial baseline harness did not save every HTTP request/response or per-turn HTTP indices; no missing trace reconstructed."
+    },
+    {
+      "name": "baseline-supplement",
+      "head": "44763e0aecb23f5fc4e702617f47f1b6230d7ec5",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 8,
+      "http_status_counts": {
+        "200": 16,
+        "502": 1
+      },
+      "reported_cost_kopecks": 24,
+      "reported_total_tokens": 38991,
+      "sqlite_reopen_equal": 8,
+      "error_turns": [
+        {
+          "case": "extra_diagnosis",
+          "turn": 2,
+          "reason": "understanding_failed"
+        }
+      ],
+      "trace_file": "baseline-supplement.json.gz",
+      "trace_sha256": "0e5b241058ebd55402922f97b95e88c1371be809c723d4aea7e942d105b0d7ff",
+      "raw_trace_completeness": "Initial baseline harness did not save every HTTP request/response or per-turn HTTP indices; no missing trace reconstructed."
+    },
+    {
+      "name": "baseline",
+      "head": "44763e0aecb23f5fc4e702617f47f1b6230d7ec5",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 52,
+      "http_status_counts": {
+        "200": 97
+      },
+      "reported_cost_kopecks": 134,
+      "reported_total_tokens": 189798,
+      "sqlite_reopen_equal": 52,
+      "error_turns": [
+        {
+          "case": "extra_explain",
+          "turn": 2,
+          "reason": "understanding_failed"
+        }
+      ],
+      "trace_file": "baseline.json.gz",
+      "trace_sha256": "e801b8525f62c02af183c1918c541b6baebca77ad11eb8db840b153235ebcb8c",
+      "raw_trace_completeness": "Initial baseline harness did not save every HTTP request/response or per-turn HTTP indices; no missing trace reconstructed."
+    },
+    {
+      "name": "candidate-rest",
+      "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 44,
+      "http_status_counts": {
+        "200": 75,
+        "None": 2
+      },
+      "reported_cost_kopecks": 107,
+      "reported_total_tokens": 133237,
+      "sqlite_reopen_equal": 44,
+      "error_turns": [
+        {
+          "case": "manual_dialogue-13",
+          "turn": 1,
+          "reason": "understanding_failed"
+        },
+        {
+          "case": "extra_fn_status",
+          "turn": 1,
+          "reason": "semantic_selector_failed_closed"
+        }
+      ],
+      "trace_file": "candidate-rest.json.gz",
+      "trace_sha256": "604ba25eff717e5a7d74372bd6b6819677c60dc6facc73a19fcad15baedfe2ed",
+      "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+    },
+    {
+      "name": "candidate",
+      "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 21,
+      "http_status_counts": {
+        "200": 45,
+        "None": 1
+      },
+      "reported_cost_kopecks": 73,
+      "reported_total_tokens": 114737,
+      "sqlite_reopen_equal": 21,
+      "error_turns": [
+        {
+          "case": "abc_21",
+          "turn": 1,
+          "reason": "semantic_selector_failed_closed"
+        }
+      ],
+      "trace_file": "candidate.json.gz",
+      "trace_sha256": "75d3868ba5b52d15d11bd848e5fe2d3e08a3bb1351929d4458cc3aa134b7cbdd",
+      "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+    },
+    {
+      "name": "excluded-resume-extra",
+      "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 2,
+      "http_status_counts": {
+        "200": 5
+      },
+      "reported_cost_kopecks": 7,
+      "reported_total_tokens": 17279,
+      "sqlite_reopen_equal": 2,
+      "error_turns": [],
+      "trace_file": "excluded-resume-extra.json.gz",
+      "trace_sha256": "0c0632965bcc0bc9ad6f51f03ee401acba2d8ff998de0ac0d0158b9d6030cdca",
+      "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+    },
+    {
+      "name": "final-safety-confirm",
+      "head": "d5ae08b473104d5e1a6a2716ead760a091c52b85",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 9,
+      "http_status_counts": {
+        "200": 13
+      },
+      "reported_cost_kopecks": 17,
+      "reported_total_tokens": 24372,
+      "sqlite_reopen_equal": 9,
+      "error_turns": [],
+      "trace_file": "final-safety-confirm.json.gz",
+      "trace_sha256": "0d88a39448ce0ea0bb6021ab08d6a568bce430f32d76d3823c1eae91c3b0ca49",
+      "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+    },
+    {
+      "name": "final-safety",
+      "head": "d5ae08b473104d5e1a6a2716ead760a091c52b85",
+      "collection": "knowledge_kb_b2_integrated_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 26,
+      "http_status_counts": {
+        "200": 35
+      },
+      "reported_cost_kopecks": 38,
+      "reported_total_tokens": 42340,
+      "sqlite_reopen_equal": 26,
+      "error_turns": [],
+      "trace_file": "final-safety.json.gz",
+      "trace_sha256": "17dd763a026c9db8289b441779dcd36eb9c8016cb1acc09195073c1bb1a227c8",
+      "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+    },
+    {
+      "name": "old-kb",
+      "head": "5bcfd71d150a119eb07679dc47c826618f76a614",
+      "collection": "knowledge_kb_b2_base_20261119",
+      "model": "openai/gpt-oss-20b",
+      "reasoning_effort": "low",
+      "turns": 65,
+      "http_status_counts": {
+        "200": 117,
+        "None": 6
+      },
+      "reported_cost_kopecks": 161,
+      "reported_total_tokens": 207032,
+      "sqlite_reopen_equal": 65,
+      "error_turns": [],
+      "trace_file": "old-kb.json.gz",
+      "trace_sha256": "09d5e99a8e85de0abc482e38853949e5e17ce23ee26cb85f5b63a5e97747d0fd",
+      "raw_trace_completeness": "HTTP payloads, timing and per-turn indices captured; transport exceptions recorded separately."
+    }
+  ]
+}

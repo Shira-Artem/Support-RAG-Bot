@@ -1,0 +1,78 @@
+{
+  "checked_at": "2026-11-20T07:46:26.688687+00:00",
+  "head": "44763e0aecb23f5fc4e702617f47f1b6230d7ec5",
+  "branch": "main",
+  "origin_main_cached": "44763e0aecb23f5fc4e702617f47f1b6230d7ec5",
+  "feature": "1b5280683ed922e67c41e119ba2743814c1ccdb5",
+  "feature_is_ancestor": true,
+  "runtime": {
+    "pid": 3232,
+    "started_at": "2026-11-20T07:03:29.001955+00:00",
+    "commit": "1d88b4209380c7219e639b87ea2b2139682a011a",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "points": 833,
+    "provider": "hubris",
+    "model": "openai/gpt-oss-20b",
+    "reasoning_effort": "low",
+    "rag_engine": "source_first",
+    "semantic_composer_enabled": true,
+    "ai_coordinator_enabled": true,
+    "handoff_enabled": false
+  },
+  "runtime_source_mismatches": [],
+  "source_file_count": 37,
+  "kb": {
+    "approved": 204,
+    "draft": 65,
+    "expected_points": 833,
+    "actual_points": 833,
+    "status": "green",
+    "exact_payload_match": true
+  },
+  "collections": [
+    {
+      "name": "knowledge_kb_b2_integrated_20261119",
+      "points": 833
+    },
+    {
+      "name": "knowledge_kb_b2_base_20261119",
+      "points": 672
+    },
+    {
+      "name": "knowledge_stage3_retrieval_20261022",
+      "points": 934
+    }
+  ],
+  "latest_transport": {
+    "getMe": {
+      "time": "2026-11-20T07:03:29.014957+00:00",
+      "method": "getMe",
+      "http_status": 200
+    },
+    "deleteWebhook": {
+      "time": "2026-11-20T07:03:29.581955+00:00",
+      "method": "deleteWebhook",
+      "http_status": 200
+    },
+    "getUpdates": {
+      "time": "2026-11-20T07:46:07.531077+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    "sendMessage": {
+      "time": "2026-11-20T07:29:31.242732+00:00",
+      "method": "sendMessage",
+      "http_status": 200
+    },
+    "sendChatAction": {
+      "time": "2026-11-20T07:29:27.654874+00:00",
+      "method": "sendChatAction",
+      "http_status": 200
+    }
+  },
+  "limitations": [
+    "Cached origin/main is not a fresh remote ref proof.",
+    "No getUpdates call was made by this check.",
+    "Process liveness is verified separately via Windows process inventory."
+  ]
+}

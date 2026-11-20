@@ -1,0 +1,22 @@
+[
+  {
+    "kb": "pre_b2",
+    "auto_tariff_accepted": false,
+    "bank_claim_support": {
+      "Измените настройки банковского обмена.": false,
+      "Повторно импортируйте банковскую выписку.": false,
+      "Переподключите 1С:ДиректБанк.": false
+    },
+    "interpretation": "Current B2 explicitly documents bank configuration: source support alone is not task applicability. Auto tariff / repeated import / reconnection must stay rejected. Offline grounding check, not LIVE generation."
+  },
+  {
+    "kb": "current_b2",
+    "auto_tariff_accepted": false,
+    "bank_claim_support": {
+      "Измените настройки банковского обмена.": true,
+      "Повторно импортируйте банковскую выписку.": false,
+      "Переподключите 1С:ДиректБанк.": false
+    },
+    "interpretation": "Current B2 explicitly documents bank configuration: source support alone is not task applicability. Auto tariff / repeated import / reconnection must stay rejected. Offline grounding check, not LIVE generation."
+  }
+]

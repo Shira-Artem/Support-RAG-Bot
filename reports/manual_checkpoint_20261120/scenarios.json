@@ -1,0 +1,492 @@
+{
+  "frozen_before_runtime_changes": true,
+  "historical_source": "experiments/architecture_recovery_audit/bplus_task_operation_24_frozen_20261027.json",
+  "missing_historical_questions": [],
+  "scenarios": [
+    {
+      "id": "abc_01",
+      "cohort": "historical_abc",
+      "messages": [
+        "На Эвотор 7.3 чеки пробиваются, но перестали передаваться в ОФД. Интернет работает. Что проверить дальше?"
+      ],
+      "grade": "A",
+      "question_sha256": "beb294d891dabaabe61002c0789c2972d017ab56a0dd389be715edf6c027e4bb",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_02",
+      "cohort": "historical_abc",
+      "messages": [
+        "На Эвотор появилась ошибка ФН 231. С чем она может быть связана и с чего безопасно начать диагностику?"
+      ],
+      "grade": "A",
+      "question_sha256": "94548276ffd61cb2952f5907a2ae923c87a68739e56f1339cd5e148fa2ac99a7",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_03",
+      "cohort": "historical_abc",
+      "messages": [
+        "На Эвотор неправильно отображается дата и время. Может ли это влиять на работу фискального накопителя?"
+      ],
+      "grade": "B",
+      "question_sha256": "919237fe7414286e11ad8aab9ecd2a6776771d6c44dfbbe41ac35c081459405c",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_04",
+      "cohort": "historical_abc",
+      "messages": [
+        "На Эвотор 6 не получается закрыть смену. Как определить причину?"
+      ],
+      "grade": "B",
+      "question_sha256": "251076d64e4fb10856b040a9e75ade10889b35ad439f33a6d3f49899ba21bc87",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_05",
+      "cohort": "historical_abc",
+      "messages": [
+        "На Эвотор при продаже маркированного товара появляется ошибка проверки кода. Что проверить в первую очередь?"
+      ],
+      "grade": "A",
+      "question_sha256": "be3e9fd3eb03dc9cf7bb4ef0f9364a3a04c34b80c1cc4ec5fe620d2cec912a09",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_06",
+      "cohort": "historical_abc",
+      "messages": [
+        "На Эвотор при продаже маркированного товара появляется ошибка проверки кода. Что проверить в первую очередь?"
+      ],
+      "grade": "A",
+      "question_sha256": "be3e9fd3eb03dc9cf7bb4ef0f9364a3a04c34b80c1cc4ec5fe620d2cec912a09",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_07",
+      "cohort": "historical_abc",
+      "messages": [
+        "На кассе aQsi появилась ошибка ФН 7. Что она означает и что проверить?"
+      ],
+      "grade": "A",
+      "question_sha256": "cffc83e0a0ace135996d60c3b56c452d4633f7cc02541a8816ff0e141c56a5cd",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_08",
+      "cohort": "historical_abc",
+      "messages": [
+        "Касса aQsi не видит товар, хотя он добавлен в каталог. Как разобраться?"
+      ],
+      "grade": "A",
+      "question_sha256": "07cb4962375c4fd50431f5edabde2f972e2910c1712ae408b99da3708c80a7e5",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_09",
+      "cohort": "historical_abc",
+      "messages": [
+        "На кассе aQsi не работает сканер штрихкодов. Как проверить подключение?"
+      ],
+      "grade": "B",
+      "question_sha256": "57dbffc893ca195b73f3e2a9b5e84381ac27e8e17739fc90e8d37a684ac67747",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_10",
+      "cohort": "historical_abc",
+      "messages": [
+        "На aQsi не получается продать маркированный товар. Что нужно проверить перед продажей?"
+      ],
+      "grade": "B",
+      "question_sha256": "fa46ee423ea1b2bad7021cc5a90a77c69f6cf724a35da4b3d356c211db66cae2",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_11",
+      "cohort": "historical_abc",
+      "messages": [
+        "На кассе aQsi появилась ошибка ФН 161 — документ не сохранён. Какие безопасные действия доступны?"
+      ],
+      "grade": "A",
+      "question_sha256": "70dab6f7ca3e7bea64bf177c429ed1d2cf2ce659197b9bc1dc6fb5372b45141c",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_12",
+      "cohort": "historical_abc",
+      "messages": [
+        "Я подключаю aQsi Online. Как правильно начать фискализацию кассы?"
+      ],
+      "grade": "A",
+      "question_sha256": "1c72199790a9f9ee4c59cb4c4269b05b4a0deb159e061538c8634dced2a60c75",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_13",
+      "cohort": "historical_abc",
+      "messages": [
+        "В aQsi Online нужно добавить нового сотрудника и ограничить его права. Как это сделать?"
+      ],
+      "grade": "B",
+      "question_sha256": "5cc1facdd8a97e25f698b54935122393ebabc5bcddfca1aa7f84137165654712",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_14",
+      "cohort": "historical_abc",
+      "messages": [
+        "Как в aQsi Online оформить частичный возврат покупателю?"
+      ],
+      "grade": "A",
+      "question_sha256": "a366b887c19eac431a5ef1dccdb5d05b25a312502a7299964c4c151e9d2ba196",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_15",
+      "cohort": "historical_abc",
+      "messages": [
+        "Как подключить aQsi Online к 1С? Что необходимо подготовить?"
+      ],
+      "grade": "C",
+      "question_sha256": "b5935e38b3f97fa9138b4f746c4265bf0905f26b38ab2cf220d30d59dcd2bd7e",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_16",
+      "cohort": "historical_abc",
+      "messages": [
+        "Чек в aQsi Online сформировался, но покупатель его не получил. Что можно проверить?"
+      ],
+      "grade": "C",
+      "question_sha256": "3ff6c6b1f39dd6d97c61f5d22af01f06af6f65e0fa9226000de5ab107535b79a",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_17",
+      "cohort": "historical_abc",
+      "messages": [
+        "В АТОЛ Онлайн появилась ошибка 128 при отправке запроса. С чего начать диагностику?"
+      ],
+      "grade": "B",
+      "question_sha256": "b621f95a523c1f87b8e6e995e659d434c793a3daf713677a91f14d3866be200f",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_18",
+      "cohort": "historical_abc",
+      "messages": [
+        "В АТОЛ Онлайн перестали формироваться чеки. Как определить, связано ли это с блокировкой ФН?"
+      ],
+      "grade": "A",
+      "question_sha256": "eef55e4c424805e7bd807dce75c3490c7831d21dc9be3630defeee3571bd04a2",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_19",
+      "cohort": "historical_abc",
+      "messages": [
+        "Как в АТОЛ Онлайн найти чек за определённый период и выгрузить журнал чеков?"
+      ],
+      "grade": "A",
+      "question_sha256": "d3772cf7236aa80cfac8cf952593c9408e7787935934ea256a6c34cbe4a8988a",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_20",
+      "cohort": "historical_abc",
+      "messages": [
+        "В АТОЛ Онлайн закончился оплаченный период обслуживания. Как проверить задолженность и восстановить работу?"
+      ],
+      "grade": "A",
+      "question_sha256": "772b734912bc3d024e8720a892eb5dca8cb97f23f6ad6c5481b048f299f29581",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_21",
+      "cohort": "historical_abc",
+      "messages": [
+        "Мы хотим перейти с ФФД 1.05 на ФФД 1.2. Что необходимо проверить перед переходом?"
+      ],
+      "grade": "B",
+      "question_sha256": "8fd909c3666c9ecf441712dce2bce942648f0bfefcb687b3db4ffcc36d6a80f1",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_22",
+      "cohort": "historical_abc",
+      "messages": [
+        "Как проверить работу интеграции с АТОЛ Онлайн, если запросы отправляются из нашего сайта, но чеки не появляются?"
+      ],
+      "grade": "B",
+      "question_sha256": "1f7e6155091e88332823e699d55200fd53d25170277d45f161dd17eec165f1a3",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_23",
+      "cohort": "historical_abc",
+      "messages": [
+        "В личном кабинете Платформы ОФД касса отображается, но новые чеки не поступают. Что проверить?"
+      ],
+      "grade": "B",
+      "question_sha256": "f266b3d051fff11757e8053fba984f57623945b5ac5c0eb0a227c783897086ba",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "abc_24",
+      "cohort": "historical_abc",
+      "messages": [
+        "Как проверить статус отправки конкретного чека в ФНС через Платформу ОФД?"
+      ],
+      "grade": "A",
+      "question_sha256": "94f2195bf3e0955ce5801d701a2c50d6a122448b3bdb413aae1ece72e0c1954b",
+      "expected": "Independent manual rubric: task addressed, safe applicable evidence; A/B/C is KB sufficiency, not pass rate"
+    },
+    {
+      "id": "manual_dialogue-01",
+      "cohort": "manual",
+      "messages": [
+        "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?"
+      ],
+      "original_turns": [
+        "M01"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-02",
+      "cohort": "manual",
+      "messages": [
+        "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?"
+      ],
+      "original_turns": [
+        "M02"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-03",
+      "cohort": "manual",
+      "messages": [
+        "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?"
+      ],
+      "original_turns": [
+        "M03"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-04",
+      "cohort": "manual",
+      "messages": [
+        "Привет! Я недавно открыл небольшой магазин, вообще не понимаю, как работают онлайн-кассы. Можешь помочь?",
+        "А можешь объяснить попроще, без сложных терминов?"
+      ],
+      "original_turns": [
+        "M04",
+        "M05"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-05",
+      "cohort": "manual",
+      "messages": [
+        "Что такое ОФД и зачем я ему плачу?",
+        "Что такое ОФД и зачем я ему плачу?",
+        "А если ОФД не оплачивать, что будет с моими чеками?"
+      ],
+      "original_turns": [
+        "M06",
+        "M07",
+        "M08"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-06",
+      "cohort": "manual",
+      "messages": [
+        "Эвотор 7.3 печатает чеки, но они не доходят до ОФД. Что делать?"
+      ],
+      "original_turns": [
+        "M09"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-07",
+      "cohort": "manual",
+      "messages": [
+        "Работаем через АТОЛ Онлайн. Оплата прошла, а электронный чек покупателю не пришёл."
+      ],
+      "original_turns": [
+        "M10"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-08",
+      "cohort": "manual",
+      "messages": [
+        "Работаем через АТОЛ Онлайн. Оплата прошла, а электронный чек покупателю не пришёл."
+      ],
+      "original_turns": [
+        "M11"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-09",
+      "cohort": "manual",
+      "messages": [
+        "У меня на кассе ФН-235. Как понять, когда он закончится?",
+        "А если срок уже истёк, что мне делать?",
+        "кассе ФН-235",
+        "эвотор"
+      ],
+      "original_turns": [
+        "M12",
+        "M13",
+        "M14",
+        "M15"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-10",
+      "cohort": "manual",
+      "messages": [
+        "Что такое DirectBank в 1С?"
+      ],
+      "original_turns": [
+        "M16"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-11",
+      "cohort": "manual",
+      "messages": [
+        "Эвотор 7.3 печатает чеки, но они не доходят до ОФД. Что делать?",
+        "Интернет работает, ОФД оплачен.",
+        "А что конкретно мне сейчас открыть и проверить?"
+      ],
+      "original_turns": [
+        "M17",
+        "M18",
+        "M19"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-12",
+      "cohort": "manual",
+      "messages": [
+        "Что такое ОФД и зачем я ему плачу?",
+        "А если ОФД не оплачивать, что будет с моими чеками?"
+      ],
+      "original_turns": [
+        "M20",
+        "M21"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "manual_dialogue-13",
+      "cohort": "manual",
+      "messages": [
+        "У меня что-то с кассой, не работает.",
+        "Ну она вроде включается, только покупатели жалуются.",
+        "Чек не печатается."
+      ],
+      "original_turns": [
+        "M22",
+        "M23",
+        "M24"
+      ],
+      "expected": "Compare with per-turn manual matrix; no ungrounded technical actions or unsupported legal claims"
+    },
+    {
+      "id": "extra_social",
+      "cohort": "additional",
+      "messages": [
+        "Привет! Чем ты можешь помочь?",
+        "Спасибо. А как проходит твой день?"
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_explain",
+      "cohort": "additional",
+      "messages": [
+        "Объясни, зачем магазину онлайн-касса.",
+        "Скажи это ещё проще, на бытовом примере."
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_fn_status",
+      "cohort": "additional",
+      "messages": [
+        "В кассе стоит ФН-1.2. Как узнать остаток срока службы?"
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_memory_switch",
+      "cohort": "additional",
+      "messages": [
+        "На Эвотор 7.3 не печатается чек.",
+        "Модель я уже назвал. Что тебе известно?",
+        "Другой вопрос: что такое DirectBank в 1С?"
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_diagnosis",
+      "cohort": "additional",
+      "messages": [
+        "Эвотор 7.3, ошибка ФН 234. Что безопасно проверить сначала?",
+        "Дата и время верные, ошибка осталась."
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_unsafe",
+      "cohort": "additional",
+      "messages": [
+        "Как закрыть архив ФН и очистить накопитель без специалиста?"
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_unsupported",
+      "cohort": "additional",
+      "messages": [
+        "На кассе неизвестной модели подскажите точный путь к очистке фискальной памяти.",
+        "Тогда подключите специалиста."
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_ambiguous",
+      "cohort": "additional",
+      "messages": [
+        "Покупатели жалуются на кассу.",
+        "Чек не печатается. Модель не знаю."
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    },
+    {
+      "id": "extra_ofd_terms",
+      "cohort": "additional",
+      "messages": [
+        "Что такое ОФД?",
+        "Если подписка закончилась, бумажный чек сразу становится нефискальным?"
+      ],
+      "expected": "Useful direct conversation; preserve stated facts; grounded technical actions only; explicit local-only handoff"
+    }
+  ]
+}
