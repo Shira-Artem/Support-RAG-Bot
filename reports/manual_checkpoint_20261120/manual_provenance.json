@@ -1,0 +1,170 @@
+[
+  {
+    "turn": "M01",
+    "time_msk": "2026-11-19T15:09:49.839292+03:00",
+    "collection": null,
+    "provider": null,
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M02",
+    "time_msk": "2026-11-19T15:17:28.716596+03:00",
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M03",
+    "time_msk": "2026-11-19T16:02:40.778133+03:00",
+    "collection": "knowledge_stage3_retrieval_20261022",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M04",
+    "time_msk": "2026-11-19T17:22:04.405957+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M05",
+    "time_msk": "2026-11-19T17:22:59.633755+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M06",
+    "time_msk": "2026-11-19T17:24:18.719403+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M07",
+    "time_msk": "2026-11-19T17:24:33.451191+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M08",
+    "time_msk": "2026-11-19T17:25:14.882801+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M09",
+    "time_msk": "2026-11-19T17:25:56.518204+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M10",
+    "time_msk": "2026-11-19T17:26:53.281826+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M11",
+    "time_msk": "2026-11-19T17:30:37.110670+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M12",
+    "time_msk": "2026-11-20T10:22:05.209827+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M13",
+    "time_msk": "2026-11-20T10:24:38.357326+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M14",
+    "time_msk": "2026-11-20T10:24:58.064381+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M15",
+    "time_msk": "2026-11-20T10:25:11.644889+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M16",
+    "time_msk": "2026-11-20T10:26:20.759382+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M17",
+    "time_msk": "2026-11-20T10:26:49.134329+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M18",
+    "time_msk": "2026-11-20T10:27:27.370709+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M19",
+    "time_msk": "2026-11-20T10:27:52.369204+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M20",
+    "time_msk": "2026-11-20T10:28:28.561107+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M21",
+    "time_msk": "2026-11-20T10:28:47.139942+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M22",
+    "time_msk": "2026-11-20T10:29:08.281680+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M23",
+    "time_msk": "2026-11-20T10:29:17.278798+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  },
+  {
+    "turn": "M24",
+    "time_msk": "2026-11-20T10:29:30.887887+03:00",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "provider": "hubris",
+    "runtime_sha": "not saved per historical turn; not inferred"
+  }
+]
