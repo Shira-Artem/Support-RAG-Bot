@@ -15,8 +15,8 @@ $crmPython = Join-Path $crmPath '.venv/Scripts/python.exe'
 foreach ($path in @($serviceEnv, $crmEnv, $crmPython)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing prepared local resource: $path" }
 }
-docker start crm-rag-mysql | Out-Null
-if ($LASTEXITCODE -ne 0) { throw 'Prepared isolated MySQL container is unavailable; follow the runbook.' }
+docker start crm-rag-mysql rag-qdrant-1 | Out-Null
+if ($LASTEXITCODE -ne 0) { throw 'Prepared MySQL/Qdrant containers are unavailable; follow the runbook.' }
 function Start-ServiceIfAbsent($port, $python, $arguments, $directory, $stem) {
     if (Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue) {
         $health = Invoke-RestMethod -Uri "http://127.0.0.1:$port/healthz" -TimeoutSec 5

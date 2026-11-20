@@ -2460,3 +2460,27 @@ platform failures/38 subtests; RAG final931/те же10/4. Source filter под�
 config--quiet PASS; Dockerbuild/serverrollout не выполнялись. Startup-конфигурация
 полного CRM bot проверена без polling, затем getMe/deleteWebhook/getUpdates200;
 точные runtime SHA и branch publication фиксируются финальным appendix.
+
+
+### 2026-11-20 — integration branches published, final same-token pilot receipt
+
+Обычные push подтверждены remote refs: RAG app4e16bcc, CRM0edccec + channel fix
+d5f4c70 на codex/crm-rag-integration-20261120. Main не изменён: remote RAG44763e0,
+CRM338f1bb; исходные локальныеmain/семьdirtyCRMфайлов сохранены. Channelfix15
+legacy+RAG MySQL PASS и1 explicit native-channel check PASS. PR не открыт:
+условие полного зелёногоgate/отсутствияblockers не выполнено.
+
+Финальный перезапуск из опубликованного кода: API7560 (4e16bcc), CRM support18592
+и единственный polling13840 (d5f4c70). Startup receipts42/72 source hashes без
+mismatch; APIreadyz200, CRMhealth200, rag_enabled/delivery_enabled=true. Повторные
+getUpdates200, старогоRAGpollingнет. В snapshot owner input/sendMessage ещёне
+наблюдались — вручную полученный Telegram ответ не объявлен. Все legacySQLite
+таблицы равныbackup; original main37/37sourcehashes прежние. One-command launcher
+проверен также повторно: existinghealthy services, без второгоpoller.
+[Runtime](../reports/crm_integration_20261120/runtime_final.json),
+[полный отчёт/ограничения/commits](../reports/crm_integration_20261120/report.md),
+[files](../reports/crm_integration_20261120/changed_files.json).
+Следующий шаг: владелец пишет/start и14сообщений в прежнемботе, затем triage
+пользовательской полезности. Localpilot доступен; production NO-GO, specialist
+acceptance/MAX transport и прежниеqualityfailures сохраняются. Это docs/evidence
+фиксация, повторный app restart не требуется.

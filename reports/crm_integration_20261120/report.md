@@ -119,7 +119,7 @@ separate; historical manual dialogs were not silently imported into new cases.
 | Actual classifier after synthetic catalog seed |20/20 expected routes | Test equipment only; no real purchase/payment |
 | CRM native HTTP six-turn LIVE |All6 inputs persisted; duplicate key reused same native message ID for every turn | Conversation quality below |
 | Real client read-timeout |Client timed out; two409 in-progress; same stored HTTP200 reply after completion | No blind paid retry; greeting answer itself is deterministic |
-| API restart replay |Earlier real response returned byte-equivalent JSON | Persisted state reused; no new model generation for that key |
+| API restart replay |Earlier real response returned structurally identical JSON | Persisted state reused; no new model generation for that key |
 | Independent technical LIVE on final source filter |answered; Hubris20B; exact_source_copy; exactly1 approved document | One useful result does not establish stability |
 | Compose |`docker compose ... config --quiet` passes | Host deployment tested; container image build/server rollout not performed |
 
@@ -200,3 +200,41 @@ receipts are real HTTP200. Ready PR/full production acceptance conditions are
 not met because baseline quality/tests and specialist/MAX gates remain open.
 [All MySQL](crm_mysql.txt), [crash recovery](crm_recovery.txt),
 [Windows](crm_unit_windows.txt), [RAG](rag_full.txt).
+
+
+## Published branches and final runtime identity
+
+Both branches published with normal pushes; remote refs independently checked.
+RAG application [4e16bcc](https://github.com/Shira-Artem/Support-RAG-Bot/commit/4e16bcc25f8637b413bc84f81df2ed3eeb904dd3).
+CRM implementation [0edccec](https://github.com/qazya1/bot_crm_smart/commit/0edccec188b0fdb41bda10fe790140c8bd5c9097),
+verified native-channel follow-up [d5f4c70](https://github.com/qazya1/bot_crm_smart/commit/d5f4c707c873b8ec217d27673ac5e6ff68509021).
+Channel follow-up: legacy AI + RAG targeted MySQL15 passed; explicit native-channel
+publication/recovery test1 passed. The final full MySQL127 and RAG931/same10/4
+results remain distinct from these targeted follow-ups. All commits are on
+`codex/crm-rag-integration-20261120`, not main. No PR: owner required a fully
+passing suite/no blocking risks, and those conditions are not met.
+
+[Final runtime receipt](runtime_final.json): API7560 on4e16bcc, CRM support18592
+and single polling worker13840 on d5f4c70; all42 API /72 CRM source hashes match.
+API authenticated readyz200, CRM health200, RAG and native delivery enabled.
+Repeated getUpdates200 after start. Old RAG poller stopped. Owner input/sendMessage
+was not observed in this captured receipt; manual Telegram acceptance remains
+pending, not assumed successful. Same-token pilot is available at the familiar
+bot; `/start` opens the CRM menu. Checkout disabled. Original main refs remain
+RAG44763e0 remote (local main7eff20d), CRM338f1bb remote (original dirty local
+main7abb3b8). Original seven dirty files and historical candidate remain intact.
+
+The one-command launcher was executed and re-executed idempotently against the
+prepared services. Code/docs whitespace check passes; verbatim answer/terminal
+artifacts retain original trailing spaces. No secrets/private SQLite/env files
+were staged; staged contents were checked against the actual private secret
+values before publishing. [Changed files and local paths](changed_files.json).
+This final evidence/documentation commit does not change runtime app code.
+
+
+Prepared-workstation launcher also resumes the existing `rag-qdrant-1`, needed
+following a workstation reboot; repeated execution leaves healthy processes
+unchanged. Read-only financial-table check in the isolated demo found0 orders
+and0 support_chat_payments. An initial diagnostic query used a nonexistent
+`payments` table name and was corrected using information_schema; no schema/data
+mutation or fictional successful result was inferred from that failed query.

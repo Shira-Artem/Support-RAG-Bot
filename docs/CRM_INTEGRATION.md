@@ -112,7 +112,7 @@ was used by the synthetic integration series.
 ```
 
 Скрипт использует подготовленные private `.local/integration.env` и CRM
-`.local/crm.env`, возобновляет только свой MySQL, поднимает API/CRM и один pilot
+`.local/crm.env`, возобновляет подготовленные MySQL и прежний Qdrant, поднимает API/CRM и один pilot
 poller. Старый RAG poller должен быть остановлен. Existing unrelated listeners
 не завершаются. После запуска проверить health/logs; сами secret values не
 выводить. Telegram: тот же бот → `/start` → свободный текст, `/shop`, `/chat`.
