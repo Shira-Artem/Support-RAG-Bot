@@ -2393,3 +2393,101 @@ KB blobs неизменны; .env не редактировалась. Втор�
 Следующий конкретный experiment — approved factual core ОФД/ФН через existing
 Composer с реальными повторными calls; ordinary social без обязательной KB.
 Production, PartA REVISE/A6 STOP сохраняются. A7/PartB/Exp3 не открыты.
+
+
+### 2026-11-21 — один бот: hybrid UI, честная очередь и явный возврат к ИИ
+
+Владелец прямо уточнил приоритет: один существующий бот с ИИ, CRM и готовым
+Mini App; сейчас подключение, меню, чат, ответы и переключение интерфейсов.
+Остальную бизнес-логику CRM не расширять; LLM/KB/retrieval quality отложены.
+Работа продолжена в прежних integration checkouts RAG bedeca2 и CRM d5f4c70
+поверх сохранённых local deltas; нового router/pipeline/чата нет. Commit/push нет.
+
+Причина молчания подтверждена private MySQL/trace: пользовательский case7
+open/queue/без owner после тестового human request. Следующие сообщения
+сохранены, но queue закономерно не создаёт AI attempts. Последние10/11
+answered/rag_clarify, accepted/failures0; LLM outage не доказан.
+
+Реализован явный идемпотентный возврат unclaimed queue→assistant в том же case
+с revision/owner/call/transfer guards. История прежняя, старые queued messages
+и оплаченные attempts не проигрываются. Existing context selection обновляет
+таймаут после долгого отсутствия; спорные старые inputs остаются review.
+Pending state основан на настоящем attempt; native replay и /chat не печатают
+пять старых сообщений; клиентские реплики, включая первую, сохраняются.
+Очередь/реальный human/pilot различаются; понятные clarification labels.
+Терминальный API failure создаёт одну system status notification через прежний
+outbox с recovery. Двойное удаление menu screen в UIFlow устранено.
+
+Проверки:137 full MySQL PASS/10subtests; дополнительно2 PASS long answer и
+реальный HTTP socket timeout с тем же input replay. Full units422 PASS/те же
+2 Windows failures/38subtests;132 native/menu profile до final first-turn fix,
+который покрыт final full units. Первоначальный MySQL134/1 выявил неполную
+fixture (ручной ответ оставлял pending attempt); заменена настоящим worker.
+Первый browser resume выявил context_expired — отрицательный результат
+сохранён, причина исправлена/проверена9 regressions. Один законченный LIVE
+RAG ход после возврата:4.837299s/answered/accepted/failures0. Native delivery
+synthetic account cancelled из-за несуществующего TG ID — не delivery PASS.
+UI390×844:18messages/18unique, overflow=false; feedback→queue→resume, новый
+пустойcase8, прежнийcase2 после реального restart. Ownercase7 не переключался.
+
+Финальный runtime: API17808 прежний; CRM support10756/launcher6044,
+один poller10960/launcher23140.77/77 source hashes каждого CRMreceipt совпадают,
+health pilot/RAG/delivery true/operator stub, ready stateOK/indexgreen,
+getUpdates200/inflight0. Env/модель/KB/index не менялись. Initial private full
+snapshot+SQLitebackup сохранены. Производный audit summary однажды
+перезаписан helper; immutable initial snapshot не переписывался.
+
+Ограничения: свежий owner Telegram↔MiniApp replay, реальная MAX/staff delivery
+и HTTPS из телефона ещё нужны; loopback ссылка только на этом ПК. Длинный
+native ответ пока preview+ссылка, весь текст в feed: доставка частями требует
+отдельного согласованного outbox contract. При startup прежний OFD catalog
+connector дал HTTP400; покупка не проверялась, checkout пилота заблокирован.
+Production GO не объявлен. Следующий шаг в том же этапе — владелец /chat →
+Вернуться к ИИ → один вопрос попеременно в Telegram/MiniApp, затем feedback,
+возврат и меню магазина; сверка traces. После принятия фундамента — качество ИИ.
+
+[Отчёт, state table, отрицательные результаты, тесты и личная инструкция](../reports/crm_hybrid_20261121/report.md).
+
+
+### 2026-11-21 — естественный разговор: отмена обязательного ручного возврата
+
+Уточнение владельца заменяет UX предыдущего checkpoint: один бот, обычный клиент
+просто пишет; режимы/ИИ/пилот/case и обязательное открытие Mini App скрыты из
+обычного диалога. Старые записи про «Вернуться к ИИ» — исторические, не текущая
+инструкция. Текущий этап foundation сохранён, качество отдельно не принималось.
+
+Реализовано в прежних integration checkout: естественное продолжение без выбора
+вопроса/таймаута; «Не помогло» атомарно продолжает диагностику, не вызывает человека;
+новое явное объяснение после queue/human получает внутреннюю консультацию; owner,
+call/transfer/revision guards сохранены. Unclaimed pilot queue без реального
+оператора допускает автоматическое продолжение. Настоящий human не перебивается.
+Короткие ответы идут обычным текстом без служебной карточки/ссылки; handoff и
+ошибки получают понятный честный текст. Меню/каталог/заказы коллеги не заменялись.
+
+Отрицательные LIVE сохранены: прежняя queue загрязняла новый вопрос техническим
+контекстом; «объясни проще» теряло subject при проверке обычного ответа. Последнее
+исправлено узко в SourceFirst: существующий reducer-owned task snapshot для
+conceptual continuation, без новой LLM стадии. Это обоснованное уточнение плана
+без RAG edits; technical prompts/модель/KB/index не менялись.59 профильных PASS.
+
+Настоящий Telegram после исправлений:18:05 МСК обычный ОФД-вопрос answered8.999s;
+18:06 «объясни проще» answered7.997s, тот же case. Оба accepted/failures0/sent и
+визуально наблюдались без служебных карточек. Фактология пока не принята: спорная
+фраза про подтверждение ФНС остаётся. Ранние synthetic B/F refusals не скрыты.
+
+Финальный full MySQL153 PASS/10subtests; units426 PASS/те же2 Windows failures/
+38subtests; routing20/20. RAG full937 PASS/11fail/4xfail:10 исторических Ledger,
+1 отсутствующий langgraph; последний отдельно PASS с существующим PYTHONPATH,
+без повтора full suite. Новых зависимостей нет. Финальный CRM support5296/poller4360,
+77/77 hashes каждого; API3540/42 из42 hashes; ready green/healthOK/inflight0.
+API перезапущен после контекстной правки, прежние данные сохранены. Pilot/staffstub.
+
+Выявлен /chat editMessageText200 в старом экране выше ленты. Явный вход исправлен
+существующим force_new TG/MAX, unit PASS; видимый native повтор после последнего
+restart остаётся. Финальная браузерная сессия Mini App истекла; это не PASS свежего
+полного UI replay. Следующий короткий шаг: обычный вопрос/проще/не помогло/human,
+отдельно видимый /chat и свежий TG↔MiniApp replay; затем телефон HTTPS, staff/MAX.
+До prod ещё эти проверки и quality gate. Реальные оплаты/звонки не выполнялись.
+По просьбе владельца глубже в качество сейчас не уходили. Commit/push/merge нет.
+
+[Полный итог, проверки и ограничения](../reports/crm_natural_chat_20261121/report.md).
