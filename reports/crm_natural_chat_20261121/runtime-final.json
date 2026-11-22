@@ -1,0 +1,43 @@
+{
+  "crm-support": {
+    "pid": 5296,
+    "started_at": "2026-11-21T15:11:48.459732+00:00",
+    "commit": "d5f4c707c873b8ec217d27673ac5e6ff68509021",
+    "source_count": 77,
+    "mismatches": []
+  },
+  "crm-pilot": {
+    "pid": 4360,
+    "started_at": "2026-11-21T15:11:48.707624+00:00",
+    "commit": "d5f4c707c873b8ec217d27673ac5e6ff68509021",
+    "source_count": 77,
+    "mismatches": []
+  },
+  "crm_health": {
+    "status": "ok",
+    "rag_enabled": true,
+    "pilot_mode": true,
+    "operator_mode": "stub",
+    "delivery_enabled": true
+  },
+  "rag_readiness": {
+    "status": "ok",
+    "state": "ok",
+    "index": "green"
+  },
+  "synthetic_ui": {
+    "pilot_mode": true,
+    "operator_notice": null,
+    "revision": 17
+  },
+  "inflight": 0,
+  "rag_api": {
+    "pid": 3540,
+    "started_at": "2026-11-21T14:57:04.130359+00:00",
+    "commit": "bedeca2b207cdb6df7cf1f884eee8b00ca2a2b6c",
+    "provider": "hubris",
+    "collection": "knowledge_kb_b2_integrated_20261119",
+    "source_count": 42,
+    "mismatches": []
+  }
+}

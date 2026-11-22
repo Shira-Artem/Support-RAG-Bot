@@ -1,0 +1,69 @@
+# Existing reviewed Qdrant volume only. Never auto-ingest or initialize real CRM data.
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.15.4
+    restart: unless-stopped
+    volumes: ["approved_qdrant:/qdrant/storage"]
+    networks: [backend]
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    env_file: ["${MYSQL_ENV_FILE:?Set a private MySQL env file}"]
+    volumes: ["crm_mysql:/var/lib/mysql"]
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysqladmin ping -h 127.0.0.1 -uroot --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+  rag-api:
+    stop_grace_period: 130s
+    build:
+      context: .
+      dockerfile: Dockerfile.support
+    restart: unless-stopped
+    env_file: ["${RAG_ENV_FILE:?Set a private RAG env file}"]
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      RAG_API_DB_PATH: /state/conversations.sqlite3
+    volumes: ["rag_state:/state", "embedding_cache:/home/rag/.cache"]
+    depends_on: [qdrant]
+    networks: [backend, egress]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request; urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8091/readyz',headers={'Authorization':'Bearer '+os.environ['RAG_SERVICE_TOKEN']}), timeout=5)"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+  crm-support:
+    stop_grace_period: 130s
+    build:
+      context: ${CRM_SOURCE_DIR:?Set the integration CRM checkout}
+      dockerfile: Dockerfile.support
+    restart: unless-stopped
+    env_file: ["${CRM_ENV_FILE:?Set a private CRM env file}"]
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      SUPPORT_RAG_URL: http://rag-api:8091
+    ports: ["127.0.0.1:8092:8092"]
+    volumes: ["crm_files:/srv/crm/private"]
+    depends_on:
+      mysql: {condition: service_healthy}
+      rag-api: {condition: service_healthy}
+    networks: [backend, egress]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8092/healthz', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+networks:
+  backend: {internal: true}
+  egress: {}
+volumes:
+  approved_qdrant:
+    external: true
+    name: ${QDRANT_VOLUME_NAME:?Set the reviewed Qdrant snapshot volume}
+  crm_mysql: {}
+  rag_state: {}
+  embedding_cache: {}
+  crm_files: {}

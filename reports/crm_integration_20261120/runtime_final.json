@@ -1,0 +1,59 @@
+{
+  "checked_at": "2026-11-20T12:34:05.003707+00:00",
+  "services": {
+    "rag": {
+      "http_status": 200,
+      "body": {
+        "status": "ok",
+        "state": "ok",
+        "index": "green"
+      }
+    },
+    "crm": {
+      "http_status": 200,
+      "body": {
+        "status": "ok",
+        "rag_enabled": true,
+        "delivery_enabled": true
+      }
+    }
+  },
+  "runtime": {
+    "api": {
+      "pid": 7560,
+      "started_at": "2026-11-20T12:33:29.925275+00:00",
+      "commit": "4e16bcc25f8637b413bc84f81df2ed3eeb904dd3",
+      "source_files": 42,
+      "source_mismatches": []
+    },
+    "crm-support": {
+      "pid": 18592,
+      "started_at": "2026-11-20T12:33:30.624717+00:00",
+      "commit": "d5f4c707c873b8ec217d27673ac5e6ff68509021",
+      "source_files": 72,
+      "source_mismatches": []
+    },
+    "crm-pilot": {
+      "pid": 13840,
+      "started_at": "2026-11-20T12:33:30.838244+00:00",
+      "commit": "d5f4c707c873b8ec217d27673ac5e6ff68509021",
+      "source_files": 72,
+      "source_mismatches": []
+    }
+  },
+  "restart_replay_identical_parsed_json": true,
+  "telegram_latest": {
+    "getMe": {
+      "time": "2026-11-20T12:33:33.813666+00:00",
+      "method": "getMe",
+      "http_status": 200
+    },
+    "getUpdates": {
+      "time": "2026-11-20T12:33:55.502261+00:00",
+      "method": "getUpdates",
+      "http_status": 200
+    },
+    "sendMessage": null
+  },
+  "telegram_manual_owner_input_verified": false
+}

@@ -1,0 +1,30 @@
+{
+  "id": 12,
+  "case_id": 2,
+  "status": "answered",
+  "reason_code": "rag_answered",
+  "created_at": "2026-11-21 14:11:25.049069",
+  "completed_at": "2026-11-21 14:11:29.886368",
+  "elapsed_seconds": 4.837299,
+  "receipt": {
+    "ack_state": "accepted",
+    "failures": 0
+  },
+  "rag_status": "answered",
+  "answer": "Здравствуйте! Чем могу помочь?",
+  "delivery": [
+    {
+      "channel": "telegram",
+      "state": "cancelled"
+    }
+  ],
+  "current_case": {
+    "id": 2,
+    "mode": "assistant",
+    "state": "waiting_client",
+    "awaiting_answer": false,
+    "can_feedback": true
+  },
+  "message_count": 18,
+  "unique_message_ids": 18
+}

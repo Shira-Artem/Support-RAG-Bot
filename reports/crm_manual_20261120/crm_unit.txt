@@ -1,0 +1,22 @@
+........................................................................ [ 17%]
+........................................................................ [ 34%]
+........................................................................ [ 52%]
+................................................................F.... [ 68%]
+................F................................................................................................ [ 95%]
+.................                                                    [100%]
+================================== FAILURES ===================================
+_____ BaselineTests.test_report_retains_precision_and_does_not_overwrite ______
+tests\test_support_baseline.py:110: in test_report_retains_precision_and_does_not_overwrite
+    self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 438 != 384
+____________ ClientWebTests.test_traversal_and_symlink_are_denied _____________
+tests\test_support_client_web.py:88: in test_traversal_and_symlink_are_denied
+    secret=Path(outside)/'secret';secret.write_bytes(b'secret');(Path(self.temp.name)/'link').symlink_to(secret)
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\pathlib.py:1386: in symlink_to
+    os.symlink(target, self, target_is_directory)
+E   OSError: [WinError 1314] Клиент не обладает требуемыми правами: 'C:\\Users\\Shira\\AppData\\Local\\Temp\\tmprogndbyp\\secret' -> 'C:\\Users\\Shira\\AppData\\Local\\Temp\\tmpmc6ptxkv\\link'
+=========================== short test summary info ===========================
+FAILED tests/test_support_baseline.py::BaselineTests::test_report_retains_precision_and_does_not_overwrite
+FAILED tests/test_support_client_web.py::ClientWebTests::test_traversal_and_symlink_are_denied
+2 failed, 413 passed, 3 warnings, 38 subtests passed in 5.95s

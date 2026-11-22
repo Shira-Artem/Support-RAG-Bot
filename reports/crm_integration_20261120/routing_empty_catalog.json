@@ -1,0 +1,202 @@
+[
+  {
+    "platform": "telegram",
+    "text": "Хочу купить ОФД",
+    "action": "navigate",
+    "target": "services_ofd",
+    "intent": "browse_category",
+    "reason": "v4:verified_category:M106",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Покажи кассы Эвотор",
+    "action": "clarify",
+    "target": null,
+    "intent": "buy_equipment",
+    "reason": "v4:product_absent:-",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Что такое ОФД?",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": null,
+    "reason": "v4:rag_explanation",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Эвотор не отправляет чеки",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_kkt",
+    "reason": "v4:kkt_service:M017",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Купил ОФД, код не работает",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_ofd_not_responding",
+    "reason": "v4:specific_child_match:M019",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Нужен специалист",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": null,
+    "reason": "v4:explicit_human_request",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Спасибо, теперь хочу купить ФН",
+    "action": "clarify",
+    "target": null,
+    "intent": "buy_fn",
+    "reason": "v4:product_absent:-",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Как закрыть архив ФН?",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_fn",
+    "reason": "v4:fn_service:M020",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Интернет работает, очередь не уменьшается",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_unknown",
+    "reason": "v4:meaningful_unknown:M002",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "telegram",
+    "text": "Хочу купить кассу для небольшого магазина",
+    "action": "clarify",
+    "target": null,
+    "intent": "buy_equipment",
+    "reason": "v4:product_absent:-",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Хочу купить ОФД",
+    "action": "navigate",
+    "target": "services_ofd",
+    "intent": "browse_category",
+    "reason": "v4:verified_category:M106",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Покажи кассы Эвотор",
+    "action": "clarify",
+    "target": null,
+    "intent": "buy_equipment",
+    "reason": "v4:product_absent:-",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Что такое ОФД?",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": null,
+    "reason": "v4:rag_explanation",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Эвотор не отправляет чеки",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_kkt",
+    "reason": "v4:kkt_service:M017",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Купил ОФД, код не работает",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_ofd_not_responding",
+    "reason": "v4:specific_child_match:M019",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Нужен специалист",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": null,
+    "reason": "v4:explicit_human_request",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Спасибо, теперь хочу купить ФН",
+    "action": "clarify",
+    "target": null,
+    "intent": "buy_fn",
+    "reason": "v4:product_absent:-",
+    "active_support_shop_exit": true,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Как закрыть архив ФН?",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_fn",
+    "reason": "v4:fn_service:M020",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Интернет работает, очередь не уменьшается",
+    "action": "handoff",
+    "target": "c2:open",
+    "intent": "support_unknown",
+    "reason": "v4:meaningful_unknown:M002",
+    "active_support_shop_exit": false,
+    "pass": true
+  },
+  {
+    "platform": "max",
+    "text": "Хочу купить кассу для небольшого магазина",
+    "action": "clarify",
+    "target": null,
+    "intent": "buy_equipment",
+    "reason": "v4:product_absent:-",
+    "active_support_shop_exit": true,
+    "pass": true
+  }
+]

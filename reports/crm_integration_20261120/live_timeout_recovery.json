@@ -1,0 +1,36 @@
+[
+  {
+    "first": "client_read_timeout"
+  },
+  {
+    "http_status": 409,
+    "detail": "request_in_progress"
+  },
+  {
+    "http_status": 409,
+    "detail": "request_in_progress"
+  },
+  {
+    "http_status": 200,
+    "response": {
+      "contract_version": "1",
+      "ticket_id": "recovery:client-timeout:1",
+      "message_id": "m1",
+      "revision": 1,
+      "reply_id": "6a5a161575694cd68720e9f00a34cc12",
+      "answer": "Здравствуйте! Чем могу помочь?",
+      "status": "answered",
+      "sources": [],
+      "escalation_reason": null,
+      "diagnostics": {
+        "provider": "hubris",
+        "model": "openrouter/auto",
+        "generation_status": "generated",
+        "validation_status": "not_run",
+        "duration_ms": 0,
+        "collection": "knowledge_kb_b2_integrated_20261119"
+      }
+    },
+    "retry_index": 2
+  }
+]

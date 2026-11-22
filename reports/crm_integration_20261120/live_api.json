@@ -1,0 +1,32 @@
+{
+  "http_status": 200,
+  "elapsed_seconds": 13.688,
+  "request": {
+    "ticket_id": "integration:api:smoke2",
+    "message_id": "m1",
+    "text": "Что такое ОФД?",
+    "expected_revision": 0,
+    "context": {
+      "channel": "test"
+    }
+  },
+  "response": {
+    "contract_version": "1",
+    "ticket_id": "integration:api:smoke2",
+    "message_id": "m1",
+    "revision": 1,
+    "reply_id": "5a88aa29af5348fcb495e7e5a3628b56",
+    "answer": "Привет! ОФД — это «оператор фискальных данных». Он не входит в саму кассу, а работает как внешний сервис. Когда в кассе (с фискальным накопителем, ФН) генерируется чек, касса отправляет его в ОФД, а тот пересылает эти документы в Федеральную налоговую службу. Таким образом, ОФД выступает посредником между вашим оборудованием и налоговой системой, обеспечивая надёжную передачу и хранение фискальных данных.  \n\nЕсли понадобится уточнить, как именно подключить ОФД к вашей кассе, дайте знать!",
+    "status": "answered",
+    "sources": [],
+    "escalation_reason": null,
+    "diagnostics": {
+      "provider": "hubris",
+      "model": "openai/gpt-oss-20b",
+      "generation_status": "generated",
+      "validation_status": "general_knowledge_scope_checked",
+      "duration_ms": 7622,
+      "collection": "knowledge_kb_b2_integrated_20261119"
+    }
+  }
+}

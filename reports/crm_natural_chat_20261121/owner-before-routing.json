@@ -1,0 +1,23 @@
+{
+  "case": "owner-native",
+  "status": "escalated",
+  "reason": "rag_escalate",
+  "created_at": "2026-11-21 15:00:34.451279",
+  "completed_at": "2026-11-21 15:00:43.577131",
+  "elapsed_seconds": 9.125852,
+  "receipt": {
+    "ack_state": "accepted",
+    "failures": 0
+  },
+  "answer": "Для этой задачи не нашёл подтверждённой применимой инструкции в базе знаний. Можно оформить заявку специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
+  "deliveries": [
+    {
+      "state": "sent",
+      "channel": "telegram"
+    }
+  ],
+  "case_state": {
+    "mode": "queue",
+    "status": "open"
+  }
+}

@@ -2183,6 +2183,9 @@ class SourceFirstService:
                 "юридических требований, тарифов и выдуманных источников. "
                 "Не пиши о том, какие темы ты не будешь обсуждать. Не перечисляй все возможности. "
                 "Можно тепло поздороваться и закончить одним уместным вопросом. Если не уверен, скажи об этом.")
+            snapshot=_planner_task_snapshot(state) or {}
+            prompt[-1]['content']=json.dumps({'current_message':user_message,
+                'active_task':{key:snapshot.get(key) for key in ('object','task_fact','goals','details')}},ensure_ascii=False)
         try:
             if not retrieval_checked and self.settings.llm_provider == "hubris":
                 generated = await generate(prompt, replace(self.settings, hubris_reasoning_effort="medium"),
@@ -2218,7 +2221,10 @@ class SourceFirstService:
                 # with a fabricated fact or treat it as approved evidence.
                 text = "\n\n".join(retained)
                 claims = retained
-        question_terms = content_terms(user_message)
+        relevance_question=user_message
+        if not retrieval_checked and state.relation!='new_task' and state.task:
+            relevance_question=' '.join(filter(None,[user_message,state.object,state.task.value]))
+        question_terms = content_terms(relevance_question)
         response_terms = content_terms(text)
         procedural = (bool(instruction_issue(text, "")) if retrieval_checked else
                       bool(_CONCEPTUAL_IMPERATIVE.search(text)))
@@ -2242,6 +2248,7 @@ class SourceFirstService:
             "retry_count": generated.retry_count,
             "retry_wait_seconds": generated.retry_wait_seconds,
             "removed_out_of_scope_claims": removed_claims,
+            "relevance_basis":"active_task_and_current_message" if relevance_question!=user_message else "current_message",
         }
         base["retrieval_diagnostics"] = diagnostics
         base.update(model=generated.model, used_model=True, llm_call_attempted=True,

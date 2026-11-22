@@ -1,0 +1,39 @@
+{
+  "http_status": 200,
+  "request": {
+    "ticket_id": "final:technical-independent:1",
+    "message_id": "m1",
+    "expected_revision": 0,
+    "text": "На Эвотор 7.3 продажи проходят, но у оператора ОФД чеков нет. Как начать проверку соединения?",
+    "context": {
+      "channel": "test",
+      "route": "technical_support"
+    }
+  },
+  "response": {
+    "contract_version": "1",
+    "ticket_id": "final:technical-independent:1",
+    "message_id": "m1",
+    "revision": 1,
+    "reply_id": "ff7761fa5d7443539a334102f0a41faa",
+    "answer": "Перейдите в **личный кабинет оператора ОФД** и проверьте статус подписки. При необходимости обратитесь в службу поддержки ОФД.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — Шаг 1. Проверьте подписку на ОФД",
+    "status": "answered",
+    "sources": [
+      {
+        "id": "evotor-7-3-ofd-connection-360014099534",
+        "title": "Эвотор 7.3: диагностика отсутствия связи с ОФД"
+      }
+    ],
+    "escalation_reason": null,
+    "diagnostics": {
+      "provider": "hubris",
+      "model": "openai/gpt-oss-20b",
+      "understanding_model": "openai/gpt-oss-20b",
+      "answer_used_model": 1,
+      "generation_status": "generated",
+      "validation_status": "exact_source_copy",
+      "duration_ms": 8028,
+      "collection": "knowledge_kb_b2_integrated_20261119"
+    }
+  }
+}

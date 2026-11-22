@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -16,15 +17,21 @@ class SearchRequest(BaseModel):
     filters: dict[str, str] = Field(default_factory=dict)
 
 
-def create_app(retriever: Retriever | None = None) -> FastAPI:
+def create_app(retriever: Retriever | None = None, *, support_factory=None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         if app.state.retriever is None:
-            app.state.retriever = build_retriever()
+            app.state.retriever = build_retriever(require_existing=bool(os.getenv('RAG_SERVICE_TOKEN')))
         yield
 
-    app = FastAPI(title="Support RAG Search", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="Support RAG API", version="1.0.0", lifespan=lifespan)
     app.state.retriever = retriever
+    from app.support_api import support_router
+    app.include_router(support_router(support_factory))
+
+    @app.get('/healthz')
+    def health():
+        return {'status': 'ok', 'contract_version': '1'}
 
     @app.post("/search")
     def search(request: SearchRequest):

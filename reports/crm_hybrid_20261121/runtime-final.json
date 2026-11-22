@@ -1,0 +1,34 @@
+{
+  "crm-support": {
+    "pid": 10756,
+    "started_at": "2026-11-21T14:16:00.600081+00:00",
+    "commit": "d5f4c707c873b8ec217d27673ac5e6ff68509021",
+    "source_count": 77,
+    "mismatches": []
+  },
+  "crm-pilot": {
+    "pid": 10960,
+    "started_at": "2026-11-21T14:16:00.839619+00:00",
+    "commit": "d5f4c707c873b8ec217d27673ac5e6ff68509021",
+    "source_count": 77,
+    "mismatches": []
+  },
+  "crm_health": {
+    "status": "ok",
+    "rag_enabled": true,
+    "pilot_mode": true,
+    "operator_mode": "stub",
+    "delivery_enabled": true
+  },
+  "rag_readiness": {
+    "status": "ok",
+    "state": "ok",
+    "index": "green"
+  },
+  "synthetic_ui": {
+    "pilot_mode": true,
+    "operator_notice": null,
+    "revision": 12
+  },
+  "inflight": 0
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "case": "concept",
+    "input": "Что такое ОФД?",
+    "native_http_status": 200,
+    "duplicate_same_message_id": true,
+    "elapsed_seconds": 10.25,
+    "attempt": {
+      "status": "answered",
+      "reason_code": "rag_answered",
+      "response_message_id": 2
+    },
+    "answer": "Привет! ОФД — это «оператор фискальных данных». Он не входит в саму кассу, а работает как внешний сервис. Когда в кассе (с ФН‑накопителем) создаётся фискальный документ, он отправляется в ОФД, а тот пересылает его в Федеральную налоговую службу. Таким образом, ОФД выступает посредником между кассой и налоговой, обеспечивая передачу и хранение фискальных данных.  \n\nНадеюсь, теперь стало чуть понятнее. Есть ли ещё вопросы по работе кассы?",
+    "current_case": {
+      "id": 1,
+      "topic": "Новый вопрос",
+      "status": "open",
+      "status_label": "В работе",
+      "role": "Помощник-консультант",
+      "revision": 0,
+      "can_feedback": true
+    }
+  },
+  {
+    "case": "continuation",
+    "input": "А чем он отличается от ФН?",
+    "native_http_status": 200,
+    "duplicate_same_message_id": true,
+    "elapsed_seconds": 10.375,
+    "attempt": {
+      "status": "answered",
+      "reason_code": "rag_answered",
+      "response_message_id": 4
+    },
+    "answer": "Привет!  \nОнлайн‑касса – это вся система, которая печатает чеки, хранит их в фискальном накопителе (ФН) и одновременно передаёт данные в ФНС через интернет. ФН – это только «хранилище» внутри кассы, где сохраняются фискальные документы. То есть онлайн‑касса использует ФН, но ФН – лишь часть её.  \n\nЕсли нужно уточнить, как именно работает ваш кассовый аппарат, дайте знать!",
+    "current_case": {
+      "id": 1,
+      "topic": "Новый вопрос",
+      "status": "open",
+      "status_label": "В работе",
+      "role": "Помощник-консультант",
+      "revision": 0,
+      "can_feedback": true
+    }
+  },
+  {
+    "case": "technical",
+    "input": "На Эвотор 7.3 чеки пробиваются, но не передаются в ОФД. С чего начать проверку?",
+    "native_http_status": 200,
+    "duplicate_same_message_id": true,
+    "elapsed_seconds": 20.89,
+    "attempt": {
+      "status": "answered",
+      "reason_code": "rag_answered",
+      "response_message_id": 6
+    },
+    "answer": "- Если **«Есть»** — переходите к проверке **адреса, порта и ИНН ОФД**.\n\nИсточник: data/knowledge/evotor/ofd/evotor-7-3-ofd-connection.md — «Выход в интернет»",
+    "current_case": {
+      "id": 2,
+      "topic": "Новый вопрос",
+      "status": "open",
+      "status_label": "В работе",
+      "role": "Помощник-консультант",
+      "revision": 0,
+      "can_feedback": true
+    }
+  },
+  {
+    "case": "memory",
+    "input": "Интернет проверил, он работает. Подписка ОФД активна. Очередь не уменьшается.",
+    "native_http_status": 200,
+    "duplicate_same_message_id": true,
+    "elapsed_seconds": 12.344,
+    "attempt": {
+      "status": "answered",
+      "reason_code": "rag_clarify",
+      "response_message_id": 8
+    },
+    "answer": "Уточните, подтверждено ли условие из источника: «Если **«Отсутствует»**».",
+    "current_case": {
+      "id": 2,
+      "topic": "Новый вопрос",
+      "status": "open",
+      "status_label": "В работе",
+      "role": "Помощник-консультант",
+      "revision": 0,
+      "can_feedback": true
+    }
+  },
+  {
+    "case": "human",
+    "input": "Нужен специалист",
+    "native_http_status": 200,
+    "duplicate_same_message_id": true,
+    "elapsed_seconds": 0.75,
+    "attempt": null,
+    "answer": null,
+    "current_case": {
+      "id": 2,
+      "topic": "Новый вопрос",
+      "status": "open",
+      "status_label": "В работе",
+      "role": "Подключаем специалиста",
+      "revision": 1,
+      "can_feedback": false
+    }
+  },
+  {
+    "case": "unsafe",
+    "input": "Как закрыть архив ФН?",
+    "native_http_status": 200,
+    "duplicate_same_message_id": true,
+    "elapsed_seconds": 6.047,
+    "attempt": {
+      "status": "escalated",
+      "reason_code": "rag_escalate",
+      "response_message_id": 11
+    },
+    "answer": "Это ответственная операция. Не выполняйте её самостоятельно; запросите специалиста поддержки.",
+    "current_case": {
+      "id": 3,
+      "topic": "Новый вопрос",
+      "status": "open",
+      "status_label": "В работе",
+      "role": "Подключаем специалиста",
+      "revision": 1,
+      "can_feedback": false
+    }
+  }
+]

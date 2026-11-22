@@ -2395,6 +2395,243 @@ Composer с реальными повторными calls; ordinary social бе�
 Production, PartA REVISE/A6 STOP сохраняются. A7/PartB/Exp3 не открыты.
 
 
+### 2026-11-20 — CRM integration stage explicitly authorized; implementation checkpoint
+
+Новое прямое задание владельца разрешает отдельный этап CRM / Smart Navigation v4,
+интеграционные ветки и commit/push после проверок; main rollout не разрешён.
+Baseline RAG7eff20d (3 docs/evidence commits ahead), CRM origin/main338f1bb после
+fetch; семь локальных CRM WebApp правок остались в исходном checkout. Candidate
+3aa1f68 не включён. Ужеmerged approved KB B2/833 сохраняется, переиндексации нет.
+Shared app/support_turn.py связывает старый bot и новый authenticated API без
+нового RAG. Durable SQLite idempotency/revision/ack; CRM attempts/native outbox,
+новая migration0008, case+lease fence и безопасный выход в магазин из active chat.
+Первые negative bootstrap/profile/test-isolation попытки, исправления и границы
+доказательства сохранены в [integration report](../reports/crm_integration_20261120/report.md).
+HTTP-backed Hubris API smoke answered13.688s; это не quality GO. CRM native HTTP
+LIVE и чистый MySQL suite ещё выполняются; demo/CI разделены после обнаруженного
+вмешательства background worker в первую synthetic fixture-серию. Рабочие
+Telegram3232/13568 не останавливались. Второго polling нет. Следующий шаг —
+завершить regression/LIVE, подготовить запуск и ручной тест, затем branch publish
+с точными ограничениями. Production NO-GO / PartA REVISE / A6 STOP сохраняются.
+
+
+### 2026-11-20 — CRM integration LIVE complete; owner authorizes same-bot pilot
+
+Факт: full RAG931 passed/те же10 failed/4 xfailed; CRM Windows409 passed/2 прежних
+platform failures/38 subtests; чистая MySQL126 passed/10 subtests. После последнего
+исправления crash-after-publish + human takeover5 targeted MySQL PASS, полный
+повтор идёт отдельно. API8 boundary tests и provider/network profile23 PASS;
+реальный router Telegram/MAX20/20 empty +20/20 seeded test catalog. CRM HTTP6
+ходов записаны, каждый native duplicate key возвращает тот же message_id.
+LIVE follow-up об ОФД ответил про кассу — quality FAIL; первый Эвотор check
+фрагментарен — PARTIAL. Независимый final Эвотор дал1 approved document и
+exact_source_copy. Human request штатноqueue без AI; архив ФН безопасноescalated.
+Клиентский read-timeout восстановлен тем же reply, restart replay равен прежнему.
+Первый contaminated MySQL run и все bootstrap/source/startup ошибки сохранены.
+
+Позднее владелец прямо поручил использовать прежний Telegram token из RAG.env
+для единого CRM пилота. При pending0 сделаны SQLite backups, остановлены старые
+worker3232/launcher13568; вместо них запущен один полный CRM poller с прежним
+private tester allowlist. getMe/deleteWebhook/repeated getUpdates200. Checkout
+пилота отключён, товары явноsynthetic, DBcrm_rag_demo отделена от crm_rag_ci.
+Никакой отдельный token не требуется для этого явно разрешённого локального
+переключения; production rollout этим не разрешён. Main37/37 bytes неизменны;
+все таблицы старой SQLite равныbackup,48 messages сохранены. Исходные семь
+локальных CRM WebApp edits остались нетронуты. Кандидат3aa1f68 не включён.
+
+[Финальные факты/отрицательные результаты](../reports/crm_integration_20261120/report.md),
+[дословные ответы](../reports/crm_integration_20261120/answers.md),
+[запуск/API/rollback/14 сообщений](CRM_INTEGRATION.md). Непредвиденная остановка
+одного промежуточного API наблюдалась без установленной причины; рестарт и
+readyz200/replay проверены, причина не придумана. Native polling startup не
+равен подтверждённому ручному Telegram ответу. Следующий шаг — владелец тестирует
+пилот; специалист реально не принял кейс, MAX transport не проверен. Overall
+production NO-GO / PartA REVISE / A6 STOP сохраняются. Commit/push только
+integration branches разрешены исходным новым заданием; готовый PR без полного
+зелёного gate не открывается. Publication/runtime SHA будут зафиксированы далее.
+
+
+### 2026-11-20 — final clean CRM MySQL repeat and publication preparation
+
+Финальный чистый full MySQL на crm_rag_ci:127 passed/10 subtests, включая новый
+post-publish-crash + human-takeover ack regression. CRM Windows409/2 прежних
+platform failures/38 subtests; RAG final931/те же10/4. Source filter подтверждён
+независимым реальным ответом с1 approved doc, без повторного quality GO. Compose
+config--quiet PASS; Dockerbuild/serverrollout не выполнялись. Startup-конфигурация
+полного CRM bot проверена без polling, затем getMe/deleteWebhook/getUpdates200;
+точные runtime SHA и branch publication фиксируются финальным appendix.
+
+
+### 2026-11-20 — integration branches published, final same-token pilot receipt
+
+Обычные push подтверждены remote refs: RAG app4e16bcc, CRM0edccec + channel fix
+d5f4c70 на codex/crm-rag-integration-20261120. Main не изменён: remote RAG44763e0,
+CRM338f1bb; исходные локальныеmain/семьdirtyCRMфайлов сохранены. Channelfix15
+legacy+RAG MySQL PASS и1 explicit native-channel check PASS. PR не открыт:
+условие полного зелёногоgate/отсутствияblockers не выполнено.
+
+Финальный перезапуск из опубликованного кода: API7560 (4e16bcc), CRM support18592
+и единственный polling13840 (d5f4c70). Startup receipts42/72 source hashes без
+mismatch; APIreadyz200, CRMhealth200, rag_enabled/delivery_enabled=true. Повторные
+getUpdates200, старогоRAGpollingнет. В snapshot owner input/sendMessage ещёне
+наблюдались — вручную полученный Telegram ответ не объявлен. Все legacySQLite
+таблицы равныbackup; original main37/37sourcehashes прежние. One-command launcher
+проверен также повторно: existinghealthy services, без второгоpoller.
+[Runtime](../reports/crm_integration_20261120/runtime_final.json),
+[полный отчёт/ограничения/commits](../reports/crm_integration_20261120/report.md),
+[files](../reports/crm_integration_20261120/changed_files.json).
+Следующий шаг: владелец пишет/start и14сообщений в прежнемботе, затем triage
+пользовательской полезности. Localpilot доступен; production NO-GO, specialist
+acceptance/MAX transport и прежниеqualityfailures сохраняются. Это docs/evidence
+фиксация, повторный app restart не требуется.
+
+
+### 2026-11-20 — first owner CRM manual test FAIL; evidence captured before changes
+
+Владелец сообщил ложные товарные переходы, лишние меню и повторные уточнения
+по Telegram15:41–15:43. До runtime edits сохранены private read-only MySQL
+snapshot, API SQLite backup, raw Understanding, logs/persistence и source receipts
+в .local/manual-review-20261120-first (50files). Расширенный snapshot with-ui
+(51files) дополнительно включает19bot_events metadata; первая копия их не имела
+и сохранена неизменной. Snapshots не являются общей distributed transaction.
+
+Факты: запрос помощиОФД и результат «интернет/подписка/очередь» воспроизводимо
+search_results; active support ошибочноразрешаетexit без запроса покупать.
+Последняя реплика не попала в RAG. Два native inputs «Эвотор не отправляет чеки»
+имеют разные IDs/attempts, каждый ответ записан/доставлен1раз. Нельзя называть это
+повторной публикацией одногоupdate. В обоих Understanding symptom=null; exact
+задача сохранена в task_fact/details, но Coordinator/readiness требуютsymptom/goal,
+поэтому два шаблонныхуточнения выданы доretrieval. Это не доказательство KB gap.
+
+Коллегой предусмотрены TelegramUIFlow/safe edit-delete. Однако товарныйпоиск
+использует send_or_edit с use_ui_flow=False, text equipment cards отправляются
+напрямую без новогоactive-screen ID. Outbox доставляет отдельно, historycard
+повторяет последние5сообщений. Наличие deleteMessage400 подтверждено, но старый
+журнал не содержит targetID/description: точная атрибуция каждого старогоменю
+не доказана. Нижняя protectedreplykeyboard отличается от старыхinlineкарточек.
+
+Изменена только observability пилота: private pilot-events.jsonl с ingress/
+state/route/send-edit-delete targets/errors/buttonlabels и outboxIDs. Данные/
+credentials/accessURL маскируются best-effort, raw snapshots не публикуются.
+Тесты118 targetedPASS, fullWindows413/теже2platformfailures/38subtests,
+реальныеMySQLdelivery6PASS, startupconstructionPASS. При0inflightrequests
+перезапущены только CRMbot/support; API/KB/Qdrant/история не менялись.
+Новые73sourcehashes совпадают соstartupreceipt; одинpoller/getUpdates200/health200.
+Это локальная незакоммиченная tracingdelta поверхd5f4c70, не semanticfix.
+
+[Разбор/ограничения](../reports/crm_manual_20261120/report.md),
+[8контрольныхсообщений+UIпроверка](../reports/crm_manual_20261120/probes.md).
+ManualacceptanceFAIL/productionNO-GO сохраняются. Следующийшаг — владелец проходит
+короткие независимыепробы с новойкорреляцией; затем чинить precedenceconsultation/
+affirmativeshopexit, unifiedUIlifecycle и symptomreadiness отдельными проверяемыми
+механизмами, безKBпересборки/сменымодели. Commit/push в этойevidenceитерации нет.
+
+
+### 2026-11-20 — detailed tracing ready for the next owner probe
+
+Финальная tracing-only сверка: CRM support6844/poller15364,73/73 sourcehashes
+безmismatch, health200/getUpdates200; base d5f4c70 + локальнаяdiagnosticdelta.
+API/Qdrant/RAGstate unchanged. После последней defensive parsing/timestamp правки
+7privacy/pilot testsPASS; сохранены118profile/413+2Windows/6MySQLdelivery logs.
+Private finalreceipt: .local/manual-review-20261120-with-ui/tracing_runtime_final.json.
+Следующий шаг — 8сообщений из owner probe; semantic/menu fixes в этой capture
+итерации не развёрнуты и не объявленыPASS. Старые delete400 причины не выдуманы.
+
+
+### 2026-11-20 — existing CRM chat refined for local integrated testing
+
+Владелец уточнил: нужен цельный локальный стенд Telegram + готовый чат с общим
+ИИ, понятными состояниями и заглушкой оператора, без настоящих специалистов.
+Подтверждено сохранение существующего UI коллеги; новый чат не создавался.
+Изменены текущие client/snapshot/native adapters и JS/CSS/HTML этого интерфейса.
+
+Добавлены понятные названия вопросов, ожидание ИИ, оценка после ответа,
+прокрутка к выбранному вопросу, безопасное bold и отсутствие перепечатки пяти
+старых сообщений при native отправке. В пилоте /chat выдаёт loopback HTTP link
+«Открыть чат на этом ПК»; это browser на том же ПК, не remote HTTPS WebApp.
+Видимые заглушки опираются на настоящие CRM queue/events, различают ИИ и клиента.
+Отключены pilot scheduler уведомлений специалистам/ежедневных рассылок и HTTP
+звонки; call worker не запущен. После передачи Новый вопрос возвращает к ИИ.
+Consultation precedence и affirmative shop exit исправлены в существующем v4;
+product search и текстовая equipment card включены в существующий UIFlow.
+Фото equipment и исторические потерянные меню этим не объявлены исправленными.
+
+LIVE synthetic UI ход до этих правок на неизменённом RAG API: 17.75 s,
+answered/accepted/failures0, approved Evotor source, ответ появился в браузере.
+Качество дополнительных условий ответа не принято автоматически. После правок
+390×844: вопросы/выбор/история/AI stub проверены, client stub кнопка прошла
+реальные HTTP/MySQL без нового LLM вызова. Native новые кнопки и cleanup пока
+unit/startup verified; owner Telegram Desktop replay остаётся следующим шагом.
+
+Final unit418 passed/те же2 Windows failures/38 subtests; real MySQL37 passed,
+последняя snapshot/event delta2 passed; targeted62 passed, JS syntax/diff check
+пройдены. Первая новая fixture без expected revision отклонена штатным guard,
+fixture исправлена. Unit запуск без фиктивного test BOT_TOKEN дал2 import failure;
+повтор с явно фиктивным token убрал их. Product/auth guard не ослаблялись.
+
+Runtime: support20484, один poller21276; API7560 прежний. CRM base d5f4c70 плюс
+локальная delta,77/77 startup hashes обоих процессов совпадают, health pilot true/
+operator stub/RAG true/delivery true, authenticated ready OK/green, getUpdates200,
+inflight0. Private .local/pilot-ui-runtime-final.json; env-only helper false mode
+сохранён отдельно и объяснён в отчёте, server mode был true. Исходные snapshots
+не переписаны. RAG app/model/KB/index/история исходного bot без изменений.
+
+[Схема, ограничения, скриншоты, проверки](../reports/crm_manual_20261120/local_pilot.md).
+Следующий шаг: владелец /chat → открыть чат на этом ПК, один кейс попеременно
+в Telegram и web, затем 8 probes с подробным tracing. Symptom/readiness и прежние
+conceptual/continuation quality failures открыты. Общий quality/production NO-GO;
+нового этапа, commit или push в этой итерации нет.
+
+### 2026-11-21 — restart after owner powered off the computer
+
+По прямой просьбе владельца поднят прежний локальный CRM/RAG pilot штатным
+scripts/start_crm_integration.ps1 -Pilot. До запуска активных Python сервисов/
+слушателей8091/8092 не найдено; Docker доступен. Существующие crm-rag-mysql и
+rag-qdrant-1 запущены без пересоздания данных. Код/модель/KB/конфигурация не менялись.
+
+Фактический runtime: API17808 (launcher9824), CRM support18548 (launcher20688),
+один Telegram poller10848 (launcher22216), прежний RAG poller отсутствует.
+CRM base d5f4c70 + сохранённая local delta;77/77 hashes обоих startup receipts
+совпадают. CRM health OK/RAG true/pilot true/operator stub/delivery true;
+authenticated RAG ready OK/state OK/index green; свежие getMe/getUpdates HTTP200.
+Private receipt: CRM .local/restart-20261121-runtime.json. Inflight0 на проверке.
+
+Первый readiness check пришёл до завершения холодной загрузки embeddings и дал
+connection refused; после штатной загрузки weights API поднялся и readiness PASS.
+Сегодня платные LLM-пробы не запускались: следующий шаг — live тесты владельца
+в том же боте, /chat для существующего web UI. Реальные специалисты/звонки по-
+прежнему отключены; прежние quality/cleanup ограничения не закрыты перезапуском.
+Нового этапа, commit или push нет.
+
+### 2026-11-21 — owner /start appeared silent: pilot UI entry repaired, LIVE confirmed
+
+Owner screenshot и private trace подтвердили4 входящих/start16:38. Первый
+editMessageText200 редактировал старый cached menu выше текущего экрана;3повтора
+дали400 message is not modified. Поллер/allowlist работали, нового send не было.
+Мой pilot gate обошёл reset UI pointers в обычном registration/start. Исправлен
+только pilot gate: reuse reset_tg_screen_history на/start, force_send_new=True
+для/start и/menu. Профиль/CRM история сохранены; новый UI не создавался.
+
+Регрессии44passed: actual UIFlow с fake transport и повторными/start,/start@bot,
+/menu на cached IDs доказывает новые send вместо edit, reset keyboard и сохранение
+профиля. При inflight0 перезапущены только CRM support17044/poller7472;
+API17808 сохранился.77/77 hashes обоих startup receipts совпадают, ready/healthOK.
+Private evidence CRM .local/start-recovery-20261121/ содержит before/after traces,
+tests.txt и runtime-after.json. Старые отрицательные трассы сохранены отдельно.
+
+LIVE owner repeat16:42:35: два sendMessage200 — новая persistent keyboard и
+новое меню. В16:42:41 нажатие «💬 Чат» дало sendMessage200 карточки поддержки
+с локальной ссылкой. Native link button принят Telegram; открытие browser ещё
+не наблюдалось. Двойной best-effort delete старого меню дал200,затем400 not found;
+это отдельный cleanup defect, не причина молчания и не failure доставки карточки.
+[Причина/исправление/LIVE](../reports/crm_manual_20261120/start_recovery_20261121.md).
+
+Следующий шаг: владелец продолжает тесты общего ИИ/контекста в Telegram/web;
+quality/symptom/readiness и прочие cleanup ограничения открыты. Без нового этапа,
+commit или push. Предыдущее health-only объявление готовности не доказывало
+видимый native response; теперь /start дополнительно подтверждён LIVE.
+
+
 ### 2026-11-21 — один бот: hybrid UI, честная очередь и явный возврат к ИИ
 
 Владелец прямо уточнил приоритет: один существующий бот с ИИ, CRM и готовым
@@ -2491,3 +2728,32 @@ restart остаётся. Финальная браузерная сессия M
 По просьбе владельца глубже в качество сейчас не уходили. Commit/push/merge нет.
 
 [Полный итог, проверки и ограничения](../reports/crm_natural_chat_20261121/report.md).
+
+
+### 2026-11-22 — публикация интеграции в main по разрешению владельца
+
+Владелец прямо разрешил commit и push всей подготовленной интеграции в main
+каждого из двух репозиториев. Это разрешение публикации кода, не новый quality
+этап и не production GO. Предыдущие записи «commit/push нет» описывают checkpoint
+21.11, а не запрет после нового разрешения.
+
+CRM main опубликован и подтверждён ls-remote:709a318433a0b653dc78cd47fc646bd33eda641d.
+Включает прежние adapter commits0edccec/d5f4c70 и46 файлов natural/hybrid repairs.
+Семь незакоммиченных файлов исходного CRM checkout не включены и сохранены.
+RAG интеграция включает4e16bcc/bedeca2, узкую conceptual context правку, тесты,
+журнал и отчёты; main документация объединяется с integration без потери истории.
+Отдельный экспериментальный candidate NO-GO не включается в эту публикацию.
+
+До публикации повторены RAG profile59 PASS и CRM profile78 PASS/17subtests.
+Основание full MySQL153 PASS и исторические ошибки общих suites сохранены
+в предыдущем отчёте. Скан207 исходников/артефактов не нашёл совпадений с известными
+private credentials; .env/.local/БД не включены. Резервные diff/hash receipts
+сохранены private. Работающие сервисы этим шагом не перезапускались.
+Оставшиеся UX/staff/MAX/HTTPS и factual-quality проверки прежние.
+Следующий шаг — проверить опубликованные remote main и их ancestry.
+
+[Контрольная точка публикации](../reports/publication_20261122/report.md).
+
+После объединения RAG дополнительно67 профильных PASS с support API;0 непустых
+строк прежнего main журнала потеряно. Конфликты были только в документации
+и pointer reports; сохранены полные отчёты. Source/docs diff-check PASS.
