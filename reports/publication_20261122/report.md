@@ -1,0 +1,21 @@
+# Публикация интеграции — 22.11.2026
+
+Владелец явно разрешил объединение и push подготовленной интеграции в main
+обоих репозиториев. Предыдущие записи без commit/push датированы21.11.
+
+- CRM: main709a318433a0b653dc78cd47fc646bd33eda641d, подтверждён git ls-remote.
+- RAG: прежние integration commits4e16bcc/bedeca2 плюс conceptual context repair
+  и текущие отчёты объединяются с локальным main. Candidate из manual review
+  не переносится.
+- Повтор RAG profile:59 PASS; CRM:78 PASS/17subtests. Логи рядом.
+- Прежний full MySQL153 PASS; остальные ограничения общих suites не скрыты.
+- Все семь dirty файлов исходного CRM checkout исключены; private hash receipt
+  позволяет проверить их сохранность. .env/.local/БД не публикуются.
+- Скан207 исходников/артефактов против известных private credentials:0 совпадений.
+- Это Git publication, не production deployment: сервисы не перезапускались.
+
+Следующий шаг: итоговая сверка remote main/ancestry и исходного CRM checkout.
+Пользовательская приёмка TG↔Mini App, /chat visual, настоящий staff/MAX/HTTPS
+и прежние factual/ProgressLedger ограничения остаются открытыми.
+
+[Итог поведения и реальные проверки](../crm_natural_chat_20261121/report.md).

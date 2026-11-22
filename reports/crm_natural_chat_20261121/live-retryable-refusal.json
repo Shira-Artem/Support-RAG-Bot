@@ -1,0 +1,43 @@
+[
+  {
+    "case": "A_explanation_from_old_queue",
+    "input": "Объясни, как работает ОФД",
+    "status": "answered",
+    "elapsed_seconds": 25.86,
+    "case_id": 13,
+    "mode_after": "assistant",
+    "state_after": "waiting_client",
+    "answer": "Привет!\n\nОФД (оператор фискальных данных) – это как «посредник» между твоей кассой и налоговой службой.\n\nКогда в кассе (с ФН‑ом, где хранятся фискальные документы) создаётся чек, касса отправляет его в ОФД через интернет.\n\nТаким образом, ОФД не является частью самой кассы, а служит внешним сервисом, обеспечивающим передачу и хранение фискальных данных в налоговой системе.\n\nЕсть вопросы, как настроить соединение с конкретным ОФД?",
+    "rag_status": "answered",
+    "rag_reason": null,
+    "ack": "accepted",
+    "failures": 0,
+    "source_channel": "telegram",
+    "messages": 41,
+    "unique_messages": 41,
+    "native_silent": true,
+    "native_text": "",
+    "buttons": [],
+    "duplicate_suppressed": true,
+    "mode_at_ingress": "assistant"
+  },
+  {
+    "case": "B_simpler_same_conversation",
+    "input": "Не понимаю, объясни проще",
+    "status": "failed",
+    "elapsed_seconds": 9.656,
+    "case_id": 13,
+    "mode_after": "assistant",
+    "state_after": "waiting_client",
+    "answer": "Не получилось сформулировать ответ. Попробуйте задать вопрос немного иначе или попросите специалиста.",
+    "rag_status": "escalate",
+    "rag_reason": "general_knowledge_output_rejected",
+    "ack": "accepted",
+    "failures": 0,
+    "source_channel": "web",
+    "messages": 43,
+    "unique_messages": 43,
+    "http_status": 200,
+    "duplicate_same_id": true
+  }
+]
