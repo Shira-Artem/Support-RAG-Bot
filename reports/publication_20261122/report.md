@@ -20,7 +20,10 @@ main журнала потеряно. После объединения RAG prof
 ([лог](merged-rag-profile.txt)). Код не конфликтовал. Raw test logs и дословные
 ответы сохранены с исходными пробелами; source/docs diff-check PASS.
 
-Следующий шаг: итоговая сверка remote main/ancestry и исходного CRM checkout.
+Итог: RAG main merge1e75e63 и CRM main709a318 приняты GitHub и подтверждены
+ls-remote. Все7 dirty файлов исходного CRM сохранены побайтно; эта старая локальная
+main остаётся нетронутой. Force push не использовался. Публикация завершена;
+следующий шаг — прежняя пользовательская приёмка.
 Пользовательская приёмка TG↔Mini App, /chat visual, настоящий staff/MAX/HTTPS
 и прежние factual/ProgressLedger ограничения остаются открытыми.
 
