@@ -87,7 +87,8 @@ def coordinate(understanding: dict | None, state: DialogueState) -> CoordinatorD
             "diagnosis_has_no_observed_symptom_or_goal")
     elif request_type == "resolved":
         route, action, rationale = "conversation", "close_resolved_task", "client_reports_resolution"
-    elif request_type in {"greeting", "feedback", "escalation"} and not reports_check:
+    elif (request_type in {"greeting", "feedback", "escalation"}
+          or request_type == 'conversation' and not (state.symptom or state.error)) and not reports_check:
         route: Route = "conversation"
         action = "respond_or_handoff"
         rationale = "social_or_handoff_turn"

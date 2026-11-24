@@ -26,7 +26,7 @@ from app.groq_rate_limit import (GroqQuotaDeferred, estimate_tokens, groq_rate_l
 from app.task_operation_resolver import resolve_task_operation
 
 
-TURN_TYPES = {"greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
+TURN_TYPES = {"conversation", "greeting", "information", "diagnosis", "instruction", "feedback", "escalation", "resolved", "unknown"}
 UNKNOWN_SLOTS = ENTITY_SLOTS | {"goal", "details", "task", "parameter"}
 INTENTS = {name for name, _, _ in OBJECTS} | {"general", "unknown"}
 OBJECT_VALUES = {obj for _, obj, _ in OBJECTS} | {"понятие"}
@@ -1081,7 +1081,7 @@ def _state_summary(state: DialogueState) -> dict[str, Any]:
                                        if state.expected else None)}
 
 
-async def understand_message(text: str, message_id: int | str, history: list[dict],
+async def _understand_message_once(text: str, message_id: int | str, history: list[dict],
                              state: DialogueState, settings: Settings) -> Understanding:
     if settings.llm_provider == "groq":
         provider_key, provider_model = settings.groq_api_key, settings.groq_model
@@ -1107,6 +1107,7 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
             "Never turn facts stated by the assistant into client facts. If a client fact has no exact supporting quote, omit it or mark the needed slot unknown only when the client explicitly says they do not know/cannot provide it.",
             "Do not infer a cash-register manufacturer from an OFD operator or the reverse.",
         "Request type describes the user's immediate speech act; operation describes the task. A question may ask for a search, lookup, diagnosis, or procedure, so do not force every question into the explain operation.",
+            "Use conversation ONLY for social dialogue, questions about who the assistant is, its capabilities or how to use this service. These do not require a technical article. Use information for subject-matter questions. A fact or result about an active incident is diagnosis, NEVER conversation. A greeting followed by a real question is classified by that question.",
             "Set specialist_requested only for a direct, positive request to speak with a human specialist.",
             "Use unknown and unknown_facts when the client cannot provide a detail. Never repeat a requested unknown fact.",
             "For a concrete incident, error_codes may cite only exact current_message spans where the client positively reports an error code. Do not cite codes in questions about definitions, bot/assistant quotations, negated codes, model/version numbers, retrieved text, or search queries. Include every positively reported code; corrections replace the negated code.",
@@ -1120,8 +1121,9 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
     schema = response_schema()
     headers = {"Authorization": f"Bearer {provider_key}", "Content-Type": "application/json"}
     request = {"model": provider_model, "reasoning_effort": provider_effort or "low",
-        "temperature": 0, "max_completion_tokens": 1024 if settings.llm_provider == "hubris" else 4096,
-        "messages": [{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
+        "temperature": 0, "max_completion_tokens": 3072 if settings.llm_provider == "hubris" else 4096,
+        "messages": [{"role": "system", "content": "Return only the complete JSON object matching the supplied schema. Do not put reasoning, analysis, prose or markdown in the JSON or in the answer content."},
+                     {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
         "response_format": {"type": "json_schema", "json_schema": schema}}
     attempt_number = None
     try:
@@ -1274,6 +1276,21 @@ async def understand_message(text: str, message_id: int | str, history: list[dic
                          result.get("model") or provider_model,
                          round((perf_counter() - started) * 1000), parsed,
                          observation.validation_diagnostics)
+
+
+async def understand_message(text: str, message_id: int | str, history: list[dict],
+                             state: DialogueState, settings: Settings) -> Understanding:
+    """Recover one malformed Hubris completion without changing client facts.
+
+    Both attempts remain in the provider trace. No retry of transport, quota,
+    semantic field rejections or customer operations is introduced here.
+    """
+    try:
+        return await _understand_message_once(text, message_id, history, state, settings)
+    except UnderstandingError as exc:
+        if settings.llm_provider != 'hubris' or exc.code not in {'invalid_json', 'structured_response_shape'}:
+            raise
+        return await _understand_message_once(text, message_id, history, state, settings)
 
 
 def understanding_to_dict(value: Understanding) -> dict[str, Any]:

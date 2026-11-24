@@ -350,7 +350,7 @@ def _receipt_transmission_subtask_anchor(text: str, expected_task: str | None) -
     folded = str(text or "").casefold().replace("ё", "е")
     has_receipt_object = bool(re.search(r"\b(?:чек\w*|документ\w*|receipt\w*)\b", folded))
     has_delivery_failure = bool(re.search(
-        r"\b(?:не\s+(?:уход\w*|поступ\w*|переда\w*|отправ\w*)|"
+        r"\b(?:(?:не\s+|перестал\w*\s+)(?:уход\w*|поступ\w*|переда\w*|отправ\w*)|"
         r"не(?:уход|поступ|переда|отправ)\w*)\b", folded))
     return has_receipt_object and has_delivery_failure
 
@@ -422,6 +422,11 @@ def _state_task_category(state: DialogueState, query: str) -> str | None:
     task_facts = [*([state.task] if state.task else []), *state.goals,
                   *state.constraints, *state.details, *state.parameters]
     task_folded = " ".join(f.value for f in task_facts).casefold().replace("ё", "е")
+    # Negative delivery and cessation describe the same incident family,
+    # regardless of the model's coarse device/receipt intent projection.
+    if (state.operation in {"diagnose", "transmit", "check", "status"}
+            and _receipt_transmission_subtask_anchor(task_folded, "receipt_transmission")):
+        return "receipt_transmission"
     # The same evidence-bound projection used during Understanding wins only
     # when the reducer still holds its operation. It never consults a hit.
     resolved = resolve_task_operation(task_folded, operation=state.operation,

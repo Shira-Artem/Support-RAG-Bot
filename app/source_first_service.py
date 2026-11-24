@@ -28,7 +28,7 @@ from app.dialogue_understanding import _generic_equipment_value
 from app.semantic_evidence_selector import (evidence_role, build_causal_fact_bundle,
     EvidenceDecision, validate_selected_units)
 from app.rag_query import QueryNeedsClarification, build_rag_query
-from app.retrieval_pipeline import normalize_metadata
+from app.retrieval_pipeline import normalize_metadata, _state_task_category
 from app.procedure_policy import read_only_check_section, inspection_prerequisites
 from app.source_actions import (CHECK_ACTION_PATTERN, CHECK_ACTION_ROOTS,
                                 SOURCE_ACTION_PATTERN, SOURCE_ACTION_TEXT)
@@ -287,7 +287,7 @@ _GENERAL_UNSOURCED_RULE = re.compile(
 _CONCEPTUAL_NORMATIVE_CLAIM = re.compile(
     r"\b(?:сертификат\w*|подтвержден\w*\s+от\s+налог\w*|"
     r"обязательн\w*|закон\w*|законодательств\w*|"
-    r"должен|должна|должны|необходимо|тариф\w*|договор\w*|"
+    r"должен|должна|должны|необходимо|тариф\w*|"
     r"официальн\w*|недействительн\w*|незаконн\w*|правомер\w*)\b", re.I)
 _CONCEPTUAL_ACTION_SENTENCE = re.compile(
     r"^\s*(?:попрос\w*|сопостав\w*|свер\w*|уточн\w*|убед\w*|"
@@ -768,6 +768,19 @@ def _technical_section_covers_observed_subject(state: DialogueState,
         observed_terms -= content_terms(state.task_entity(slot) or "")
     if not observed_terms:
         return True
+    scope = selected.get('scope') or {}
+    expected = _state_task_category(state, observed)
+    assessment = assess_source_scope(state, scope)
+    if (expected and scope.get('task_category') == expected
+            and not assessment.missing and not assessment.mismatches
+            and re.match(r'^шаг\s+1[.\s:]', selected['section'], re.I)
+            and CHECK_ACTION_PATTERN.search(selected['text'])
+            and not unsafe_operation_issue(selected['text'])):
+        # A document's first prerequisite check often uses different words
+        # from the reported failure (subscription vs receipt transmission).
+        # Its approved task family and confirmed scope establish relevance;
+        # Planner/source-order/output safety still decide whether to show it.
+        return True
     return bool(observed_terms & content_terms(selected["title"] + " " + selected["section"] + " " + selected["text"]))
 
 
@@ -801,6 +814,25 @@ def _resolve_planner_section_reference(reference: str, candidates: list[dict],
     if len(document_matches) == 1:
         return document_matches[0], "unique_candidate_document_id"
     return None, None
+
+
+def _initial_diagnostic_checks(sections: list[dict]) -> list[dict]:
+    """Prefer an article's explicit first check to a symptom-only description.
+
+    All input sections already passed approved/SHA/customer-scope gates. This
+    only narrows Planner candidates; it does not authorize or execute a step.
+    Keep warnings for independent source-order/safety evaluation.
+    """
+    first = [item for item in sections
+        if re.match(r'^шаг\s+1[.\s:]', item['section'], re.I)
+        and CHECK_ACTION_PATTERN.search(item['text'])
+        and not unsafe_operation_issue(item['text'])]
+    if not first:
+        return sections
+    documents = {item['document_id'] for item in first}
+    return [*first, *[item for item in sections if item not in first
+        and item['document_id'] in documents
+        and _SCOPE_OR_SAFETY_HEADING.search(item['section'])]]
 
 
 def _source_error_codes(selected: dict | None) -> set[str]:
@@ -868,7 +900,9 @@ def _missing_support_detail(state: DialogueState) -> tuple[str, str] | None:
             and not state.object and has_document_subject
             and state.task_entity("service") and state.task_entity("software")):
         return "document_type", "Какой именно документ вы ожидаете увидеть в программе?"
-    if state.intent == "device" and not state.task_entity("manufacturer"):
+    if (state.intent in {'device','receipt','fiscal_drive'} and state.operation == 'diagnose'
+            and not state.task_entity('equipment') and not state.task_entity('manufacturer')
+            and not any(state.task_entity(slot) for slot in ('service','software','integration'))):
         return "equipment", "Какой производитель и модель кассы используются?"
     return None
 
@@ -2146,9 +2180,14 @@ class SourceFirstService:
 
     async def _general_knowledge_fallback(self, user_message: str, state: DialogueState,
                                          started: float, base: dict, *,
-                                         retrieval_checked: bool = True) -> Answer | None:
+                                         retrieval_checked: bool = True,
+                                         history: list[dict] | None = None,
+                                         conversation: bool = False) -> Answer | None:
         """Use the existing model-only path for safe conceptual explanations."""
-        if not _safe_general_knowledge_question(
+        if conversation and (state.symptom or state.error or
+                state.operation not in {'unknown', 'explain'} or _has_named_product_context(state)):
+            return None
+        if not conversation and not _safe_general_knowledge_question(
                 user_message, state, classified_information=not retrieval_checked):
             return None
         prompt = [
@@ -2181,10 +2220,36 @@ class SourceFirstService:
                 "документов в ФНС, а не деталь кассы и не сам налоговый орган. "
                 "Объясняй общую идею, без интерфейсных инструкций, команд, изменения настроек, "
                 "юридических требований, тарифов и выдуманных источников. "
-                "Не пиши о том, какие темы ты не будешь обсуждать. Не перечисляй все возможности. "
-                "Можно тепло поздороваться и закончить одним уместным вопросом. Если не уверен, скажи об этом.")
+                "Отвечай именно на последнее сообщение, а не пересказывай прежнее объяснение. "
+                "История нужна для понимания местоимений и уже известных фактов. "
+                "Не здоровайся повторно. Обращайся на вы. Пиши обычным текстом без Markdown. "
+                "Если вопрос зависит от договора, условий или правовых исключений, прямо обозначь "
+                "неопределённость и спроси одну нужную деталь вместо категоричного вывода. "
+                "Если не уверен, скажи об этом.")
+            prompt[0]['content'] += (
+                " Ты — ИИ-помощник Seller CRM. На вопросы о себе и своих возможностях отвечай прямо: "
+                "объясняешь кассы, ОФД, ФН, 1С и ЭДО, помогаешь с неполадками по проверенным материалам. "
+                "Покупки доступны в существующих разделах Магазин и Услуги, история — в Чате. "
+                "Это интерфейс бота: объясняй навигацию по его кнопкам. "
+                "Не выдавай открытие раздела Магазин за регистрацию нового бизнеса "
+                "и не придумывай обязательную регистрацию в Seller CRM для торговли. "
+                "Не обещай выполненных покупок, вызовов или подключения человека. "
+                "ОФД принимает, обрабатывает, хранит и передаёт фискальные данные; "
+                "не утверждай, что ОФД не хранит документы. Не придумывай правовые исключения. "
+                "На вопрос о допустимости работы без услуги сначала уточни условия работы клиента; "
+                "если правовое основание не проверено, скажи об этом простыми словами.")
+            if conversation:
+                prompt[0]['content'] += (
+                    " Вы — ИИ-помощник Seller CRM, не человек. По запросу расскажи, что помогаешь "
+                    "с кассами, ОФД, ФН, 1С и ЭДО, объясняешь простыми словами, разбираешь неполадки "
+                    "по проверенным материалам. Для покупки есть кнопки Магазин и Услуги, для истории — Чат. "
+                    "При необходимости можно попросить специалиста; не утверждай, что он уже вызван. "
+                    "Сейчас вызовы тестовые, без реального соединения. Не обещай действий, которых не выполнял.")
             snapshot=_planner_task_snapshot(state) or {}
             prompt[-1]['content']=json.dumps({'current_message':user_message,
+                'recent_history':[{'role':item['role'],'content':item.get('content','')}
+                    for item in (history or [])[-10:]
+                    if item.get('role') in {'user','assistant'}],
                 'active_task':{key:snapshot.get(key) for key in ('object','task_fact','goals','details')}},ensure_ascii=False)
         try:
             if not retrieval_checked and self.settings.llm_provider == "hubris":
@@ -2221,9 +2286,22 @@ class SourceFirstService:
                 # with a fabricated fact or treat it as approved evidence.
                 text = "\n\n".join(retained)
                 claims = retained
+            if (any(_CONCEPTUAL_NORMATIVE_CLAIM.search(claim) for claim in removed_claims)
+                    and re.search(r'\b(?:можно|допустимо|разрешено|обязательн\w*|нужно\s+ли)\b',user_message,re.I)):
+                # Removing a policy answer while leaving speculative exceptions
+                # creates a misleading answer. Ask for context without a handoff.
+                base['retrieval_diagnostics']={'general_knowledge_fallback':{
+                    'used':False,'rejection':'unverified_policy_conditions',
+                    'removed_out_of_scope_claims':removed_claims}}
+                return Answer('Здесь важны условия работы вашей кассы. Без проверенного основания '
+                    'не могу подтвердить, можно ли так работать. Какая у вас касса и где вы её используете?',
+                    scenario='clarify',scenario_reason='unverified_policy_conditions',
+                    clarification_slot='details',generation_status='clarification',
+                    duration_ms=round((perf_counter()-started)*1000),**base)
         relevance_question=user_message
-        if not retrieval_checked and state.relation!='new_task' and state.task:
-            relevance_question=' '.join(filter(None,[user_message,state.object,state.task.value]))
+        if not retrieval_checked and state.relation!='new_task':
+            relevance_question=' '.join(filter(None,[user_message,state.object,
+                state.task.value if state.task else None]))
         question_terms = content_terms(relevance_question)
         response_terms = content_terms(text)
         procedural = (bool(instruction_issue(text, "")) if retrieval_checked else
@@ -2235,7 +2313,9 @@ class SourceFirstService:
                             _CONCEPTUAL_NORMATIVE_CLAIM).search(text))
                    or bool(unsafe_generated)
                    or procedural
-                   or not _general_concept_overlap(question_terms, response_terms))
+                   # Ordinary follow-ups may contain only pronouns; matching
+                   # words with the root request rejects valid conversation.
+                   or (retrieval_checked and not _general_concept_overlap(question_terms, response_terms)))
         diagnostics = base.get("retrieval_diagnostics") or {}
         diagnostics["general_knowledge_fallback"] = {
             "eligible": True, "used": not invalid,
@@ -2886,6 +2966,11 @@ class SourceFirstService:
         if understanding and turn_kind == "escalation":
             return self._escalate("Не могу подтвердить безопасное решение для этого запроса. Можно оформить обращение специалисту кнопкой ниже; доставка сотруднику пока не настроена.",
                 "understanding_recommends_escalation", "semantic_escalation", started, **base)
+        if (understanding and turn_kind == 'conversation' and self.settings.semantic_composer_enabled
+                and not state.symptom and not state.error
+                and state.operation in {'unknown','explain'} and not _has_named_product_context(state)):
+            return await self._general_knowledge_fallback(user_message, state, started, base,
+                retrieval_checked=False, history=history, conversation=True)
         observation = (understanding or {}).get("observation") or {}
         if (understanding and turn_kind == "unknown"
                 and not any(observation.get(key) for key in
@@ -3017,9 +3102,21 @@ class SourceFirstService:
                 and _safe_general_knowledge_question(
                     user_message, state, classified_information=True)):
             answer = await self._general_knowledge_fallback(
-                user_message, state, started, base, retrieval_checked=False)
+                user_message, state, started, base, retrieval_checked=False, history=history)
             if answer is not None:
                 return answer
+        # Missing device identity is intake, not evidence of a need for a human.
+        if (understanding and state.operation == 'diagnose' and state.intent in {'device','receipt','fiscal_drive'}
+                and not any(state.task_entity(slot) for slot in
+                    ('equipment','manufacturer','service','software','integration'))
+                and not state.error_codes):
+            intake = _bounded_support_intake(state, history)
+            if intake:
+                slot, question = intake
+                return Answer(question, scenario='clarify',
+                    scenario_reason='no_applicable_source_missing_client_detail',
+                    clarification_slot=slot,generation_status='clarification',
+                    duration_ms=round((perf_counter()-started)*1000),**base)
         try:
             query = build_rag_query(state)
         except QueryNeedsClarification as exc:
@@ -3376,7 +3473,18 @@ class SourceFirstService:
                 and item['document_id'] == continuation['document_id']
                 and item['source'] == continuation['source']
                 and _SCOPE_OR_SAFETY_HEADING.search(item['section'])]]
+        elif (self.settings.semantic_composer_enabled and not informational
+                and state.operation == 'diagnose' and state.symptom
+                and state.task_context and not state.task_context.shown_units):
+            planner_sections = _initial_diagnostic_checks(planner_sections)
+            base.setdefault('retrieval_diagnostics',{})['initial_diagnostic_check_filter']={
+                'input_count':len(sections),'candidate_count':len(planner_sections),
+                'policy':'explicit_first_check_and_same_article_warnings'}
         system = ("Ты планировщик поддержки. Выбери один id раздела, который точнее всего отвечает текущей задаче, либо clarify/escalate. "
+                  "При диагностике известного симптома выбирай следующий самостоятельный безопасный шаг, "
+                  "а не повтор описания симптома. Соблюдай порядок шагов исходной статьи: начни с первой "
+                  "непроверенной применимой проверки. Не выбирай условную ветку без подтверждения её условия "
+                  "и не считай сообщение о работающем интернете подтверждением подписки, адреса ОФД или EoU. "
                   "Раздел с перечислением сообщений об ошибке описывает симптом, а не рекомендуемое действие. Если клиент спрашивает, обязательна ли ответственная операция, учитывай предварительные безопасные проверки и условия остальных разделов статьи: цитата ошибки сама по себе не подтверждает необходимость операции. "
                   "Ответ должен относиться к текущему сообщению, его предмету, действию и условиям; похожая тема или соседний факт не заменяет ответ. "
                   "Если текущий вопрос состоит из нескольких частей, предпочитай раздел, покрывающий их и необходимые ограничения; не переноси правила другого процесса или устройства. "

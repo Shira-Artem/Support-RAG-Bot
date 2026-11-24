@@ -129,7 +129,7 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
     receipt_to_operator_failed = (
         _has(s, r"\b(?:чек\w*|фискальн\w*\s+документ\w*)\b")
         and _has(s, r"\bоператор\w*\b")
-        and _has(s, r"\b(?:не\s+(?:доход|поступ)\w*|перестал\w*\s+(?:доход|поступ)\w*)\b")
+        and _has(s, r"\b(?:не\s+(?:доход|поступ|переда|отправ|уход)\w*|перестал\w*\s+(?:доход|поступ|переда|отправ|уход)\w*)\b")
     )
     if receipt_to_operator_failed and not _has(s, r"\b(?:печат\w*|распечат\w*|возврат\w*)\b"):
         return result("receipt_transmission", "diagnose", "receipt", "diagnostic",
@@ -151,7 +151,7 @@ def resolve_task_operation(text: str, *, operation: str = "unknown",
                  (operation in {"check", "status", "unknown"} and reported_problem))):
         return result("receipt_transmission", "transmit" if operation == "transmit" else "diagnose",
                       "receipt", "diagnostic", "receipt_at_ofd_diagnostic")
-    if _has(s, r"\b(?:не\s+поступ\w*|не\s+переда\w*|не\s+отправ\w*|не\s+уход\w*|перестал\w*\s+переда\w*)") and _has(s, r"\bчек\w*|\bдокумент\w*"):
+    if _has(s, r"\b(?:(?:не\s+|перестал\w*\s+)(?:поступ\w*|переда\w*|отправ\w*|уход\w*))") and _has(s, r"\bчек\w*|\bдокумент\w*"):
         return result("receipt_transmission", "transmit" if operation == "transmit" else "diagnose",
                       "receipt", "diagnostic", "receipt_transmission_failure")
     if _has(s, r"\b(?:добав\w*|созда\w*)\s+(?:нов\w*\s+)?(?:сотрудник\w*|пользовател\w*)"):

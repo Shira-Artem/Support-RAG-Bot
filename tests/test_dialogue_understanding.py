@@ -80,7 +80,7 @@ def test_hubris_understanding_uses_json_schema_and_records_usage_cost(monkeypatc
     assert kwargs["headers"]["Authorization"] == "Bearer test-hubris-key"
     assert kwargs["json"]["response_format"]["type"] == "json_schema"
     assert kwargs["json"]["response_format"]["json_schema"]["strict"] is True
-    assert kwargs["json"]["max_completion_tokens"] == 1024
+    assert kwargs["json"]["max_completion_tokens"] == 3072
     assert result.request_type == "information"
     assert traces[-1]["tokens"]["total_tokens"] == 42
     assert traces[-1]["cost_kopecks"] == 3
