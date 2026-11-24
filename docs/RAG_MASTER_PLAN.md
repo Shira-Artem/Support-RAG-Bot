@@ -1,6 +1,6 @@
 # Support-RAG-Bot — генеральный план
 
-**Публикация 24.11.2026 — проверенные UX и integration правки подготовлены к push; production NO-GO.** Профильные регрессии: RAG 191 PASS, CRM 142 PASS / 1 deselected (Windows symlink permission); JS syntax и diff-check PASS. Целевой production runtime, credentials и migration/rollback evidence отсутствуют. Stale CRM checkout остаётся отдельно сохранённым, не смешан с текущим release. [Журнал](PROJECT_STATE.md).
+**Публикация 24.11.2026 — UX и integration правки опубликованы в GitHub main (RAG `96407a6`, CRM `eb2c2e4`); production NO-GO.** Профильные регрессии: RAG 191 PASS, CRM 142 PASS / 1 deselected (Windows symlink permission); JS syntax и diff-check PASS. Целевой production runtime, credentials и migration/rollback evidence отсутствуют. Stale CRM checkout остаётся отдельно сохранённым, не смешан с текущим release. [Журнал](PROJECT_STATE.md).
 
 **Исправления по ручному тесту 24.11 — развёрнуты, готовы к повторной ручной проверке; production NO-GO.** Контекстный разговор/JSON recovery, первичная диагностика по approved источнику, коммерческие маршруты и lifecycle меню исправлены в существующем пилоте.196 RAG/180 CRM PASS; routes20/20; настоящий Mini App→AI→Telegram sent. HTTPS восстановлен с контролем ротации URL; старую кнопку нужно обновить через `/chat`. Общая фактология, телефонный TG↔Mini App, staff/MAX LIVE остаются открытыми. [Итог и evidence](../reports/manual_repair_20261124/report.md).
 
